@@ -8,6 +8,7 @@ namespace CHKS.Models.mydb
     [Table("history")]
     public partial class History
     {
+        [Key]
         [Required]
         public string CashoutDate { get; set; }
 
@@ -19,11 +20,6 @@ namespace CHKS.Models.mydb
         public float? Total { get; set; }
 
         public string Payment { get; set; }
-
-        [Key]
-        [Column("HistoryConnector_ID")]
-        [Required]
-        public string HistoryConnectorId { get; set; }
 
         public ICollection<Historyconnector> Historyconnectors { get; set; }
     }

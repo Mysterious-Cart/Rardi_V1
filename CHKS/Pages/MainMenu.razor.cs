@@ -61,8 +61,29 @@ namespace CHKS.Pages
 
                 if(result is CHKS.Models.mydb.Car)
                 {
-                    RequestingID(result);
-                    
+                    var Id = await DialogService.OpenAsync<SingleInputPopUp>("Cart ID", new Dictionary<string, object>{{"Title","Cart ID"}});
+                    if(Id != null && Id is int)
+                    {
+                            Customer.CartId = Id;
+                            Customer.Plate = result.Plate;
+                            Phone = result.Phone;
+                            CarType = result.Type;
+                            SelectionState = false;
+                            Selection = true;
+                        try{
+                            await MydbService.CreateCart(Customer);
+                        }catch(Exception exc){
+                            if(exc.Message == "Item already available"){
+                                await DialogService.Alert("This cart ID already exist.","Important");
+                                Customer.CartId = 0;
+                                Customer.Plate = "";
+                                Phone = "";
+                                CarType = "";
+                                SelectionState = null;
+                                Selection = false;
+                            }
+                        }
+                    }
 
                 }else if(result is null)
                 {
@@ -86,33 +107,56 @@ namespace CHKS.Pages
             }
         }
 
-        protected async void RequestingID(Models.mydb.Car result){
-            var Id = await DialogService.OpenAsync<SingleInputPopUp>("Cart ID", new Dictionary<string, object>{{"Title","Cart ID"}});
-            if(Id != null && Id is int)
+        protected async Task DeleteCustomer(){
+            if(await DialogService.Confirm("Are you sure?","Important!") == true)
             {
-                    Customer.CartId = Id;
-                    Customer.Plate = result.Plate;
-                    Phone = result.Phone;
-                    CarType = result.Type;
-                    SelectionState = false;
-                    Selection = true;
-                try{
-
-                    await MydbService.CreateCart(Customer);
-                }catch(Exception exc){
-                    if(exc.Message == "Item already available"){
-                        await DialogService.Alert("This cart ID already exist.","Important");
-                        Customer.CartId = 0;
-                        Customer.Plate = "";
-                        Phone = "";
-                        CarType = "";
-                        SelectionState = null;
-                        Selection = false;
-                    }
-                }finally{
-
-                }
+                
             }
+        }
+
+        protected async Task CashOut(){
+            if(Connectors != Enumerable.Empty<Models.mydb.Connector>()){
+                if(await DialogService.Confirm("Are you sure?","Important!") == true){
+                    var payment = await DialogService.OpenAsync<PaymentForm>("Payment",new Dictionary<string, object>{{"Total",Connectors.Sum(i => i.Total)}});
+                    if(payment != null ){
+                        string time = DateTime.Now.ToString();
+                        try{
+                            await MydbService.DeleteCart(Customer.CartId);
+                            Models.mydb.History History = new Models.mydb.History{
+                                CashoutDate = time,
+                                Plate = Customer.Plate,
+                                Total = Customer.Total,
+                                Payment = payment,
+                                
+                            };
+                            await MydbService.CreateHistory(History);
+                            SaveCustomerCart();
+                        }catch{
+                            NotificationService.Notify(new NotificationMessage
+                            {
+                                Severity = NotificationSeverity.Error,
+                                Summary = $"Error",
+                                Detail = $"Unable to delete Customer"
+                            });
+                        }
+
+                        foreach(var i in Connectors){
+                            try{
+                                Models.mydb.Historyconnector historyconnector = new Models.mydb.Historyconnector{
+                                    Id = i.GeneratedKey + time,
+                                    Product = i.Product,
+                                    Qty = i.Qty,
+                                    CartId = time,
+                                    
+                                };
+                                await MydbService.CreateHistoryconnector(historyconnector);
+                            }catch{
+
+                            }
+                        }
+                    }
+                }
+            }else{await DialogService.Alert("You have no items in cart.","Note!");}
         }
 
 

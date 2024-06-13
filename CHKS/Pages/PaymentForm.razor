@@ -1,0 +1,19 @@
+@page "/payment--form"
+<RadzenRow >
+    <RadzenCard style="width:60%;">
+        <RadzenStack Orientation ="Orientation.Horizontal" >
+            <RadzenColumn>            
+                <RadzenLabel Component="Total" Text="Total ($): "/>
+                <RadzenNumeric title="Total" locked="true" Value="@Total" Style="margin-left:1%"/>
+            </RadzenColumn>
+            <RadzenColumn>            
+                <RadzenLabel Component="PaymemtType" Text="Payment Note: "/>
+                <RadzenTextBox title="PaymemtType" bind-Value="@PaymentNote" Style="margin-left:1%"/>
+            </RadzenColumn>
+            <RadzenColumn>            
+                <RadzenLabel Component="Submit" Text="Submit"/>
+                <RadzenButton title="Submit" locked="true" Value="" Style="margin-left:1%" Icon="paid" Text="Pay" ButtonStyle="ButtonStyle.Warning"/>
+            </RadzenColumn>
+        </RadzenStack>
+    </RadzenCard>
+</RadzenRow>

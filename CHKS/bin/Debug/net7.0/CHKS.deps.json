@@ -12,7 +12,7 @@
           "Microsoft.EntityFrameworkCore": "7.0.0",
           "Microsoft.EntityFrameworkCore.Design": "7.0.0",
           "Pomelo.EntityFrameworkCore.MySql": "7.0.0-alpha.1",
-          "Radzen.Blazor": "4.32.6"
+          "Radzen.Blazor": "4.32.7"
         },
         "runtime": {
           "CHKS.dll": {}
@@ -234,7 +234,7 @@
           }
         }
       },
-      "Radzen.Blazor/4.32.6": {
+      "Radzen.Blazor/4.32.7": {
         "dependencies": {
           "DartSassBuilder": "1.0.0",
           "Microsoft.AspNetCore.Components": "7.0.14",
@@ -243,8 +243,8 @@
         },
         "runtime": {
           "lib/net7.0/Radzen.Blazor.dll": {
-            "assemblyVersion": "4.32.6.0",
-            "fileVersion": "4.32.6.0"
+            "assemblyVersion": "4.32.7.0",
+            "fileVersion": "4.32.7.0"
           }
         }
       },
@@ -483,12 +483,12 @@
       "path": "pomelo.entityframeworkcore.mysql/7.0.0-alpha.1",
       "hashPath": "pomelo.entityframeworkcore.mysql.7.0.0-alpha.1.nupkg.sha512"
     },
-    "Radzen.Blazor/4.32.6": {
+    "Radzen.Blazor/4.32.7": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-eeCOLXt91vp2Q/zFB4sibo+zqLPPtxqTybKMY48j65wYMD+Q8YVkSrgl+E9rOBt36sEBPQNWSGIg8vQlxCNCQg==",
-      "path": "radzen.blazor/4.32.6",
-      "hashPath": "radzen.blazor.4.32.6.nupkg.sha512"
+      "sha512": "sha512-kMiAokMiXITBT4ZzJVZRREFHWCL8Np3CSE0Ep0qVPzabn4RuWDB+9d054L+n2d7AsLWii+ICKYmYpHdi5qbfBg==",
+      "path": "radzen.blazor/4.32.7",
+      "hashPath": "radzen.blazor.4.32.7.nupkg.sha512"
     },
     "System.CodeDom/4.4.0": {
       "type": "package",

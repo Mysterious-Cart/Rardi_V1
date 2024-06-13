@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "YkoWcQZVNbM=",
+  "dgSpecHash": "KUU6hIxde68=",
   "success": true,
-  "projectFilePath": "D:\\CHKS\\CHKS.csproj",
+  "projectFilePath": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\CHKS.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Kim hong\\.nuget\\packages\\dartsassbuilder\\1.0.0\\dartsassbuilder.1.0.0.nupkg.sha512",
     "C:\\Users\\Kim hong\\.nuget\\packages\\documentformat.openxml\\2.20.0\\documentformat.openxml.2.20.0.nupkg.sha512",
@@ -32,7 +32,7 @@
     "C:\\Users\\Kim hong\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
     "C:\\Users\\Kim hong\\.nuget\\packages\\mysqlconnector\\2.2.0\\mysqlconnector.2.2.0.nupkg.sha512",
     "C:\\Users\\Kim hong\\.nuget\\packages\\pomelo.entityframeworkcore.mysql\\7.0.0-alpha.1\\pomelo.entityframeworkcore.mysql.7.0.0-alpha.1.nupkg.sha512",
-    "C:\\Users\\Kim hong\\.nuget\\packages\\radzen.blazor\\4.32.6\\radzen.blazor.4.32.6.nupkg.sha512",
+    "C:\\Users\\Kim hong\\.nuget\\packages\\radzen.blazor\\4.32.7\\radzen.blazor.4.32.7.nupkg.sha512",
     "C:\\Users\\Kim hong\\.nuget\\packages\\system.codedom\\4.4.0\\system.codedom.4.4.0.nupkg.sha512",
     "C:\\Users\\Kim hong\\.nuget\\packages\\system.io.packaging\\4.7.0\\system.io.packaging.4.7.0.nupkg.sha512",
     "C:\\Users\\Kim hong\\.nuget\\packages\\system.io.pipelines\\7.0.0\\system.io.pipelines.7.0.0.nupkg.sha512",

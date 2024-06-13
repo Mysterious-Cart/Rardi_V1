@@ -50,7 +50,7 @@ namespace CHKS.Data
               .HasOne(i => i.History)
               .WithMany(i => i.Historyconnectors)
               .HasForeignKey(i => i.CartId)
-              .HasPrincipalKey(i => i.HistoryConnectorId);
+              .HasPrincipalKey(i => i.CashoutDate);
 
             builder.Entity<CHKS.Models.mydb.Historyconnector>()
               .HasOne(i => i.Inventory)

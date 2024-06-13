@@ -9,67 +9,71 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = CHKS
 build_property.RootNamespace = CHKS
-build_property.ProjectDir = D:\CHKS\
+build_property.ProjectDir = C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 7.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = D:\CHKS
+build_property.MSBuildProjectDirectory = C:\Users\Kim hong\Documents\GitHub\Pos\CHKS
 build_property._RazorSourceGeneratorDebug = 
 
-[D:/CHKS/App.razor]
+[C:/Users/Kim hong/Documents/GitHub/Pos/CHKS/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CHKS/Pages/AddCar.razor]
+[C:/Users/Kim hong/Documents/GitHub/Pos/CHKS/Pages/AddCar.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRkQ2FyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CHKS/Pages/Cars.razor]
+[C:/Users/Kim hong/Documents/GitHub/Pos/CHKS/Pages/Cars.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2Fycy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CHKS/Pages/Connectors.razor]
+[C:/Users/Kim hong/Documents/GitHub/Pos/CHKS/Pages/Connectors.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29ubmVjdG9ycy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CHKS/Pages/Dailies.razor]
+[C:/Users/Kim hong/Documents/GitHub/Pos/CHKS/Pages/Dailies.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFpbGllcy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CHKS/Pages/Histories.razor]
+[C:/Users/Kim hong/Documents/GitHub/Pos/CHKS/Pages/Histories.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSGlzdG9yaWVzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CHKS/Pages/Inventories.razor]
+[C:/Users/Kim hong/Documents/GitHub/Pos/CHKS/Pages/Inventories.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW52ZW50b3JpZXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CHKS/Pages/MainMenu.razor]
+[C:/Users/Kim hong/Documents/GitHub/Pos/CHKS/Pages/MainMenu.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWFpbk1lbnUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CHKS/Pages/ReciptView.razor]
+[C:/Users/Kim hong/Documents/GitHub/Pos/CHKS/Pages/PaymentForm.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGF5bWVudEZvcm0ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Kim hong/Documents/GitHub/Pos/CHKS/Pages/ReciptView.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVjaXB0Vmlldy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CHKS/Pages/SingleInputPopUp.razor]
+[C:/Users/Kim hong/Documents/GitHub/Pos/CHKS/Pages/SingleInputPopUp.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2luZ2xlSW5wdXRQb3BVcC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CHKS/Pages/Statistic.razor]
+[C:/Users/Kim hong/Documents/GitHub/Pos/CHKS/Pages/Statistic.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3RhdGlzdGljLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CHKS/Shared/MainLayout.razor]
+[C:/Users/Kim hong/Documents/GitHub/Pos/CHKS/Shared/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CHKS/_Imports.razor]
+[C:/Users/Kim hong/Documents/GitHub/Pos/CHKS/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/CHKS/Pages/_Host.cshtml]
+[C:/Users/Kim hong/Documents/GitHub/Pos/CHKS/Pages/_Host.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0hvc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

@@ -920,18 +920,18 @@ namespace CHKS
         }
 
         partial void OnHistoryGet(CHKS.Models.mydb.History item);
-        partial void OnGetHistoryByHistoryConnectorId(ref IQueryable<CHKS.Models.mydb.History> items);
+        partial void OnGetHistoryByCashoutDate(ref IQueryable<CHKS.Models.mydb.History> items);
 
 
-        public async Task<CHKS.Models.mydb.History> GetHistoryByHistoryConnectorId(string historyconnectorid)
+        public async Task<CHKS.Models.mydb.History> GetHistoryByCashoutDate(string cashoutdate)
         {
             var items = Context.Histories
                               .AsNoTracking()
-                              .Where(i => i.HistoryConnectorId == historyconnectorid);
+                              .Where(i => i.CashoutDate == cashoutdate);
 
             items = items.Include(i => i.Car);
  
-            OnGetHistoryByHistoryConnectorId(ref items);
+            OnGetHistoryByCashoutDate(ref items);
 
             var itemToReturn = items.FirstOrDefault();
 
@@ -948,7 +948,7 @@ namespace CHKS
             OnHistoryCreated(history);
 
             var existingItem = Context.Histories
-                              .Where(i => i.HistoryConnectorId == history.HistoryConnectorId)
+                              .Where(i => i.CashoutDate == history.CashoutDate)
                               .FirstOrDefault();
 
             if (existingItem != null)
@@ -987,12 +987,12 @@ namespace CHKS
         partial void OnHistoryUpdated(CHKS.Models.mydb.History item);
         partial void OnAfterHistoryUpdated(CHKS.Models.mydb.History item);
 
-        public async Task<CHKS.Models.mydb.History> UpdateHistory(string historyconnectorid, CHKS.Models.mydb.History history)
+        public async Task<CHKS.Models.mydb.History> UpdateHistory(string cashoutdate, CHKS.Models.mydb.History history)
         {
             OnHistoryUpdated(history);
 
             var itemToUpdate = Context.Histories
-                              .Where(i => i.HistoryConnectorId == history.HistoryConnectorId)
+                              .Where(i => i.CashoutDate == history.CashoutDate)
                               .FirstOrDefault();
 
             if (itemToUpdate == null)
@@ -1014,10 +1014,10 @@ namespace CHKS
         partial void OnHistoryDeleted(CHKS.Models.mydb.History item);
         partial void OnAfterHistoryDeleted(CHKS.Models.mydb.History item);
 
-        public async Task<CHKS.Models.mydb.History> DeleteHistory(string historyconnectorid)
+        public async Task<CHKS.Models.mydb.History> DeleteHistory(string cashoutdate)
         {
             var itemToDelete = Context.Histories
-                              .Where(i => i.HistoryConnectorId == historyconnectorid)
+                              .Where(i => i.CashoutDate == cashoutdate)
                               .Include(i => i.Historyconnectors)
                               .FirstOrDefault();
 

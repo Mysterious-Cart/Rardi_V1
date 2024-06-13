@@ -1,31 +1,31 @@
 {
   "Files": [
     {
-      "Id": "D:\\CHKS\\wwwroot\\css\\bootstrap\\bootstrap.min.css",
+      "Id": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\css\\bootstrap\\bootstrap.min.css",
       "PackagePath": "staticwebassets\\css\\bootstrap\\bootstrap.min.css"
     },
     {
-      "Id": "D:\\CHKS\\wwwroot\\css\\bootstrap\\bootstrap.min.css.map",
+      "Id": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\css\\bootstrap\\bootstrap.min.css.map",
       "PackagePath": "staticwebassets\\css\\bootstrap\\bootstrap.min.css.map"
     },
     {
-      "Id": "D:\\CHKS\\wwwroot\\css\\site.css",
+      "Id": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },
     {
-      "Id": "D:\\CHKS\\wwwroot\\favicon.ico",
+      "Id": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
-      "Id": "D:\\CHKS\\wwwroot\\images\\login.jpg",
+      "Id": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\images\\login.jpg",
       "PackagePath": "staticwebassets\\images\\login.jpg"
     },
     {
-      "Id": "D:\\CHKS\\wwwroot\\images\\logo-login.png",
+      "Id": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\images\\logo-login.png",
       "PackagePath": "staticwebassets\\images\\logo-login.png"
     },
     {
-      "Id": "D:\\CHKS\\wwwroot\\images\\logo.png",
+      "Id": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\images\\logo.png",
       "PackagePath": "staticwebassets\\images\\logo.png"
     },
     {

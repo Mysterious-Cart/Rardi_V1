@@ -72,7 +72,7 @@ namespace CHKS.Pages
 
         protected async Task OpenHistory(CHKS.Models.mydb.History args)
         {
-            await DialogService.OpenAsync<ReciptView>("Customer", new Dictionary<string, object>{{"ID",args.HistoryConnectorId}});
+            await DialogService.OpenAsync<ReciptView>("Customer", new Dictionary<string, object>{{"ID",args.CashoutDate}});
         }
 
         protected bool errorVisible;

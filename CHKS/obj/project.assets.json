@@ -456,7 +456,7 @@
           }
         }
       },
-      "Radzen.Blazor/4.32.6": {
+      "Radzen.Blazor/4.32.7": {
         "type": "package",
         "dependencies": {
           "DartSassBuilder": "1.0.0",
@@ -1223,10 +1223,10 @@
         "pomelo.entityframeworkcore.mysql.nuspec"
       ]
     },
-    "Radzen.Blazor/4.32.6": {
-      "sha512": "eeCOLXt91vp2Q/zFB4sibo+zqLPPtxqTybKMY48j65wYMD+Q8YVkSrgl+E9rOBt36sEBPQNWSGIg8vQlxCNCQg==",
+    "Radzen.Blazor/4.32.7": {
+      "sha512": "kMiAokMiXITBT4ZzJVZRREFHWCL8Np3CSE0Ep0qVPzabn4RuWDB+9d054L+n2d7AsLWii+ICKYmYpHdi5qbfBg==",
       "type": "package",
-      "path": "radzen.blazor/4.32.6",
+      "path": "radzen.blazor/4.32.7",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1247,22 +1247,31 @@
         "lib/net8.0/Radzen.Blazor.xml",
         "lib/netstandard2.1/Radzen.Blazor.dll",
         "lib/netstandard2.1/Radzen.Blazor.xml",
-        "radzen.blazor.4.32.6.nupkg.sha512",
+        "radzen.blazor.4.32.7.nupkg.sha512",
         "radzen.blazor.nuspec",
         "staticwebassets/Radzen.Blazor.js",
-        "staticwebassets/css/dark-base copy.css",
         "staticwebassets/css/dark-base.css",
         "staticwebassets/css/dark-wcag.css",
         "staticwebassets/css/dark.css",
         "staticwebassets/css/default-base.css",
         "staticwebassets/css/default-wcag.css",
         "staticwebassets/css/default.css",
+        "staticwebassets/css/fluent-base.css",
+        "staticwebassets/css/fluent-dark-base.css",
+        "staticwebassets/css/fluent-dark.css",
+        "staticwebassets/css/fluent.css",
         "staticwebassets/css/humanistic-base.css",
         "staticwebassets/css/humanistic-wcag.css",
         "staticwebassets/css/humanistic.css",
         "staticwebassets/css/material-base.css",
+        "staticwebassets/css/material-dark-base.css",
+        "staticwebassets/css/material-dark.css",
         "staticwebassets/css/material-wcag.css",
         "staticwebassets/css/material.css",
+        "staticwebassets/css/material3-base.css",
+        "staticwebassets/css/material3-dark-base.css",
+        "staticwebassets/css/material3-dark.css",
+        "staticwebassets/css/material3.css",
         "staticwebassets/css/software-base.css",
         "staticwebassets/css/software-wcag.css",
         "staticwebassets/css/software.css",
@@ -1543,11 +1552,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\CHKS\\CHKS.csproj",
+      "projectUniqueName": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\CHKS.csproj",
       "projectName": "CHKS",
-      "projectPath": "D:\\CHKS\\CHKS.csproj",
+      "projectPath": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\CHKS.csproj",
       "packagesPath": "C:\\Users\\Kim hong\\.nuget\\packages\\",
-      "outputPath": "D:\\CHKS\\obj\\",
+      "outputPath": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Kim hong\\AppData\\Roaming\\NuGet\\NuGet.Config"

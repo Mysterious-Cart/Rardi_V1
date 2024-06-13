@@ -14,13 +14,18 @@
         <div style="margin-left: auto;" >
         
             @if(SelectionState == false){
+                <RadzenButton Text="Cash out"  Click="@CashOut"></RadzenButton>
                 <RadzenButton Icon="save" Click="@SaveCustomerCart">Create</RadzenButton>
+                <RadzenButton Text="Cancel"/>
+                
             }else if(SelectionState == true)
             {
+                <RadzenButton Text="Cash out"  Click="@CashOut"></RadzenButton>
                 <RadzenButton Icon="save" Click="@SaveCustomerCart">Save</RadzenButton>
+                <RadzenButton Text="Delete cart"/>
             }
+            
             <RadzenButton Icon="add"  Click="@OpenCustomerList" Disabled=@Selection></RadzenButton>            
-
         </div>
     </RadzenStack>
 </RadzenCard>
