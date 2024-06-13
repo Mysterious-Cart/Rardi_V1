@@ -1,0 +1,15 @@
+@page "/single-input-pop-up"
+
+<PageTitle>SingleInputPopUp</PageTitle>
+
+<RadzenRow>
+    <RadzenStack Orientation="Orientation.Horizontal">
+        
+        <RadzenStack>
+            <RadzenNumeric @bind-Value="Input" title="@Title" Placeholder="Required"/>
+            <RadzenNumericRangeValidator Component="@Title"/>
+        </RadzenStack>
+        <RadzenButton Icon="create" Click="@Close"/>
+    </RadzenStack>
+
+</RadzenRow>

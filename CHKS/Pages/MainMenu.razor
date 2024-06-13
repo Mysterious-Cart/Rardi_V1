@@ -1,0 +1,79 @@
+@page "/"
+
+<PageTitle>MainMenu</PageTitle>
+<RadzenCard Style="margin-bottom: 2%;">
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceEvenly" Gap=35px AlignItems="AlignItems.End" style="overflow: hidden;">
+        <RadzenText TextStyle="TextStyle.DisplayH6">Cart ID:</RadzenText>
+        <RadzenText TextStyle="TextStyle.DisplayH6">@Customer.CartId</RadzenText>
+        <RadzenText TextStyle="TextStyle.DisplayH6">Phone:</RadzenText>
+        <RadzenText TextStyle="TextStyle.DisplayH6">@Phone</RadzenText>
+        <RadzenText TextStyle="TextStyle.DisplayH6">Plate:</RadzenText>
+        <RadzenText TextStyle="TextStyle.DisplayH6">@Customer.Plate</RadzenText>
+        <RadzenText TextStyle="TextStyle.DisplayH6">Car:</RadzenText>
+        <RadzenText TextStyle="TextStyle.DisplayH6">@CarType</RadzenText>
+        <div style="margin-left: auto;" >
+        
+            @if(SelectionState == false){
+                <RadzenButton Icon="save" Click="@SaveCustomerCart">Create</RadzenButton>
+            }else if(SelectionState == true)
+            {
+                <RadzenButton Icon="save" Click="@SaveCustomerCart">Save</RadzenButton>
+            }
+            <RadzenButton Icon="add"  Click="@OpenCustomerList" Disabled=@Selection></RadzenButton>            
+
+        </div>
+    </RadzenStack>
+</RadzenCard>
+
+<RadzenCard >
+    <RadzenStack Orientation="Orientation.Vertical">
+        @if(SelectionState != null)
+        {
+            <RadzenStack Orientation = "Orientation.Horizontal" AlignItems ="AlignItems.Start" Reverse="true" Gap="1%">
+                <RadzenButton Click="@AddItemtoCart">Add</RadzenButton>
+            </RadzenStack>
+        }
+
+        <RadzenDataGrid @ref="Grid1" ColumnWidth="210px" AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" ShowPagingSummary="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})
+        Data="@Connectors" TItem="Models.mydb.Connector" AllowColumnPicking="false" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate">
+            
+            <Columns>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Product" Title="Product Name">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Qty" Title ="Qty">
+                    <EditTemplate Context="connector">
+                      <RadzenNumeric style="display: block; width: 100%" @bind-Value="@connector.Qty" Name="Qty" Min=1/>
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Inventory.Export" Title="Unit Price">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Total" Title="Total">
+                    <FooterTemplate>
+                        <p style="font-size: 1.2rem ;">  Total($): <b> @(Connectors != null ? "$" + Connectors.Sum(i => i.Total) : "$" + 0)</b> </p>
+
+                    </FooterTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn>
+                    <EditTemplate Context="connector">
+                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                            style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
+                            Click=@(args => SaveButtonClick(args, connector)) @onclick:stopPropagation="true" />
+                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                            Click=@(args => CancelButtonClick(args, connector)) @onclick:stopPropagation="true" />
+                    </EditTemplate>
+                    <Template Context="connector">
+
+                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                            style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
+                            Click=@(args => EditButtonClick(args, connector)) @onclick:stopPropagation="true" />
+
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Medium"
+                            Shade="Shade.Lighter" Variant="Variant.Flat"
+                            Click=@(args => GridDeleteButtonClick(args, connector)) @onclick:stopPropagation="true" />
+                    </Template>
+
+                </RadzenDataGridColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenStack>
+</RadzenCard>   

@@ -1,0 +1,8 @@
+D:\CHKS\obj\Debug\net6.0\CHKS.csproj.AssemblyReference.cache
+D:\CHKS\obj\Debug\net6.0\CHKS.GeneratedMSBuildEditorConfig.editorconfig
+D:\CHKS\obj\Debug\net6.0\CHKS.AssemblyInfoInputs.cache
+D:\CHKS\obj\Debug\net6.0\CHKS.AssemblyInfo.cs
+D:\CHKS\obj\Debug\net6.0\CHKS.csproj.CoreCompileInputs.cache
+D:\CHKS\obj\Debug\net6.0\CHKS.MvcApplicationPartsAssemblyInfo.cache
+D:\CHKS\obj\Debug\net6.0\CHKS.RazorAssemblyInfo.cache
+D:\CHKS\obj\Debug\net6.0\CHKS.RazorAssemblyInfo.cs

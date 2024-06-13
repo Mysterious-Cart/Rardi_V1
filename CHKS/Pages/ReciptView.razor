@@ -1,0 +1,52 @@
+@page "/recipt-view"
+
+<PageTitle>ReciptView</PageTitle>
+
+<RadzenRow Style="margin-bottom: 3%;">
+    <RadzenCard style="Width:100%">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
+            <RadzenText Text="Date:"/>
+            <RadzenText Text="@Date"/>
+            <RadzenText Text="Plate:"/>
+            <RadzenText Text="@CustomerID"/>
+        </RadzenStack>
+    </RadzenCard>
+</RadzenRow>
+    <RadzenDataGrid @ref="grid0" ColumnWidth="200px" AllowFiltering="false" AllowPaging="false" AllowSorting="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})
+     Data="@Historyconnector" TItem="CHKS.Models.mydb.Historyconnector" GridLines="Radzen.DataGridGridLines.None" >
+     <Columns>
+        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Product" Title="Name">
+        </RadzenDataGridColumn>
+    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Qty" Title="Qty">
+
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Inventory.Import" Title="Import">
+            <EditTemplate Context="Historyconnector">
+                <RadzenNumeric style="display: block; width: 100%" @bind-Value="@Inventories.Import" Name="Import" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Inventory.Export" Title="Export">
+            <EditTemplate Context="Historyconnector">
+                <RadzenNumeric style="display: block; width: 100%" @bind-Value="@Inventories.Export" Name="Export" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn>
+            <EditTemplate Context = "Historyconnector">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                    style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
+                    Click=@(args => SaveButtonClick(args, Historyconnector)) @onclick:stopPropagation="true" />
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                    Click=@(args => CancelButtonClick(args, Historyconnector)) @onclick:stopPropagation="true" />
+            </EditTemplate>
+            <Template Context="Historyconnector">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                    style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
+                    Click=@(args => EditButtonClick(args, Historyconnector)) @onclick:stopPropagation="true" />
+            </Template>
+        </RadzenDataGridColumn>
+        
+     </Columns>
+    </RadzenDataGrid>
+<RadzenRow>
+
+</RadzenRow>

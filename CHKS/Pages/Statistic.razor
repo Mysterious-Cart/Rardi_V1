@@ -1,0 +1,31 @@
+@page "/statistic"
+
+<PageTitle>Statistic</PageTitle>
+<RadzenRow>
+    <RadzenCard>
+        <RadzenStack Orientation = "Orientation.Horizontal" AlignItems = "AlignItems.Center" Gap="20px">
+            <RadzenText Text="Monthly Statistic" TextStyle = "TextStyle.H4" Style="Margin-right:15px"/>
+            <RadzenText Text="Total:" TextStyle="TextStyle.Overline" style="font-size:large"/>
+            <RadzenText Text="0" TextStyle = "TextStyle.DisplayH5" Style="Margin-right:15px"/>
+            <RadzenText Text="Product Total:" TextStyle="TextStyle.Overline" style="font-size:large"/>
+            <RadzenText Text="0" TextStyle = "TextStyle.DisplayH5" Style="Margin-right:15px"/>
+            <RadzenText Text="Service Total:" TextStyle="TextStyle.Overline" style="font-size:large"/>
+            <RadzenText Text="0" TextStyle = "TextStyle.DisplayH5" Style="Margin-right:15px"/>                
+        </RadzenStack>
+    </RadzenCard>
+</RadzenRow>
+
+<RadzenRow Style="Margin-top:20px;">
+    <RadzenCard style="Width:100%">
+        <RadzenStack>
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="10px" AlignItems="AlignItems.Center" >
+                <RadzenLabel Text="From" Component="From"/>
+                <RadzenDatePicker TValue="DateOnly" InitialViewDate="new DateTime(2024,6,10)" Name="From" />
+                <RadzenLabel Text="To" Component="To"/>
+                <RadzenDatePicker TValue="DateOnly" InitialViewDate="new DateTime(2024,6,10)" Name="To" />
+            </RadzenStack>
+
+            
+        </RadzenStack>
+    </RadzenCard>
+</RadzenRow>

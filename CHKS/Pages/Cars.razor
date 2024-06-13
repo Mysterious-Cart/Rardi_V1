@@ -1,0 +1,78 @@
+@page "/cars"
+
+<PageTitle>Cars</PageTitle>
+<RadzenStack>
+    <RadzenRow AlignItems="AlignItems.Center">
+        <RadzenColumn Size="12" SizeMD="6">
+            <RadzenText Text="Cars/Cart" TextStyle="TextStyle.H3" TagName="TagName.H1" style="margin: 0" />
+        </RadzenColumn>
+        <RadzenColumn Size="12" SizeMD="6">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End" Gap="0.5rem">
+                @if(Mode == false){<RadzenButton Icon="add_circle_outline" Text="Add" Click="@AddButtonClick" Variant="Variant.Flat" />}
+                <RadzenToggleButton Text="Toggle" Click="@switchMode" Variant="Variant.Flat" />
+            </RadzenStack>
+        </RadzenColumn>
+    </RadzenRow>
+    <RadzenRow>
+      <RadzenColumn SizeMD=12>
+      @if(Mode == false){
+        <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" ShowPagingSummary="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})
+            Data="@cars" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate" RowSelect="@SelectCar" TItem="CHKS.Models.mydb.Car">
+            <Columns>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Car" Property="Plate" Title="Plate">
+                  <EditTemplate Context="car">
+                      <RadzenTextBox style="display: block; width: 100%" @bind-Value="@car.Plate" Name="Plate" />
+                      <RadzenRequiredValidator Component="Plate" Text="Plate is required" style="position: absolute;" />
+                  </EditTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Car" Property="Phone" Title="Phone">
+                  <EditTemplate Context="car">
+                      <RadzenTextBox style="display: block; width: 100%" @bind-Value="@car.Phone" Name="Phone" />
+                      <RadzenRequiredValidator Component="Phone" Text="Phone is required" style="position: absolute;" />
+                  </EditTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Car" Property="Type" Title="Type">
+                  <EditTemplate Context="car">
+                      <RadzenTextBox style="display: block; width: 100%" @bind-Value="@car.Type" Name="Type" />
+                      <RadzenRequiredValidator Component="Type" Text="Type is required" style="position: absolute;" />
+                  </EditTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Car" Filterable="false" Sortable="false" Width="156px" TextAlign="TextAlign.Center">
+                    <EditTemplate Context="car">
+                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                            style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
+                            Click=@(args => SaveButtonClick(args, car)) @onclick:stopPropagation="true" />
+                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                            Click=@(args => CancelButtonClick(args, car)) @onclick:stopPropagation="true" />
+                    </EditTemplate>
+                    <Template Context="car">
+
+                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                            style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
+                            Click=@(args => EditButtonClick(args, car)) @onclick:stopPropagation="true" />
+
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Medium"
+                            Shade="Shade.Lighter" Variant="Variant.Flat"
+                            Click=@(args => GridDeleteButtonClick(args, car)) @onclick:stopPropagation="true" />
+                    </Template>
+                </RadzenDataGridColumn>
+            </Columns>
+
+        </RadzenDataGrid>
+        }else{
+            <RadzenDataGrid @ref="grid1" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" ShowPagingSummary="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})
+                Data="@Carts" RowSelect="@SelectCar" TItem="CHKS.Models.mydb.Cart">
+                <Columns>
+                    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Cart" Property="Plate" Title="Plate">
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Cart" Property="CartId" Title="Cart">
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Cart" Property="Car.Type" Title="Type">
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        }
+
+    </RadzenColumn>
+  </RadzenRow>
+</RadzenStack>
