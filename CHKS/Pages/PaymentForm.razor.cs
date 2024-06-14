@@ -31,7 +31,7 @@ namespace CHKS.Pages
         protected NotificationService NotificationService { get; set; }
 
         [Parameter]
-        public float Total{get; set;}
+        public decimal Total{get; set;}
 
         private string PaymentNote = "";
 

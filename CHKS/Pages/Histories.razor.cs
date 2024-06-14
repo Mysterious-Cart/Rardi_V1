@@ -45,35 +45,38 @@ namespace CHKS.Pages
 
             await grid0.GoToPage(0);
 
-            histories = await mydbService.GetHistories(new Query { Filter = $@"i => i.CashoutDate.Contains(@0) || i.Plate.Contains(@0) || i.Payment.Contains(@0) || i.HistoryConnectorId.Contains(@0)", FilterParameters = new object[] { search }, Expand = "Car" });
+            histories = await mydbService.GetHistories(new Query { Filter = $@"i => i.CashoutDate.Contains(@0) || i.Plate.Contains(@0) || i.Payment.Contains(@0)", FilterParameters = new object[] { search }, Expand = "Car" });
         }
         protected override async Task OnInitializedAsync()
         {
-            histories = await mydbService.GetHistories(new Query { Filter = $@"i => i.CashoutDate.Contains(@0) || i.Plate.Contains(@0) || i.Payment.Contains(@0) || i.HistoryConnectorId.Contains(@0)", FilterParameters = new object[] { search }, Expand = "Car" });
+            histories = await mydbService.GetHistories(new Query { Filter = $@"i => i.CashoutDate.Contains(@0) || i.Plate.Contains(@0) || i.Payment.Contains(@0)", FilterParameters = new object[] { search }, Expand = "Car" });
         }
+
+        protected async Task OpenHistory(Models.mydb.History args){
+            await DialogService.OpenAsync<ReciptView>($"Review Recipt Dated: {args.CashoutDate}", new Dictionary<string, object>{{"ID",args.CashoutDate}}, new DialogOptions{Width="50%", Height="70%"});
+        }   
 
         protected async Task ExportClick(RadzenSplitButtonItem args)
         {
             if (args?.Value == "csv")
             {
-                await mydbService.ExportHistoriesToCSV(new Query
-{
-    Filter = $@"{(string.IsNullOrEmpty(grid0.Query.Filter)? "true" : grid0.Query.Filter)}",
-    OrderBy = $"{grid0.Query.OrderBy}",
-    Expand = "Car",
-    Select = string.Join(",", grid0.ColumnsCollection.Where(c => c.GetVisible() && !string.IsNullOrEmpty(c.Property)).Select(c => c.Property.Contains(".") ? c.Property + " as " + c.Property.Replace(".", "") : c.Property))
-}, "Histories");
+                await mydbService.ExportHistoriesToCSV(new Query{
+                    Filter = $@"{(string.IsNullOrEmpty(grid0.Query.Filter)? "true" : grid0.Query.Filter)}",
+                    OrderBy = $"{grid0.Query.OrderBy}",
+                    Expand = "Car",
+                    Select = string.Join(",", grid0.ColumnsCollection.Where(c => c.GetVisible() && !string.IsNullOrEmpty(c.Property)).Select(c => c.Property.Contains(".") ? c.Property + " as " + c.Property.Replace(".", "") : c.Property))
+                }, "Histories");
             }
 
             if (args == null || args.Value == "xlsx")
             {
                 await mydbService.ExportHistoriesToExcel(new Query
-{
-    Filter = $@"{(string.IsNullOrEmpty(grid0.Query.Filter)? "true" : grid0.Query.Filter)}",
-    OrderBy = $"{grid0.Query.OrderBy}",
-    Expand = "Car",
-    Select = string.Join(",", grid0.ColumnsCollection.Where(c => c.GetVisible() && !string.IsNullOrEmpty(c.Property)).Select(c => c.Property.Contains(".") ? c.Property + " as " + c.Property.Replace(".", "") : c.Property))
-}, "Histories");
+                {
+                    Filter = $@"{(string.IsNullOrEmpty(grid0.Query.Filter)? "true" : grid0.Query.Filter)}",
+                    OrderBy = $"{grid0.Query.OrderBy}",
+                    Expand = "Car",
+                    Select = string.Join(",", grid0.ColumnsCollection.Where(c => c.GetVisible() && !string.IsNullOrEmpty(c.Property)).Select(c => c.Property.Contains(".") ? c.Property + " as " + c.Property.Replace(".", "") : c.Property))
+                }, "Histories");
             }
         }
     }

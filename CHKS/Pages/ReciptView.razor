@@ -5,10 +5,14 @@
 <RadzenRow Style="margin-bottom: 3%;">
     <RadzenCard style="Width:100%">
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
-            <RadzenText Text="Date:"/>
-            <RadzenText Text="@Date"/>
-            <RadzenText Text="Plate:"/>
-            <RadzenText Text="@CustomerID"/>
+            <RadzenRow AlignItems="AlignItems.Center">
+                <RadzenText Text="Date:" TextStyle="TextStyle.DisplayH5"/>
+                <RadzenText Text="@Date" TextStyle="TextStyle.DisplayH6"/>
+            </RadzenRow>
+            <RadzenRow AlignItems="AlignItems.Center" style="margin-left:10px">
+                <RadzenText Text="Plate:" TextStyle="TextStyle.DisplayH5"/>
+                <RadzenText Text="@CustomerID" TextStyle="TextStyle.DisplayH6"/>
+            </RadzenRow>
         </RadzenStack>
     </RadzenCard>
 </RadzenRow>
@@ -20,14 +24,14 @@
     <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Qty" Title="Qty">
 
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Inventory.Import" Title="Import">
+        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Import" Title="Import">
             <EditTemplate Context="Historyconnector">
-                <RadzenNumeric style="display: block; width: 100%" @bind-Value="@Inventories.Import" Name="Import" />
+                <RadzenNumeric style="display: block; width: 100%" @bind-Value="@Historyconnector.Import" Name="Import" />
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Inventory.Export" Title="Export">
             <EditTemplate Context="Historyconnector">
-                <RadzenNumeric style="display: block; width: 100%" @bind-Value="@Inventories.Export" Name="Export" />
+                <RadzenNumeric style="display: block; width: 100%" @bind-Value="@Historyconnector.Export" Name="Export" />
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn>

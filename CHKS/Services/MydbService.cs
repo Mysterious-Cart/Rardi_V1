@@ -1063,7 +1063,6 @@ namespace CHKS
             var items = Context.Historyconnectors.AsQueryable();
 
             items = items.Include(i => i.History);
-            items = items.Include(i => i.Inventory);
 
             if (query != null)
             {
@@ -1095,7 +1094,6 @@ namespace CHKS
                               .Where(i => i.Id == id);
 
             items = items.Include(i => i.History);
-            items = items.Include(i => i.Inventory);
  
             OnGetHistoryconnectorById(ref items);
 
@@ -1346,7 +1344,6 @@ namespace CHKS
             var itemToDelete = Context.Inventories
                               .Where(i => i.Name == name)
                               .Include(i => i.Connectors)
-                              .Include(i => i.Historyconnectors)
                               .FirstOrDefault();
 
             if (itemToDelete == null)

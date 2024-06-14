@@ -19,7 +19,7 @@
     <RadzenRow>
       <RadzenColumn SizeMD=12>
         <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" ShowPagingSummary="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})
-            Data="@histories" TItem="CHKS.Models.mydb.History">
+            Data="@histories" TItem="CHKS.Models.mydb.History" RowSelect="@OpenHistory">
             <Columns>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="CashoutDate" Title="Cashout Date">
                 </RadzenDataGridColumn>
@@ -28,12 +28,6 @@
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Total" Title="Total">
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Payment" Title="Payment">
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="HistoryConnectorId" Title="History Connector Id">
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Filterable="false" Sortable="false" Width="70px" TextAlign="TextAlign.Center">
-                    <Template Context="history">
-                    </Template>
                 </RadzenDataGridColumn>
             </Columns>
 

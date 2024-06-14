@@ -12,6 +12,6 @@ namespace CHKS.Models.mydb
         [Required]
         public string Note { get; set; }
 
-        public float? Expense { get; set; }
+        public decimal? Expense { get; set; }
     }
 }

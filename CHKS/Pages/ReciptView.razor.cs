@@ -35,6 +35,7 @@ namespace CHKS.Pages
 
         protected IEnumerable<CHKS.Models.mydb.Historyconnector> Historyconnector;
         protected IEnumerable<CHKS.Models.mydb.Inventory> Inventory;
+        protected CHKS.Models.mydb.History History;
 
         protected RadzenDataGrid<CHKS.Models.mydb.Historyconnector> grid0;
 
@@ -48,33 +49,30 @@ namespace CHKS.Pages
         protected override async Task OnInitializedAsync()
         { 
             Historyconnector = await MydbService.GetHistoryconnectors();
-            Inventory = await MydbService.GetInventories();
+            History = await MydbService.GetHistoryByCashoutDate(ID);
             GettingHistory();
         }
 
-        protected CHKS.Models.mydb.Inventory Inventories;
-
         protected void GettingHistory(){
             Historyconnector = Historyconnector.Where(i => i.CartId == ID);
+            Date =  History.CashoutDate;
+            CustomerID = History.Plate;
             
         }
         protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.Historyconnector data)
         {
             await grid0.EditRow(data);
-            Inventories = await MydbService.GetInventoryByName(data.Product);
         }
 
          protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Historyconnector data)
         {
             await grid0.UpdateRow(data);
-            await MydbService.UpdateInventory(data.Product, Inventories);
         }
 
         protected async Task CancelButtonClick(MouseEventArgs args, CHKS.Models.mydb.Historyconnector data)
         {
             grid0.CancelEditRow(data);
             await MydbService.CancelHistoryconnectorChanges(data);
-            await MydbService.CancelInventoryChanges(Inventories);
         }
 
     }

@@ -17,7 +17,7 @@ namespace CHKS.Models.mydb
 
         public Car Car { get; set; }
 
-        public float? Total { get; set; }
+        public decimal? Total { get; set; }
 
         public string Payment { get; set; }
 

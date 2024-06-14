@@ -28,6 +28,6 @@ namespace CHKS.Models.mydb
         public string GeneratedKey { get; set; }
 
         [Required]
-        public float Total { get; set; }
+        public decimal Total { get; set; }
     }
 }

@@ -30,7 +30,7 @@ namespace CHKS.Pages
         [Inject]
         protected NotificationService NotificationService { get; set; }
 
-        protected int Input;
+        protected int Input = 1;
         [Parameter]
         public string Title {get; set;}
 

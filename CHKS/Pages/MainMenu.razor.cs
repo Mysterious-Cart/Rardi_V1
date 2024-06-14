@@ -139,6 +139,8 @@ namespace CHKS.Pages
                             Models.mydb.Historyconnector historyconnector = new Models.mydb.Historyconnector{
                                 Id = i.GeneratedKey + time,
                                 Product = i.Product,
+                                Import = i.Inventory.Import,
+                                Export = i.Inventory.Export,
                                 Qty = i.Qty,
                                 CartId = time,
                             };

@@ -51,7 +51,7 @@ namespace CHKS.Pages
 
             await grid0.GoToPage(0);
 
-            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0)||", FilterParameters = new object[] { search } });
+            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0)", FilterParameters = new object[] { search } });
         }
         protected override async Task OnInitializedAsync()
         {

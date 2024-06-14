@@ -62,7 +62,7 @@ namespace CHKS.Pages
         }
 
         protected void GetProductWithoutImport(){
-            Historyconnectors = Historyconnectors.Where(i => i.Inventory.Import == 0);
+            Historyconnectors = Historyconnectors.Where(i => i.Import == 0);
             if(Historyconnectors.Any()){
                 NoEmptyImport = false;
             }else{

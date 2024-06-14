@@ -52,11 +52,49 @@ namespace CHKS.Data
               .HasForeignKey(i => i.CartId)
               .HasPrincipalKey(i => i.CashoutDate);
 
+            builder.Entity<CHKS.Models.mydb.Cart>()
+              .Property(p => p.Total)
+              .HasPrecision(10,0);
+
+            builder.Entity<CHKS.Models.mydb.Connector>()
+              .Property(p => p.Total)
+              .HasPrecision(10,0);
+
+            builder.Entity<CHKS.Models.mydb.Daily>()
+              .Property(p => p.Total)
+              .HasPrecision(10,0);
+
+            builder.Entity<CHKS.Models.mydb.Daily>()
+              .Property(p => p.Expense)
+              .HasPrecision(10,0);
+
+            builder.Entity<CHKS.Models.mydb.Daily>()
+              .Property(p => p.ProductExpense)
+              .HasPrecision(10,0);
+
+            builder.Entity<CHKS.Models.mydb.Dailyexpense>()
+              .Property(p => p.Expense)
+              .HasPrecision(10,0);
+
+            builder.Entity<CHKS.Models.mydb.History>()
+              .Property(p => p.Total)
+              .HasPrecision(10,0);
+
             builder.Entity<CHKS.Models.mydb.Historyconnector>()
-              .HasOne(i => i.Inventory)
-              .WithMany(i => i.Historyconnectors)
-              .HasForeignKey(i => i.Product)
-              .HasPrincipalKey(i => i.Name);
+              .Property(p => p.Export)
+              .HasPrecision(10,0);
+
+            builder.Entity<CHKS.Models.mydb.Historyconnector>()
+              .Property(p => p.Import)
+              .HasPrecision(10,0);
+
+            builder.Entity<CHKS.Models.mydb.Inventory>()
+              .Property(p => p.Import)
+              .HasPrecision(10,0);
+
+            builder.Entity<CHKS.Models.mydb.Inventory>()
+              .Property(p => p.Export)
+              .HasPrecision(10,0);
             this.OnModelBuilding(builder);
         }
 

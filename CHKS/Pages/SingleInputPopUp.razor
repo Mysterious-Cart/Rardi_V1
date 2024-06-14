@@ -6,7 +6,7 @@
     <RadzenStack Orientation="Orientation.Horizontal">
         
         <RadzenStack>
-            <RadzenNumeric @bind-Value="Input" title="@Title" Placeholder="Required"/>
+            <RadzenNumeric @bind-Value="Input" title="@Title" Placeholder="Required" Min=1/>
             <RadzenNumericRangeValidator Component="@Title"/>
         </RadzenStack>
         <RadzenButton Icon="create" Click="@Close"/>
