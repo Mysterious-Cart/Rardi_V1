@@ -105,8 +105,12 @@ namespace CHKS.Pages
         }
 
         protected async Task ResetTotal(){
-            Customer.Total = Connectors.Sum(i => i.Total);
-            await MydbService.UpdateCart(Customer.CartId, Customer);
+            if(Connectors != Enumerable.Empty<Models.mydb.Connector>())
+            {
+                Customer.Total = Connectors.Sum(i => i.Total);
+                await MydbService.UpdateCart(Customer.CartId, Customer);
+            }
+
         }
 
         protected async Task DeleteCustomer(){
@@ -119,7 +123,7 @@ namespace CHKS.Pages
         protected async Task CashOut(){
             if(Connectors != Enumerable.Empty<Models.mydb.Connector>()){
                 if(await DialogService.Confirm("Are you sure?","Important!") == true){
-                    var payment = await DialogService.OpenAsync<PaymentForm>("Payment",new Dictionary<string, object>{{"Total",Customer.Total}});
+                    string payment = await DialogService.OpenAsync<PaymentForm>("Payment",new Dictionary<string, object>{{"Total",Customer.Total}});
                     if(payment != null && payment != ""){
                         string time = DateTime.Now.ToString();
                         Models.mydb.History History = new Models.mydb.History{
@@ -129,20 +133,24 @@ namespace CHKS.Pages
                             Payment = payment,
                         };
                         await MydbService.CreateHistory(History);
-                        await MydbService.DeleteCart(Customer.CartId);
 
-
-                        foreach(var i in Connectors){
+                        foreach(var i in Connectors.ToList())
+                        {   
                             Models.mydb.Historyconnector historyconnector = new Models.mydb.Historyconnector{
                                 Id = i.GeneratedKey + time,
                                 Product = i.Product,
                                 Qty = i.Qty,
                                 CartId = time,
-                                
                             };
+
                             await MydbService.CreateHistoryconnector(historyconnector);
-                            await MydbService.DeleteConnector(i.GeneratedKey);
-                        }
+                        };
+
+                        await MydbService.DeleteCart(Customer.CartId);
+                        ResetToDefault();
+
+                    }else{
+                        await DialogService.Alert($"Please fill in payment method first.","Important!");
 
                     }
                 }
@@ -151,7 +159,7 @@ namespace CHKS.Pages
 
 
         protected async void ResetToDefault(){
-            await ResetTotal();
+
             Customer = new Models.mydb.Cart{};
             SelectionState = null;
             Selection = false;
@@ -185,6 +193,7 @@ namespace CHKS.Pages
                         await Grid1.Reload();
                     }
                 }finally{
+                    Connectors = await MydbService.GetConnectors(new Query{Filter=$@"i => i.CartId == (@0)", FilterParameters = new object[] {Customer.CartId}});
                     Customer.Total = Connectors.Sum(i => i.Total);
                     await MydbService.UpdateCart(Customer.CartId, Customer);
                 }

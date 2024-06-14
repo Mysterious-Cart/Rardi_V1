@@ -54,7 +54,7 @@
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Total" Title="Total">
                     <FooterTemplate>
-                        <p style="font-size: 1.2rem ;">  Total($): <b> @(Connectors != null ? "$" + Connectors.Sum(i => i.Total) : "$" + 0)</b> </p>
+                        <p style="font-size: 1.2rem ;">  Total($): <b> @(Connectors != null ? "$" + Customer.Total : "$" + 0)</b> </p>
 
                     </FooterTemplate>
                 </RadzenDataGridColumn>
