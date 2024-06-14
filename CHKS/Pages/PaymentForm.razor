@@ -1,10 +1,11 @@
 @page "/payment--form"
+@using System.Globalization
 <RadzenRow >
-    <RadzenCard style="width:60%;">
+    <RadzenCard style="width:fit-content;">
         <RadzenStack Orientation ="Orientation.Horizontal" >
             <RadzenColumn>            
                 <RadzenLabel Component="Total" Text="Total ($): "/>
-                <RadzenNumeric title="Total" locked="true" Value="@Total" Style="margin-left:1%"/>
+                <RadzenTextBox title="Total" ReadOnly ="true" Value="@Total.ToString()" Style="margin-left:1%"/>
             </RadzenColumn>
             <RadzenColumn>            
                 <RadzenLabel Component="PaymemtType" Text="Payment Note: "/>
@@ -12,8 +13,12 @@
             </RadzenColumn>
             <RadzenColumn>            
                 <RadzenLabel Component="Submit" Text="Submit"/>
-                <RadzenButton title="Submit" locked="true" Value="" Style="margin-left:1%" Icon="paid" Text="Pay" ButtonStyle="ButtonStyle.Warning"/>
+                <RadzenButton title="Submit" locked="true" Click="@CashOut" Style="margin-left:1%" Icon="paid" Text="Pay" ButtonStyle="ButtonStyle.Warning"/>
             </RadzenColumn>
         </RadzenStack>
     </RadzenCard>
 </RadzenRow>
+
+@code{
+    private CultureInfo Currency = new CultureInfo("en-US");
+}

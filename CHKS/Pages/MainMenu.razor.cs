@@ -68,6 +68,7 @@ namespace CHKS.Pages
                             Customer.Plate = result.Plate;
                             Phone = result.Phone;
                             CarType = result.Type;
+                            Customer.Total = 0;
                             SelectionState = false;
                             Selection = true;
                         try{
@@ -75,12 +76,7 @@ namespace CHKS.Pages
                         }catch(Exception exc){
                             if(exc.Message == "Item already available"){
                                 await DialogService.Alert("This cart ID already exist.","Important");
-                                Customer.CartId = 0;
-                                Customer.Plate = "";
-                                Phone = "";
-                                CarType = "";
-                                SelectionState = null;
-                                Selection = false;
+                                ResetToDefault();
                             }
                         }
                     }
@@ -94,6 +90,7 @@ namespace CHKS.Pages
                     Customer.CartId = result.CartId;
                     Customer.Plate = result.Plate;
                     Customer.Car = result.Car;
+                    Customer.Total = result.Total;
 
                     Phone = Customer.Car.Phone;
                     CarType = Customer.Car.Type;
@@ -107,6 +104,11 @@ namespace CHKS.Pages
             }
         }
 
+        protected async Task ResetTotal(){
+            Customer.Total = Connectors.Sum(i => i.Total);
+            await MydbService.UpdateCart(Customer.CartId, Customer);
+        }
+
         protected async Task DeleteCustomer(){
             if(await DialogService.Confirm("Are you sure?","Important!") == true)
             {
@@ -117,51 +119,39 @@ namespace CHKS.Pages
         protected async Task CashOut(){
             if(Connectors != Enumerable.Empty<Models.mydb.Connector>()){
                 if(await DialogService.Confirm("Are you sure?","Important!") == true){
-                    var payment = await DialogService.OpenAsync<PaymentForm>("Payment",new Dictionary<string, object>{{"Total",Connectors.Sum(i => i.Total)}});
-                    if(payment != null ){
+                    var payment = await DialogService.OpenAsync<PaymentForm>("Payment",new Dictionary<string, object>{{"Total",Customer.Total}});
+                    if(payment != null && payment != ""){
                         string time = DateTime.Now.ToString();
-                        try{
-                            await MydbService.DeleteCart(Customer.CartId);
-                            Models.mydb.History History = new Models.mydb.History{
-                                CashoutDate = time,
-                                Plate = Customer.Plate,
-                                Total = Customer.Total,
-                                Payment = payment,
-                                
-                            };
-                            await MydbService.CreateHistory(History);
-                            SaveCustomerCart();
-                        }catch{
-                            NotificationService.Notify(new NotificationMessage
-                            {
-                                Severity = NotificationSeverity.Error,
-                                Summary = $"Error",
-                                Detail = $"Unable to delete Customer"
-                            });
-                        }
+                        Models.mydb.History History = new Models.mydb.History{
+                            CashoutDate = time,
+                            Plate = Customer.Plate,
+                            Total = Customer.Total,
+                            Payment = payment,
+                        };
+                        await MydbService.CreateHistory(History);
+                        await MydbService.DeleteCart(Customer.CartId);
+
 
                         foreach(var i in Connectors){
-                            try{
-                                Models.mydb.Historyconnector historyconnector = new Models.mydb.Historyconnector{
-                                    Id = i.GeneratedKey + time,
-                                    Product = i.Product,
-                                    Qty = i.Qty,
-                                    CartId = time,
-                                    
-                                };
-                                await MydbService.CreateHistoryconnector(historyconnector);
-                            }catch{
-
-                            }
+                            Models.mydb.Historyconnector historyconnector = new Models.mydb.Historyconnector{
+                                Id = i.GeneratedKey + time,
+                                Product = i.Product,
+                                Qty = i.Qty,
+                                CartId = time,
+                                
+                            };
+                            await MydbService.CreateHistoryconnector(historyconnector);
+                            await MydbService.DeleteConnector(i.GeneratedKey);
                         }
+
                     }
                 }
             }else{await DialogService.Alert("You have no items in cart.","Note!");}
         }
 
 
-        protected void SaveCustomerCart(){
-
+        protected async void ResetToDefault(){
+            await ResetTotal();
             Customer = new Models.mydb.Cart{};
             SelectionState = null;
             Selection = false;
@@ -194,6 +184,9 @@ namespace CHKS.Pages
                         await MydbService.UpdateConnector(connector.GeneratedKey, connector);
                         await Grid1.Reload();
                     }
+                }finally{
+                    Customer.Total = Connectors.Sum(i => i.Total);
+                    await MydbService.UpdateCart(Customer.CartId, Customer);
                 }
             }
 
@@ -245,6 +238,7 @@ namespace CHKS.Pages
                 };
                 await MydbService.UpdateInventory(args.Product, Temp);
                 await MydbService.UpdateConnector(args.GeneratedKey, args);
+                await ResetTotal();
             }else{
                 await DialogService.Alert("Not enough in Stock! Only have " + args.Inventory.Stock + " Left.");
                 await Grid1.Reload();
@@ -255,6 +249,7 @@ namespace CHKS.Pages
         protected async Task GridRowCreate(CHKS.Models.mydb.Connector args)
         {
             await MydbService.CreateConnector(args);
+            await ResetTotal();
             await Grid1.Reload();
         }
 

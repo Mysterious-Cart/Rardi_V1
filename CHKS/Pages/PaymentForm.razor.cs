@@ -33,7 +33,7 @@ namespace CHKS.Pages
         [Parameter]
         public float Total{get; set;}
 
-        protected string PaymentNote;
+        protected string PaymentNote = "";
 
         protected async Task CashOut(){
             DialogService.Close(PaymentNote);
