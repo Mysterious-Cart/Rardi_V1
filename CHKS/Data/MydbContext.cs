@@ -80,6 +80,22 @@ namespace CHKS.Data
               .Property(p => p.Total)
               .HasPrecision(10,0);
 
+            builder.Entity<CHKS.Models.mydb.History>()
+              .Property(p => p.Bank)
+              .HasPrecision(10,0);
+
+            builder.Entity<CHKS.Models.mydb.History>()
+              .Property(p => p.Dollar)
+              .HasPrecision(10,0);
+
+            builder.Entity<CHKS.Models.mydb.History>()
+              .Property(p => p.Baht)
+              .HasPrecision(10,0);
+
+            builder.Entity<CHKS.Models.mydb.History>()
+              .Property(p => p.Riel)
+              .HasPrecision(10,0);
+
             builder.Entity<CHKS.Models.mydb.Historyconnector>()
               .Property(p => p.Export)
               .HasPrecision(10,0);

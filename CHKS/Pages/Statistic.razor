@@ -20,12 +20,22 @@
         <RadzenStack>
             <RadzenStack Orientation="Orientation.Horizontal" Gap="10px" AlignItems="AlignItems.Center" >
                 <RadzenLabel Text="From" Component="From"/>
-                <RadzenDatePicker TValue="DateOnly" InitialViewDate="new DateTime(2024,6,10)" Name="From" />
+                <RadzenDatePicker TValue="DateOnly" InitialViewDate="new DateTime(2024,6,10)" Name="From" DateFormat="MM/dd/yyyy" />
                 <RadzenLabel Text="To" Component="To"/>
-                <RadzenDatePicker TValue="DateOnly" InitialViewDate="new DateTime(2024,6,10)" Name="To" />
+                <RadzenDatePicker TValue="DateOnly" InitialViewDate="new DateTime(2024,6,10)" Name="To" DateFormat="MM/dd/yyyy"/>
             </RadzenStack>
 
             
         </RadzenStack>
     </RadzenCard>
+</RadzenRow>
+
+<RadzenRow style="margin-top:20px">
+    <!--<RadzenCard>
+        <RadzenDataGridColumn Width="210px" AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" ShowPagingSummary="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})>
+            <Columns>
+                <RadzenColumn title="Date"></RadzenColumn>
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenCard>-->
 </RadzenRow>

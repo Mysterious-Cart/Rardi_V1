@@ -36,9 +36,7 @@ namespace CHKS.Pages
         protected IEnumerable<CHKS.Models.mydb.History> Histories;
         protected IEnumerable<CHKS.Models.mydb.Historyconnector> Historyconnectors;
 
-        protected class Daily{
-
-        }
+        protected DateOnly DateSelected;
 
         protected async Task OpenDaily(){
             NavigationManager.NavigateTo("/Dailies");

@@ -1,0 +1,23 @@
+@page "/expense-menu"
+
+<PageTitle>ExpenseMenu</PageTitle>
+<RadzenRow>
+    <RadzenCard>
+        <RadzenStack Orientation="Orientation.Vertical" Gap="10px" AlignItems="AlignItems.Stretch" > 
+            <RadzenColumn >
+                <RadzenLabel Text="Expense From: " Component="ExpenseFrom"/>
+                <RadzenDropDown Name="ExpenseFrom" Placeholder="Required" TValue = "Decimal"/>
+            </RadzenColumn> 
+            <RadzenColumn>
+                <RadzenLabel Text="Expense Amount: " Component="ExpenseInput"/>
+                <RadzenNumeric Name="ExpenseInput" Placeholder="Required" TValue = "Decimal" />
+            </RadzenColumn> 
+            <RadzenColumn>
+            <RadzenLabel Text="Notes:" Component="Note"/>
+                <RadzenTextBox Name="Note" Placeholder="Required"/>
+            </RadzenColumn>
+
+            <RadzenButton Icon="submit" Text="Enter" ButtonStyle="ButtonStyle.Success" />
+        </RadzenStack>
+    </RadzenCard>
+</RadzenRow>

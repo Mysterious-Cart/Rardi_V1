@@ -21,6 +21,14 @@ namespace CHKS.Models.mydb
 
         public string Payment { get; set; }
 
+        public decimal? Bank { get; set; }
+
+        public decimal? Dollar { get; set; }
+
+        public decimal? Baht { get; set; }
+
+        public decimal? Riel { get; set; }
+
         public ICollection<Historyconnector> Historyconnectors { get; set; }
     }
 }

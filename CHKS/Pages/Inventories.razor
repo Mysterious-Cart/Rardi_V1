@@ -1,4 +1,5 @@
 @page "/inventories"
+@using System.Globalization
 
 <PageTitle>Inventories</PageTitle>
 <RadzenStack>
@@ -29,12 +30,12 @@
                       <RadzenNumeric style="display: block; width: 100%" @bind-Value="@inventory.Stock" Name="Stock" />
                   </EditTemplate>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Import" Title="Import" Width="20%">
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Import" Title="Import" Width="20%" FormatString="${0:N2}">
                   <EditTemplate Context="inventory">
                       <RadzenNumeric style="display: block; width: 100%" @bind-Value="@inventory.Import" Name="Import" />
                   </EditTemplate>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Export" Title="Export" Width="20%">
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Export" Title="Export" Width="20%" FormatString="${0:N2}">
                   <EditTemplate Context="inventory">
                       <RadzenNumeric style="display: block; width: 100%" @bind-Value="@inventory.Export" Name="Export" />
                   </EditTemplate>
@@ -66,3 +67,7 @@
     </RadzenColumn>
   </RadzenRow>
 </RadzenStack>
+
+@code{
+    private CultureInfo Currency = new CultureInfo("en-US");
+}

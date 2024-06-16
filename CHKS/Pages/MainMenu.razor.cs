@@ -38,7 +38,7 @@ namespace CHKS.Pages
         protected CHKS.Models.mydb.Car CustomerLists;
         protected Models.mydb.Cart Customer = new Models.mydb.Cart{Plate="", CartId=0, };
 
-            protected bool? SelectionState = null;//False for Customer Mode, True for Cart Modes
+        protected bool? SelectionState = null;//False for Customer Mode, True for Cart Modes
         protected bool Selection = false;//False for selecting, True for already selected
 
         protected string Phone;
@@ -52,6 +52,11 @@ namespace CHKS.Pages
         protected RadzenDataGrid<CHKS.Models.mydb.Connector> Grid1;
         
         protected CHKS.Models.mydb.Connector connector = new Models.mydb.Connector{GeneratedKey="", CartId=0,Product ="", Qty=0 };
+
+        protected async Task OpenExpenseMenu()
+        {
+            await DialogService.OpenAsync<ExpenseMenu>("Expense Menu");
+        }
 
         protected async Task OpenCustomerList()
         {
@@ -116,7 +121,17 @@ namespace CHKS.Pages
         protected async Task DeleteCustomer(){
             if(await DialogService.Confirm("Are you sure?","Important!") == true)
             {
-                
+                if(Connectors == Enumerable.Empty<Models.mydb.Connector>()){
+                    await MydbService.DeleteCart(Customer.CartId);
+                    ResetToDefault();
+                }else{
+                    foreach(var i in Connectors.ToList())
+                    {   
+                        await MydbService.DeleteConnector(i.GeneratedKey);
+                    };
+                    await MydbService.DeleteCart(Customer.CartId);
+                    ResetToDefault();
+                }
             }
         }
 
