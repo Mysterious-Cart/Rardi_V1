@@ -5,10 +5,15 @@
 <RadzenRow>
     <RadzenStack Orientation="Orientation.Horizontal">
         
-        <RadzenStack>
+        <RadzenRow>
             <RadzenNumeric @bind-Value="Input" title="@Title" Placeholder="Required" Min=1/>
             <RadzenNumericRangeValidator Component="@Title"/>
-        </RadzenStack>
+            
+        </RadzenRow>
+        @(Title==""<RadzenRow>
+            <RadzenNumeric @bind-Value="Input" title="@Title" Placeholder="Required" Min=1/>
+            <RadzenNumericRangeValidator Component="@Title"/>
+        </RadzenRow>
         <RadzenButton Icon="create" Click="@Close"/>
     </RadzenStack>
 

@@ -18,16 +18,20 @@
     <RadzenTextBox Placeholder="Search ..." style="display: block; width: 100%" @oninput="@Search" aria-label="Search by all string columns" />
     <RadzenRow>
       <RadzenColumn SizeMD=12>
-        <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" ShowPagingSummary="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})
+        <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.SimpleWithMenu" AllowPaging="true" AllowSorting="true" ShowPagingSummary="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})
             Data="@histories" TItem="CHKS.Models.mydb.History" RowSelect="@OpenHistory">
             <Columns>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="CashoutDate" Title="Cashout Date">
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Car.Plate" Title="Car">
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Total" Title="Total">
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Bank" Title="Paid(Bank)" FormatString="${0:N2}">
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Payment" Title="Payment">
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Total" Title="Paid(Dollar)" FormatString="${0:N2}">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Baht" Title="Paid(Baht)">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Riel" Title="Paid(Riel)">
                 </RadzenDataGridColumn>
             </Columns>
 

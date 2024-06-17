@@ -12,10 +12,8 @@ namespace CHKS.Models.mydb
         [Required]
         public string Plate { get; set; }
 
-        [Required]
         public string Phone { get; set; }
 
-        [Required]
         public string Type { get; set; }
 
         public ICollection<Cart> Carts { get; set; }

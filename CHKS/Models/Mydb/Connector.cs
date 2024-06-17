@@ -19,7 +19,7 @@ namespace CHKS.Models.mydb
         public Inventory Inventory { get; set; }
 
         [Required]
-        public int Qty { get; set; }
+        public decimal Qty { get; set; }
 
         public string Note { get; set; }
 

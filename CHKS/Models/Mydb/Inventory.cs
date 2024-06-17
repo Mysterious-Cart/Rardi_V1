@@ -13,7 +13,7 @@ namespace CHKS.Models.mydb
         public string Name { get; set; }
 
         [Required]
-        public int Stock { get; set; }
+        public decimal Stock { get; set; }
 
         public decimal? Import { get; set; }
 

@@ -24,14 +24,19 @@
     <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Qty" Title="Qty">
 
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Import" Title="Import">
+        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Import" Title="Import" FormatString="${0:N2}" >
             <EditTemplate Context="Historyconnector">
                 <RadzenNumeric style="display: block; width: 100%" @bind-Value="@Historyconnector.Import" Name="Import" />
             </EditTemplate>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Inventory.Export" Title="Export">
+        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Export" Title="Export" FormatString="${0:N2}">
             <EditTemplate Context="Historyconnector">
                 <RadzenNumeric style="display: block; width: 100%" @bind-Value="@Historyconnector.Export" Name="Export" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Note" Title="Note">
+            <EditTemplate Context="Historyconnector">
+                <RadzenTextBox style="display: block; width: 100%" @bind-Value="@Historyconnector.Note" Name="Note" />
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn>

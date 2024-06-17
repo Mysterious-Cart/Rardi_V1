@@ -45,11 +45,11 @@ namespace CHKS.Pages
 
             await grid0.GoToPage(0);
 
-            histories = await mydbService.GetHistories(new Query { Filter = $@"i => i.CashoutDate.Contains(@0) || i.Plate.Contains(@0) || i.Payment.Contains(@0)", FilterParameters = new object[] { search }, Expand = "Car" });
+            histories = await mydbService.GetHistories(new Query { Filter = $@"i => i.CashoutDate.Contains(@0) || i.Plate.Contains(@0)", FilterParameters = new object[] { search }, Expand = "Car" });
         }
         protected override async Task OnInitializedAsync()
         {
-            histories = await mydbService.GetHistories(new Query { Filter = $@"i => i.CashoutDate.Contains(@0) || i.Plate.Contains(@0) || i.Payment.Contains(@0)", FilterParameters = new object[] { search }, Expand = "Car" });
+            histories = await mydbService.GetHistories(new Query { Filter = $@"i => i.CashoutDate.Contains(@0) || i.Plate.Contains(@0)", FilterParameters = new object[] { search }, Expand = "Car" });
         }
 
         protected async Task OpenHistory(Models.mydb.History args){

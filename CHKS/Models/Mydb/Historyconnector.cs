@@ -15,7 +15,7 @@ namespace CHKS.Models.mydb
 
         public string Product { get; set; }
 
-        public int? Qty { get; set; }
+        public decimal? Qty { get; set; }
 
         public decimal? Export { get; set; }
 
@@ -26,5 +26,7 @@ namespace CHKS.Models.mydb
         public string CartId { get; set; }
 
         public History History { get; set; }
+
+        public string Note { get; set; }
     }
 }

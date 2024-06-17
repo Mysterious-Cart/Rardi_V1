@@ -145,7 +145,6 @@ namespace CHKS.Pages
                             CashoutDate = time,
                             Plate = Customer.Plate,
                             Total = Customer.Total,
-                            Payment = payment,
                         };
                         await MydbService.CreateHistory(History);
 

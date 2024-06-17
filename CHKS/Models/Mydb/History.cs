@@ -19,8 +19,6 @@ namespace CHKS.Models.mydb
 
         public decimal? Total { get; set; }
 
-        public string Payment { get; set; }
-
         public decimal? Bank { get; set; }
 
         public decimal? Dollar { get; set; }
