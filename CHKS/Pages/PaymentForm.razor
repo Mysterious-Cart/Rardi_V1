@@ -8,8 +8,24 @@
                 <RadzenTextBox title="Total" ReadOnly ="true" Value="@Total.ToString()" Style="margin-left:1%"/>
             </RadzenColumn>
             <RadzenColumn>            
-                <RadzenLabel Component="PaymemtType" Text="Payment Note: "/>
-                <RadzenTextBox title="PaymemtType" @bind-Value="PaymentNote" Style="margin-left:1%"/>
+                <RadzenLabel Component="Bank" Text="Bank: "/>
+                <RadzenNumeric title="Bank" @bind-Value="Bank" Style="margin-left:1%"/>
+                <RadzenNumericRangeValidator Min="0" Component="Bank"/>
+            </RadzenColumn>
+                        <RadzenColumn>            
+                <RadzenLabel Component="Dollar" Text="Dollar: "/>
+                <RadzenNumeric title="Dollar" @bind-Value="Dollar" Style="margin-left:1%"/>
+                <RadzenNumericRangeValidator Min="0" Component="Dollar"/>
+            </RadzenColumn>
+            <RadzenColumn>            
+                <RadzenLabel Component="Baht" Text="Baht: "/>
+                <RadzenNumeric title="Baht" @bind-Value="Baht" Style="margin-left:1%"/>
+                <RadzenNumericRangeValidator Min="0" Component="Baht"/>
+            </RadzenColumn>
+            <RadzenColumn>            
+                <RadzenLabel Component="Riel" Text="Riel: "/>
+                <RadzenNumeric title="Riel" @bind-Value="Riel" Style="margin-left:1%"/>
+                <RadzenNumericRangeValidator Min="0" Component="Riel"/>
             </RadzenColumn>
             <RadzenColumn>            
                 <RadzenLabel Component="Submit" Text="Submit"/>

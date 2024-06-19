@@ -30,12 +30,17 @@ namespace CHKS.Pages
         [Inject]
         protected NotificationService NotificationService { get; set; }
 
-        protected float Input = 1;
+        protected decimal Input = 1;
         [Parameter]
         public string Title {get; set;}
 
         protected void Close(){
-            DialogService.Close(Input);
+            if(Title=="Cart ID"){
+                DialogService.Close((int)Input);
+            }else{
+                DialogService.Close(Input);
+            }
+
         }
     }
 }

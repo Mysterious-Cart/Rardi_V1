@@ -37,13 +37,12 @@ namespace CHKS.Pages
         public string IsDialog {get; set;}
 
         protected IEnumerable<CHKS.Models.mydb.Inventory> inventories;
-        
 
         protected RadzenDataGrid<CHKS.Models.mydb.Inventory> grid0;
 
         protected string search = "";
         protected bool isModifying = false;
-
+        protected bool isEditMode = false;
 
         protected async Task Search(ChangeEventArgs args)
         {
@@ -59,22 +58,29 @@ namespace CHKS.Pages
         }
 
         protected async Task SelectProduct(CHKS.Models.mydb.Inventory Product){
-            if(Product.Stock!=0 && IsDialog == "true" && isModifying == false){
-                int? Qty = await DialogService.OpenAsync<SingleInputPopUp>("Qty", new Dictionary<string, object>{{"Title","Qty"}});
+            if(Product.Stock!=0 && IsDialog == "true" && isModifying == false && Product.Name != "Service Charge"){
+                var Qty = await DialogService.OpenAsync<SingleInputPopUp>("Qty", new Dictionary<string, object>{{"Title","Qty"}});
 
-                if(Qty != null && Qty <= Product.Stock){
+                if(Qty != null && Qty is decimal && Qty <= Product.Stock){
                     Models.mydb.Inventory Temp = new Models.mydb.Inventory{};
-                    Product.Stock = Product.Stock - Qty.GetValueOrDefault(1);
+                    Product.Stock = Product.Stock - Qty;
                     await mydbService.UpdateInventory(Product.Name, Product);
                     Temp.Export = Product.Export;
                     Temp.Import = Product.Import;
                     Temp.Name = Product.Name;
-                    Temp.Stock = Qty.GetValueOrDefault(1);
+                    Temp.Stock = Qty;
                     DialogService.Close(Temp);
                 }else if(Qty != null && Qty > Product.Stock){
                     await DialogService.Alert("Too much! Not available In stock. Have Left: " + Product.Stock + ".","Warning");
                     await SelectProduct(Product);
                 }
+            }else if(IsDialog == "true" && isModifying == false && Product.Name == "Service Charge"){
+                Models.mydb.Inventory Temp = new Models.mydb.Inventory{
+                Export = Product.Export,
+                Import = Product.Import,
+                Name = Product.Name,
+                Stock = 1};
+                DialogService.Close(Temp);
             }else if(Product.Stock == 0 && isModifying == false){
                 await DialogService.Alert("Not available In stock");
             }else if(IsDialog == "false"){}
@@ -85,6 +91,7 @@ namespace CHKS.Pages
         {
             isModifying = true;
             await grid0.InsertRow(new CHKS.Models.mydb.Inventory());
+            
         }
 
         protected async Task GridDeleteButtonClick(MouseEventArgs args, CHKS.Models.mydb.Inventory inventory)
@@ -118,18 +125,30 @@ namespace CHKS.Pages
         protected async Task GridRowUpdate(CHKS.Models.mydb.Inventory args)
         {
             await mydbService.UpdateInventory(args.Name, args);
+            isEditMode = false;
         }
 
         protected async Task GridRowCreate(CHKS.Models.mydb.Inventory args)
         {
-            await mydbService.CreateInventory(args);
-            await grid0.Reload();
+            try{
+                await mydbService.CreateInventory(args);
+                await grid0.Reload();
+            }catch(Exception exc){
+                if(exc.Message =="Item already available"){
+                    await DialogService.Alert("Apology, This product already exist. Please choose a different name or update the already existed product.","Important");
+                    await grid0.Reload();
+                }
+            }
+
         }
 
         protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.Inventory data)
         {
+
             isModifying = true;
             await grid0.EditRow(data);
+            isEditMode = true;
+
         }
 
         protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Inventory data)

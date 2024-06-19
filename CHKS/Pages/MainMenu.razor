@@ -17,7 +17,7 @@
                     <RadzenButton Icon="add"  Click="@OpenCustomerList" Disabled=@Selection Style="margin-left: auto;"></RadzenButton>   
 
                     @if(SelectionState == false){
-                        <RadzenButton Text="Cancel" ButtonStyle=@ButtonStyle.Danger Style="width:25%"/>
+                        <RadzenButton Text="Cancel" ButtonStyle=@ButtonStyle.Danger Style="width:25%" Click="@DeleteCustomer"/>
                         <RadzenButton Text="Cash out"  Click="@CashOut" Style="width:30%"></RadzenButton>
                         <RadzenButton Icon="save" Click="@ResetToDefault" Style="width:30%" ButtonStyle=@ButtonStyle.Success>Create</RadzenButton>
                         
@@ -49,7 +49,7 @@
                         </RadzenDataGridColumn>
                         <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Qty" Title ="Qty">
                             <EditTemplate Context="connector">
-                            <RadzenNumeric style="display: block; width: 100%" @bind-Value="@connector.Qty" Name="Qty" Min=1/>
+                                <RadzenNumeric style="display: block; width: 100%" @bind-Value="@connector.Qty" Name="Qty" Min=1/>
                             </EditTemplate>
                         </RadzenDataGridColumn>
                         <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Inventory.Export" Title="Unit Price" FormatString="${0:N2}">
@@ -58,6 +58,11 @@
                             <FooterTemplate>
                                 <p style="font-size: 1.2rem ;">  Total($): <b> @(Connectors != null ? "$" + Customer.Total : "$" + 0)</b> </p>
                             </FooterTemplate>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Note" Title="Note">
+                            <EditTemplate Context="connector">
+                                <RadzenTextBox style="display: block; width: 100%" @bind-Value="@connector.Note" Name="Note" Min=1/>
+                            </EditTemplate>
                         </RadzenDataGridColumn>
                         <RadzenDataGridColumn>
                             <EditTemplate Context="connector">

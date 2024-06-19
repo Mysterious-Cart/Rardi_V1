@@ -62,7 +62,7 @@ namespace CHKS.Pages
         {
             if(Selection == false){
 
-                var result = await DialogService.OpenAsync<Cars>("CustomerList",new Dictionary<string, object>{}, new DialogOptions{Width="60%"});
+                var result = await DialogService.OpenAsync<Cars>("CustomerList",new Dictionary<string, object>{}, new DialogOptions{Width="60%", Height="80%"});
 
                 if(result is CHKS.Models.mydb.Car)
                 {
@@ -121,12 +121,15 @@ namespace CHKS.Pages
         protected async Task DeleteCustomer(){
             if(await DialogService.Confirm("Are you sure?","Important!") == true)
             {
-                if(Connectors == Enumerable.Empty<Models.mydb.Connector>()){
+                if(Connectors == Enumerable.Empty<Models.mydb.Connector>() && Connectors != null){
                     await MydbService.DeleteCart(Customer.CartId);
                     ResetToDefault();
-                }else{
+                }else if(Connectors != null){
                     foreach(var i in Connectors.ToList())
                     {   
+                        Models.mydb.Inventory product = await MydbService.GetInventoryByName(i.Product);
+                        product.Stock += i.Qty;
+                        await MydbService.UpdateInventory(i.Product, product);
                         await MydbService.DeleteConnector(i.GeneratedKey);
                     };
                     await MydbService.DeleteCart(Customer.CartId);
@@ -135,16 +138,23 @@ namespace CHKS.Pages
             }
         }
 
+        protected async Task CancelCreateCustomer(){
+        }
+
         protected async Task CashOut(){
             if(Connectors != Enumerable.Empty<Models.mydb.Connector>()){
                 if(await DialogService.Confirm("Are you sure?","Important!") == true){
-                    string payment = await DialogService.OpenAsync<PaymentForm>("Payment",new Dictionary<string, object>{{"Total",Customer.Total}});
-                    if(payment != null && payment != ""){
+                    List<decimal?> payment = await DialogService.OpenAsync<PaymentForm>("Payment",new Dictionary<string, object>{{"Total",Customer.Total}}, new DialogOptions{Width="70%"});
+                    if(payment != null){
                         string time = DateTime.Now.ToString();
                         Models.mydb.History History = new Models.mydb.History{
                             CashoutDate = time,
                             Plate = Customer.Plate,
                             Total = Customer.Total,
+                            Bank = payment[0],
+                            Dollar = payment[1],
+                            Baht = payment[2],
+                            Riel = payment[3],
                         };
                         await MydbService.CreateHistory(History);
 
@@ -153,7 +163,6 @@ namespace CHKS.Pages
                             Models.mydb.Historyconnector historyconnector = new Models.mydb.Historyconnector{
                                 Id = i.GeneratedKey + time,
                                 Product = i.Product,
-                                Import = i.Inventory.Import,
                                 Export = i.Inventory.Export,
                                 Qty = i.Qty,
                                 CartId = time,
@@ -164,9 +173,6 @@ namespace CHKS.Pages
 
                         await MydbService.DeleteCart(Customer.CartId);
                         ResetToDefault();
-
-                    }else{
-                        await DialogService.Alert($"Please fill in payment method first.","Important!");
 
                     }
                 }
@@ -188,7 +194,7 @@ namespace CHKS.Pages
 
         protected async Task AddItemtoCart()
         {
-            var Product = await DialogService.OpenAsync<Inventories>("Select Product", new Dictionary<string, object>{{"IsDialog","true"}});
+            var Product = await DialogService.OpenAsync<Inventories>("Select Product", new Dictionary<string, object>{{"IsDialog","true"}}, new DialogOptions{Width="80%", Height="80%"});
             if(Product != null){
                 connector.CartId = Customer.CartId;
                 connector.GeneratedKey = String.Concat(Customer.CartId, Product.Name);

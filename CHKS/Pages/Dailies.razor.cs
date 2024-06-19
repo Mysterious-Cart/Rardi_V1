@@ -38,19 +38,28 @@ namespace CHKS.Pages
         protected IEnumerable<CHKS.Models.mydb.Historyconnector> Historyconnectors;
         protected CHKS.Models.mydb.Inventory Inventories;
 
-        protected string Date;
+        protected static string Date = DateTime.Now.ToString("dd/MM/yyyy");
         protected bool NoEmptyImport = true;
         protected bool changeDataMode = false;
+
+        protected string Total = "0";
+        protected string ProductTotal = "0";
+        protected string ServiceTotal = "0";
+        protected string ExpenseTotal = "0";
 
         protected RadzenDataGrid<CHKS.Models.mydb.Historyconnector> grid1;
         protected RadzenDataGrid<CHKS.Models.mydb.History> grid0;
         protected override async Task OnInitializedAsync()
         {
-            Date = DateTime.Now.ToString("MM/dd/yyyy");
+
             History = await mydbService.GetHistories();
             History = History.Where(i => i.CashoutDate.Contains(Date));
             Historyconnectors = await mydbService.GetHistoryconnectors();
+            changeDataMode = false;
             GetProductWithoutImport();
+        }
+
+        protected async void reload(){
         }
 
         protected async Task LoadNotImport(){
@@ -62,7 +71,7 @@ namespace CHKS.Pages
         }
 
         protected void GetProductWithoutImport(){
-            Historyconnectors = Historyconnectors.Where(i => i.Import == 0);
+            Historyconnectors = Historyconnectors.Where(i => i.CartId.Contains(Date) && i.Inventory.Import == 0);
             if(Historyconnectors.Any()){
                 NoEmptyImport = false;
             }else{
@@ -72,7 +81,7 @@ namespace CHKS.Pages
 
         protected async Task OpenHistory(CHKS.Models.mydb.History args)
         {
-            await DialogService.OpenAsync<ReciptView>("Customer", new Dictionary<string, object>{{"ID",args.CashoutDate}});
+            await DialogService.OpenAsync<ReciptView>("Customer", new Dictionary<string, object>{{"ID",args.CashoutDate}}, new DialogOptions{Width="60%",Height="80%"});
         }
 
         protected bool errorVisible;

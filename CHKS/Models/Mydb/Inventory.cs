@@ -20,5 +20,7 @@ namespace CHKS.Models.mydb
         public decimal? Export { get; set; }
 
         public ICollection<Connector> Connectors { get; set; }
+
+        public ICollection<Historyconnector> Historyconnectors { get; set; }
     }
 }

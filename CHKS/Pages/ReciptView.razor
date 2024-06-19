@@ -17,16 +17,16 @@
     </RadzenCard>
 </RadzenRow>
     <RadzenDataGrid @ref="grid0" ColumnWidth="200px" AllowFiltering="false" AllowPaging="false" AllowSorting="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})
-     Data="@Historyconnector" TItem="CHKS.Models.mydb.Historyconnector" GridLines="Radzen.DataGridGridLines.None" >
+     Data="@Historyconnector" TItem="CHKS.Models.mydb.Historyconnector" GridLines="Radzen.DataGridGridLines.None" style="Height:60vh;">
      <Columns>
         <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Product" Title="Name">
         </RadzenDataGridColumn>
     <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Qty" Title="Qty">
 
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Import" Title="Import" FormatString="${0:N2}" >
+        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Inventory.Import" Title="Import" FormatString="${0:N2}" >
             <EditTemplate Context="Historyconnector">
-                <RadzenNumeric style="display: block; width: 100%" @bind-Value="@Historyconnector.Import" Name="Import" />
+                <RadzenNumeric style="display: block; width: 100%" @bind-Value="@Historyconnector.Inventory.Import" Name="Import" />
             </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Export" Title="Export" FormatString="${0:N2}">

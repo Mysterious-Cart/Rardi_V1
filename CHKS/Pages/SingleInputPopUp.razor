@@ -7,14 +7,11 @@
         
         <RadzenRow>
             <RadzenNumeric @bind-Value="Input" title="@Title" Placeholder="Required" Min=1/>
-            <RadzenNumericRangeValidator Component="@Title"/>
+            <RadzenNumericRangeValidator Component="@Title" Min="1"/>
             
         </RadzenRow>
-        @(Title==""<RadzenRow>
-            <RadzenNumeric @bind-Value="Input" title="@Title" Placeholder="Required" Min=1/>
-            <RadzenNumericRangeValidator Component="@Title"/>
-        </RadzenRow>
-        <RadzenButton Icon="create" Click="@Close"/>
+        <RadzenButton Click="@Close" Icon="add" />
     </RadzenStack>
+
 
 </RadzenRow>

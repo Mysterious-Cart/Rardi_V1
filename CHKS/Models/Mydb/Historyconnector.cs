@@ -13,13 +13,14 @@ namespace CHKS.Models.mydb
         [Required]
         public string Id { get; set; }
 
+        [Required]
         public string Product { get; set; }
+
+        public Inventory Inventory { get; set; }
 
         public decimal? Qty { get; set; }
 
         public decimal? Export { get; set; }
-
-        public decimal? Import { get; set; }
 
         [Column("CartID")]
         [Required]

@@ -19,11 +19,11 @@
         <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" ShowPagingSummary="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})
             Data="@inventories" RowUpdate="@GridRowUpdate" RowSelect="@SelectProduct" RowCreate="@GridRowCreate" TItem="CHKS.Models.mydb.Inventory">
             <Columns>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Name" Title="Name" Width="30%">
-                  <EditTemplate Context="inventory">
-                      <RadzenTextBox style="display: block; width: 100%" @bind-Value="@inventory.Name" Name="Name" />
-                      <RadzenRequiredValidator Component="Name" Text="Name is required" style="position: absolute;" />
-                  </EditTemplate>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Name" Title="Name" Width="30%" OrderIndex="1">
+                    <EditTemplate Context="inventory">
+                        <RadzenTextBox style="display: block; width: 100%" @bind-Value="@inventory.Name" Name="Name" Disabled="@isEditMode"/>
+                        <RadzenRequiredValidator Component="Name" Text="Name is required" style="position: absolute;" />
+                    </EditTemplate>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Stock" Title="Stock" Width="20%">
                   <EditTemplate Context="inventory">

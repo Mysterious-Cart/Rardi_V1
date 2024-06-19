@@ -33,10 +33,13 @@ namespace CHKS.Pages
         [Parameter]
         public decimal Total{get; set;}
 
-        private string PaymentNote = "";
+        protected decimal? Bank = 0;
+        protected decimal? Dollar = 0;
+        protected decimal? Baht = 0;
+        protected decimal? Riel = 0;
 
         protected async Task CashOut(){
-            DialogService.Close(PaymentNote);
+            DialogService.Close(new List<decimal?>{Bank,Dollar,Baht,Riel});
         }
     }
 }

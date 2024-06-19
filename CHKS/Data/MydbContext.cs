@@ -52,6 +52,12 @@ namespace CHKS.Data
               .HasForeignKey(i => i.CartId)
               .HasPrincipalKey(i => i.CashoutDate);
 
+            builder.Entity<CHKS.Models.mydb.Historyconnector>()
+              .HasOne(i => i.Inventory)
+              .WithMany(i => i.Historyconnectors)
+              .HasForeignKey(i => i.Product)
+              .HasPrincipalKey(i => i.Name);
+
             builder.Entity<CHKS.Models.mydb.Cart>()
               .Property(p => p.Total)
               .HasPrecision(10,2);
@@ -106,10 +112,6 @@ namespace CHKS.Data
 
             builder.Entity<CHKS.Models.mydb.Historyconnector>()
               .Property(p => p.Export)
-              .HasPrecision(10,2);
-
-            builder.Entity<CHKS.Models.mydb.Historyconnector>()
-              .Property(p => p.Import)
               .HasPrecision(10,2);
 
             builder.Entity<CHKS.Models.mydb.Inventory>()
