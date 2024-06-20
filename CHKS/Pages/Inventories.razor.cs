@@ -50,16 +50,16 @@ namespace CHKS.Pages
 
             await grid0.GoToPage(0);
 
-            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0)", FilterParameters = new object[] { search } });
+            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) && i.Name != (@1) ", FilterParameters = new object[] { search , "Service Charge"} });
         }
         protected override async Task OnInitializedAsync()
         {
-            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0)", FilterParameters = new object[] { search } }); 
+            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) && i.Name != (@1)", FilterParameters = new object[] { search , "Service Charge"} }); 
         }
 
         protected async Task SelectProduct(CHKS.Models.mydb.Inventory Product){
-            if(Product.Stock!=0 && IsDialog == "true" && isModifying == false && Product.Name != "Service Charge"){
-                var Qty = await DialogService.OpenAsync<SingleInputPopUp>("Qty", new Dictionary<string, object>{{"Title","Qty"}});
+            if(Product.Stock!=0 && IsDialog == "true" && isModifying == false){
+                var Qty = await DialogService.OpenAsync<SingleInputPopUp>("Qty", new Dictionary<string, object>{{"Title","Qty"}}, new DialogOptions{Width="15%"});
 
                 if(Qty != null && Qty is decimal && Qty <= Product.Stock){
                     Models.mydb.Inventory Temp = new Models.mydb.Inventory{};
@@ -74,13 +74,6 @@ namespace CHKS.Pages
                     await DialogService.Alert("Too much! Not available In stock. Have Left: " + Product.Stock + ".","Warning");
                     await SelectProduct(Product);
                 }
-            }else if(IsDialog == "true" && isModifying == false && Product.Name == "Service Charge"){
-                Models.mydb.Inventory Temp = new Models.mydb.Inventory{
-                Export = Product.Export,
-                Import = Product.Import,
-                Name = Product.Name,
-                Stock = 1};
-                DialogService.Close(Temp);
             }else if(Product.Stock == 0 && isModifying == false){
                 await DialogService.Alert("Not available In stock");
             }else if(IsDialog == "false"){}

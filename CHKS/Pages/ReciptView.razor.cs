@@ -50,7 +50,10 @@ namespace CHKS.Pages
         { 
             Historyconnector = await MydbService.GetHistoryconnectors();
             History = await MydbService.GetHistoryByCashoutDate(ID);
-            GettingHistory();
+            if(Historyconnector != null ){
+                GettingHistory();
+            }
+
         }
 
         protected async void GettingHistory(){
@@ -61,6 +64,9 @@ namespace CHKS.Pages
             await MydbService.UpdateHistory(ID,History);
             
         }
+
+
+
         protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.Historyconnector data)
         {
             await grid0.EditRow(data);

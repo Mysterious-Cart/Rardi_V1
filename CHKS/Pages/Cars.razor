@@ -16,7 +16,7 @@
     <RadzenRow>
       <RadzenColumn SizeMD=12>
       @if(Mode == false){
-        <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.SimpleWithMenu" AllowPaging="true" AllowSorting="true" ShowPagingSummary="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})
+        <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.SimpleWithMenu" Style="height: 60vh;"
             Data="@cars" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate" RowSelect="@SelectCar" TItem="CHKS.Models.mydb.Car" GotoFirstPageOnSort="true">
             <Columns>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.Car" Property="Plate" Title="Plate">

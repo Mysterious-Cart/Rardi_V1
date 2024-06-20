@@ -45,6 +45,11 @@ namespace CHKS.Pages
         protected string CarType;       
         protected string RowTotal = "0";
 
+
+        protected bool VisibilityOfServiceCharge = false;
+        protected string ServiceType;
+        protected decimal ServiceFees=0;
+
         protected IEnumerable<CHKS.Models.mydb.Cart> Carts;
         protected IEnumerable<CHKS.Models.mydb.Connector> Connectors;
         protected IEnumerable<CHKS.Models.mydb.Inventory> Inventories;
@@ -58,6 +63,22 @@ namespace CHKS.Pages
             await DialogService.OpenAsync<ExpenseMenu>("Expense Menu");
         }
 
+        protected async Task AddServiceCharge(){
+            Models.mydb.Connector Service = new Models.mydb.Connector{
+                CartId = Customer.CartId,
+                Product = "Service Charge",
+                Qty = 1,
+                Note = ServiceType,
+                GeneratedKey = Customer.CartId + ServiceType,
+                Total = ServiceFees,
+            };
+            await MydbService.CreateConnector(Service);
+            ServiceType = "";
+            ServiceFees = 0;
+            await Grid1.Reload();
+        }
+
+        
         protected async Task OpenCustomerList()
         {
             if(Selection == false){
@@ -76,12 +97,14 @@ namespace CHKS.Pages
                             Customer.Total = 0;
                             SelectionState = false;
                             Selection = true;
+                            VisibilityOfServiceCharge = true;
                         try{
                             await MydbService.CreateCart(Customer);
                         }catch(Exception exc){
                             if(exc.Message == "Item already available"){
                                 await DialogService.Alert("This cart ID already exist.","Important");
                                 ResetToDefault();
+                                VisibilityOfServiceCharge = false;
                             }
                         }
                     }
@@ -104,6 +127,7 @@ namespace CHKS.Pages
                     Selection = true;
 
                     Connectors = await MydbService.GetConnectors(new Query{Filter=$@"i => i.CartId == (@0)", FilterParameters = new object[] {Customer.CartId}});
+                    VisibilityOfServiceCharge = true;
                 }
 
             }
@@ -127,10 +151,17 @@ namespace CHKS.Pages
                 }else if(Connectors != null){
                     foreach(var i in Connectors.ToList())
                     {   
-                        Models.mydb.Inventory product = await MydbService.GetInventoryByName(i.Product);
-                        product.Stock += i.Qty;
-                        await MydbService.UpdateInventory(i.Product, product);
-                        await MydbService.DeleteConnector(i.GeneratedKey);
+                        if(i.Product != "Service Charge")
+                        {
+                            Models.mydb.Inventory product = await MydbService.GetInventoryByName(i.Product);
+                            product.Stock += i.Qty;
+                            await MydbService.UpdateInventory(i.Product, product);
+                            await MydbService.DeleteConnector(i.GeneratedKey);
+                        }else
+                        {
+                            await MydbService.DeleteConnector(i.GeneratedKey);
+                        }
+
                     };
                     await MydbService.DeleteCart(Customer.CartId);
                     ResetToDefault();
@@ -138,8 +169,6 @@ namespace CHKS.Pages
             }
         }
 
-        protected async Task CancelCreateCustomer(){
-        }
 
         protected async Task CashOut(){
             if(Connectors != Enumerable.Empty<Models.mydb.Connector>()){
@@ -160,19 +189,36 @@ namespace CHKS.Pages
 
                         foreach(var i in Connectors.ToList())
                         {   
-                            Models.mydb.Historyconnector historyconnector = new Models.mydb.Historyconnector{
-                                Id = i.GeneratedKey + time,
-                                Product = i.Product,
-                                Export = i.Inventory.Export,
-                                Qty = i.Qty,
-                                CartId = time,
-                            };
+                            if(i.Product != "Service Charge")
+                            {
+                                Models.mydb.Historyconnector historyconnector = new Models.mydb.Historyconnector{
+                                    Id = i.GeneratedKey + time,
+                                    Product = i.Product,
+                                    Export = i.Inventory.Export,
+                                    Qty = i.Qty,
+                                    CartId = time,
+                                    Note = i.Note
+                                };
 
-                            await MydbService.CreateHistoryconnector(historyconnector);
+                                await MydbService.CreateHistoryconnector(historyconnector);
+                            }else{
+                                Models.mydb.Historyconnector historyconnector = new Models.mydb.Historyconnector{
+                                    Id = i.GeneratedKey + time,
+                                    Product = i.Product,
+                                    Export = i.Total,
+                                    Qty = i.Qty,
+                                    CartId = time,
+                                    Note = i.Note
+                                };
+
+                                await MydbService.CreateHistoryconnector(historyconnector);
+                            }
+
                         };
 
                         await MydbService.DeleteCart(Customer.CartId);
                         ResetToDefault();
+                        VisibilityOfServiceCharge = false;
 
                     }
                 }
@@ -189,6 +235,7 @@ namespace CHKS.Pages
             CarType ="";
 
             Connectors = Enumerable.Empty<CHKS.Models.mydb.Connector>();
+            VisibilityOfServiceCharge = false;
 
         }
 
@@ -258,7 +305,7 @@ namespace CHKS.Pages
         protected async Task GridRowUpdate(CHKS.Models.mydb.Connector args)
         {
             Models.mydb.Connector OldOne = await MydbService.GetConnectorByGeneratedKey(args.GeneratedKey);
-            if((args.Qty-OldOne.Qty)<=args.Inventory.Stock)
+            if((args.Qty-OldOne.Qty)<=args.Inventory.Stock && args.Product != "Service Charge")
                 {
                 args.Total = args.Qty * args.Inventory.Export.GetValueOrDefault(1);
                 Models.mydb.Inventory Temp = new Models.mydb.Inventory{
@@ -270,12 +317,16 @@ namespace CHKS.Pages
                 await MydbService.UpdateInventory(args.Product, Temp);
                 await MydbService.UpdateConnector(args.GeneratedKey, args);
                 await ResetTotal();
+            }else if(args.Product =="Service Charge"){
+                args.Qty = 1;
+                await MydbService.UpdateConnector(args.GeneratedKey, args);
             }else{
                 await DialogService.Alert("Not enough in Stock! Only have " + args.Inventory.Stock + " Left.");
                 await Grid1.Reload();
             }
             
         }
+        
 
         protected async Task GridRowCreate(CHKS.Models.mydb.Connector args)
         {

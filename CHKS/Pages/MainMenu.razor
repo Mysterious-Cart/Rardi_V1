@@ -41,28 +41,39 @@
                     </RadzenStack>
                 }
 
-                <RadzenDataGrid @ref="Grid1" ColumnWidth="210px" AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" ShowPagingSummary="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})
-                Data="@Connectors" TItem="Models.mydb.Connector" AllowColumnPicking="false" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate">
+                <RadzenDataGrid @ref="Grid1" ColumnWidth="210px" AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowSorting="true"
+                Data="@Connectors" TItem="Models.mydb.Connector" AllowColumnPicking="false" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate" Style = "height: 70vh;">
                     
                     <Columns>
                         <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Product" Title="Product Name">
+                            <FooterTemplate>
+                                <RadzenTextBox Placeholder="Type of Service Fee" Visible ="@VisibilityOfServiceCharge" @bind-Value="ServiceType"/>
+                            </FooterTemplate>
                         </RadzenDataGridColumn>
                         <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Qty" Title ="Qty">
                             <EditTemplate Context="connector">
                                 <RadzenNumeric style="display: block; width: 100%" @bind-Value="@connector.Qty" Name="Qty" Min=1/>
                             </EditTemplate>
+                                                        
+                            <FooterTemplate>
+                                <RadzenNumeric TValue="decimal" Min=0 Visible="@VisibilityOfServiceCharge" @bind-Value="ServiceFees"/>
+                            </FooterTemplate>
                         </RadzenDataGridColumn>
                         <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Inventory.Export" Title="Unit Price" FormatString="${0:N2}">
+                            <FooterTemplate>
+                                <RadzenButton Icon="add" Visible="@VisibilityOfServiceCharge" Click="@AddServiceCharge"/>
+                            </FooterTemplate>
                         </RadzenDataGridColumn>
                         <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Total" Title="Total" FormatString="${0:N2}">
                             <FooterTemplate>
-                                <p style="font-size: 1.2rem ;">  Total($): <b> @(Connectors != null ? "$" + Customer.Total : "$" + 0)</b> </p>
+                                <p style="font-size: 1.2rem ;">  Total($): <b> @(Connectors != null ? "$" + Math.Round(Customer.Total.GetValueOrDefault(),2) : "$" + 0)</b> </p>
                             </FooterTemplate>
                         </RadzenDataGridColumn>
                         <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Note" Title="Note">
                             <EditTemplate Context="connector">
                                 <RadzenTextBox style="display: block; width: 100%" @bind-Value="@connector.Note" Name="Note" Min=1/>
                             </EditTemplate>
+
                         </RadzenDataGridColumn>
                         <RadzenDataGridColumn>
                             <EditTemplate Context="connector">

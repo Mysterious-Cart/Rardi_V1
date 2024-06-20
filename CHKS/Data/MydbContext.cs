@@ -116,15 +116,15 @@ namespace CHKS.Data
 
             builder.Entity<CHKS.Models.mydb.Inventory>()
               .Property(p => p.Stock)
-              .HasPrecision(10,2);
+              .HasPrecision(10,3);
 
             builder.Entity<CHKS.Models.mydb.Inventory>()
               .Property(p => p.Import)
-              .HasPrecision(10,2);
+              .HasPrecision(10,3);
 
             builder.Entity<CHKS.Models.mydb.Inventory>()
               .Property(p => p.Export)
-              .HasPrecision(10,2);
+              .HasPrecision(10,3);
             this.OnModelBuilding(builder);
         }
 

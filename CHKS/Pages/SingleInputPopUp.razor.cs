@@ -31,6 +31,7 @@ namespace CHKS.Pages
         protected NotificationService NotificationService { get; set; }
 
         protected decimal Input = 1;
+
         [Parameter]
         public string Title {get; set;}
 

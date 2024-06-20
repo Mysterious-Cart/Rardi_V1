@@ -37,7 +37,12 @@ namespace CHKS.Pages
 
         protected RadzenDataGrid<CHKS.Models.mydb.History> grid0;
 
+        protected bool editMode = false;
+        protected string date;
+
         protected string search = "";
+
+        protected DateTime ChosenDate;
 
         protected async Task Search(ChangeEventArgs args)
         {
@@ -53,8 +58,12 @@ namespace CHKS.Pages
         }
 
         protected async Task OpenHistory(Models.mydb.History args){
-            await DialogService.OpenAsync<ReciptView>($"Review Recipt Dated: {args.CashoutDate}", new Dictionary<string, object>{{"ID",args.CashoutDate}}, new DialogOptions{Width="50%", Height="70%"});
+            if(editMode == false){
+                await DialogService.OpenAsync<ReciptView>($"Review Recipt Dated: {args.CashoutDate}", new Dictionary<string, object>{{"ID",args.CashoutDate}}, new DialogOptions{Width="50%", Height="70%"});
+            }
         }   
+
+
 
         protected async Task ExportClick(RadzenSplitButtonItem args)
         {
@@ -78,6 +87,56 @@ namespace CHKS.Pages
                     Select = string.Join(",", grid0.ColumnsCollection.Where(c => c.GetVisible() && !string.IsNullOrEmpty(c.Property)).Select(c => c.Property.Contains(".") ? c.Property + " as " + c.Property.Replace(".", "") : c.Property))
                 }, "Histories");
             }
+        }
+
+        protected async Task GridDeleteButtonClick(MouseEventArgs args, CHKS.Models.mydb.History history)
+        {
+            try
+            {
+                if (await DialogService.Confirm("Are you sure you want to delete this record?") == true)
+                {
+                    var deleteResult = await mydbService.DeleteHistory(history.CashoutDate);
+
+                    if (deleteResult != null)
+                    {
+                        await grid0.Reload();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                NotificationService.Notify(new NotificationMessage
+                {
+                    Severity = NotificationSeverity.Error,
+                    Summary = $"Error",
+                    Detail = $"Unable to delete Inventory"
+                    
+                });
+            }
+        }
+
+        protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.History data)
+        {
+            await grid0.EditRow(data);
+            editMode = true;
+        }
+
+        protected async Task GridRowUpdate(CHKS.Models.mydb.History args)
+        {
+
+        }
+
+
+         protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.History data)
+        {
+
+        }
+
+        protected async Task CancelButtonClick(MouseEventArgs args, CHKS.Models.mydb.History data)
+        {
+            grid0.CancelEditRow(data);
+            await mydbService.CancelHistoryChanges(data);
+            editMode = false;
         }
     }
 }

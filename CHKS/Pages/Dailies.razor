@@ -17,7 +17,10 @@
             </RadzenStack>
             <RadzenText Text="@Date"/>
         </RadzenCard>
+ 
     </RadzenRow>
+    
+
     @if(NoEmptyImport == false)
     {
         <RadzenRow>
@@ -36,10 +39,10 @@
     }
 
 
-    <RadzenRow >
+    <RadzenRow style="width:68.5%">
       <RadzenStack Orientation = "Orientation.Horizontal" style="Width:100%">
         <RadzenCard style="height: 100%; width:100%;">
-            <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" ShowPagingSummary="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})
+            <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.Advanced" style="height:65vh;"
                 Data="@History" TItem="CHKS.Models.mydb.History" RowSelect="@OpenHistory">
                 <Columns>
                     <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="CashoutDate" Title="ថ្ងៃទី">
@@ -52,7 +55,7 @@
 
             </RadzenDataGrid>
         </RadzenCard>
-        @if(changeDataMode == true){
+        @if(changeDataMode == false){
             <RadzenCard Style="width: 50%;">
                 <RadzenDataGrid @ref="grid1" ColumnWidth="100px" AllowFiltering="false" AllowPaging="false" AllowSorting="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})
                     Data="@Historyconnectors" TItem="CHKS.Models.mydb.Historyconnector" GridLines="Radzen.DataGridGridLines.None" >
