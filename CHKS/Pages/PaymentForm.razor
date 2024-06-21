@@ -1,37 +1,40 @@
 @page "/payment--form"
 @using System.Globalization
-<RadzenRow >
+<RadzenRow>
     <RadzenCard style="width:fit-content;">
-        <RadzenStack Orientation ="Orientation.Horizontal" >
-            <RadzenColumn>            
-                <RadzenLabel Component="Total" Text="Total ($): "/>
-                <RadzenTextBox title="Total" ReadOnly ="true" Value="@Total.ToString()" Style="margin-left:1%"/>
-            </RadzenColumn>
-            <RadzenColumn>            
-                <RadzenLabel Component="Bank" Text="Bank: "/>
-                <RadzenNumeric title="Bank" @bind-Value="Bank" Style="margin-left:1%"/>
-                <RadzenNumericRangeValidator Min="0" Component="Bank"/>
-            </RadzenColumn>
-                        <RadzenColumn>            
-                <RadzenLabel Component="Dollar" Text="Dollar: "/>
-                <RadzenNumeric title="Dollar" @bind-Value="Dollar" Style="margin-left:1%"/>
-                <RadzenNumericRangeValidator Min="0" Component="Dollar"/>
-            </RadzenColumn>
-            <RadzenColumn>            
-                <RadzenLabel Component="Baht" Text="Baht: "/>
-                <RadzenNumeric title="Baht" @bind-Value="Baht" Style="margin-left:1%"/>
-                <RadzenNumericRangeValidator Min="0" Component="Baht"/>
-            </RadzenColumn>
-            <RadzenColumn>            
-                <RadzenLabel Component="Riel" Text="Riel: "/>
-                <RadzenNumeric title="Riel" @bind-Value="Riel" Style="margin-left:1%"/>
-                <RadzenNumericRangeValidator Min="0" Component="Riel"/>
-            </RadzenColumn>
-            <RadzenColumn>            
-                <RadzenLabel Component="Submit" Text="Submit"/>
-                <RadzenButton title="Submit" locked="true" Click="@CashOut" Style="margin-left:1%" Icon="paid" Text="Pay" ButtonStyle="ButtonStyle.Warning"/>
-            </RadzenColumn>
+        <RadzenStack Orientation="Orientation.Horizontal">
+            <RadzenStack Orientation="Orientation.Vertical" Gap="35px">
+                    <RadzenLabel Component="Total" Text="Total ($): "/>
+                    <RadzenLabel Component="Baht" Text="Baht: "/>
+                    <RadzenLabel Component="Dollar" Text="Dollar: "/>
+            </RadzenStack>
+            <RadzenStack>
+                    <RadzenTextBox title="Total" ReadOnly ="true" Value="@Total.ToString()" Style="margin-left:1%"/>
+                    <RadzenNumeric title="Baht" @bind-Value="Baht" Style="margin-left:1%"/>
+                    <RadzenNumericRangeValidator Min="0" Component="Baht"/>
+                    <RadzenNumeric title="Dollar" @bind-Value="Dollar" Style="margin-left:1%"/>
+                    <RadzenNumericRangeValidator Min="0" Component="Dollar"/>
+            </RadzenStack>
+            <RadzenStack Gap="35px">
+           
+                    <RadzenLabel Component="Bank" Text="Bank: "/>
+
+                    <RadzenLabel Component="Riel" Text="Riel: "/>
+                    
+                    <!--<RadzenLabel Component="Payout" Text="Payout Date: "/>-->
+            </RadzenStack>
+            <RadzenStack>
+                   <RadzenNumeric title="Bank" @bind-Value="Bank" Style="margin-left:1%"/>
+                    <RadzenNumericRangeValidator Min="0" Component="Bank"/>
+                    <RadzenNumeric title="Riel" @bind-Value="Riel" Style="margin-left:1%"/>
+                    <RadzenNumericRangeValidator Min="0" Component="Riel"/>
+                    <!--<RadzenDatePicker title="Payout" @bind-Value="ChosenDate" Style="margin-left:1%" DateFormat="dd/MM/yyyy" InitialViewDate="DateTime.Now"/>-->
+            </RadzenStack>
+
         </RadzenStack>
+            <RadzenColumn Style="margin-top: 25px;">            
+                <RadzenButton title="Submit" locked="true" Click="@CashOut" Style="margin-left:1%; width:100%" Icon="paid" Text="Pay" ButtonStyle="ButtonStyle.Warning"/>
+            </RadzenColumn>
     </RadzenCard>
 </RadzenRow>
 

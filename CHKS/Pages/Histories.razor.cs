@@ -38,6 +38,7 @@ namespace CHKS.Pages
         protected RadzenDataGrid<CHKS.Models.mydb.History> grid0;
 
         protected bool editMode = false;
+        protected string originalDate;
         protected string date;
 
         protected string search = "";
@@ -89,11 +90,11 @@ namespace CHKS.Pages
             }
         }
 
-        protected async Task GridDeleteButtonClick(MouseEventArgs args, CHKS.Models.mydb.History history)
+        protected async Task GridDeleteButtonClick( CHKS.Models.mydb.History history)
         {
             try
             {
-                if (await DialogService.Confirm("Are you sure you want to delete this record?") == true)
+                if (await DialogService.Confirm("Are you sure?") == true)
                 {
                     var deleteResult = await mydbService.DeleteHistory(history.CashoutDate);
 
@@ -117,19 +118,58 @@ namespace CHKS.Pages
 
         protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.History data)
         {
+            originalDate = data.CashoutDate;
             await grid0.EditRow(data);
             editMode = true;
         }
 
         protected async Task GridRowUpdate(CHKS.Models.mydb.History args)
         {
+           if(args.CashoutDate != originalDate){
+                Models.mydb.History Checking = await mydbService.GetHistoryByCashoutDate(args.CashoutDate);
+                if(Checking == null){
+                    IEnumerable<Models.mydb.Historyconnector> historyconnectors = await mydbService.GetHistoryconnectors();
+                    historyconnectors = historyconnectors.Where(i => i.CartId == originalDate);
 
+                    args.CashoutDate += "("+ DateTime.Now.ToString() + ")";
+
+                    string tempname = args.CashoutDate;
+                    args.CashoutDate = originalDate;
+                    await GridDeleteButtonClick(args);
+                    Models.mydb.History check = await mydbService.GetHistoryByCashoutDate(args.CashoutDate);
+                    if(check == null){
+                        args.CashoutDate = tempname;
+                        await mydbService.CreateHistory(args);
+
+
+                        foreach(var i in historyconnectors){
+                            i.CartId = args.CashoutDate;
+                            await mydbService.UpdateHistoryconnector(i.Id,i);
+                        }
+
+                        await grid0.Reload();
+                        editMode = false;
+                    }
+
+                }else{
+                    await DialogService.Alert("The name you trying to change to already exist.","Important");
+                    args.CashoutDate = originalDate;
+                    grid0.CancelEditRow(args);
+                    await grid0.Reload();
+                    editMode = false;
+                }
+
+            }else{
+                await mydbService.UpdateHistory(args.CashoutDate,args);
+                editMode = false;
+            }
         }
 
 
          protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.History data)
         {
-
+            data.CashoutDate = ChosenDate.ToString("dd/MM/yyyy");
+            await grid0.UpdateRow(data);
         }
 
         protected async Task CancelButtonClick(MouseEventArgs args, CHKS.Models.mydb.History data)

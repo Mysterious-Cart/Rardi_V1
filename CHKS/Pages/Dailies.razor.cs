@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.VisualBasic.CompilerServices;
 using Radzen;
 using Radzen.Blazor;
 
@@ -33,12 +34,12 @@ namespace CHKS.Pages
         [Inject]
         public mydbService mydbService { get; set; }
 
-        protected IEnumerable<CHKS.Models.mydb.Daily> dailies;
         protected IEnumerable<CHKS.Models.mydb.History> History;
         protected IEnumerable<CHKS.Models.mydb.Historyconnector> Historyconnectors;
+        protected IEnumerable<Models.mydb.Dailyexpense> Dailyexpenses;
         protected CHKS.Models.mydb.Inventory Inventories;
 
-        protected static string Date = DateTime.Now.ToString("dd/MM/yyyy");
+        protected static string dates = DateTime.Now.ToString("dd/MM/yyyy");
         protected bool NoEmptyImport = true;
         protected bool changeDataMode = false;
 
@@ -49,11 +50,13 @@ namespace CHKS.Pages
 
         protected RadzenDataGrid<CHKS.Models.mydb.Historyconnector> grid1;
         protected RadzenDataGrid<CHKS.Models.mydb.History> grid0;
+        protected RadzenDataGrid<Models.mydb.Dailyexpense> grid2;
+
         protected override async Task OnInitializedAsync()
         {
-
+            Dailyexpenses = await mydbService.GetDailyexpenses();
             History = await mydbService.GetHistories();
-            History = History.Where(i => i.CashoutDate.Contains(Date));
+            History = History.Where(i => LikeOperator.LikeString(i.CashoutDate, dates + "*", Microsoft.VisualBasic.CompareMethod.Text));
             Historyconnectors = await mydbService.GetHistoryconnectors();
             changeDataMode = false;
             GetProductWithoutImport();
@@ -71,7 +74,7 @@ namespace CHKS.Pages
         }
 
         protected void GetProductWithoutImport(){
-            Historyconnectors = Historyconnectors.Where(i => i.CartId.Contains(Date) && i.Inventory.Import == 0);
+            Historyconnectors = Historyconnectors.Where(i => i.CartId.Contains(dates) && i.Inventory.Import == 0);
             if(Historyconnectors.Any()){
                 NoEmptyImport = false;
             }else{

@@ -8,10 +8,12 @@ namespace CHKS.Models.mydb
     [Table("dailyexpense")]
     public partial class Dailyexpense
     {
-        [Key]
-        [Required]
         public string Note { get; set; }
 
         public decimal? Expense { get; set; }
+
+        [Key]
+        [Required]
+        public string Date { get; set; }
     }
 }

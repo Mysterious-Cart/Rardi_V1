@@ -27,17 +27,17 @@
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Stock" Title="Stock" Width="20%" FormatString="{0:N2}">
                   <EditTemplate Context="inventory">
-                      <RadzenNumeric style="display: block; width: 100%" @bind-Value="@inventory.Stock" Name="Stock" />
+                      <RadzenNumeric style="display: block; width: 100%" @bind-Value="@inventory.Stock" Name="Stock" Format="N2" ShowUpDown = "false"/>
                   </EditTemplate>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Import" Title="Import" Width="20%" FormatString="${0:N2}">
                   <EditTemplate Context="inventory">
-                      <RadzenNumeric style="display: block; width: 100%" @bind-Value="@inventory.Import" Name="Import" Format="0.000" ShowUpDown = "false" />
+                      <RadzenNumeric style="display: block; width: 100%" @bind-Value="@inventory.Import" Name="Import" Format="N2" ShowUpDown = "false" />
                   </EditTemplate>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Export" Title="Export" Width="20%" FormatString="${0:N2}">
                   <EditTemplate Context="inventory">
-                      <RadzenNumeric style="display: block; width: 100%" @bind-Value="@inventory.Export" Name="Export" />
+                      <RadzenNumeric style="display: block; width: 100%" @bind-Value="@inventory.Export" Name="Export"  Format="N2"  ShowUpDown = "false"/>
                   </EditTemplate>
                   <FooterTemplate>
                         <RadzenText TextStyle="TextStyle.DisplayH6">Total Item: @(inventories.Count())</RadzenText>
@@ -59,7 +59,7 @@
 
                         <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Medium"
                             Shade="Shade.Lighter" Variant="Variant.Flat"
-                            Click=@(args => GridDeleteButtonClick(args, inventory)) @onclick:stopPropagation="true" />
+                            Click=@(args => GridDeleteButtonClick( inventory)) @onclick:stopPropagation="true" />
                     </Template>
                 </RadzenDataGridColumn>
 

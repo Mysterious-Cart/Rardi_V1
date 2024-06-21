@@ -44,6 +44,8 @@ namespace CHKS.Pages
         protected bool isModifying = false;
         protected bool isEditMode = false;
 
+        protected string OriginalName;
+
         protected async Task Search(ChangeEventArgs args)
         {
             search = $"{args.Value}";
@@ -87,11 +89,11 @@ namespace CHKS.Pages
             
         }
 
-        protected async Task GridDeleteButtonClick(MouseEventArgs args, CHKS.Models.mydb.Inventory inventory)
+        protected async Task GridDeleteButtonClick( CHKS.Models.mydb.Inventory inventory)
         {
             try
             {
-                if (await DialogService.Confirm("Are you sure you want to delete this record?") == true)
+                if (await DialogService.Confirm("Are you sure?") == true)
                 {
                     var deleteResult = await mydbService.DeleteInventory(inventory.Name);
 
@@ -117,8 +119,32 @@ namespace CHKS.Pages
 
         protected async Task GridRowUpdate(CHKS.Models.mydb.Inventory args)
         {
-            await mydbService.UpdateInventory(args.Name, args);
-            isEditMode = false;
+            if(args.Name != OriginalName){
+                Models.mydb.Inventory Checking = await mydbService.GetInventoryByName(args.Name);
+                if(Checking == null){
+                    string tempname = args.Name;
+                    args.Name = OriginalName;
+                    await GridDeleteButtonClick(args);
+                    try{
+                        args.Name = tempname;
+                        await mydbService.CreateInventory(args);
+                        isEditMode = false;
+                    }catch(Exception exc){
+
+                    }
+                }else{
+                    await DialogService.Alert("The name you trying to change to already exist.","Important");
+                    args.Name = OriginalName;
+                    grid0.CancelEditRow(args);
+                    await grid0.Reload();
+                    isModifying = false;
+                }
+
+            }else{
+                await mydbService.UpdateInventory(args.Name,args);
+                isModifying = false;
+            }
+
         }
 
         protected async Task GridRowCreate(CHKS.Models.mydb.Inventory args)
@@ -137,7 +163,7 @@ namespace CHKS.Pages
 
         protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.Inventory data)
         {
-
+            OriginalName = data.Name;
             isModifying = true;
             await grid0.EditRow(data);
             isEditMode = true;

@@ -27,6 +27,8 @@ namespace CHKS.Models.mydb
 
         public decimal? Riel { get; set; }
 
+        public ICollection<Expensehistoryconnector> Expensehistoryconnectors { get; set; }
+
         public ICollection<Historyconnector> Historyconnectors { get; set; }
     }
 }

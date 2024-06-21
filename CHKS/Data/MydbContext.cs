@@ -40,6 +40,12 @@ namespace CHKS.Data
               .HasForeignKey(i => i.Product)
               .HasPrincipalKey(i => i.Name);
 
+            builder.Entity<CHKS.Models.mydb.Expensehistoryconnector>()
+              .HasOne(i => i.History1)
+              .WithMany(i => i.Expensehistoryconnectors)
+              .HasForeignKey(i => i.History)
+              .HasPrincipalKey(i => i.CashoutDate);
+
             builder.Entity<CHKS.Models.mydb.History>()
               .HasOne(i => i.Car)
               .WithMany(i => i.Histories)
@@ -70,20 +76,12 @@ namespace CHKS.Data
               .Property(p => p.Total)
               .HasPrecision(10,2);
 
-            builder.Entity<CHKS.Models.mydb.Daily>()
-              .Property(p => p.Total)
-              .HasPrecision(10,2);
-
-            builder.Entity<CHKS.Models.mydb.Daily>()
-              .Property(p => p.Expense)
-              .HasPrecision(10,2);
-
-            builder.Entity<CHKS.Models.mydb.Daily>()
-              .Property(p => p.ProductExpense)
-              .HasPrecision(10,2);
-
             builder.Entity<CHKS.Models.mydb.Dailyexpense>()
               .Property(p => p.Expense)
+              .HasPrecision(10,2);
+
+            builder.Entity<CHKS.Models.mydb.Expensehistoryconnector>()
+              .Property(p => p.Total)
               .HasPrecision(10,2);
 
             builder.Entity<CHKS.Models.mydb.History>()
@@ -134,9 +132,9 @@ namespace CHKS.Data
 
         public DbSet<CHKS.Models.mydb.Connector> Connectors { get; set; }
 
-        public DbSet<CHKS.Models.mydb.Daily> Dailies { get; set; }
-
         public DbSet<CHKS.Models.mydb.Dailyexpense> Dailyexpenses { get; set; }
+
+        public DbSet<CHKS.Models.mydb.Expensehistoryconnector> Expensehistoryconnectors { get; set; }
 
         public DbSet<CHKS.Models.mydb.History> Histories { get; set; }
 

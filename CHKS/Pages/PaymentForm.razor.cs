@@ -37,6 +37,7 @@ namespace CHKS.Pages
         protected decimal? Dollar = 0;
         protected decimal? Baht = 0;
         protected decimal? Riel = 0;
+        protected DateOnly? ChosenDate;
 
         protected async Task CashOut(){
             DialogService.Close(new List<decimal?>{Bank,Dollar,Baht,Riel});

@@ -45,6 +45,7 @@ namespace CHKS.Pages
         protected string CarType;       
         protected string RowTotal = "0";
 
+        protected string TodayTotal = "$0";
 
         protected bool VisibilityOfServiceCharge = false;
         protected string ServiceType;
@@ -62,6 +63,16 @@ namespace CHKS.Pages
         {
             await DialogService.OpenAsync<ExpenseMenu>("Expense Menu");
         }
+        protected async override Task OnInitializedAsync()
+        {
+            Retotal();
+        }
+
+        protected async void Retotal(){
+            IEnumerable<Models.mydb.History> history = await MydbService.GetHistories();
+            history = history.Where(i => i.CashoutDate.Contains(dates));
+            TodayTotal = "$"+ history.Sum(i => i.Total).ToString();
+        }       
 
         protected async Task AddServiceCharge(){
             Models.mydb.Connector Service = new Models.mydb.Connector{
@@ -173,57 +184,59 @@ namespace CHKS.Pages
         protected async Task CashOut(){
             if(Connectors != Enumerable.Empty<Models.mydb.Connector>()){
                 if(await DialogService.Confirm("Are you sure?","Important!") == true){
-                    List<decimal?> payment = await DialogService.OpenAsync<PaymentForm>("Payment",new Dictionary<string, object>{{"Total",Customer.Total}}, new DialogOptions{Width="70%"});
+                    List<decimal?> payment = await DialogService.OpenAsync<PaymentForm>("Payment",new Dictionary<string, object>{{"Total",Customer.Total}}, new DialogOptions{Width="35%"});
+
                     if(payment != null){
-                        string time = DateTime.Now.ToString();
-                        Models.mydb.History History = new Models.mydb.History{
-                            CashoutDate = time,
-                            Plate = Customer.Plate,
-                            Total = Customer.Total,
-                            Bank = payment[0],
-                            Dollar = payment[1],
-                            Baht = payment[2],
-                            Riel = payment[3],
-                        };
-                        await MydbService.CreateHistory(History);
+                            string time = DateTime.Now.ToString();
+                            Models.mydb.History History = new Models.mydb.History{
+                                CashoutDate = time,
+                                Plate = Customer.Plate,
+                                Total = Customer.Total,
+                                Bank = payment[0],
+                                Dollar = payment[1],
+                                Baht = payment[2],
+                                Riel = payment[3],
+                            };
+                            await MydbService.CreateHistory(History);
 
-                        foreach(var i in Connectors.ToList())
-                        {   
-                            if(i.Product != "Service Charge")
-                            {
-                                Models.mydb.Historyconnector historyconnector = new Models.mydb.Historyconnector{
-                                    Id = i.GeneratedKey + time,
-                                    Product = i.Product,
-                                    Export = i.Inventory.Export,
-                                    Qty = i.Qty,
-                                    CartId = time,
-                                    Note = i.Note
-                                };
+                            foreach(var i in Connectors.ToList())
+                            {   
+                                if(i.Product != "Service Charge")
+                                {
+                                    Models.mydb.Historyconnector historyconnector = new Models.mydb.Historyconnector{
+                                        Id = i.GeneratedKey + time,
+                                        Product = i.Product,
+                                        Export = i.Inventory.Export,
+                                        Qty = i.Qty,
+                                        CartId = time,
+                                        Note = i.Note
+                                    };
 
-                                await MydbService.CreateHistoryconnector(historyconnector);
-                            }else{
-                                Models.mydb.Historyconnector historyconnector = new Models.mydb.Historyconnector{
-                                    Id = i.GeneratedKey + time,
-                                    Product = i.Product,
-                                    Export = i.Total,
-                                    Qty = i.Qty,
-                                    CartId = time,
-                                    Note = i.Note
-                                };
+                                    await MydbService.CreateHistoryconnector(historyconnector);
+                                }else{
+                                    Models.mydb.Historyconnector historyconnector = new Models.mydb.Historyconnector{
+                                        Id = i.GeneratedKey + time,
+                                        Product = i.Product,
+                                        Export = i.Total,
+                                        Qty = i.Qty,
+                                        CartId = time,
+                                        Note = i.Note
+                                    };
 
-                                await MydbService.CreateHistoryconnector(historyconnector);
-                            }
+                                    await MydbService.CreateHistoryconnector(historyconnector);
+                                }
 
-                        };
+                            };
 
-                        await MydbService.DeleteCart(Customer.CartId);
-                        ResetToDefault();
-                        VisibilityOfServiceCharge = false;
-
+                            await MydbService.DeleteCart(Customer.CartId);
+                            ResetToDefault();
+                            VisibilityOfServiceCharge = false;
                     }
                 }
             }else{await DialogService.Alert("You have no items in cart.","Note!");}
         }
+
+        
 
 
         protected async void ResetToDefault(){

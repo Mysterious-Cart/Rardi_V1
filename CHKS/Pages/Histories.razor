@@ -23,7 +23,7 @@
             <Columns>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="CashoutDate" Title="Cashout Date">
                     <EditTemplate Context="history">
-                        <RadzenDatePicker style="display: block; width: 100%" @bind-Value="@ChosenDate" Name="Date" DateFormat="dd/MM/yyyy" />
+                        <RadzenDatePicker style="display: block; width: 100%" @bind-Value="@ChosenDate" Name="Date" DateFormat="dd/MM/yyyy"/>
                     </EditTemplate>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Car.Plate" Title="Car">
@@ -45,12 +45,12 @@
                             Click=@(args => CancelButtonClick(args, history)) @onclick:stopPropagation="true" />
                     </EditTemplate>
                     <Template Context="history">
-                        <!--<RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="edit" Size="ButtonSize.Medium"
+                        <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="edit" Size="ButtonSize.Medium"
                             Shade="Shade.Lighter" Variant="Variant.Flat"
-                            Click=@(args => EditButtonClick(args, history)) @onclick:stopPropagation="true" />-->
+                            Click=@(args => EditButtonClick(args, history)) @onclick:stopPropagation="true" />
                         <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Medium"
                             Shade="Shade.Lighter" Variant="Variant.Flat"
-                            Click=@(args => GridDeleteButtonClick(args, history)) @onclick:stopPropagation="true" />
+                            Click=@(args => GridDeleteButtonClick(history)) @onclick:stopPropagation="true" />
                     </Template>
                 </RadzenDataGridColumn>
             </Columns>
