@@ -104,14 +104,10 @@
     <RadzenCard Style="width: 17%; border-radius:70px; margin-left:auto; border-width:2px; border-color: black; padding-top:50px;" >
             <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
                 <RadzenText Text="Today is:" TextStyle="TextStyle.Overline" Style="font-size:larger;"/>
-                <RadzenText Text="@dates" TextStyle="TextStyle.DisplayH6"/>
+                <RadzenText Text="@today" TextStyle="TextStyle.DisplayH6"/>
                 <RadzenText Text="Total Today" TextStyle="TextStyle.Overline" Style="font-size:large;"/>
                 <RadzenText Text="@TodayTotal" TextStyle="TextStyle.DisplayH6"/>
                 <RadzenText Text="Total Expense" TextStyle="TextStyle.Overline" Style="font-size:large;"/>
             </RadzenStack>
     </RadzenCard>
 </RadzenStack>
-
-@code{
-    protected static string dates = DateTime.Now.ToString("dd/MM/yy");
-}

@@ -4,12 +4,16 @@
 
 <RadzenRow>
     <RadzenStack Orientation="Orientation.Horizontal">
-        
+        @if(Title != "Choosing Date"){
             <RadzenRow>
                 <RadzenNumeric @bind-Value="Input" title="@Title" Placeholder="Required" Min=1/>
                 <RadzenNumericRangeValidator Component="@Title" Min="1"/>
             </RadzenRow>
-
+        }else{
+            <RadzenRow>
+                <RadzenDatePicker @bind-Value="ChosenDate" title="@Title" Placeholder="Required"/>
+            </RadzenRow>
+        }
 
         <RadzenButton Click="@Close" Icon="add" style="margin-left:auto;"/>
     </RadzenStack>

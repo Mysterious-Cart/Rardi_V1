@@ -51,6 +51,8 @@ namespace CHKS.Pages
         protected string ServiceType;
         protected decimal ServiceFees=0;
 
+        protected static string today = DateTime.Now.ToString("dd/MM/yy");
+
         protected IEnumerable<CHKS.Models.mydb.Cart> Carts;
         protected IEnumerable<CHKS.Models.mydb.Connector> Connectors;
         protected IEnumerable<CHKS.Models.mydb.Inventory> Inventories;
@@ -70,7 +72,7 @@ namespace CHKS.Pages
 
         protected async void Retotal(){
             IEnumerable<Models.mydb.History> history = await MydbService.GetHistories();
-            history = history.Where(i => i.CashoutDate.Contains(dates));
+            history = history.Where(i => i.CashoutDate.Contains(today));
             TodayTotal = "$"+ history.Sum(i => i.Total).ToString();
         }       
 
@@ -86,6 +88,8 @@ namespace CHKS.Pages
             await MydbService.CreateConnector(Service);
             ServiceType = "";
             ServiceFees = 0;
+            Connectors = await MydbService.GetConnectors();
+            Connectors = Connectors.Where(i => i.CartId == Customer.CartId);
             await Grid1.Reload();
         }
 
@@ -187,7 +191,14 @@ namespace CHKS.Pages
                     List<decimal?> payment = await DialogService.OpenAsync<PaymentForm>("Payment",new Dictionary<string, object>{{"Total",Customer.Total}}, new DialogOptions{Width="35%"});
 
                     if(payment != null){
-                            string time = DateTime.Now.ToString();
+                        string time = "";
+                            if(await DialogService.Confirm("Do you wish to change Cashout Date?","Note" ) == false){
+                                time = DateTime.Now.ToString();
+                            }else{
+                                
+                                time = await DialogService.OpenAsync<SingleInputPopUp>("Choosing Date", new Dictionary<string, object>{{"Title","Choosing Date"}});
+                            }
+                            
                             Models.mydb.History History = new Models.mydb.History{
                                 CashoutDate = time,
                                 Plate = Customer.Plate,

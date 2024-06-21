@@ -31,6 +31,7 @@ namespace CHKS.Pages
         protected NotificationService NotificationService { get; set; }
 
         protected decimal Input = 1;
+        protected DateOnly ChosenDate;
 
         [Parameter]
         public string Title {get; set;}
@@ -38,6 +39,8 @@ namespace CHKS.Pages
         protected void Close(){
             if(Title=="Cart ID"){
                 DialogService.Close((int)Input);
+            }else if(Title=="Choosing Date"){
+                DialogService.Close(ChosenDate.ToString());
             }else{
                 DialogService.Close(Input);
             }
