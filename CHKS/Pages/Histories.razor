@@ -28,11 +28,19 @@
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Car.Plate" Title="Car">
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Bank" Title="Paid(Bank)" FormatString="${0:N2}">
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Total" Title="Total" FormatString="${0:N2}">
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Total" Title="Paid(Dollar)" FormatString="${0:N2}">
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Bank" Title="Paid(Bank)" FormatString="${0:N2}">
+                    <EditTemplate Context="history">
+                        <RadzenDatePicker style="display: block; width: 100%" @bind-Value="@ChosenDate" Name="Date" DateFormat="dd/MM/yyyy"/>
+                    </EditTemplate>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Baht" Title="Paid(Baht)">
+                    <EditTemplate Context="history">
+                        <RadzenDatePicker style="display: block; width: 100%" @bind-Value="@ChosenDate" Name="Date" DateFormat="dd/MM/yyyy"/>
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Dollar" Title="Paid(Dollar)" FormatString="${0:N2}">
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Riel" Title="Paid(Riel)">
                 </RadzenDataGridColumn>

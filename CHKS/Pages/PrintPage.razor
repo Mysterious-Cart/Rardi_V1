@@ -1,0 +1,137 @@
+@layout ReciptLayout
+@page "/print-page"
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject DialogService DialogService
+@inject ContextMenuService ContextMenuService
+@inject TooltipService TooltipService
+@inject NotificationService NotificationService
+
+<div style="width:100%; border-top:solid; border-top-color:lightgray; border-width:2px"></div>
+
+<RadzenStack >
+    <RadzenStack Orientation="Orientation.Horizontal">
+        <RadzenCard Variant="Variant.Outlined" Style="width: 44%; padding:20px; border-color:gray;"  >
+            <RadzenStack Orientation="Orientation.Horizontal">
+                <RadzenColumn Style="margin-right:20px; height: 70px; width:fit-content; padding:10px;" >
+                    <RadzenRow>
+                        <RadzenText Text="ផ្លាកលេខ ៖" TextStyle="TextStyle.Body1"/>
+                        <RadzenText Text="@Customer.Plate"/>
+                    </RadzenRow>
+                    <RadzenRow Style="margin-top: 20px;">
+                        <RadzenText Text="មាកឡាន ៖" TextStyle="TextStyle.Body1"/>
+                        <RadzenText Text="@Customer.Type"/>
+                    </RadzenRow>
+                </RadzenColumn>
+                <RadzenColumn Style="margin-right:20px; height: 70px; padding:10px" >
+                    <RadzenRow >
+                        <RadzenText Text="លេខទូរស័ព្ទ ៖" TextStyle="TextStyle.Body1"/>
+                        <RadzenText Text="@Customer.Phone"/>
+                    </RadzenRow>
+                    <RadzenRow Style="margin-top: 20px;">
+                        <RadzenText Text="ប្រភេទប្រាក់​​ទទូល ៖" TextStyle="TextStyle.Body1"/>
+                        <RadzenText Text="@PaymentType"/>
+                    </RadzenRow>
+                </RadzenColumn>
+
+            </RadzenStack>
+        </RadzenCard>
+        
+        <RadzenCard Variant="Variant.Outlined" Style="width: 58%; padding:20px; border-color:gray">
+            <RadzenStack Orientation="Orientation.Horizontal">
+                <RadzenColumn Style="margin-right:20px; height: 70px; padding:10px" >
+                    <RadzenRow >
+                        <RadzenText Text="អ្នកគិតលុយ ៖" TextStyle="TextStyle.Body1"/>
+                        <RadzenText Text="All"/>
+                    </RadzenRow>
+                    <RadzenRow Style="margin-top: 20px;">
+                        <RadzenText Text="ថ្ងៃគិតលុយ ៖" TextStyle="TextStyle.Body1"/>
+                        <RadzenText Text="@DateTime.Now.ToString()"/>
+                    </RadzenRow>
+                </RadzenColumn>
+                <RadzenColumn Style="margin-right:20px; height: 70px;" >
+                    <RadzenRow AlignItems="AlignItems.Center">
+                        <RadzenText Text="ទីតាំង ៖" TextStyle="TextStyle.Body1" Style="height:20px"/>
+                        <RadzenText Text="សង្កាតផ្សារកណ្តាល​ ៣០០ ​ម៉ែត្រពីសាលាក្រុង" style="width:160px"/>
+                    </RadzenRow>
+                    <RadzenRow Style="margin-top: 10px;">
+                        <RadzenText Text="លេខទូរស័ព្ទទាក់ទង​ ៖​​" TextStyle="TextStyle.Body1"/>
+                        <RadzenText Text="017706535"/>
+                    </RadzenRow>
+                </RadzenColumn>
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenStack>
+
+    <div style="width:100%; border-top:solid; border-top-color:lightgray; border-width:2px"></div>
+
+    <RadzenDataGrid @ref="Grid1" ColumnWidth="210px" Data="@Connector" TItem="Models.mydb.Connector" AllowColumnPicking="false" Style = "height: 70vh;" GridLines="Radzen.DataGridGridLines.None">
+        <Columns>
+            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Product" Title="Product Name">
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Qty" Title ="Qty">
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Inventory.Export" Title="Unit Price" FormatString="${0:N2}">
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Total" Title="Total" FormatString="${0:N2}">
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+    <RadzenStack>
+        
+        <RadzenCard Variant="Variant.Outlined" Style=" padding:20px; border-color:gray; width:30%; margin-left:auto; align-items:" >
+            <RadzenColumn Style="margin-right:20px; height: 70px;" >
+                <RadzenRow AlignItems="AlignItems.Center">
+                <RadzenText Text="តម្លៃសរុបជារៀល ៖" TextStyle="TextStyle.Body1" Style="height:20px"/>
+                    <RadzenText Text=""/>
+                </RadzenRow>
+                <RadzenRow Style="margin-top: 10px;">
+                    <RadzenText Text="តម្លៃសរុបជាបាត ៖" TextStyle="TextStyle.Body1"/>
+                    <RadzenText Text="fasdf"/>
+                </RadzenRow>
+                    <RadzenRow Style="margin-top: 10px;">
+                    <RadzenText Text="តម្លៃសរុបជាដុលា ៖" TextStyle="TextStyle.Body1"/>
+                    <RadzenText Text="fasdf"/>
+                </RadzenRow>
+            </RadzenColumn>
+        </RadzenCard>
+    </RadzenStack>
+</RadzenStack>
+
+@code{
+
+    [Inject]
+    mydbService MydbService {get; set;}
+
+    [Parameter]
+    public int Id {get; set;}
+
+    [Parameter]
+    public string PaymentType {get; set;}
+
+    protected Models.mydb.Cart CustomerCart;
+    protected Models.mydb.Car Customer;
+
+    protected IEnumerable<Models.mydb.Connector> Connector;
+    protected RadzenDataGrid<Models.mydb.Connector> Grid1;
+
+        protected override async Task OnInitializedAsync()
+        {
+            CustomerCart = await MydbService.GetCartByCartId(Id);
+            Customer = CustomerCart.Car;
+
+            Connector = await MydbService.GetConnectors();
+            Connector = Connector.Where(i => i.CartId == Id);
+
+            foreach(var i in Connector.ToList()){
+                if(i.Product == "Service Charge"){
+                    i.Product = i.Note;
+                }else{
+                    i.Product += "(" + i.Note + ")";
+                }
+            }
+        }
+
+
+
+}

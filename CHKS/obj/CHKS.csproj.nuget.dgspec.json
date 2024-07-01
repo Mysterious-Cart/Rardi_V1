@@ -14,12 +14,14 @@
         "outputPath": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Kim hong\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Kim hong\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -62,6 +64,14 @@
             "Radzen.Blazor": {
               "target": "Package",
               "version": "[*, )"
+            },
+            "RazorEngine": {
+              "target": "Package",
+              "version": "[3.10.0, )"
+            },
+            "iText": {
+              "target": "Package",
+              "version": "[7.0.0, )"
             }
           },
           "imports": [

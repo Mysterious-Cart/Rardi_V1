@@ -10,7 +10,7 @@ using Radzen.Blazor;
 
 namespace CHKS.Pages
 {
-    public partial class PaymentForm
+    public partial class Company
     {
         [Inject]
         protected IJSRuntime JSRuntime { get; set; }
@@ -29,17 +29,5 @@ namespace CHKS.Pages
 
         [Inject]
         protected NotificationService NotificationService { get; set; }
-
-        [Parameter]
-        public decimal Total{get; set;}
-
-        protected decimal? Bank = 0;
-        protected decimal? Dollar = 0;
-        protected decimal? Baht = 0;
-        protected decimal? Riel = 0;
-
-        protected async Task CashOut(){
-            DialogService.Close(new List<decimal?>{Bank,Dollar,Baht,Riel});
-        }
     }
 }

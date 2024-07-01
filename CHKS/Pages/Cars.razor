@@ -28,13 +28,11 @@
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.Car" Property="Phone" Title="Phone">
                   <EditTemplate Context="car">
                       <RadzenTextBox style="display: block; width: 100%" @bind-Value="@car.Phone" Name="Phone" />
-                      <RadzenRequiredValidator Component="Phone" Text="Phone is required" style="position: absolute;" />
                   </EditTemplate>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.Car" Property="Type" Title="Type">
                   <EditTemplate Context="car">
                       <RadzenTextBox style="display: block; width: 100%" @bind-Value="@car.Type" Name="Type" />
-                      <RadzenRequiredValidator Component="Type" Text="Type is required" style="position: absolute;" />
                   </EditTemplate>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.Car" Filterable="false" Sortable="false" Width="156px" TextAlign="TextAlign.Center">

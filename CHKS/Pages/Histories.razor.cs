@@ -102,6 +102,8 @@ namespace CHKS.Pages
                     {
                         await grid0.Reload();
                     }
+                }else{
+                    editMode = false;
                 }
             }
             catch (Exception ex)

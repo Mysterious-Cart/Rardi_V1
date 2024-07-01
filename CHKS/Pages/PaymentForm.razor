@@ -16,19 +16,15 @@
                     <RadzenNumericRangeValidator Min="0" Component="Dollar"/>
             </RadzenStack>
             <RadzenStack Gap="35px">
-           
                     <RadzenLabel Component="Bank" Text="Bank: "/>
-
                     <RadzenLabel Component="Riel" Text="Riel: "/>
-                    
-                    <!--<RadzenLabel Component="Payout" Text="Payout Date: "/>-->
+
             </RadzenStack>
             <RadzenStack>
-                   <RadzenNumeric title="Bank" @bind-Value="Bank" Style="margin-left:1%"/>
+                    <RadzenNumeric title="Bank" @bind-Value="Bank" Style="margin-left:1%"/>
                     <RadzenNumericRangeValidator Min="0" Component="Bank"/>
                     <RadzenNumeric title="Riel" @bind-Value="Riel" Style="margin-left:1%"/>
                     <RadzenNumericRangeValidator Min="0" Component="Riel"/>
-                    <!--<RadzenDatePicker title="Payout" @bind-Value="ChosenDate" Style="margin-left:1%" DateFormat="dd/MM/yyyy" InitialViewDate="DateTime.Now"/>-->
             </RadzenStack>
 
         </RadzenStack>

@@ -1,0 +1,21 @@
+@inherits LayoutComponentBase
+
+
+<RadzenLayout Style="padding: 25px;">
+    <RadzenStack Orientation="Orientation.Vertical">
+        <RadzenStack Orientation="Orientation.Horizontal" Gap="300px">
+            <RadzenRow>
+                <RadzenImage Path="images/Full_logo.png" Style="width:150px; height:150px;"/>
+            </RadzenRow>
+            <RadzenRow JustifyContent="JustifyContent.Center">
+                <RadzenText Text="យាន្តដ្ផាន ធីភី​ ប៉ោយប៉ែត" TextStyle="TextStyle.Body1" Style="font-family: 'Times New Roman', Times, serif; font-size: xx-large; width: fit-content; height: fit-content; margin-top:30px"/>
+                <RadzenText Text="TP Service Centre" TextStyle="TextStyle.Body1" Style="font-family:'Times New Roman', Times, serif; font-size:xx-large;"/>
+            </RadzenRow>
+        </RadzenStack>
+        <RadzenColumn>
+
+            @Body
+                
+        </RadzenColumn>
+    </RadzenStack>
+</RadzenLayout>

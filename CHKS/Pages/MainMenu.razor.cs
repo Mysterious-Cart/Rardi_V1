@@ -2,6 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using RazorEngine;
+using RazorEngine.Templating;
+using iText.Kernel.Pdf;
+using iText.Layout.Element;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -32,6 +36,7 @@ namespace CHKS.Pages
 
         [Inject]
         protected mydbService MydbService {get; set;}
+
 
 
 
@@ -91,6 +96,10 @@ namespace CHKS.Pages
             Connectors = await MydbService.GetConnectors();
             Connectors = Connectors.Where(i => i.CartId == Customer.CartId);
             await Grid1.Reload();
+        }
+
+        protected void printRecipt(){
+    
         }
 
         
@@ -180,6 +189,9 @@ namespace CHKS.Pages
                     };
                     await MydbService.DeleteCart(Customer.CartId);
                     ResetToDefault();
+                }else if(connector == null){
+                    await MydbService.DeleteCart(Customer.CartId);
+                    ResetToDefault();
                 }
             }
         }
@@ -194,6 +206,10 @@ namespace CHKS.Pages
                         string time = "";
                             if(await DialogService.Confirm("Do you wish to change Cashout Date?","Note" ) == false){
                                 time = DateTime.Now.ToString();
+                                if(await DialogService.Confirm("Do you wish print recipt?","Confirmation") == true)
+                                {
+                                    
+                                }
                             }else{
                                 
                                 time = await DialogService.OpenAsync<SingleInputPopUp>("Choosing Date", new Dictionary<string, object>{{"Title","Choosing Date"}});
