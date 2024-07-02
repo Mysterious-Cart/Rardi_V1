@@ -49,10 +49,6 @@
               "target": "Package",
               "version": "[2.20.0, )"
             },
-            "IronPdf": {
-              "target": "Package",
-              "version": "[2024.6.1, )"
-            },
             "IronPdf.Extensions.Razor": {
               "target": "Package",
               "version": "[2024.5.2, )"
@@ -72,10 +68,6 @@
             "Radzen.Blazor": {
               "target": "Package",
               "version": "[*, )"
-            },
-            "iText": {
-              "target": "Package",
-              "version": "[7.0.0, )"
             },
             "iTextSharp": {
               "target": "Package",

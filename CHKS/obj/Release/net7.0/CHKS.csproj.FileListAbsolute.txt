@@ -48,3 +48,7 @@ C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\obj\Release\net7.0\refint\CHKS.dll
 C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\obj\Release\net7.0\CHKS.pdb
 C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\obj\Release\net7.0\CHKS.genruntimeconfig.cache
 C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\obj\Release\net7.0\ref\CHKS.dll
+C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Release\net7.0\BouncyCastle.Cryptography.dll
+C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Release\net7.0\IronPdf.Extensions.Razor.Page.dll
+C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Release\net7.0\itextsharp.dll
+C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\obj\Release\net7.0\CHKS.MvcApplicationPartsAssemblyInfo.cs

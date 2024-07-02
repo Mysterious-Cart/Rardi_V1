@@ -1371,7 +1371,10 @@ window.Radzen = {
             }
 
             if (options.autoFocusFirstElement) {
-                if (lastDialog.querySelectorAll('.rz-html-editor-content').length) {
+                var focusable = Radzen.getFocusableElements(lastDialog);
+                var editor = lastDialog.querySelector('.rz-html-editor');
+
+                if (editor && !focusable.includes(editor.previousElementSibling)) {
                     var editable = lastDialog.querySelector('.rz-html-editor-content');
                     if (editable) {
                         var selection = window.getSelection();
@@ -1540,7 +1543,7 @@ window.Radzen = {
 
     return readAsDataURL(fileInput);
   },
-  toggleMenuItem: function (target, event, defaultActive) {
+  toggleMenuItem: function (target, event, defaultActive, clickToOpen) {
     var item = target.closest('.rz-navigation-item');
 
     var active = defaultActive != undefined ? defaultActive : !item.classList.contains('rz-navigation-item-active');
@@ -1563,6 +1566,10 @@ window.Radzen = {
         icon.style.transform = 'rotate(' + deg + ')';
       }
     }
+
+    if (clickToOpen === false && item.parentElement && item.parentElement.closest('.rz-navigation-item') && !defaultActive) {
+        return;
+    };
 
     toggle(active);
 

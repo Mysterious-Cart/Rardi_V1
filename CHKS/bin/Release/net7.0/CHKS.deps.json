@@ -9,13 +9,23 @@
       "CHKS/1.0.0": {
         "dependencies": {
           "DocumentFormat.OpenXml": "2.20.0",
+          "IronPdf.Extensions.Razor": "2024.5.2",
           "Microsoft.EntityFrameworkCore": "7.0.0",
           "Microsoft.EntityFrameworkCore.Design": "7.0.0",
           "Pomelo.EntityFrameworkCore.MySql": "7.0.0-alpha.1",
-          "Radzen.Blazor": "4.32.7"
+          "Radzen.Blazor": "4.33.2",
+          "iTextSharp": "5.5.13.4"
         },
         "runtime": {
           "CHKS.dll": {}
+        }
+      },
+      "BouncyCastle.Cryptography/2.4.0": {
+        "runtime": {
+          "lib/net6.0/BouncyCastle.Cryptography.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.4.0.33771"
+          }
         }
       },
       "DartSassBuilder/1.0.0": {},
@@ -35,6 +45,25 @@
           "lib/net6.0/Humanizer.dll": {
             "assemblyVersion": "2.14.0.0",
             "fileVersion": "2.14.1.48190"
+          }
+        }
+      },
+      "IronPdf.Extensions.Razor/2024.5.2": {
+        "runtime": {
+          "lib/net6.0/IronPdf.Extensions.Razor.Page.dll": {
+            "assemblyVersion": "2024.5.0.2",
+            "fileVersion": "2024.5.0.2"
+          }
+        }
+      },
+      "iTextSharp/5.5.13.4": {
+        "dependencies": {
+          "BouncyCastle.Cryptography": "2.4.0"
+        },
+        "runtime": {
+          "lib/net461/itextsharp.dll": {
+            "assemblyVersion": "5.5.13.4",
+            "fileVersion": "5.5.13.4"
           }
         }
       },
@@ -234,7 +263,7 @@
           }
         }
       },
-      "Radzen.Blazor/4.32.7": {
+      "Radzen.Blazor/4.33.2": {
         "dependencies": {
           "DartSassBuilder": "1.0.0",
           "Microsoft.AspNetCore.Components": "7.0.14",
@@ -243,8 +272,8 @@
         },
         "runtime": {
           "lib/net7.0/Radzen.Blazor.dll": {
-            "assemblyVersion": "4.32.7.0",
-            "fileVersion": "4.32.7.0"
+            "assemblyVersion": "4.33.2.0",
+            "fileVersion": "4.33.2.0"
           }
         }
       },
@@ -287,6 +316,13 @@
       "serviceable": false,
       "sha512": ""
     },
+    "BouncyCastle.Cryptography/2.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-SwXsAV3sMvAU/Nn31pbjhWurYSjJ+/giI/0n6tCrYoupEK34iIHCuk3STAd9fx8yudM85KkLSVdn951vTng/vQ==",
+      "path": "bouncycastle.cryptography/2.4.0",
+      "hashPath": "bouncycastle.cryptography.2.4.0.nupkg.sha512"
+    },
     "DartSassBuilder/1.0.0": {
       "type": "package",
       "serviceable": true,
@@ -307,6 +343,20 @@
       "sha512": "sha512-lQKvtaTDOXnoVJ20ibTuSIOf2i0uO0MPbDhd1jm238I+U/2ZnRENj0cktKZhtchBMtCUSRQ5v4xBCUbKNmyVMw==",
       "path": "humanizer.core/2.14.1",
       "hashPath": "humanizer.core.2.14.1.nupkg.sha512"
+    },
+    "IronPdf.Extensions.Razor/2024.5.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-CXp/gSbbIdXssHGNOi8Ed00o+Td85NmMRw9TBCvnoS7Vxlbte6vEeThccRUXnyh26UNvuDxwSFJZOBGi+JWi6Q==",
+      "path": "ironpdf.extensions.razor/2024.5.2",
+      "hashPath": "ironpdf.extensions.razor.2024.5.2.nupkg.sha512"
+    },
+    "iTextSharp/5.5.13.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/cvCNv8AJ+XuD99u4NfHSSxkBJKTdvP36wcfQF9V1Cjzi1ycyFSa4vJ64a3DhFVUTKVO60WF8OmAqngQDTHgYA==",
+      "path": "itextsharp/5.5.13.4",
+      "hashPath": "itextsharp.5.5.13.4.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Authorization/7.0.14": {
       "type": "package",
@@ -483,12 +533,12 @@
       "path": "pomelo.entityframeworkcore.mysql/7.0.0-alpha.1",
       "hashPath": "pomelo.entityframeworkcore.mysql.7.0.0-alpha.1.nupkg.sha512"
     },
-    "Radzen.Blazor/4.32.7": {
+    "Radzen.Blazor/4.33.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-kMiAokMiXITBT4ZzJVZRREFHWCL8Np3CSE0Ep0qVPzabn4RuWDB+9d054L+n2d7AsLWii+ICKYmYpHdi5qbfBg==",
-      "path": "radzen.blazor/4.32.7",
-      "hashPath": "radzen.blazor.4.32.7.nupkg.sha512"
+      "sha512": "sha512-O/drz9TPVvkhtVPgjiS7CW0nMOI6/Ub9N/z26OksmmTS5XtkuVUURC+8bim2AbXKmxYjfmNObMdmgKKfmwY+9g==",
+      "path": "radzen.blazor/4.33.2",
+      "hashPath": "radzen.blazor.4.33.2.nupkg.sha512"
     },
     "System.CodeDom/4.4.0": {
       "type": "package",

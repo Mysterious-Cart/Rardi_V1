@@ -20073,6 +20073,14 @@ a:focus-visible .rz-fieldset-toggler {
   outline: var(--rz-scheduler-focus-outline);
   outline-offset: var(--rz-scheduler-focus-outline-offset);
 }
+.rz-view-content:focus-visible .rz-slot:has(.rz-state-focused) {
+  outline: var(--rz-scheduler-focus-outline);
+  outline-offset: var(--rz-scheduler-focus-outline-offset);
+}
+.rz-view-content:focus-visible .rz-event.rz-state-focused .rz-event-content {
+  outline: var(--rz-scheduler-focus-outline);
+  outline-offset: var(--rz-outline-offset);
+}
 
 .rz-slots {
   flex: 1;
@@ -20226,14 +20234,6 @@ a:focus-visible .rz-fieldset-toggler {
 .rz-month-view .rz-view-content {
   flex: 1;
   flex-direction: column;
-}
-.rz-month-view .rz-view-content:focus-visible .rz-slot:has(.rz-state-focused) {
-  outline: var(--rz-scheduler-focus-outline);
-  outline-offset: var(--rz-scheduler-focus-outline-offset);
-}
-.rz-month-view .rz-view-content:focus-visible .rz-event.rz-state-focused .rz-event-content {
-  outline: var(--rz-scheduler-focus-outline);
-  outline-offset: var(--rz-outline-offset);
 }
 .rz-month-view .rz-slot {
   flex: 1;
