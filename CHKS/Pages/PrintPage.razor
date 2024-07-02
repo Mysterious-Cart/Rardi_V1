@@ -7,9 +7,10 @@
 @inject TooltipService TooltipService
 @inject NotificationService NotificationService
 
+<body @onload="@printMe">
 <div style="width:100%; border-top:solid; border-top-color:lightgray; border-width:2px"></div>
 
-<RadzenStack >
+<RadzenStack>
     <RadzenStack Orientation="Orientation.Horizontal">
         <RadzenCard Variant="Variant.Outlined" Style="width: 44%; padding:20px; border-color:gray;"  >
             <RadzenStack Orientation="Orientation.Horizontal">
@@ -97,8 +98,10 @@
         </RadzenCard>
     </RadzenStack>
 </RadzenStack>
+</body>
 
 @code{
+    
 
     [Inject]
     mydbService MydbService {get; set;}
@@ -106,8 +109,7 @@
     [Parameter]
     public int Id {get; set;}
 
-    [Parameter]
-    public string PaymentType {get; set;}
+    protected string PaymentType;
 
     protected Models.mydb.Cart CustomerCart;
     protected Models.mydb.Car Customer;
@@ -115,23 +117,27 @@
     protected IEnumerable<Models.mydb.Connector> Connector;
     protected RadzenDataGrid<Models.mydb.Connector> Grid1;
 
-        protected override async Task OnInitializedAsync()
-        {
-            CustomerCart = await MydbService.GetCartByCartId(Id);
-            Customer = CustomerCart.Car;
+    protected override async Task OnInitializedAsync()
+    {
+        CustomerCart = await MydbService.GetCartByCartId(Id);
+        Customer = CustomerCart.Car;
 
-            Connector = await MydbService.GetConnectors();
-            Connector = Connector.Where(i => i.CartId == Id);
+        Connector = await MydbService.GetConnectors();
+        Connector = Connector.Where(i => i.CartId == Id);
 
-            foreach(var i in Connector.ToList()){
-                if(i.Product == "Service Charge"){
-                    i.Product = i.Note;
-                }else{
-                    i.Product += "(" + i.Note + ")";
-                }
+        foreach(var i in Connector.ToList()){
+            if(i.Product == "Service Charge"){
+                i.Product = i.Note;
+            }else{
+                i.Product += "(" + i.Note + ")";
             }
         }
 
 
+    }
+
+    protected async Task printMe(){
+        await JSRuntime.InvokeVoidAsync("window.print");
+    }
 
 }

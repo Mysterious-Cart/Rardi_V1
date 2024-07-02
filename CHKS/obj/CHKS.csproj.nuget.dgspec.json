@@ -49,6 +49,14 @@
               "target": "Package",
               "version": "[2.20.0, )"
             },
+            "IronPdf": {
+              "target": "Package",
+              "version": "[2024.6.1, )"
+            },
+            "IronPdf.Extensions.Razor": {
+              "target": "Package",
+              "version": "[2024.5.2, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[7.0.0, )"
@@ -65,13 +73,13 @@
               "target": "Package",
               "version": "[*, )"
             },
-            "RazorEngine": {
-              "target": "Package",
-              "version": "[3.10.0, )"
-            },
             "iText": {
               "target": "Package",
               "version": "[7.0.0, )"
+            },
+            "iTextSharp": {
+              "target": "Package",
+              "version": "[5.5.13.4, )"
             }
           },
           "imports": [

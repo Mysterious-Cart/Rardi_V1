@@ -15,7 +15,7 @@
                 <RadzenText TextStyle="TextStyle.DisplayH6" >@CarType</RadzenText>
                 <RadzenStack Orientation="Orientation.Horizontal" Reverse="true" Gap="5px" AlignItems="AlignItems.End" JustifyContent="JustifyContent.SpaceEvenly" style="height:2%; width:25%; margin-left:auto;">
                     <RadzenButton Icon="add"  Click="@OpenCustomerList" Disabled=@Selection Style="margin-left: auto;"></RadzenButton>   
-
+                    
                     @if(SelectionState == false){
                         <RadzenButton Text="Cancel" ButtonStyle=@ButtonStyle.Danger Style="width:25%" Click="@DeleteCustomer"/>
                         <RadzenButton Text="Cash out"  Click="@CashOut" Style="width:30%"></RadzenButton>

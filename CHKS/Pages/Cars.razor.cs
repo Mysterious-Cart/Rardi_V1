@@ -110,7 +110,6 @@ namespace CHKS.Pages
 
         protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Car data)
         {
-            isEditing = false;
             await grid0.UpdateRow(data);
             
         }
@@ -128,7 +127,8 @@ namespace CHKS.Pages
                 DialogService.Close(Args);
             }
         }
-        protected async Task SelectCar(CHKS.Models.mydb.Cart Args){
+        
+        protected async Task SelectCar(CHKS.Models.mydb.Cart Args){ //Overload with cart instead of Car
             if(isEditing == false) {
                 DialogService.Close(Args);
             }

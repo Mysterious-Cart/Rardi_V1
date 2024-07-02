@@ -2,10 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using RazorEngine;
-using RazorEngine.Templating;
-using iText.Kernel.Pdf;
-using iText.Layout.Element;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -36,8 +32,6 @@ namespace CHKS.Pages
 
         [Inject]
         protected mydbService MydbService {get; set;}
-
-
 
 
         protected CHKS.Models.mydb.Car CustomerLists;
@@ -206,10 +200,7 @@ namespace CHKS.Pages
                         string time = "";
                             if(await DialogService.Confirm("Do you wish to change Cashout Date?","Note" ) == false){
                                 time = DateTime.Now.ToString();
-                                if(await DialogService.Confirm("Do you wish print recipt?","Confirmation") == true)
-                                {
-                                    
-                                }
+
                             }else{
                                 
                                 time = await DialogService.OpenAsync<SingleInputPopUp>("Choosing Date", new Dictionary<string, object>{{"Title","Choosing Date"}});
@@ -225,6 +216,10 @@ namespace CHKS.Pages
                                 Riel = payment[3],
                             };
                             await MydbService.CreateHistory(History);
+                            if(await DialogService.Confirm("Do you wish print recipt?","Confirmation") == true)
+                            {
+                                await DialogService.OpenAsync<PrintPage>("Print Overiew",new Dictionary<string, object>{{"Id",Customer.CartId}});
+                            }
 
                             foreach(var i in Connectors.ToList())
                             {   
@@ -311,11 +306,6 @@ namespace CHKS.Pages
 
         }
 
-        protected async Task AddButtonClick(MouseEventArgs args)
-        {
-            await Grid1.InsertRow(new CHKS.Models.mydb.Connector());
-        }
-
         protected async Task GridDeleteButtonClick(MouseEventArgs args, CHKS.Models.mydb.Connector Product)
         {
             try
@@ -323,15 +313,13 @@ namespace CHKS.Pages
                 if (await DialogService.Confirm("Are you sure you want to delete this record?") == true)
                 {
                     var deleteResult = await MydbService.DeleteConnector(Product.GeneratedKey);
-
                     if (deleteResult != null)
                     {
                         await Grid1.Reload();
                     }
                 }
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex){
                 NotificationService.Notify(new NotificationMessage
                 {
                     Severity = NotificationSeverity.Error,
@@ -366,7 +354,11 @@ namespace CHKS.Pages
             }
             
         }
-        
+
+        protected async Task AddButtonClick(MouseEventArgs args)
+        {
+            await Grid1.InsertRow(new CHKS.Models.mydb.Connector());
+        }
 
         protected async Task GridRowCreate(CHKS.Models.mydb.Connector args)
         {
@@ -390,7 +382,6 @@ namespace CHKS.Pages
             Grid1.CancelEditRow(data);
             await MydbService.CancelConnectorChanges(data);
         }
-        
     }
 
     
