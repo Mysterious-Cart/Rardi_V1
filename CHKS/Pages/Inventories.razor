@@ -5,7 +5,7 @@
 <RadzenStack>
     <RadzenRow AlignItems="AlignItems.Center">
         <RadzenColumn Size="12" SizeMD="6">
-            <RadzenText Text="Inventories" TextStyle="TextStyle.H3" TagName="TagName.H1" style="margin: 0" />
+            <RadzenText Text="Inventories" TextStyle="TextStyle.H3" TagName="TagName.H1" />
         </RadzenColumn>
         <RadzenColumn Size="12" SizeMD="6">
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End" Gap="0.5rem">
@@ -16,7 +16,7 @@
     <RadzenTextBox Placeholder="Search ..." style="display: block; width: 100%" @oninput="@Search" aria-label="Search by all string columns" @bind-Value="search" />
     <RadzenRow>
       <RadzenColumn SizeMD=12>
-        <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.Advanced"  ShowPagingSummary="true" Style="height:55vh;"
+        <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.Advanced"  ShowPagingSummary="true" Style="height:60vh;"
             Data="@inventories" RowUpdate="@GridRowUpdate" RowSelect="@SelectProduct" RowCreate="@GridRowCreate" TItem="CHKS.Models.mydb.Inventory">
             <Columns>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Name" Title="Name" Width="30%" OrderIndex="1">

@@ -18,7 +18,7 @@
     <RadzenTextBox Placeholder="Search ..." style="display: block; width: 100%" @oninput="@Search" aria-label="Search by all string columns" />
     <RadzenRow>
       <RadzenColumn SizeMD=12>
-        <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.SimpleWithMenu" Style="height: 75vh;"
+        <RadzenDataGrid @ref="grid0" ColumnWidth="90px"   AllowFiltering="true" FilterMode="FilterMode.SimpleWithMenu" Style="height: 75vh;"
             Data="@histories" TItem="CHKS.Models.mydb.History" RowSelect="@OpenHistory" RowUpdate="@GridRowUpdate">
             <Columns>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="CashoutDate" Title="Cashout Date">

@@ -1,6 +1,10 @@
 {
   "Files": [
     {
+      "Id": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\Font\\KhmerOS_battambang.ttf",
+      "PackagePath": "staticwebassets\\Font\\KhmerOS_battambang.ttf"
+    },
+    {
       "Id": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\css\\bootstrap\\bootstrap.min.css",
       "PackagePath": "staticwebassets\\css\\bootstrap\\bootstrap.min.css"
     },

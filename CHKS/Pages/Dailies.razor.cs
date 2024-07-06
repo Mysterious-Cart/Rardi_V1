@@ -74,7 +74,7 @@ namespace CHKS.Pages
         }
 
         protected void GetProductWithoutImport(){
-            Historyconnectors = Historyconnectors.Where(i => i.CartId.Contains(dates) && i.Inventory.Import == 0);
+            Historyconnectors = Historyconnectors.Where(i => i.CartId.Contains(dates) && i.Inventory.Import == 0 && i.Inventory.Name != "Service Charge");
             if(Historyconnectors.Any()){
                 NoEmptyImport = false;
             }else{

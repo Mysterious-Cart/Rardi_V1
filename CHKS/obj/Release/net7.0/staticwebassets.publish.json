@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "Z5cXGtA/5YOjFeKGZ8RqzUwytwc4+Xg8JDHbkqCjwCo=",
+  "Hash": "yk70Axtg2xAqpnFUArK0C0i2bdEWQRLAQ4u1+ZEeCbM=",
   "Source": "CHKS",
   "BasePath": "_content/CHKS",
   "Mode": "Default",
@@ -1022,6 +1022,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\Font\\KhmerOS_battambang.ttf",
+      "SourceId": "CHKS",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\",
+      "BasePath": "_content/CHKS",
+      "RelativePath": "Font/KhmerOS_battambang.ttf",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Font\\KhmerOS_battambang.ttf"
     },
     {
       "Identity": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\images\\Full_logo.png",
