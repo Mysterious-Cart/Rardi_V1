@@ -3,16 +3,16 @@
 <RadzenStack Orientation="Orientation.Horizontal" style="height: 90vh;">
     <RadzenStack Style="Width:80%">
         <PageTitle>MainMenu</PageTitle>
-        <RadzenCard Style="margin-bottom: 2%;">
+        <RadzenCard Style="margin-bottom: 2%;" >
             <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceEvenly" Gap=35px AlignItems="AlignItems.End" style="overflow: hidden;">
                 <RadzenText TextStyle="TextStyle.Overline" Style="font-size:larger">Cart ID:</RadzenText>
-                <RadzenText TextStyle="TextStyle.DisplayH6">@Customer.CartId</RadzenText>
+                <RadzenText TextStyle="TextStyle.DisplayH6">@(Customer.CartId == 0? "N/A" : Customer.CartId)</RadzenText>
                 <RadzenText TextStyle="TextStyle.Overline" Style="font-size:larger">Phone:</RadzenText>
-                <RadzenText TextStyle="TextStyle.DisplayH6">@Phone</RadzenText>
+                <RadzenText TextStyle="TextStyle.DisplayH6">@(Phone==null?"N/A":Phone)</RadzenText>
                 <RadzenText TextStyle="TextStyle.Overline" Style="font-size:larger">Plate: </RadzenText>
-                <RadzenText TextStyle="TextStyle.DisplayH6">@Customer.Plate</RadzenText>
+                <RadzenText TextStyle="TextStyle.DisplayH6">@(Customer.Plate==""?"N/A": Customer.Plate)</RadzenText>
                 <RadzenText TextStyle="TextStyle.Overline" Style="font-size:larger">Car:</RadzenText>
-                <RadzenText TextStyle="TextStyle.DisplayH6" >@CarType</RadzenText>
+                <RadzenText TextStyle="TextStyle.DisplayH6" >@(CarType==null?"N/A": CarType)</RadzenText>
                 <RadzenStack Orientation="Orientation.Horizontal" Reverse="true" Gap="5px" AlignItems="AlignItems.End" JustifyContent="JustifyContent.SpaceEvenly" style="height:2%; width:25%; margin-left:auto;">
                     <RadzenButton Icon="add"  Click="@OpenCustomerList" Disabled=@Selection Style="margin-left: auto;"></RadzenButton>   
                     
@@ -41,8 +41,8 @@
                     </RadzenStack>
                 }
 
-                <RadzenDataGrid @ref="Grid1" ColumnWidth="210px" AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowSorting="true"
-                Data="@Connectors" TItem="Models.mydb.Connector" AllowColumnPicking="false" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate" Style = "height: 70vh;">
+                <RadzenDataGrid @ref="Grid1" ColumnWidth="210px" AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="15" 
+                Data="@Connectors" TItem="Models.mydb.Connector" AllowColumnPicking="false" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate" Style = "height: 70vh; border-width: 0px">
                     
                     <Columns>
                         <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Product" Title="Product Name">
@@ -101,7 +101,7 @@
         </RadzenCard>
     </RadzenStack>
         
-    <RadzenCard Style="width: 17%; border-radius:70px; margin-left:auto; border-width:2px; border-color: black; padding-top:50px;" >
+    <RadzenCard Style="width: 17%; border-radius:40px; margin-left:auto; border-width:2px; border-color: black; padding-top:50px;" >
             <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
                 <RadzenText Text="Today is:" TextStyle="TextStyle.Overline" Style="font-size:larger;"/>
                 <RadzenText Text="@today" TextStyle="TextStyle.DisplayH6"/>

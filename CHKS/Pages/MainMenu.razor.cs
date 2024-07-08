@@ -163,7 +163,7 @@ namespace CHKS.Pages
             if(await DialogService.Confirm("Are you sure?","Important!", new ConfirmOptions{OkButtonText="Yes", CancelButtonText="No"}) == true)
             {
                 if(Connectors != null){
-                    await DeleteProduct();
+                    await ClearAllProduct();
                     await MydbService.DeleteCart(Customer.CartId);
                     ResetToDefault();
                 }else if(connector == null){
@@ -184,11 +184,11 @@ namespace CHKS.Pages
                         string time = "";
 
                         if(await DialogService.Confirm("Do you wish to change Cashout Date?","Note", new ConfirmOptions{OkButtonText = "Yes", CancelButtonText="No",CloseDialogOnEsc=false, ShowClose=false}) == false){
-                            time = DateTime.Now.ToString();
+                            time = DateTime.Now.ToString("dd/MM/yyyy") + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")";
                         }else{
                             
                             time = await DialogService.OpenAsync<SingleInputPopUp>("Choosing Date", new Dictionary<string, object>{{"Title","Choosing Date"}}, new DialogOptions{Width="20%"});
-                            time = time!=null?time:DateTime.Now.ToString();
+                            time = time!=null? time + ":" + Customer.CartId + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")": DateTime.Now.ToString("dd/MM/yyyy") + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")";
                         }
 
                         await DialogService.OpenAsync<PrintPage>("",new Dictionary<string, object>{{"Id",Customer.CartId}},new DialogOptions{ShowTitle=false});
@@ -243,7 +243,7 @@ namespace CHKS.Pages
             }else{await DialogService.Alert("You have no items in cart.","Note!");}
         }
 
-        protected async Task DeleteProduct(){
+        protected async Task ClearAllProduct(){
 
             if(Connectors != null){
                 foreach(var i in Connectors.ToList())
@@ -318,7 +318,16 @@ namespace CHKS.Pages
             {
                 if (await DialogService.Confirm("Are you sure you want to delete this item?") == true)
                 {
-                    await DeleteProduct();
+                    await MydbService.DeleteConnector(Product.GeneratedKey);
+                    if(Product.Product != "Service Charge"){
+                        Models.mydb.Inventory UpdatedProduct = new(){
+                            Name = Product.Product,
+                            Stock = Product.Inventory.Stock + Product.Qty,
+                            Import = Product.Inventory.Import,
+                            Export = Product.Inventory.Export,
+                        };
+                        await MydbService.UpdateInventory(Product.Product, UpdatedProduct   );
+                    }
                     await Grid1.Reload();
                 }
             }

@@ -60,7 +60,7 @@ namespace CHKS.Pages
 
         protected async Task OpenHistory(Models.mydb.History args){
             if(editMode == false){
-                await DialogService.OpenAsync<ReciptView>($"Review Recipt Dated: {args.CashoutDate}", new Dictionary<string, object>{{"ID",args.CashoutDate}}, new DialogOptions{Width="50%", Height="70%"});
+                await DialogService.OpenAsync<ReciptView>("", new Dictionary<string, object>{{"ID",args.CashoutDate}}, new DialogOptions{Width="50%", Height="70%"});
             }
         }   
 
@@ -165,13 +165,21 @@ namespace CHKS.Pages
                 await mydbService.UpdateHistory(args.CashoutDate,args);
                 editMode = false;
             }
+
+            ChosenDate = DateTime.MinValue;
         }
 
 
          protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.History data)
         {
-            data.CashoutDate = ChosenDate.ToString("dd/MM/yyyy");
-            await grid0.UpdateRow(data);
+            Console.WriteLine(ChosenDate);
+            if(ChosenDate.ToString("dd/MM/yyyy") == "01/01/0001" ){
+                await DialogService.Alert("No New Date given.","Important");
+                await CancelButtonClick(args,data);
+            }else{
+                data.CashoutDate = ChosenDate.ToString("dd/MM/yyyy");
+                await grid0.UpdateRow(data);
+            }
         }
 
         protected async Task CancelButtonClick(MouseEventArgs args, CHKS.Models.mydb.History data)

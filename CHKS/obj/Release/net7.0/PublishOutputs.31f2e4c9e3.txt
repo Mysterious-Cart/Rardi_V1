@@ -5,11 +5,9 @@ C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Release\net7.0\publish\CHKS.dll
 C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Release\net7.0\publish\CHKS.deps.json
 C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Release\net7.0\publish\CHKS.runtimeconfig.json
 C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Release\net7.0\publish\CHKS.pdb
-C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Release\net7.0\publish\BouncyCastle.Cryptography.dll
 C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Release\net7.0\publish\DocumentFormat.OpenXml.dll
 C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Release\net7.0\publish\Humanizer.dll
 C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Release\net7.0\publish\IronPdf.Extensions.Razor.Page.dll
-C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Release\net7.0\publish\itextsharp.dll
 C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Release\net7.0\publish\Microsoft.AspNetCore.Authorization.dll
 C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Release\net7.0\publish\Microsoft.AspNetCore.Components.dll
 C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Release\net7.0\publish\Microsoft.AspNetCore.Metadata.dll

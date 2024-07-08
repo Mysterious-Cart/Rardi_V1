@@ -6,23 +6,23 @@
         <RadzenStack Orientation = "Orientation.Horizontal" AlignItems = "AlignItems.Center" Gap="20px">
             <RadzenText Text="Monthly Statistic" TextStyle = "TextStyle.H4" Style="Margin-right:15px"/>
             <RadzenText Text="Total:" TextStyle="TextStyle.Overline" style="font-size:large"/>
-            <RadzenText Text="0" TextStyle = "TextStyle.DisplayH5" Style="Margin-right:15px"/>
+            <RadzenText Text="@Math.Round(@Total.GetValueOrDefault(),2).ToString()" TextStyle = "TextStyle.DisplayH5" Style="Margin-right:15px"/>
             <RadzenText Text="Product Total:" TextStyle="TextStyle.Overline" style="font-size:large"/>
-            <RadzenText Text="0" TextStyle = "TextStyle.DisplayH5" Style="Margin-right:15px"/>
+            <RadzenText Text="@Math.Round(@ProductTotal.GetValueOrDefault(),2).ToString()"  TextStyle = "TextStyle.DisplayH5" Style="Margin-right:15px"/>
             <RadzenText Text="Service Total:" TextStyle="TextStyle.Overline" style="font-size:large"/>
-            <RadzenText Text="0" TextStyle = "TextStyle.DisplayH5" Style="Margin-right:15px"/>                
+            <RadzenText Text="@Math.Round(@ServiceTotal.GetValueOrDefault(),2).ToString()"  TextStyle = "TextStyle.DisplayH5" Style="Margin-right:15px"/>                
         </RadzenStack>
     </RadzenCard>
 </RadzenRow>
 
 <RadzenRow Style="Margin-top:20px;">
-    <RadzenCard style="Width:100%">
+    <RadzenCard style="Width:fit-content">
         <RadzenStack>
             <RadzenStack Orientation="Orientation.Horizontal" Gap="10px" AlignItems="AlignItems.Center" >
                 <RadzenLabel Text="From" Component="From"/>
-                <RadzenDatePicker TValue="DateOnly" InitialViewDate="new DateTime(2024,6,10)" Name="From" DateFormat="MM/dd/yyyy" />
+                <RadzenDatePicker @bind-Value="@TimeStart" InitialViewDate="@DateTime.Now" Name="From" DateFormat="dd/MM/yyyy" Max="@DateTime.Now" Change="@GetHistoryBaseOfChoosenDate"/>
                 <RadzenLabel Text="To" Component="To"/>
-                <RadzenDatePicker TValue="DateOnly" InitialViewDate="new DateTime(2024,6,10)" Name="To" DateFormat="MM/dd/yyyy"/>
+                <RadzenDatePicker @bind-Value="@TimeEnd" InitialViewDate="@DateTime.Now" Name="To" DateFormat="dd/MM/yyyy" Max="@DateTime.Now" Change="@GetHistoryBaseOfChoosenDate"/>
             </RadzenStack>
 
             
@@ -31,11 +31,12 @@
 </RadzenRow>
 
 <RadzenRow style="margin-top:20px">
-    <!--<RadzenCard>
-        <RadzenDataGridColumn Width="210px" AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" ShowPagingSummary="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})>
+
+        <RadzenDataGrid Width="210px" AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" @ref="@grid1" TItem ="Models.mydb.History" Data ="@Histories" Style="height: 60vh; width:50%">
             <Columns>
-                <RadzenColumn title="Date"></RadzenColumn>
+                <RadzenDataGridColumn title="Date" TItem ="Models.mydb.History" Property="CashoutDate"></RadzenDataGridColumn>
+                <RadzenDataGridColumn title="Plate" TItem ="Models.mydb.History" Property="Plate"></RadzenDataGridColumn>
+                <RadzenDataGridColumn title="Total" TItem ="Models.mydb.History" Property="Total"></RadzenDataGridColumn>
             </Columns>
         </RadzenDataGrid>
-    </RadzenCard>-->
 </RadzenRow>

@@ -40,7 +40,7 @@ namespace CHKS.Pages
             if(Title=="Cart ID"){
                 DialogService.Close((int)Input);
             }else if(Title=="Choosing Date"){
-                DialogService.Close(ChosenDate.ToString());
+                DialogService.Close(ChosenDate.ToString("dd/MM/yyyy"));
             }else{
                 DialogService.Close(Input);
             }

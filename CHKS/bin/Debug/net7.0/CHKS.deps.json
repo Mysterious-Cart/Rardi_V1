@@ -13,19 +13,10 @@
           "Microsoft.EntityFrameworkCore": "7.0.0",
           "Microsoft.EntityFrameworkCore.Design": "7.0.0",
           "Pomelo.EntityFrameworkCore.MySql": "7.0.0-alpha.1",
-          "Radzen.Blazor": "4.33.2",
-          "iTextSharp": "5.5.13.4"
+          "Radzen.Blazor": "4.33.3"
         },
         "runtime": {
           "CHKS.dll": {}
-        }
-      },
-      "BouncyCastle.Cryptography/2.4.0": {
-        "runtime": {
-          "lib/net6.0/BouncyCastle.Cryptography.dll": {
-            "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.4.0.33771"
-          }
         }
       },
       "DartSassBuilder/1.0.0": {},
@@ -53,17 +44,6 @@
           "lib/net6.0/IronPdf.Extensions.Razor.Page.dll": {
             "assemblyVersion": "2024.5.0.2",
             "fileVersion": "2024.5.0.2"
-          }
-        }
-      },
-      "iTextSharp/5.5.13.4": {
-        "dependencies": {
-          "BouncyCastle.Cryptography": "2.4.0"
-        },
-        "runtime": {
-          "lib/net461/itextsharp.dll": {
-            "assemblyVersion": "5.5.13.4",
-            "fileVersion": "5.5.13.4"
           }
         }
       },
@@ -263,7 +243,7 @@
           }
         }
       },
-      "Radzen.Blazor/4.33.2": {
+      "Radzen.Blazor/4.33.3": {
         "dependencies": {
           "DartSassBuilder": "1.0.0",
           "Microsoft.AspNetCore.Components": "7.0.14",
@@ -272,8 +252,8 @@
         },
         "runtime": {
           "lib/net7.0/Radzen.Blazor.dll": {
-            "assemblyVersion": "4.33.2.0",
-            "fileVersion": "4.33.2.0"
+            "assemblyVersion": "4.33.3.0",
+            "fileVersion": "4.33.3.0"
           }
         }
       },
@@ -316,13 +296,6 @@
       "serviceable": false,
       "sha512": ""
     },
-    "BouncyCastle.Cryptography/2.4.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-SwXsAV3sMvAU/Nn31pbjhWurYSjJ+/giI/0n6tCrYoupEK34iIHCuk3STAd9fx8yudM85KkLSVdn951vTng/vQ==",
-      "path": "bouncycastle.cryptography/2.4.0",
-      "hashPath": "bouncycastle.cryptography.2.4.0.nupkg.sha512"
-    },
     "DartSassBuilder/1.0.0": {
       "type": "package",
       "serviceable": true,
@@ -350,13 +323,6 @@
       "sha512": "sha512-CXp/gSbbIdXssHGNOi8Ed00o+Td85NmMRw9TBCvnoS7Vxlbte6vEeThccRUXnyh26UNvuDxwSFJZOBGi+JWi6Q==",
       "path": "ironpdf.extensions.razor/2024.5.2",
       "hashPath": "ironpdf.extensions.razor.2024.5.2.nupkg.sha512"
-    },
-    "iTextSharp/5.5.13.4": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-/cvCNv8AJ+XuD99u4NfHSSxkBJKTdvP36wcfQF9V1Cjzi1ycyFSa4vJ64a3DhFVUTKVO60WF8OmAqngQDTHgYA==",
-      "path": "itextsharp/5.5.13.4",
-      "hashPath": "itextsharp.5.5.13.4.nupkg.sha512"
     },
     "Microsoft.AspNetCore.Authorization/7.0.14": {
       "type": "package",
@@ -533,12 +499,12 @@
       "path": "pomelo.entityframeworkcore.mysql/7.0.0-alpha.1",
       "hashPath": "pomelo.entityframeworkcore.mysql.7.0.0-alpha.1.nupkg.sha512"
     },
-    "Radzen.Blazor/4.33.2": {
+    "Radzen.Blazor/4.33.3": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-O/drz9TPVvkhtVPgjiS7CW0nMOI6/Ub9N/z26OksmmTS5XtkuVUURC+8bim2AbXKmxYjfmNObMdmgKKfmwY+9g==",
-      "path": "radzen.blazor/4.33.2",
-      "hashPath": "radzen.blazor.4.33.2.nupkg.sha512"
+      "sha512": "sha512-VYdcmQdX8ygsGy4LdUi1Z56RcH34KfR1L2jb/uNOp+RqPkzm+g5mQNIoIpU/x1h2HLcuGi8ZLN34u2iyraVCCQ==",
+      "path": "radzen.blazor/4.33.3",
+      "hashPath": "radzen.blazor.4.33.3.nupkg.sha512"
     },
     "System.CodeDom/4.4.0": {
       "type": "package",

@@ -2,19 +2,6 @@
   "version": 3,
   "targets": {
     "net7.0": {
-      "BouncyCastle.Cryptography/2.4.0": {
-        "type": "package",
-        "compile": {
-          "lib/net6.0/BouncyCastle.Cryptography.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net6.0/BouncyCastle.Cryptography.dll": {
-            "related": ".xml"
-          }
-        }
-      },
       "DartSassBuilder/1.0.0": {
         "type": "package",
         "build": {
@@ -57,18 +44,6 @@
         },
         "runtime": {
           "lib/net6.0/IronPdf.Extensions.Razor.Page.dll": {}
-        }
-      },
-      "iTextSharp/5.5.13.4": {
-        "type": "package",
-        "dependencies": {
-          "BouncyCastle.Cryptography": "2.4.0"
-        },
-        "compile": {
-          "lib/net461/itextsharp.dll": {}
-        },
-        "runtime": {
-          "lib/net461/itextsharp.dll": {}
         }
       },
       "Microsoft.AspNetCore.Authorization/7.0.14": {
@@ -490,7 +465,7 @@
           }
         }
       },
-      "Radzen.Blazor/4.33.2": {
+      "Radzen.Blazor/4.33.3": {
         "type": "package",
         "dependencies": {
           "DartSassBuilder": "1.0.0",
@@ -612,26 +587,6 @@
     }
   },
   "libraries": {
-    "BouncyCastle.Cryptography/2.4.0": {
-      "sha512": "SwXsAV3sMvAU/Nn31pbjhWurYSjJ+/giI/0n6tCrYoupEK34iIHCuk3STAd9fx8yudM85KkLSVdn951vTng/vQ==",
-      "type": "package",
-      "path": "bouncycastle.cryptography/2.4.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE.md",
-        "README.md",
-        "bouncycastle.cryptography.2.4.0.nupkg.sha512",
-        "bouncycastle.cryptography.nuspec",
-        "lib/net461/BouncyCastle.Cryptography.dll",
-        "lib/net461/BouncyCastle.Cryptography.xml",
-        "lib/net6.0/BouncyCastle.Cryptography.dll",
-        "lib/net6.0/BouncyCastle.Cryptography.xml",
-        "lib/netstandard2.0/BouncyCastle.Cryptography.dll",
-        "lib/netstandard2.0/BouncyCastle.Cryptography.xml",
-        "packageIcon.png"
-      ]
-    },
     "DartSassBuilder/1.0.0": {
       "sha512": "bcM9YuWmNUuneEIp5rSFeHNQaZFqC0zKdK8JQvCFGzjX3pLyyQ0ReHPbawqOkTtfubQz4JPkzFzgJAo9Aixiew==",
       "type": "package",
@@ -728,22 +683,6 @@
         "lib/net6.0/IronPdf.Extensions.Razor.Page.dll",
         "readme-setup.txt",
         "readme.txt"
-      ]
-    },
-    "iTextSharp/5.5.13.4": {
-      "sha512": "/cvCNv8AJ+XuD99u4NfHSSxkBJKTdvP36wcfQF9V1Cjzi1ycyFSa4vJ64a3DhFVUTKVO60WF8OmAqngQDTHgYA==",
-      "type": "package",
-      "path": "itextsharp/5.5.13.4",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE.md",
-        "gnu-agpl-v3.0.md",
-        "itextsharp.5.5.13.4.nupkg.sha512",
-        "itextsharp.nuspec",
-        "lib/net461/iTextSharp.xml",
-        "lib/net461/itextsharp.dll",
-        "notice.txt"
       ]
     },
     "Microsoft.AspNetCore.Authorization/7.0.14": {
@@ -1310,10 +1249,10 @@
         "pomelo.entityframeworkcore.mysql.nuspec"
       ]
     },
-    "Radzen.Blazor/4.33.2": {
-      "sha512": "O/drz9TPVvkhtVPgjiS7CW0nMOI6/Ub9N/z26OksmmTS5XtkuVUURC+8bim2AbXKmxYjfmNObMdmgKKfmwY+9g==",
+    "Radzen.Blazor/4.33.3": {
+      "sha512": "VYdcmQdX8ygsGy4LdUi1Z56RcH34KfR1L2jb/uNOp+RqPkzm+g5mQNIoIpU/x1h2HLcuGi8ZLN34u2iyraVCCQ==",
       "type": "package",
-      "path": "radzen.blazor/4.33.2",
+      "path": "radzen.blazor/4.33.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1334,7 +1273,7 @@
         "lib/net8.0/Radzen.Blazor.xml",
         "lib/netstandard2.1/Radzen.Blazor.dll",
         "lib/netstandard2.1/Radzen.Blazor.xml",
-        "radzen.blazor.4.33.2.nupkg.sha512",
+        "radzen.blazor.4.33.3.nupkg.sha512",
         "radzen.blazor.nuspec",
         "staticwebassets/Radzen.Blazor.js",
         "staticwebassets/css/dark-base.css",
@@ -1343,22 +1282,12 @@
         "staticwebassets/css/default-base.css",
         "staticwebassets/css/default-wcag.css",
         "staticwebassets/css/default.css",
-        "staticwebassets/css/fluent-base.css",
-        "staticwebassets/css/fluent-dark-base.css",
-        "staticwebassets/css/fluent-dark.css",
-        "staticwebassets/css/fluent.css",
         "staticwebassets/css/humanistic-base.css",
         "staticwebassets/css/humanistic-wcag.css",
         "staticwebassets/css/humanistic.css",
         "staticwebassets/css/material-base.css",
-        "staticwebassets/css/material-dark-base.css",
-        "staticwebassets/css/material-dark.css",
         "staticwebassets/css/material-wcag.css",
         "staticwebassets/css/material.css",
-        "staticwebassets/css/material3-base.css",
-        "staticwebassets/css/material3-dark-base.css",
-        "staticwebassets/css/material3-dark.css",
-        "staticwebassets/css/material3.css",
         "staticwebassets/css/software-base.css",
         "staticwebassets/css/software-wcag.css",
         "staticwebassets/css/software.css",
@@ -1631,8 +1560,7 @@
       "Microsoft.EntityFrameworkCore >= 7.0.0",
       "Microsoft.EntityFrameworkCore.Design >= 7.0.0",
       "Pomelo.EntityFrameworkCore.MySql >= 7.0.0-alpha.1",
-      "Radzen.Blazor >= *",
-      "iTextSharp >= 5.5.13.4"
+      "Radzen.Blazor >= *"
     ]
   },
   "packageFolders": {
@@ -1702,10 +1630,6 @@
           "Radzen.Blazor": {
             "target": "Package",
             "version": "[*, )"
-          },
-          "iTextSharp": {
-            "target": "Package",
-            "version": "[5.5.13.4, )"
           }
         },
         "imports": [
@@ -1730,17 +1654,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.301\\RuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'iTextSharp 5.5.13.4' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8, .NETFramework,Version=v4.8.1' instead of the project target framework 'net7.0'. This package may not be fully compatible with your project.",
-      "libraryId": "iTextSharp",
-      "targetGraphs": [
-        "net7.0"
-      ]
-    }
-  ]
+  }
 }
