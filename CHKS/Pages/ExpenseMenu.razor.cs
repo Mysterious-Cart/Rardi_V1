@@ -30,5 +30,12 @@ namespace CHKS.Pages
         [Inject]
         protected NotificationService NotificationService { get; set; }
 
+        protected string Note;
+        protected decimal? Expense;
+
+        protected async Task btnClick(){
+            
+        }
+
     }
 }

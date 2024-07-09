@@ -40,12 +40,6 @@ namespace CHKS.Data
               .HasForeignKey(i => i.Product)
               .HasPrincipalKey(i => i.Name);
 
-            builder.Entity<CHKS.Models.mydb.Expensehistoryconnector>()
-              .HasOne(i => i.History1)
-              .WithMany(i => i.Expensehistoryconnectors)
-              .HasForeignKey(i => i.History)
-              .HasPrincipalKey(i => i.CashoutDate);
-
             builder.Entity<CHKS.Models.mydb.History>()
               .HasOne(i => i.Car)
               .WithMany(i => i.Histories)

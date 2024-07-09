@@ -9,11 +9,8 @@ namespace CHKS.Models.mydb
     public partial class Expensehistoryconnector
     {
         [Key]
-        [Column("history")]
         [Required]
-        public string History { get; set; }
-
-        public History History1 { get; set; }
+        public string Date { get; set; }
 
         public decimal? Total { get; set; }
 

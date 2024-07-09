@@ -114,5 +114,54 @@ namespace CHKS.Pages
             await mydbService.CancelInventoryChanges(Inventories);
         }
 
+        protected async Task AddBtnClick(MouseEventArgs args)
+        {
+            await grid2.InsertRow(new Models.mydb.Dailyexpense());
+        }
+
+        protected async Task GridDeleteButtonClick(MouseEventArgs args, CHKS.Models.mydb.Dailyexpense data){
+            try{
+                if(await DialogService.Confirm("Are you sure?", "Important!", new ConfirmOptions{OkButtonText="Yes", CancelButtonText="No"})== true){
+                    await mydbService.DeleteDailyexpense(data.Note);
+                    await grid2.Reload();
+                }
+            }catch(Exception exc){
+                
+            }
+        }
+
+        protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.Dailyexpense data)
+        {
+            await grid2.EditRow(data);
+
+        }
+
+        protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Dailyexpense data)
+        {
+            await grid2.UpdateRow(data);
+        }
+
+        protected async Task CancelButtonClick(MouseEventArgs args, CHKS.Models.mydb.Dailyexpense data)
+        {
+            grid2.CancelEditRow(data);
+            await mydbService.CancelDailyexpenseChanges(data);
+        }
+        protected async Task GridCreate(Models.mydb.Dailyexpense data){
+            try{
+                await mydbService.CreateDailyexpense(data);
+                await grid2.Reload();
+            }catch(Exception exc){
+                if(exc.Message =="Item already available"){
+                    await DialogService.Alert("Apology, This product already exist. Please choose a different name or update the already existed product.","Important");
+                    await grid0.Reload();
+                }
+            }
+        }
+
+        protected async Task GridRowUpdate(CHKS.Models.mydb.Dailyexpense args)
+        {
+            await mydbService.UpdateDailyexpense(args.Note, args);
+        }
+
     }
 }

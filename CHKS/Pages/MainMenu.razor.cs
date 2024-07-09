@@ -166,7 +166,7 @@ namespace CHKS.Pages
                     await ClearAllProduct();
                     await MydbService.DeleteCart(Customer.CartId);
                     ResetToDefault();
-                }else if(connector == null){
+                }else if(connector == null || connector == Enumerable.Empty<Models.mydb.Connector>()){
                     await MydbService.DeleteCart(Customer.CartId);
                     ResetToDefault();
                 }
@@ -269,11 +269,11 @@ namespace CHKS.Pages
 
         protected async void ResetToDefault(){
 
-            Customer = new Models.mydb.Cart{};
+            Customer = new Models.mydb.Cart{Plate="N/A"};
             SelectionState = null;
             Selection = false;
-            Phone = "";
-            CarType ="";
+            Phone = "N/A";
+            CarType ="N/A";
 
             Connectors = Enumerable.Empty<CHKS.Models.mydb.Connector>();
             VisibilityOfServiceCharge = false;
@@ -284,6 +284,7 @@ namespace CHKS.Pages
         {
             var Product = await DialogService.OpenAsync<Inventories>("Select Product", new Dictionary<string, object>{{"IsDialog","true"}}, new DialogOptions{Width="80%", Height="80%"});
             if(Product != null){
+                connector = new();
                 connector.CartId = Customer.CartId;
                 connector.GeneratedKey = String.Concat(Customer.CartId, Product.Name);
                 connector.Product = Product.Name;
@@ -293,6 +294,7 @@ namespace CHKS.Pages
                 try {
                     connector.Total = Product.Stock * Product.Export;
                     await MydbService.CreateConnector(connector);
+                    
                     await Grid1.Reload();
                 }catch(Exception exc){
                     if(exc.Message == "Item already available"){

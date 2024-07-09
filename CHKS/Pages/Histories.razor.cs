@@ -120,7 +120,10 @@ namespace CHKS.Pages
 
         protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.History data)
         {
+            char[] splitter = {':','('};
+            string[] Cashoutdate = data.CashoutDate.Split(splitter,2);
             originalDate = data.CashoutDate;
+            ChosenDate = DateTime.Parse(Cashoutdate[0]);
             await grid0.EditRow(data);
             editMode = true;
         }
@@ -162,6 +165,8 @@ namespace CHKS.Pages
                 }
 
             }else{
+
+                
                 await mydbService.UpdateHistory(args.CashoutDate,args);
                 editMode = false;
             }

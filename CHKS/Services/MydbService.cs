@@ -597,17 +597,17 @@ namespace CHKS
         }
 
         partial void OnDailyexpenseGet(CHKS.Models.mydb.Dailyexpense item);
-        partial void OnGetDailyexpenseByDate(ref IQueryable<CHKS.Models.mydb.Dailyexpense> items);
+        partial void OnGetDailyexpenseByNote(ref IQueryable<CHKS.Models.mydb.Dailyexpense> items);
 
 
-        public async Task<CHKS.Models.mydb.Dailyexpense> GetDailyexpenseByDate(string date)
+        public async Task<CHKS.Models.mydb.Dailyexpense> GetDailyexpenseByNote(string note)
         {
             var items = Context.Dailyexpenses
                               .AsNoTracking()
-                              .Where(i => i.Date == date);
+                              .Where(i => i.Note == note);
 
  
-            OnGetDailyexpenseByDate(ref items);
+            OnGetDailyexpenseByNote(ref items);
 
             var itemToReturn = items.FirstOrDefault();
 
@@ -624,7 +624,7 @@ namespace CHKS
             OnDailyexpenseCreated(dailyexpense);
 
             var existingItem = Context.Dailyexpenses
-                              .Where(i => i.Date == dailyexpense.Date)
+                              .Where(i => i.Note == dailyexpense.Note)
                               .FirstOrDefault();
 
             if (existingItem != null)
@@ -663,12 +663,12 @@ namespace CHKS
         partial void OnDailyexpenseUpdated(CHKS.Models.mydb.Dailyexpense item);
         partial void OnAfterDailyexpenseUpdated(CHKS.Models.mydb.Dailyexpense item);
 
-        public async Task<CHKS.Models.mydb.Dailyexpense> UpdateDailyexpense(string date, CHKS.Models.mydb.Dailyexpense dailyexpense)
+        public async Task<CHKS.Models.mydb.Dailyexpense> UpdateDailyexpense(string note, CHKS.Models.mydb.Dailyexpense dailyexpense)
         {
             OnDailyexpenseUpdated(dailyexpense);
 
             var itemToUpdate = Context.Dailyexpenses
-                              .Where(i => i.Date == dailyexpense.Date)
+                              .Where(i => i.Note == dailyexpense.Note)
                               .FirstOrDefault();
 
             if (itemToUpdate == null)
@@ -690,10 +690,10 @@ namespace CHKS
         partial void OnDailyexpenseDeleted(CHKS.Models.mydb.Dailyexpense item);
         partial void OnAfterDailyexpenseDeleted(CHKS.Models.mydb.Dailyexpense item);
 
-        public async Task<CHKS.Models.mydb.Dailyexpense> DeleteDailyexpense(string date)
+        public async Task<CHKS.Models.mydb.Dailyexpense> DeleteDailyexpense(string note)
         {
             var itemToDelete = Context.Dailyexpenses
-                              .Where(i => i.Date == date)
+                              .Where(i => i.Note == note)
                               .FirstOrDefault();
 
             if (itemToDelete == null)
@@ -737,7 +737,6 @@ namespace CHKS
         {
             var items = Context.Expensehistoryconnectors.AsQueryable();
 
-            items = items.Include(i => i.History1);
 
             if (query != null)
             {
@@ -759,18 +758,17 @@ namespace CHKS
         }
 
         partial void OnExpensehistoryconnectorGet(CHKS.Models.mydb.Expensehistoryconnector item);
-        partial void OnGetExpensehistoryconnectorByHistory(ref IQueryable<CHKS.Models.mydb.Expensehistoryconnector> items);
+        partial void OnGetExpensehistoryconnectorByDate(ref IQueryable<CHKS.Models.mydb.Expensehistoryconnector> items);
 
 
-        public async Task<CHKS.Models.mydb.Expensehistoryconnector> GetExpensehistoryconnectorByHistory(string history)
+        public async Task<CHKS.Models.mydb.Expensehistoryconnector> GetExpensehistoryconnectorByDate(string date)
         {
             var items = Context.Expensehistoryconnectors
                               .AsNoTracking()
-                              .Where(i => i.History == history);
+                              .Where(i => i.Date == date);
 
-            items = items.Include(i => i.History1);
  
-            OnGetExpensehistoryconnectorByHistory(ref items);
+            OnGetExpensehistoryconnectorByDate(ref items);
 
             var itemToReturn = items.FirstOrDefault();
 
@@ -787,7 +785,7 @@ namespace CHKS
             OnExpensehistoryconnectorCreated(expensehistoryconnector);
 
             var existingItem = Context.Expensehistoryconnectors
-                              .Where(i => i.History == expensehistoryconnector.History)
+                              .Where(i => i.Date == expensehistoryconnector.Date)
                               .FirstOrDefault();
 
             if (existingItem != null)
@@ -826,12 +824,12 @@ namespace CHKS
         partial void OnExpensehistoryconnectorUpdated(CHKS.Models.mydb.Expensehistoryconnector item);
         partial void OnAfterExpensehistoryconnectorUpdated(CHKS.Models.mydb.Expensehistoryconnector item);
 
-        public async Task<CHKS.Models.mydb.Expensehistoryconnector> UpdateExpensehistoryconnector(string history, CHKS.Models.mydb.Expensehistoryconnector expensehistoryconnector)
+        public async Task<CHKS.Models.mydb.Expensehistoryconnector> UpdateExpensehistoryconnector(string date, CHKS.Models.mydb.Expensehistoryconnector expensehistoryconnector)
         {
             OnExpensehistoryconnectorUpdated(expensehistoryconnector);
 
             var itemToUpdate = Context.Expensehistoryconnectors
-                              .Where(i => i.History == expensehistoryconnector.History)
+                              .Where(i => i.Date == expensehistoryconnector.Date)
                               .FirstOrDefault();
 
             if (itemToUpdate == null)
@@ -853,10 +851,10 @@ namespace CHKS
         partial void OnExpensehistoryconnectorDeleted(CHKS.Models.mydb.Expensehistoryconnector item);
         partial void OnAfterExpensehistoryconnectorDeleted(CHKS.Models.mydb.Expensehistoryconnector item);
 
-        public async Task<CHKS.Models.mydb.Expensehistoryconnector> DeleteExpensehistoryconnector(string history)
+        public async Task<CHKS.Models.mydb.Expensehistoryconnector> DeleteExpensehistoryconnector(string date)
         {
             var itemToDelete = Context.Expensehistoryconnectors
-                              .Where(i => i.History == history)
+                              .Where(i => i.Date == date)
                               .FirstOrDefault();
 
             if (itemToDelete == null)
@@ -1020,7 +1018,6 @@ namespace CHKS
         {
             var itemToDelete = Context.Histories
                               .Where(i => i.CashoutDate == cashoutdate)
-                              .Include(i => i.Expensehistoryconnectors)
                               .Include(i => i.Historyconnectors)
                               .FirstOrDefault();
 

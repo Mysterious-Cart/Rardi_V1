@@ -41,7 +41,7 @@
         <RadzenRow Style="width: 100%;">
             <RadzenStack Orientation="Orientation.Horizontal">
                 <RadzenCard style="height: 100%; width:100%;">
-                    <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.Advanced" style="height:65vh;"
+                    <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.Advanced" style="height:65vh; min-width:fit-content"
                         Data="@History" TItem="CHKS.Models.mydb.History" RowSelect="@OpenHistory">
                         <Columns>
                             <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="CashoutDate" Title="ថ្ងៃទី">
@@ -94,10 +94,44 @@
         </RadzenRow>
     </RadzenStack>
 
-    <RadzenCard Style=" width:20%; " >
-        <RadzenText Text="List Of Expense:" TextStyle="TextStyle.Overline" TextAlign="TextAlign.Center" style="font-size:x-large"/>    
-        <RadzenButton Style="width: 100%; margin-top: auto; vertical-align:text-bottom; margin-bottom:auto" Icon="add_circle_outline" Text="Add Expense" />
+    <RadzenCard Style=" width:20%; min-width:fit-content" >
+        <RadzenStack>
+            <RadzenText Text="List Of Expense:" TextStyle="TextStyle.Overline" TextAlign="TextAlign.Center" style="font-size:x-large; margin-bottom:10px; width:300px"/>
+            <RadzenButton Icon="add" Text="Add Expense" Click="@AddBtnClick" style="width:300px" />
+            <RadzenDataGrid @ref="grid2" Data="@Dailyexpenses" TItem="Models.mydb.Dailyexpense" RowCreate="@GridCreate" RowUpdate="@GridRowUpdate" style="width:300px">
+                <Columns>
+                    <RadzenDataGridColumn TItem="Models.mydb.Dailyexpense" Property="Note" Title="Note" Width="90px">
+                        <EditTemplate Context="expense">
+                            <RadzenTextBox @bind-Value="@expense.Note" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="Models.mydb.Dailyexpense" Property="Expense" Title="Expense">
+                        <EditTemplate Context="expense">
+                            <RadzenNumeric @bind-Value="@expense.Expense" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn>
+                        <EditTemplate Context="expense">
+                            <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
+                                Click=@(args => SaveButtonClick(args, expense)) @onclick:stopPropagation="true" />
+                            <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                Click=@(args => CancelButtonClick(args, expense)) @onclick:stopPropagation="true" />
+                        </EditTemplate>
+                        <Template Context="expense">
 
+                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                            style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
+                            Click=@(args => EditButtonClick(args, expense)) @onclick:stopPropagation="true" />
+
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Medium"
+                            Shade="Shade.Lighter" Variant="Variant.Flat"
+                            Click=@(args => GridDeleteButtonClick(args, expense)) @onclick:stopPropagation="true" />
+                    </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenStack>
     </RadzenCard>
 
 </RadzenStack>

@@ -15,28 +15,39 @@
     </RadzenCard>
 </RadzenRow>
 
-<RadzenRow Style="Margin-top:20px;">
-    <RadzenCard style="Width:fit-content">
-        <RadzenStack>
-            <RadzenStack Orientation="Orientation.Horizontal" Gap="10px" AlignItems="AlignItems.Center" >
+<RadzenStack style="margin-top:20px" Orientation="Orientation.Horizontal" Wrap="Radzen.FlexWrap.Wrap">
+    <RadzenCard style="Width:fit-content;">
+        <RadzenStack style="-width: fit-content; width: 618px; height: fit-content">
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="10px" AlignItems="AlignItems.Center"  Style="width: fit-content;">
                 <RadzenLabel Text="From" Component="From"/>
                 <RadzenDatePicker @bind-Value="@TimeStart" InitialViewDate="@DateTime.Now" Name="From" DateFormat="dd/MM/yyyy" Max="@DateTime.Now" Change="@GetHistoryBaseOfChoosenDate"/>
                 <RadzenLabel Text="To" Component="To"/>
                 <RadzenDatePicker @bind-Value="@TimeEnd" InitialViewDate="@DateTime.Now" Name="To" DateFormat="dd/MM/yyyy" Max="@DateTime.Now" Change="@GetHistoryBaseOfChoosenDate"/>
             </RadzenStack>
 
-            
+            <RadzenDataGrid AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" @ref="@grid1" TItem ="Models.mydb.History" Data ="@Histories" Style="height: 100%; min-width:600px; width:40%; border-radius:25px;">
+                <Columns>
+                    <RadzenDataGridColumn title="Date" TItem ="Models.mydb.History" Property="CashoutDate"></RadzenDataGridColumn>
+                    <RadzenDataGridColumn title="Plate" TItem ="Models.mydb.History" Property="Plate"></RadzenDataGridColumn>
+                    <RadzenDataGridColumn title="Total" TItem ="Models.mydb.History" Property="Total" FormatString="${0:N2}">
+                    </RadzenDataGridColumn>
+
+                </Columns>
+            </RadzenDataGrid>
+
         </RadzenStack>
     </RadzenCard>
-</RadzenRow>
-
-<RadzenRow style="margin-top:20px">
-
-        <RadzenDataGrid Width="210px" AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" @ref="@grid1" TItem ="Models.mydb.History" Data ="@Histories" Style="height: 60vh; width:50%">
+    <RadzenCard Style="-width: fit-content; width: 235px; height: fit-content;">
+        <RadzenDataGrid  AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" @ref="@grid2" TItem ="Models.mydb.Expensehistoryconnector" Data ="@MonthlyExpense" Style="height: 60vh; border-radius:25px;Width:200px;">
+            <GroupHeaderTemplate>
+                <@context.GroupDescriptor.GetTitle(): @(context.Date)/>
+            </GroupHeaderTemplate>
             <Columns>
-                <RadzenDataGridColumn title="Date" TItem ="Models.mydb.History" Property="CashoutDate"></RadzenDataGridColumn>
-                <RadzenDataGridColumn title="Plate" TItem ="Models.mydb.History" Property="Plate"></RadzenDataGridColumn>
-                <RadzenDataGridColumn title="Total" TItem ="Models.mydb.History" Property="Total"></RadzenDataGridColumn>
+                <RadzenDataGridColumn title="Note" TItem ="Models.mydb.Expensehistoryconnector" Property="Note"></RadzenDataGridColumn>
+                <RadzenDataGridColumn title="Total" TItem ="Models.mydb.Expensehistoryconnector" Property="Total"></RadzenDataGridColumn>
             </Columns>
         </RadzenDataGrid>
-</RadzenRow>
+    </RadzenCard>
+</RadzenStack>
+
+

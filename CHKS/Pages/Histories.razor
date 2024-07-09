@@ -41,8 +41,14 @@
                     </EditTemplate>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Dollar" Title="Paid(Dollar)" FormatString="${0:N2}">
+                    <EditTemplate Context="history">
+                        <RadzenNumeric @bind-Value="history.Dollar" Min=0/>
+                    </EditTemplate>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Riel" Title="Paid(Riel)">
+                    <EditTemplate Context="history">
+                        <RadzenNumeric @bind-Value="history.Riel" Min=0/>
+                    </EditTemplate>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn Width="60px">
                     <EditTemplate Context="history">

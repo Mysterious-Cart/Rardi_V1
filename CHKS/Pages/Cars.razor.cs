@@ -12,6 +12,7 @@ namespace CHKS.Pages
 {
     public partial class Cars
     {
+
         [Inject]
         protected IJSRuntime JSRuntime { get; set; }
 
@@ -52,6 +53,7 @@ namespace CHKS.Pages
         protected async Task AddButtonClick(MouseEventArgs args)
         {
             isEditing = true;
+            await JSRuntime.InvokeVoidAsync("eval", "document.getElementsByClassName('rz-data-grid-data')[0].scrollTop = 0;");
             await grid0.InsertRow(new CHKS.Models.mydb.Car());
         }
 
@@ -95,10 +97,17 @@ namespace CHKS.Pages
 
         protected async Task GridRowCreate(CHKS.Models.mydb.Car args)
         {
-            args.Plate = args.Plate.ToUpper();
-            await mydbService.CreateCar(args);
-            await grid0.Reload();
-            isEditing = false;
+            try{
+                args.Plate = args.Plate.ToUpper();
+                await mydbService.CreateCar(args);
+                await grid0.Reload();
+                isEditing = false;
+            }catch(Exception exc){
+                if(exc.Message == "Item already available"){
+                    await DialogService.Alert("Item already exist.","Note");
+                    await grid0.Reload();
+                }
+            }
         }
 
         protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.Car data)

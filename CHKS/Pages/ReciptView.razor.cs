@@ -60,7 +60,7 @@ namespace CHKS.Pages
             Historyconnector = Historyconnector.Where(i => i.CartId == ID);
             Date =  History.CashoutDate;
             CustomerID = History.Plate;
-            History.Total = Historyconnector!=Enumerable.Empty<Models.mydb.Historyconnector>()? Historyconnector.Sum(i => i.Export):0;
+            History.Total = Historyconnector!=Enumerable.Empty<Models.mydb.Historyconnector>()? Historyconnector.Sum(i => i.Export*i.Qty):0;
             await MydbService.UpdateHistory(ID,History);
             
         }

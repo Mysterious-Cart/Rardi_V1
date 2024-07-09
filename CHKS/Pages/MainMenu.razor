@@ -41,16 +41,17 @@
                     </RadzenStack>
                 }
 
-                <RadzenDataGrid @ref="Grid1" ColumnWidth="210px" AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="15" 
-                Data="@Connectors" TItem="Models.mydb.Connector" AllowColumnPicking="false" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate" Style = "height: 70vh; border-width: 0px">
+                <RadzenDataGrid @ref="Grid1" ColumnWidth="210px" AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="15"
+                Data="@Connectors" TItem="Models.mydb.Connector" AllowColumnPicking="false" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate" Style = "height: 70vh; border-width: 0px; border-radius:25px; font-family:'Khmer OS Battambang'; box-shadow: 0px 0px 3px 1px #D1D9E0">
                     
                     <Columns>
-                        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Product" Title="Product Name">
+                        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Product" Title="ឈ្មោះទំនេញ">
                             <FooterTemplate>
-                                <RadzenTextBox Placeholder="Type of Service Fee" Visible ="@VisibilityOfServiceCharge" @bind-Value="ServiceType"/>
+                                <RadzenTextBox Placeholder="ប្រភទសេវាកម្ម" Visible ="@VisibilityOfServiceCharge" @bind-Value="ServiceType" style="font-family:'Khmer OS Battambang'"/>
                             </FooterTemplate>
+
                         </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Qty" Title ="Qty">
+                        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Qty" Title ="ចំនួន" >
                             <EditTemplate Context="connector">
                                 <RadzenNumeric style="display: block; width: 100%" @bind-Value="@connector.Qty" Name="Qty" Min=1/>
                             </EditTemplate>
@@ -59,17 +60,17 @@
                                 <RadzenNumeric TValue="decimal" Min=0 Visible="@VisibilityOfServiceCharge" @bind-Value="ServiceFees"/>
                             </FooterTemplate>
                         </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Inventory.Export" Title="Unit Price" FormatString="${0:N2}">
+                        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Inventory.Export" Title="តមៃ្លលក់" FormatString="${0:N2}">
                             <FooterTemplate>
                                 <RadzenButton Icon="add" Visible="@VisibilityOfServiceCharge" Click="@AddServiceCharge"/>
                             </FooterTemplate>
                         </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Total" Title="Total" FormatString="${0:N2}">
+                        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Total" Title="សរុប" FormatString="${0:N2}">
                             <FooterTemplate>
-                                <p style="font-size: 1.2rem ;">  Total($): <b> @(Connectors != null ? "$" + Math.Round(Customer.Total.GetValueOrDefault(),2) : "$" + 0)</b> </p>
+                                <p style="font-size: 1.2rem ;">  សរុប($): <b> @(Connectors != null ? "$" + Math.Round(Customer.Total.GetValueOrDefault(),2) : "$" + 0)</b> </p>
                             </FooterTemplate>
                         </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Note" Title="Note">
+                        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Note" Title="ចំណាំ">
                             <EditTemplate Context="connector">
                                 <RadzenTextBox style="display: block; width: 100%" @bind-Value="@connector.Note" Name="Note" Min=1/>
                             </EditTemplate>

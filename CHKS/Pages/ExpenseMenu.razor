@@ -1,23 +1,16 @@
 @page "/expense-menu"
 
 <PageTitle>ExpenseMenu</PageTitle>
-<RadzenRow>
-    <RadzenCard>
-        <RadzenStack Orientation="Orientation.Vertical" Gap="10px" AlignItems="AlignItems.Stretch" > 
-            <RadzenColumn >
-                <RadzenLabel Text="Expense From: " Component="ExpenseFrom"/>
-                <RadzenDropDown Name="ExpenseFrom" Placeholder="Required" TValue = "Decimal"/>
-            </RadzenColumn> 
-            <RadzenColumn>
-                <RadzenLabel Text="Expense Amount: " Component="ExpenseInput"/>
-                <RadzenNumeric Name="ExpenseInput" Placeholder="Required" TValue = "Decimal" />
-            </RadzenColumn> 
-            <RadzenColumn>
+<RadzenCard >
+    <RadzenStack Orientation="Orientation.Vertical" Gap="10px" AlignItems="AlignItems.Stretch" > 
+        <RadzenRow Gap="160px">
             <RadzenLabel Text="Notes:" Component="Note"/>
-                <RadzenTextBox Name="Note" Placeholder="Required"/>
-            </RadzenColumn>
-
-            <RadzenButton Icon="submit" Text="Enter" ButtonStyle="ButtonStyle.Success" />
-        </RadzenStack>
-    </RadzenCard>
-</RadzenRow>
+            <RadzenLabel Text="Expense Amount: " Component="ExpenseInput"/>
+        </RadzenRow> 
+        <RadzenRow> 
+            <RadzenTextBox Name="Note" Placeholder="Required" @bind-Value="@Note"/>
+            <RadzenNumeric Name="ExpenseInput" Placeholder="Required" @bind-Value = "@Expense" />
+        </RadzenRow> 
+        <RadzenButton Icon="submit" Text="Enter" ButtonStyle="ButtonStyle.Success" />
+    </RadzenStack>
+</RadzenCard>
