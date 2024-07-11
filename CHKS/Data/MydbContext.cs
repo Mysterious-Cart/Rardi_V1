@@ -70,6 +70,14 @@ namespace CHKS.Data
               .Property(p => p.Total)
               .HasPrecision(10,2);
 
+            builder.Entity<CHKS.Models.mydb.Connector>()
+              .Property(p => p.Discount)
+              .HasPrecision(10,2);
+
+            builder.Entity<CHKS.Models.mydb.Connector>()
+              .Property(p => p.PriceOverwrite)
+              .HasPrecision(10,2);
+
             builder.Entity<CHKS.Models.mydb.Dailyexpense>()
               .Property(p => p.Expense)
               .HasPrecision(10,2);

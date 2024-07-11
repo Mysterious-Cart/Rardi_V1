@@ -44,8 +44,6 @@ namespace CHKS.Pages
         protected bool changeDataMode = false;
 
         protected string Total = "0";
-        protected string ProductTotal = "0";
-        protected string ServiceTotal = "0";
         protected string ExpenseTotal = "0";
 
         protected RadzenDataGrid<CHKS.Models.mydb.Historyconnector> grid1;
@@ -61,6 +59,12 @@ namespace CHKS.Pages
             Historyconnectors = await mydbService.GetHistoryconnectors();
             changeDataMode = false;
             GetProductWithoutImport();
+            await GetAllNumberForToday();
+        }
+
+        protected async Task GetAllNumberForToday(){
+            Total = History.Sum(i => i.Total).ToString();
+            ExpenseTotal = Dailyexpenses.Sum(i => i.Expense).ToString();
         }
 
         protected async Task LoadNotImport(){
