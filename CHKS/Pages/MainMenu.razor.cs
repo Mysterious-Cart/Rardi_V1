@@ -58,7 +58,7 @@ namespace CHKS.Pages
 
         protected RadzenDataGrid<CHKS.Models.mydb.Connector> Grid1;
         
-        protected CHKS.Models.mydb.Connector connector = new Models.mydb.Connector{GeneratedKey="", CartId=0,Product ="", Qty=0 };
+        protected CHKS.Models.mydb.Connector connector = new(){GeneratedKey="", CartId=0,Product ="", Qty=0 };
 
         protected async Task OpenExpenseMenu()
         {
@@ -103,7 +103,7 @@ namespace CHKS.Pages
 
                 if(result is CHKS.Models.mydb.Car)
                 {
-                    var Id = await DialogService.OpenAsync<SingleInputPopUp>("Cart ID", new Dictionary<string, object>{{"Title","Cart ID"}});
+                    var Id = await DialogService.OpenAsync<SingleInputPopUp>("Cart ID", new Dictionary<string, object>{{"Info",new string[]{"Cart ID"}}});
                     if(Id != null && Id is int)
                     {
                             Customer.CartId = Id;
@@ -187,7 +187,7 @@ namespace CHKS.Pages
                             time = DateTime.Now.ToString("dd/MM/yyyy") + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")";
                         }else{
                             
-                            time = await DialogService.OpenAsync<SingleInputPopUp>("Choosing Date", new Dictionary<string, object>{{"Title","Choosing Date"}}, new DialogOptions{Width="20%"});
+                            time = await DialogService.OpenAsync<SingleInputPopUp>("Choosing Date", new Dictionary<string, object>{{"Info", new string[]{"Choosing Date"}}}, new DialogOptions{Width="20%"});
                             time = time!=null? time + ":" + Customer.CartId + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")": DateTime.Now.ToString("dd/MM/yyyy") + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")";
                         }
 

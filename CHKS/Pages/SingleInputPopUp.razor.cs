@@ -30,19 +30,20 @@ namespace CHKS.Pages
         [Inject]
         protected NotificationService NotificationService { get; set; }
 
-        protected decimal Input = 1;
+        protected int CartID;
+        protected Decimal[] Product;
         protected DateOnly ChosenDate;
 
         [Parameter]
-        public string Title {get; set;}
+        public string[] Info {get; set;}
 
         protected void Close(){
-            if(Title=="Cart ID"){
-                DialogService.Close((int)Input);
-            }else if(Title=="Choosing Date"){
+            if(Info[0]=="Cart ID"){
+                DialogService.Close(CartID);
+            }else if(Info[0]=="Choosing Date"){
                 DialogService.Close(ChosenDate.ToString("dd/MM/yyyy"));
-            }else{
-                DialogService.Close(Input);
+            }else if(Info[0] == "Qty") {
+                DialogService.Close(Product);
             }
 
         }
