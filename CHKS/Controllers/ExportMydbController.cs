@@ -75,20 +75,6 @@ namespace CHKS.Controllers
             return ToExcel(ApplyQuery(await service.GetDailyexpenses(), Request.Query, false), fileName);
         }
 
-        [HttpGet("/export/mydb/expensehistoryconnectors/csv")]
-        [HttpGet("/export/mydb/expensehistoryconnectors/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportExpensehistoryconnectorsToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetExpensehistoryconnectors(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/expensehistoryconnectors/excel")]
-        [HttpGet("/export/mydb/expensehistoryconnectors/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportExpensehistoryconnectorsToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetExpensehistoryconnectors(), Request.Query, false), fileName);
-        }
-
         [HttpGet("/export/mydb/histories/csv")]
         [HttpGet("/export/mydb/histories/csv(fileName='{fileName}')")]
         public async Task<FileStreamResult> ExportHistoriesToCSV(string fileName = null)

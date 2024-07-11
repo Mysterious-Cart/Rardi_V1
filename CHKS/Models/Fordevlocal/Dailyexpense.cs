@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CHKS.Models.mydb
+namespace CHKS.Models.fordevlocal
 {
     [Table("dailyexpense")]
     public partial class Dailyexpense

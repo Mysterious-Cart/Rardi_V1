@@ -37,7 +37,6 @@ namespace CHKS.Pages
         protected IEnumerable<CHKS.Models.mydb.History> History;
         protected IEnumerable<CHKS.Models.mydb.Historyconnector> Historyconnectors;
         protected IEnumerable<Models.mydb.Dailyexpense> Dailyexpenses;
-        protected Models.mydb.Expensehistoryconnector Expensehistoryconnectors;
         protected CHKS.Models.mydb.Inventory Inventories;
 
         protected static string dates = DateTime.Now.ToString("dd/MM/yyyy");
@@ -56,14 +55,12 @@ namespace CHKS.Pages
         protected override async Task OnInitializedAsync()
         {
             Dailyexpenses = await mydbService.GetDailyexpenses();
+            Dailyexpenses = Dailyexpenses.Where(i => i.Key.Contains(DateTime.Now.ToString("dd/MM/yyyy")));
             History = await mydbService.GetHistories();
             History = History.Where(i => LikeOperator.LikeString(i.CashoutDate, dates + "*", Microsoft.VisualBasic.CompareMethod.Text));
             Historyconnectors = await mydbService.GetHistoryconnectors();
             changeDataMode = false;
             GetProductWithoutImport();
-        }
-
-        protected async void reload(){
         }
 
         protected async Task LoadNotImport(){
@@ -111,7 +108,6 @@ namespace CHKS.Pages
         protected async Task CancelButtonClick(MouseEventArgs args, CHKS.Models.mydb.Historyconnector data)
         {
             grid1.CancelEditRow(data);
-            await mydbService.CancelHistoryconnectorChanges(data);
             await mydbService.CancelInventoryChanges(Inventories);
         }
 
@@ -121,11 +117,9 @@ namespace CHKS.Pages
         }
 
         protected async Task GridDeleteButtonClick(MouseEventArgs args, CHKS.Models.mydb.Dailyexpense data){
-            Expensehistoryconnectors = await mydbService.GetExpensehistoryconnectorByDate(DateTime.Now.ToString("dd/MM/yyyy")+ data.Note);
             try{
                 if(await DialogService.Confirm("Are you sure?", "Important!", new ConfirmOptions{OkButtonText="Yes", CancelButtonText="No"})== true){
-                    await mydbService.DeleteDailyexpense(data.Note);
-                    await mydbService.DeleteExpensehistoryconnector(DateTime.Now.ToString("dd/MM/yyyy")+ data.Note);
+                    await mydbService.DeleteDailyexpense(data.Key);
                     await grid2.Reload();
                 }
             }catch(Exception exc){
@@ -135,19 +129,13 @@ namespace CHKS.Pages
 
         protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.Dailyexpense data)
         {
-            Expensehistoryconnectors = await mydbService.GetExpensehistoryconnectorByDate(DateTime.Now.ToString("dd/MM/yyyy")+ data.Note);
             await grid2.EditRow(data);
-            
 
         }
 
         protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Dailyexpense data)
         {
             await grid2.UpdateRow(data);
-            Models.mydb.Expensehistoryconnector temp = new(){
-                
-            };
-            await mydbService.UpdateExpensehistoryconnector(Expensehistoryconnectors.Date, Expensehistoryconnectors);
 
         }
 
@@ -159,13 +147,8 @@ namespace CHKS.Pages
 
         protected async Task GridCreate(Models.mydb.Dailyexpense data){
             try{
+                data.Key = DateTime.Now.ToString("dd/MM/yyyy") + ":" + data.Note;
                 await mydbService.CreateDailyexpense(data);
-                Models.mydb.Expensehistoryconnector Temp = new(){
-                    Date = DateTime.Now.ToString("dd/MM/yyyy") + ":" + data.Note,
-                    Note = data.Note,
-                    Total = data.Expense,
-                };
-                await mydbService.CreateExpensehistoryconnector(Temp);
                 await grid2.Reload();
             }catch(Exception exc){
                 if(exc.Message =="Item already available"){
@@ -177,8 +160,7 @@ namespace CHKS.Pages
 
         protected async Task GridRowUpdate(CHKS.Models.mydb.Dailyexpense args)
         {
-            await mydbService.UpdateDailyexpense(args.Note, args);
-            
+            await mydbService.UpdateDailyexpense(args.Key, args);
         }
 
     }

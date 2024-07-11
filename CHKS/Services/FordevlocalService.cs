@@ -13,9 +13,9 @@ using CHKS.Data;
 
 namespace CHKS
 {
-    public partial class fordevService
+    public partial class fordevlocalService
     {
-        fordevContext Context
+        fordevlocalContext Context
         {
            get
            {
@@ -23,10 +23,10 @@ namespace CHKS
            }
         }
 
-        private readonly fordevContext context;
+        private readonly fordevlocalContext context;
         private readonly NavigationManager navigationManager;
 
-        public fordevService(fordevContext context, NavigationManager navigationManager)
+        public fordevlocalService(fordevlocalContext context, NavigationManager navigationManager)
         {
             this.context = context;
             this.navigationManager = navigationManager;
@@ -70,17 +70,17 @@ namespace CHKS
 
         public async Task ExportCarsToExcel(Query query = null, string fileName = null)
         {
-            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordev/cars/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordev/cars/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordevlocal/cars/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordevlocal/cars/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
         public async Task ExportCarsToCSV(Query query = null, string fileName = null)
         {
-            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordev/cars/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordev/cars/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordevlocal/cars/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordevlocal/cars/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
-        partial void OnCarsRead(ref IQueryable<CHKS.Models.fordev.Car> items);
+        partial void OnCarsRead(ref IQueryable<CHKS.Models.fordevlocal.Car> items);
 
-        public async Task<IQueryable<CHKS.Models.fordev.Car>> GetCars(Query query = null)
+        public async Task<IQueryable<CHKS.Models.fordevlocal.Car>> GetCars(Query query = null)
         {
             var items = Context.Cars.AsQueryable();
 
@@ -104,11 +104,11 @@ namespace CHKS
             return await Task.FromResult(items);
         }
 
-        partial void OnCarGet(CHKS.Models.fordev.Car item);
-        partial void OnGetCarByPlate(ref IQueryable<CHKS.Models.fordev.Car> items);
+        partial void OnCarGet(CHKS.Models.fordevlocal.Car item);
+        partial void OnGetCarByPlate(ref IQueryable<CHKS.Models.fordevlocal.Car> items);
 
 
-        public async Task<CHKS.Models.fordev.Car> GetCarByPlate(string plate)
+        public async Task<CHKS.Models.fordevlocal.Car> GetCarByPlate(string plate)
         {
             var items = Context.Cars
                               .AsNoTracking()
@@ -124,10 +124,10 @@ namespace CHKS
             return await Task.FromResult(itemToReturn);
         }
 
-        partial void OnCarCreated(CHKS.Models.fordev.Car item);
-        partial void OnAfterCarCreated(CHKS.Models.fordev.Car item);
+        partial void OnCarCreated(CHKS.Models.fordevlocal.Car item);
+        partial void OnAfterCarCreated(CHKS.Models.fordevlocal.Car item);
 
-        public async Task<CHKS.Models.fordev.Car> CreateCar(CHKS.Models.fordev.Car car)
+        public async Task<CHKS.Models.fordevlocal.Car> CreateCar(CHKS.Models.fordevlocal.Car car)
         {
             OnCarCreated(car);
 
@@ -156,7 +156,7 @@ namespace CHKS
             return car;
         }
 
-        public async Task<CHKS.Models.fordev.Car> CancelCarChanges(CHKS.Models.fordev.Car item)
+        public async Task<CHKS.Models.fordevlocal.Car> CancelCarChanges(CHKS.Models.fordevlocal.Car item)
         {
             var entityToCancel = Context.Entry(item);
             if (entityToCancel.State == EntityState.Modified)
@@ -168,10 +168,10 @@ namespace CHKS
             return item;
         }
 
-        partial void OnCarUpdated(CHKS.Models.fordev.Car item);
-        partial void OnAfterCarUpdated(CHKS.Models.fordev.Car item);
+        partial void OnCarUpdated(CHKS.Models.fordevlocal.Car item);
+        partial void OnAfterCarUpdated(CHKS.Models.fordevlocal.Car item);
 
-        public async Task<CHKS.Models.fordev.Car> UpdateCar(string plate, CHKS.Models.fordev.Car car)
+        public async Task<CHKS.Models.fordevlocal.Car> UpdateCar(string plate, CHKS.Models.fordevlocal.Car car)
         {
             OnCarUpdated(car);
 
@@ -195,10 +195,10 @@ namespace CHKS
             return car;
         }
 
-        partial void OnCarDeleted(CHKS.Models.fordev.Car item);
-        partial void OnAfterCarDeleted(CHKS.Models.fordev.Car item);
+        partial void OnCarDeleted(CHKS.Models.fordevlocal.Car item);
+        partial void OnAfterCarDeleted(CHKS.Models.fordevlocal.Car item);
 
-        public async Task<CHKS.Models.fordev.Car> DeleteCar(string plate)
+        public async Task<CHKS.Models.fordevlocal.Car> DeleteCar(string plate)
         {
             var itemToDelete = Context.Cars
                               .Where(i => i.Plate == plate)
@@ -233,17 +233,17 @@ namespace CHKS
     
         public async Task ExportCartsToExcel(Query query = null, string fileName = null)
         {
-            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordev/carts/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordev/carts/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordevlocal/carts/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordevlocal/carts/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
         public async Task ExportCartsToCSV(Query query = null, string fileName = null)
         {
-            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordev/carts/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordev/carts/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordevlocal/carts/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordevlocal/carts/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
-        partial void OnCartsRead(ref IQueryable<CHKS.Models.fordev.Cart> items);
+        partial void OnCartsRead(ref IQueryable<CHKS.Models.fordevlocal.Cart> items);
 
-        public async Task<IQueryable<CHKS.Models.fordev.Cart>> GetCarts(Query query = null)
+        public async Task<IQueryable<CHKS.Models.fordevlocal.Cart>> GetCarts(Query query = null)
         {
             var items = Context.Carts.AsQueryable();
 
@@ -268,11 +268,11 @@ namespace CHKS
             return await Task.FromResult(items);
         }
 
-        partial void OnCartGet(CHKS.Models.fordev.Cart item);
-        partial void OnGetCartByCartId(ref IQueryable<CHKS.Models.fordev.Cart> items);
+        partial void OnCartGet(CHKS.Models.fordevlocal.Cart item);
+        partial void OnGetCartByCartId(ref IQueryable<CHKS.Models.fordevlocal.Cart> items);
 
 
-        public async Task<CHKS.Models.fordev.Cart> GetCartByCartId(int cartid)
+        public async Task<CHKS.Models.fordevlocal.Cart> GetCartByCartId(int cartid)
         {
             var items = Context.Carts
                               .AsNoTracking()
@@ -289,10 +289,10 @@ namespace CHKS
             return await Task.FromResult(itemToReturn);
         }
 
-        partial void OnCartCreated(CHKS.Models.fordev.Cart item);
-        partial void OnAfterCartCreated(CHKS.Models.fordev.Cart item);
+        partial void OnCartCreated(CHKS.Models.fordevlocal.Cart item);
+        partial void OnAfterCartCreated(CHKS.Models.fordevlocal.Cart item);
 
-        public async Task<CHKS.Models.fordev.Cart> CreateCart(CHKS.Models.fordev.Cart cart)
+        public async Task<CHKS.Models.fordevlocal.Cart> CreateCart(CHKS.Models.fordevlocal.Cart cart)
         {
             OnCartCreated(cart);
 
@@ -321,7 +321,7 @@ namespace CHKS
             return cart;
         }
 
-        public async Task<CHKS.Models.fordev.Cart> CancelCartChanges(CHKS.Models.fordev.Cart item)
+        public async Task<CHKS.Models.fordevlocal.Cart> CancelCartChanges(CHKS.Models.fordevlocal.Cart item)
         {
             var entityToCancel = Context.Entry(item);
             if (entityToCancel.State == EntityState.Modified)
@@ -333,10 +333,10 @@ namespace CHKS
             return item;
         }
 
-        partial void OnCartUpdated(CHKS.Models.fordev.Cart item);
-        partial void OnAfterCartUpdated(CHKS.Models.fordev.Cart item);
+        partial void OnCartUpdated(CHKS.Models.fordevlocal.Cart item);
+        partial void OnAfterCartUpdated(CHKS.Models.fordevlocal.Cart item);
 
-        public async Task<CHKS.Models.fordev.Cart> UpdateCart(int cartid, CHKS.Models.fordev.Cart cart)
+        public async Task<CHKS.Models.fordevlocal.Cart> UpdateCart(int cartid, CHKS.Models.fordevlocal.Cart cart)
         {
             OnCartUpdated(cart);
 
@@ -360,10 +360,10 @@ namespace CHKS
             return cart;
         }
 
-        partial void OnCartDeleted(CHKS.Models.fordev.Cart item);
-        partial void OnAfterCartDeleted(CHKS.Models.fordev.Cart item);
+        partial void OnCartDeleted(CHKS.Models.fordevlocal.Cart item);
+        partial void OnAfterCartDeleted(CHKS.Models.fordevlocal.Cart item);
 
-        public async Task<CHKS.Models.fordev.Cart> DeleteCart(int cartid)
+        public async Task<CHKS.Models.fordevlocal.Cart> DeleteCart(int cartid)
         {
             var itemToDelete = Context.Carts
                               .Where(i => i.CartId == cartid)
@@ -397,17 +397,17 @@ namespace CHKS
     
         public async Task ExportConnectorsToExcel(Query query = null, string fileName = null)
         {
-            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordev/connectors/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordev/connectors/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordevlocal/connectors/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordevlocal/connectors/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
         public async Task ExportConnectorsToCSV(Query query = null, string fileName = null)
         {
-            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordev/connectors/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordev/connectors/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordevlocal/connectors/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordevlocal/connectors/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
-        partial void OnConnectorsRead(ref IQueryable<CHKS.Models.fordev.Connector> items);
+        partial void OnConnectorsRead(ref IQueryable<CHKS.Models.fordevlocal.Connector> items);
 
-        public async Task<IQueryable<CHKS.Models.fordev.Connector>> GetConnectors(Query query = null)
+        public async Task<IQueryable<CHKS.Models.fordevlocal.Connector>> GetConnectors(Query query = null)
         {
             var items = Context.Connectors.AsQueryable();
 
@@ -433,11 +433,11 @@ namespace CHKS
             return await Task.FromResult(items);
         }
 
-        partial void OnConnectorGet(CHKS.Models.fordev.Connector item);
-        partial void OnGetConnectorByGeneratedKey(ref IQueryable<CHKS.Models.fordev.Connector> items);
+        partial void OnConnectorGet(CHKS.Models.fordevlocal.Connector item);
+        partial void OnGetConnectorByGeneratedKey(ref IQueryable<CHKS.Models.fordevlocal.Connector> items);
 
 
-        public async Task<CHKS.Models.fordev.Connector> GetConnectorByGeneratedKey(string generatedkey)
+        public async Task<CHKS.Models.fordevlocal.Connector> GetConnectorByGeneratedKey(string generatedkey)
         {
             var items = Context.Connectors
                               .AsNoTracking()
@@ -455,10 +455,10 @@ namespace CHKS
             return await Task.FromResult(itemToReturn);
         }
 
-        partial void OnConnectorCreated(CHKS.Models.fordev.Connector item);
-        partial void OnAfterConnectorCreated(CHKS.Models.fordev.Connector item);
+        partial void OnConnectorCreated(CHKS.Models.fordevlocal.Connector item);
+        partial void OnAfterConnectorCreated(CHKS.Models.fordevlocal.Connector item);
 
-        public async Task<CHKS.Models.fordev.Connector> CreateConnector(CHKS.Models.fordev.Connector connector)
+        public async Task<CHKS.Models.fordevlocal.Connector> CreateConnector(CHKS.Models.fordevlocal.Connector connector)
         {
             OnConnectorCreated(connector);
 
@@ -487,7 +487,7 @@ namespace CHKS
             return connector;
         }
 
-        public async Task<CHKS.Models.fordev.Connector> CancelConnectorChanges(CHKS.Models.fordev.Connector item)
+        public async Task<CHKS.Models.fordevlocal.Connector> CancelConnectorChanges(CHKS.Models.fordevlocal.Connector item)
         {
             var entityToCancel = Context.Entry(item);
             if (entityToCancel.State == EntityState.Modified)
@@ -499,10 +499,10 @@ namespace CHKS
             return item;
         }
 
-        partial void OnConnectorUpdated(CHKS.Models.fordev.Connector item);
-        partial void OnAfterConnectorUpdated(CHKS.Models.fordev.Connector item);
+        partial void OnConnectorUpdated(CHKS.Models.fordevlocal.Connector item);
+        partial void OnAfterConnectorUpdated(CHKS.Models.fordevlocal.Connector item);
 
-        public async Task<CHKS.Models.fordev.Connector> UpdateConnector(string generatedkey, CHKS.Models.fordev.Connector connector)
+        public async Task<CHKS.Models.fordevlocal.Connector> UpdateConnector(string generatedkey, CHKS.Models.fordevlocal.Connector connector)
         {
             OnConnectorUpdated(connector);
 
@@ -526,10 +526,10 @@ namespace CHKS
             return connector;
         }
 
-        partial void OnConnectorDeleted(CHKS.Models.fordev.Connector item);
-        partial void OnAfterConnectorDeleted(CHKS.Models.fordev.Connector item);
+        partial void OnConnectorDeleted(CHKS.Models.fordevlocal.Connector item);
+        partial void OnAfterConnectorDeleted(CHKS.Models.fordevlocal.Connector item);
 
-        public async Task<CHKS.Models.fordev.Connector> DeleteConnector(string generatedkey)
+        public async Task<CHKS.Models.fordevlocal.Connector> DeleteConnector(string generatedkey)
         {
             var itemToDelete = Context.Connectors
                               .Where(i => i.GeneratedKey == generatedkey)
@@ -562,17 +562,17 @@ namespace CHKS
     
         public async Task ExportDailyexpensesToExcel(Query query = null, string fileName = null)
         {
-            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordev/dailyexpenses/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordev/dailyexpenses/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordevlocal/dailyexpenses/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordevlocal/dailyexpenses/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
         public async Task ExportDailyexpensesToCSV(Query query = null, string fileName = null)
         {
-            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordev/dailyexpenses/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordev/dailyexpenses/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordevlocal/dailyexpenses/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordevlocal/dailyexpenses/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
-        partial void OnDailyexpensesRead(ref IQueryable<CHKS.Models.fordev.Dailyexpense> items);
+        partial void OnDailyexpensesRead(ref IQueryable<CHKS.Models.fordevlocal.Dailyexpense> items);
 
-        public async Task<IQueryable<CHKS.Models.fordev.Dailyexpense>> GetDailyexpenses(Query query = null)
+        public async Task<IQueryable<CHKS.Models.fordevlocal.Dailyexpense>> GetDailyexpenses(Query query = null)
         {
             var items = Context.Dailyexpenses.AsQueryable();
 
@@ -596,11 +596,11 @@ namespace CHKS
             return await Task.FromResult(items);
         }
 
-        partial void OnDailyexpenseGet(CHKS.Models.fordev.Dailyexpense item);
-        partial void OnGetDailyexpenseByKey(ref IQueryable<CHKS.Models.fordev.Dailyexpense> items);
+        partial void OnDailyexpenseGet(CHKS.Models.fordevlocal.Dailyexpense item);
+        partial void OnGetDailyexpenseByKey(ref IQueryable<CHKS.Models.fordevlocal.Dailyexpense> items);
 
 
-        public async Task<CHKS.Models.fordev.Dailyexpense> GetDailyexpenseByKey(string key)
+        public async Task<CHKS.Models.fordevlocal.Dailyexpense> GetDailyexpenseByKey(string key)
         {
             var items = Context.Dailyexpenses
                               .AsNoTracking()
@@ -616,10 +616,10 @@ namespace CHKS
             return await Task.FromResult(itemToReturn);
         }
 
-        partial void OnDailyexpenseCreated(CHKS.Models.fordev.Dailyexpense item);
-        partial void OnAfterDailyexpenseCreated(CHKS.Models.fordev.Dailyexpense item);
+        partial void OnDailyexpenseCreated(CHKS.Models.fordevlocal.Dailyexpense item);
+        partial void OnAfterDailyexpenseCreated(CHKS.Models.fordevlocal.Dailyexpense item);
 
-        public async Task<CHKS.Models.fordev.Dailyexpense> CreateDailyexpense(CHKS.Models.fordev.Dailyexpense dailyexpense)
+        public async Task<CHKS.Models.fordevlocal.Dailyexpense> CreateDailyexpense(CHKS.Models.fordevlocal.Dailyexpense dailyexpense)
         {
             OnDailyexpenseCreated(dailyexpense);
 
@@ -648,7 +648,7 @@ namespace CHKS
             return dailyexpense;
         }
 
-        public async Task<CHKS.Models.fordev.Dailyexpense> CancelDailyexpenseChanges(CHKS.Models.fordev.Dailyexpense item)
+        public async Task<CHKS.Models.fordevlocal.Dailyexpense> CancelDailyexpenseChanges(CHKS.Models.fordevlocal.Dailyexpense item)
         {
             var entityToCancel = Context.Entry(item);
             if (entityToCancel.State == EntityState.Modified)
@@ -660,10 +660,10 @@ namespace CHKS
             return item;
         }
 
-        partial void OnDailyexpenseUpdated(CHKS.Models.fordev.Dailyexpense item);
-        partial void OnAfterDailyexpenseUpdated(CHKS.Models.fordev.Dailyexpense item);
+        partial void OnDailyexpenseUpdated(CHKS.Models.fordevlocal.Dailyexpense item);
+        partial void OnAfterDailyexpenseUpdated(CHKS.Models.fordevlocal.Dailyexpense item);
 
-        public async Task<CHKS.Models.fordev.Dailyexpense> UpdateDailyexpense(string key, CHKS.Models.fordev.Dailyexpense dailyexpense)
+        public async Task<CHKS.Models.fordevlocal.Dailyexpense> UpdateDailyexpense(string key, CHKS.Models.fordevlocal.Dailyexpense dailyexpense)
         {
             OnDailyexpenseUpdated(dailyexpense);
 
@@ -687,10 +687,10 @@ namespace CHKS
             return dailyexpense;
         }
 
-        partial void OnDailyexpenseDeleted(CHKS.Models.fordev.Dailyexpense item);
-        partial void OnAfterDailyexpenseDeleted(CHKS.Models.fordev.Dailyexpense item);
+        partial void OnDailyexpenseDeleted(CHKS.Models.fordevlocal.Dailyexpense item);
+        partial void OnAfterDailyexpenseDeleted(CHKS.Models.fordevlocal.Dailyexpense item);
 
-        public async Task<CHKS.Models.fordev.Dailyexpense> DeleteDailyexpense(string key)
+        public async Task<CHKS.Models.fordevlocal.Dailyexpense> DeleteDailyexpense(string key)
         {
             var itemToDelete = Context.Dailyexpenses
                               .Where(i => i.Key == key)
@@ -723,17 +723,17 @@ namespace CHKS
     
         public async Task ExportHistoriesToExcel(Query query = null, string fileName = null)
         {
-            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordev/histories/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordev/histories/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordevlocal/histories/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordevlocal/histories/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
         public async Task ExportHistoriesToCSV(Query query = null, string fileName = null)
         {
-            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordev/histories/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordev/histories/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordevlocal/histories/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordevlocal/histories/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
-        partial void OnHistoriesRead(ref IQueryable<CHKS.Models.fordev.History> items);
+        partial void OnHistoriesRead(ref IQueryable<CHKS.Models.fordevlocal.History> items);
 
-        public async Task<IQueryable<CHKS.Models.fordev.History>> GetHistories(Query query = null)
+        public async Task<IQueryable<CHKS.Models.fordevlocal.History>> GetHistories(Query query = null)
         {
             var items = Context.Histories.AsQueryable();
 
@@ -758,11 +758,11 @@ namespace CHKS
             return await Task.FromResult(items);
         }
 
-        partial void OnHistoryGet(CHKS.Models.fordev.History item);
-        partial void OnGetHistoryByCashoutDate(ref IQueryable<CHKS.Models.fordev.History> items);
+        partial void OnHistoryGet(CHKS.Models.fordevlocal.History item);
+        partial void OnGetHistoryByCashoutDate(ref IQueryable<CHKS.Models.fordevlocal.History> items);
 
 
-        public async Task<CHKS.Models.fordev.History> GetHistoryByCashoutDate(string cashoutdate)
+        public async Task<CHKS.Models.fordevlocal.History> GetHistoryByCashoutDate(string cashoutdate)
         {
             var items = Context.Histories
                               .AsNoTracking()
@@ -779,10 +779,10 @@ namespace CHKS
             return await Task.FromResult(itemToReturn);
         }
 
-        partial void OnHistoryCreated(CHKS.Models.fordev.History item);
-        partial void OnAfterHistoryCreated(CHKS.Models.fordev.History item);
+        partial void OnHistoryCreated(CHKS.Models.fordevlocal.History item);
+        partial void OnAfterHistoryCreated(CHKS.Models.fordevlocal.History item);
 
-        public async Task<CHKS.Models.fordev.History> CreateHistory(CHKS.Models.fordev.History history)
+        public async Task<CHKS.Models.fordevlocal.History> CreateHistory(CHKS.Models.fordevlocal.History history)
         {
             OnHistoryCreated(history);
 
@@ -811,7 +811,7 @@ namespace CHKS
             return history;
         }
 
-        public async Task<CHKS.Models.fordev.History> CancelHistoryChanges(CHKS.Models.fordev.History item)
+        public async Task<CHKS.Models.fordevlocal.History> CancelHistoryChanges(CHKS.Models.fordevlocal.History item)
         {
             var entityToCancel = Context.Entry(item);
             if (entityToCancel.State == EntityState.Modified)
@@ -823,10 +823,10 @@ namespace CHKS
             return item;
         }
 
-        partial void OnHistoryUpdated(CHKS.Models.fordev.History item);
-        partial void OnAfterHistoryUpdated(CHKS.Models.fordev.History item);
+        partial void OnHistoryUpdated(CHKS.Models.fordevlocal.History item);
+        partial void OnAfterHistoryUpdated(CHKS.Models.fordevlocal.History item);
 
-        public async Task<CHKS.Models.fordev.History> UpdateHistory(string cashoutdate, CHKS.Models.fordev.History history)
+        public async Task<CHKS.Models.fordevlocal.History> UpdateHistory(string cashoutdate, CHKS.Models.fordevlocal.History history)
         {
             OnHistoryUpdated(history);
 
@@ -850,10 +850,10 @@ namespace CHKS
             return history;
         }
 
-        partial void OnHistoryDeleted(CHKS.Models.fordev.History item);
-        partial void OnAfterHistoryDeleted(CHKS.Models.fordev.History item);
+        partial void OnHistoryDeleted(CHKS.Models.fordevlocal.History item);
+        partial void OnAfterHistoryDeleted(CHKS.Models.fordevlocal.History item);
 
-        public async Task<CHKS.Models.fordev.History> DeleteHistory(string cashoutdate)
+        public async Task<CHKS.Models.fordevlocal.History> DeleteHistory(string cashoutdate)
         {
             var itemToDelete = Context.Histories
                               .Where(i => i.CashoutDate == cashoutdate)
@@ -887,17 +887,17 @@ namespace CHKS
     
         public async Task ExportHistoryconnectorsToExcel(Query query = null, string fileName = null)
         {
-            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordev/historyconnectors/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordev/historyconnectors/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordevlocal/historyconnectors/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordevlocal/historyconnectors/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
         public async Task ExportHistoryconnectorsToCSV(Query query = null, string fileName = null)
         {
-            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordev/historyconnectors/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordev/historyconnectors/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordevlocal/historyconnectors/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordevlocal/historyconnectors/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
-        partial void OnHistoryconnectorsRead(ref IQueryable<CHKS.Models.fordev.Historyconnector> items);
+        partial void OnHistoryconnectorsRead(ref IQueryable<CHKS.Models.fordevlocal.Historyconnector> items);
 
-        public async Task<IQueryable<CHKS.Models.fordev.Historyconnector>> GetHistoryconnectors(Query query = null)
+        public async Task<IQueryable<CHKS.Models.fordevlocal.Historyconnector>> GetHistoryconnectors(Query query = null)
         {
             var items = Context.Historyconnectors.AsQueryable();
 
@@ -923,11 +923,11 @@ namespace CHKS
             return await Task.FromResult(items);
         }
 
-        partial void OnHistoryconnectorGet(CHKS.Models.fordev.Historyconnector item);
-        partial void OnGetHistoryconnectorById(ref IQueryable<CHKS.Models.fordev.Historyconnector> items);
+        partial void OnHistoryconnectorGet(CHKS.Models.fordevlocal.Historyconnector item);
+        partial void OnGetHistoryconnectorById(ref IQueryable<CHKS.Models.fordevlocal.Historyconnector> items);
 
 
-        public async Task<CHKS.Models.fordev.Historyconnector> GetHistoryconnectorById(string id)
+        public async Task<CHKS.Models.fordevlocal.Historyconnector> GetHistoryconnectorById(string id)
         {
             var items = Context.Historyconnectors
                               .AsNoTracking()
@@ -945,10 +945,10 @@ namespace CHKS
             return await Task.FromResult(itemToReturn);
         }
 
-        partial void OnHistoryconnectorCreated(CHKS.Models.fordev.Historyconnector item);
-        partial void OnAfterHistoryconnectorCreated(CHKS.Models.fordev.Historyconnector item);
+        partial void OnHistoryconnectorCreated(CHKS.Models.fordevlocal.Historyconnector item);
+        partial void OnAfterHistoryconnectorCreated(CHKS.Models.fordevlocal.Historyconnector item);
 
-        public async Task<CHKS.Models.fordev.Historyconnector> CreateHistoryconnector(CHKS.Models.fordev.Historyconnector historyconnector)
+        public async Task<CHKS.Models.fordevlocal.Historyconnector> CreateHistoryconnector(CHKS.Models.fordevlocal.Historyconnector historyconnector)
         {
             OnHistoryconnectorCreated(historyconnector);
 
@@ -977,7 +977,7 @@ namespace CHKS
             return historyconnector;
         }
 
-        public async Task<CHKS.Models.fordev.Historyconnector> CancelHistoryconnectorChanges(CHKS.Models.fordev.Historyconnector item)
+        public async Task<CHKS.Models.fordevlocal.Historyconnector> CancelHistoryconnectorChanges(CHKS.Models.fordevlocal.Historyconnector item)
         {
             var entityToCancel = Context.Entry(item);
             if (entityToCancel.State == EntityState.Modified)
@@ -989,10 +989,10 @@ namespace CHKS
             return item;
         }
 
-        partial void OnHistoryconnectorUpdated(CHKS.Models.fordev.Historyconnector item);
-        partial void OnAfterHistoryconnectorUpdated(CHKS.Models.fordev.Historyconnector item);
+        partial void OnHistoryconnectorUpdated(CHKS.Models.fordevlocal.Historyconnector item);
+        partial void OnAfterHistoryconnectorUpdated(CHKS.Models.fordevlocal.Historyconnector item);
 
-        public async Task<CHKS.Models.fordev.Historyconnector> UpdateHistoryconnector(string id, CHKS.Models.fordev.Historyconnector historyconnector)
+        public async Task<CHKS.Models.fordevlocal.Historyconnector> UpdateHistoryconnector(string id, CHKS.Models.fordevlocal.Historyconnector historyconnector)
         {
             OnHistoryconnectorUpdated(historyconnector);
 
@@ -1016,10 +1016,10 @@ namespace CHKS
             return historyconnector;
         }
 
-        partial void OnHistoryconnectorDeleted(CHKS.Models.fordev.Historyconnector item);
-        partial void OnAfterHistoryconnectorDeleted(CHKS.Models.fordev.Historyconnector item);
+        partial void OnHistoryconnectorDeleted(CHKS.Models.fordevlocal.Historyconnector item);
+        partial void OnAfterHistoryconnectorDeleted(CHKS.Models.fordevlocal.Historyconnector item);
 
-        public async Task<CHKS.Models.fordev.Historyconnector> DeleteHistoryconnector(string id)
+        public async Task<CHKS.Models.fordevlocal.Historyconnector> DeleteHistoryconnector(string id)
         {
             var itemToDelete = Context.Historyconnectors
                               .Where(i => i.Id == id)
@@ -1052,17 +1052,17 @@ namespace CHKS
     
         public async Task ExportInventoriesToExcel(Query query = null, string fileName = null)
         {
-            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordev/inventories/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordev/inventories/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordevlocal/inventories/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordevlocal/inventories/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
         public async Task ExportInventoriesToCSV(Query query = null, string fileName = null)
         {
-            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordev/inventories/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordev/inventories/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/fordevlocal/inventories/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/fordevlocal/inventories/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
-        partial void OnInventoriesRead(ref IQueryable<CHKS.Models.fordev.Inventory> items);
+        partial void OnInventoriesRead(ref IQueryable<CHKS.Models.fordevlocal.Inventory> items);
 
-        public async Task<IQueryable<CHKS.Models.fordev.Inventory>> GetInventories(Query query = null)
+        public async Task<IQueryable<CHKS.Models.fordevlocal.Inventory>> GetInventories(Query query = null)
         {
             var items = Context.Inventories.AsQueryable();
 
@@ -1086,11 +1086,11 @@ namespace CHKS
             return await Task.FromResult(items);
         }
 
-        partial void OnInventoryGet(CHKS.Models.fordev.Inventory item);
-        partial void OnGetInventoryByName(ref IQueryable<CHKS.Models.fordev.Inventory> items);
+        partial void OnInventoryGet(CHKS.Models.fordevlocal.Inventory item);
+        partial void OnGetInventoryByName(ref IQueryable<CHKS.Models.fordevlocal.Inventory> items);
 
 
-        public async Task<CHKS.Models.fordev.Inventory> GetInventoryByName(string name)
+        public async Task<CHKS.Models.fordevlocal.Inventory> GetInventoryByName(string name)
         {
             var items = Context.Inventories
                               .AsNoTracking()
@@ -1106,10 +1106,10 @@ namespace CHKS
             return await Task.FromResult(itemToReturn);
         }
 
-        partial void OnInventoryCreated(CHKS.Models.fordev.Inventory item);
-        partial void OnAfterInventoryCreated(CHKS.Models.fordev.Inventory item);
+        partial void OnInventoryCreated(CHKS.Models.fordevlocal.Inventory item);
+        partial void OnAfterInventoryCreated(CHKS.Models.fordevlocal.Inventory item);
 
-        public async Task<CHKS.Models.fordev.Inventory> CreateInventory(CHKS.Models.fordev.Inventory inventory)
+        public async Task<CHKS.Models.fordevlocal.Inventory> CreateInventory(CHKS.Models.fordevlocal.Inventory inventory)
         {
             OnInventoryCreated(inventory);
 
@@ -1138,7 +1138,7 @@ namespace CHKS
             return inventory;
         }
 
-        public async Task<CHKS.Models.fordev.Inventory> CancelInventoryChanges(CHKS.Models.fordev.Inventory item)
+        public async Task<CHKS.Models.fordevlocal.Inventory> CancelInventoryChanges(CHKS.Models.fordevlocal.Inventory item)
         {
             var entityToCancel = Context.Entry(item);
             if (entityToCancel.State == EntityState.Modified)
@@ -1150,10 +1150,10 @@ namespace CHKS
             return item;
         }
 
-        partial void OnInventoryUpdated(CHKS.Models.fordev.Inventory item);
-        partial void OnAfterInventoryUpdated(CHKS.Models.fordev.Inventory item);
+        partial void OnInventoryUpdated(CHKS.Models.fordevlocal.Inventory item);
+        partial void OnAfterInventoryUpdated(CHKS.Models.fordevlocal.Inventory item);
 
-        public async Task<CHKS.Models.fordev.Inventory> UpdateInventory(string name, CHKS.Models.fordev.Inventory inventory)
+        public async Task<CHKS.Models.fordevlocal.Inventory> UpdateInventory(string name, CHKS.Models.fordevlocal.Inventory inventory)
         {
             OnInventoryUpdated(inventory);
 
@@ -1177,10 +1177,10 @@ namespace CHKS
             return inventory;
         }
 
-        partial void OnInventoryDeleted(CHKS.Models.fordev.Inventory item);
-        partial void OnAfterInventoryDeleted(CHKS.Models.fordev.Inventory item);
+        partial void OnInventoryDeleted(CHKS.Models.fordevlocal.Inventory item);
+        partial void OnAfterInventoryDeleted(CHKS.Models.fordevlocal.Inventory item);
 
-        public async Task<CHKS.Models.fordev.Inventory> DeleteInventory(string name)
+        public async Task<CHKS.Models.fordevlocal.Inventory> DeleteInventory(string name)
         {
             var itemToDelete = Context.Inventories
                               .Where(i => i.Name == name)

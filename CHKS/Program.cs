@@ -27,6 +27,11 @@ builder.Services.AddDbContext<CHKS.Data.fordevContext>(options =>
 {
     options.UseMySql(builder.Configuration.GetConnectionString("fordevConnection"), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("fordevConnection")));
 });
+builder.Services.AddScoped<CHKS.fordevlocalService>();
+builder.Services.AddDbContext<CHKS.Data.fordevlocalContext>(options =>
+{
+    options.UseMySql(builder.Configuration.GetConnectionString("fordevlocalConnection"), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("fordevlocalConnection")));
+});
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -74,10 +74,6 @@ namespace CHKS.Data
               .Property(p => p.Expense)
               .HasPrecision(10,2);
 
-            builder.Entity<CHKS.Models.mydb.Expensehistoryconnector>()
-              .Property(p => p.Total)
-              .HasPrecision(10,2);
-
             builder.Entity<CHKS.Models.mydb.History>()
               .Property(p => p.Total)
               .HasPrecision(10,2);
@@ -127,8 +123,6 @@ namespace CHKS.Data
         public DbSet<CHKS.Models.mydb.Connector> Connectors { get; set; }
 
         public DbSet<CHKS.Models.mydb.Dailyexpense> Dailyexpenses { get; set; }
-
-        public DbSet<CHKS.Models.mydb.Expensehistoryconnector> Expensehistoryconnectors { get; set; }
 
         public DbSet<CHKS.Models.mydb.History> Histories { get; set; }
 

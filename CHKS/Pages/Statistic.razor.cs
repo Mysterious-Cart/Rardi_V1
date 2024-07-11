@@ -37,10 +37,10 @@ namespace CHKS.Pages
         protected IEnumerable<Models.mydb.History> Histories;
         protected IEnumerable<Models.mydb.History> TestHistories;
         protected IEnumerable<Models.mydb.Historyconnector> Historyconnectors;
-        protected IEnumerable<Models.mydb.Expensehistoryconnector> MonthlyExpense;
+        protected IEnumerable<Models.mydb.Dailyexpense> MonthlyExpense;
 
         protected RadzenDataGrid<Models.mydb.History> grid1;
-        protected RadzenDataGrid<Models.mydb.Expensehistoryconnector> grid2;
+        protected RadzenDataGrid<Models.mydb.Dailyexpense> grid2;
 
         protected static DateTime TimeEnd = DateTime.Now;
         protected static DateTime? TimeStart = DateTime.Now.AddDays(-DateTime.Today.Day + 1);
@@ -62,10 +62,10 @@ namespace CHKS.Pages
         }
 
         protected async Task GetMonthlyExpense(){
-            MonthlyExpense = await MydbService.GetExpensehistoryconnectors();
-            List<Models.mydb.Expensehistoryconnector> TempList = new();
+            MonthlyExpense = await MydbService.GetDailyexpenses();
+            List<Models.mydb.Dailyexpense> TempList = new();
             foreach(var Expense in MonthlyExpense.ToList()){
-                string[] temp = Expense.Date.Split(":");
+                string[] temp = Expense.Key.Split(":");
                 if(TimeStart < DateTime.Parse(temp[0]) && DateTime.Parse(temp[0]) <= DateTime.Today){
                     TempList.Add(Expense);
                 }

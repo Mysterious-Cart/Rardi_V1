@@ -597,17 +597,17 @@ namespace CHKS
         }
 
         partial void OnDailyexpenseGet(CHKS.Models.mydb.Dailyexpense item);
-        partial void OnGetDailyexpenseByNote(ref IQueryable<CHKS.Models.mydb.Dailyexpense> items);
+        partial void OnGetDailyexpenseByKey(ref IQueryable<CHKS.Models.mydb.Dailyexpense> items);
 
 
-        public async Task<CHKS.Models.mydb.Dailyexpense> GetDailyexpenseByNote(string note)
+        public async Task<CHKS.Models.mydb.Dailyexpense> GetDailyexpenseByKey(string key)
         {
             var items = Context.Dailyexpenses
                               .AsNoTracking()
-                              .Where(i => i.Note == note);
+                              .Where(i => i.Key == key);
 
  
-            OnGetDailyexpenseByNote(ref items);
+            OnGetDailyexpenseByKey(ref items);
 
             var itemToReturn = items.FirstOrDefault();
 
@@ -624,7 +624,7 @@ namespace CHKS
             OnDailyexpenseCreated(dailyexpense);
 
             var existingItem = Context.Dailyexpenses
-                              .Where(i => i.Note == dailyexpense.Note)
+                              .Where(i => i.Key == dailyexpense.Key)
                               .FirstOrDefault();
 
             if (existingItem != null)
@@ -663,12 +663,12 @@ namespace CHKS
         partial void OnDailyexpenseUpdated(CHKS.Models.mydb.Dailyexpense item);
         partial void OnAfterDailyexpenseUpdated(CHKS.Models.mydb.Dailyexpense item);
 
-        public async Task<CHKS.Models.mydb.Dailyexpense> UpdateDailyexpense(string note, CHKS.Models.mydb.Dailyexpense dailyexpense)
+        public async Task<CHKS.Models.mydb.Dailyexpense> UpdateDailyexpense(string key, CHKS.Models.mydb.Dailyexpense dailyexpense)
         {
             OnDailyexpenseUpdated(dailyexpense);
 
             var itemToUpdate = Context.Dailyexpenses
-                              .Where(i => i.Note == dailyexpense.Note)
+                              .Where(i => i.Key == dailyexpense.Key)
                               .FirstOrDefault();
 
             if (itemToUpdate == null)
@@ -690,10 +690,10 @@ namespace CHKS
         partial void OnDailyexpenseDeleted(CHKS.Models.mydb.Dailyexpense item);
         partial void OnAfterDailyexpenseDeleted(CHKS.Models.mydb.Dailyexpense item);
 
-        public async Task<CHKS.Models.mydb.Dailyexpense> DeleteDailyexpense(string note)
+        public async Task<CHKS.Models.mydb.Dailyexpense> DeleteDailyexpense(string key)
         {
             var itemToDelete = Context.Dailyexpenses
-                              .Where(i => i.Note == note)
+                              .Where(i => i.Key == key)
                               .FirstOrDefault();
 
             if (itemToDelete == null)
@@ -717,167 +717,6 @@ namespace CHKS
             }
 
             OnAfterDailyexpenseDeleted(itemToDelete);
-
-            return itemToDelete;
-        }
-    
-        public async Task ExportExpensehistoryconnectorsToExcel(Query query = null, string fileName = null)
-        {
-            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/expensehistoryconnectors/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/expensehistoryconnectors/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
-        }
-
-        public async Task ExportExpensehistoryconnectorsToCSV(Query query = null, string fileName = null)
-        {
-            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/expensehistoryconnectors/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/expensehistoryconnectors/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
-        }
-
-        partial void OnExpensehistoryconnectorsRead(ref IQueryable<CHKS.Models.mydb.Expensehistoryconnector> items);
-
-        public async Task<IQueryable<CHKS.Models.mydb.Expensehistoryconnector>> GetExpensehistoryconnectors(Query query = null)
-        {
-            var items = Context.Expensehistoryconnectors.AsQueryable();
-
-
-            if (query != null)
-            {
-                if (!string.IsNullOrEmpty(query.Expand))
-                {
-                    var propertiesToExpand = query.Expand.Split(',');
-                    foreach(var p in propertiesToExpand)
-                    {
-                        items = items.Include(p.Trim());
-                    }
-                }
-
-                ApplyQuery(ref items, query);
-            }
-
-            OnExpensehistoryconnectorsRead(ref items);
-
-            return await Task.FromResult(items);
-        }
-
-        partial void OnExpensehistoryconnectorGet(CHKS.Models.mydb.Expensehistoryconnector item);
-        partial void OnGetExpensehistoryconnectorByDate(ref IQueryable<CHKS.Models.mydb.Expensehistoryconnector> items);
-
-
-        public async Task<CHKS.Models.mydb.Expensehistoryconnector> GetExpensehistoryconnectorByDate(string date)
-        {
-            var items = Context.Expensehistoryconnectors
-                              .AsNoTracking()
-                              .Where(i => i.Date == date);
-
- 
-            OnGetExpensehistoryconnectorByDate(ref items);
-
-            var itemToReturn = items.FirstOrDefault();
-
-            OnExpensehistoryconnectorGet(itemToReturn);
-
-            return await Task.FromResult(itemToReturn);
-        }
-
-        partial void OnExpensehistoryconnectorCreated(CHKS.Models.mydb.Expensehistoryconnector item);
-        partial void OnAfterExpensehistoryconnectorCreated(CHKS.Models.mydb.Expensehistoryconnector item);
-
-        public async Task<CHKS.Models.mydb.Expensehistoryconnector> CreateExpensehistoryconnector(CHKS.Models.mydb.Expensehistoryconnector expensehistoryconnector)
-        {
-            OnExpensehistoryconnectorCreated(expensehistoryconnector);
-
-            var existingItem = Context.Expensehistoryconnectors
-                              .Where(i => i.Date == expensehistoryconnector.Date)
-                              .FirstOrDefault();
-
-            if (existingItem != null)
-            {
-               throw new Exception("Item already available");
-            }            
-
-            try
-            {
-                Context.Expensehistoryconnectors.Add(expensehistoryconnector);
-                Context.SaveChanges();
-            }
-            catch
-            {
-                Context.Entry(expensehistoryconnector).State = EntityState.Detached;
-                throw;
-            }
-
-            OnAfterExpensehistoryconnectorCreated(expensehistoryconnector);
-
-            return expensehistoryconnector;
-        }
-
-        public async Task<CHKS.Models.mydb.Expensehistoryconnector> CancelExpensehistoryconnectorChanges(CHKS.Models.mydb.Expensehistoryconnector item)
-        {
-            var entityToCancel = Context.Entry(item);
-            if (entityToCancel.State == EntityState.Modified)
-            {
-              entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
-              entityToCancel.State = EntityState.Unchanged;
-            }
-
-            return item;
-        }
-
-        partial void OnExpensehistoryconnectorUpdated(CHKS.Models.mydb.Expensehistoryconnector item);
-        partial void OnAfterExpensehistoryconnectorUpdated(CHKS.Models.mydb.Expensehistoryconnector item);
-
-        public async Task<CHKS.Models.mydb.Expensehistoryconnector> UpdateExpensehistoryconnector(string date, CHKS.Models.mydb.Expensehistoryconnector expensehistoryconnector)
-        {
-            OnExpensehistoryconnectorUpdated(expensehistoryconnector);
-
-            var itemToUpdate = Context.Expensehistoryconnectors
-                              .Where(i => i.Date == expensehistoryconnector.Date)
-                              .FirstOrDefault();
-
-            if (itemToUpdate == null)
-            {
-               throw new Exception("Item no longer available");
-            }
-                
-            var entryToUpdate = Context.Entry(itemToUpdate);
-            entryToUpdate.CurrentValues.SetValues(expensehistoryconnector);
-            entryToUpdate.State = EntityState.Modified;
-
-            Context.SaveChanges();
-
-            OnAfterExpensehistoryconnectorUpdated(expensehistoryconnector);
-
-            return expensehistoryconnector;
-        }
-
-        partial void OnExpensehistoryconnectorDeleted(CHKS.Models.mydb.Expensehistoryconnector item);
-        partial void OnAfterExpensehistoryconnectorDeleted(CHKS.Models.mydb.Expensehistoryconnector item);
-
-        public async Task<CHKS.Models.mydb.Expensehistoryconnector> DeleteExpensehistoryconnector(string date)
-        {
-            var itemToDelete = Context.Expensehistoryconnectors
-                              .Where(i => i.Date == date)
-                              .FirstOrDefault();
-
-            if (itemToDelete == null)
-            {
-               throw new Exception("Item no longer available");
-            }
-
-            OnExpensehistoryconnectorDeleted(itemToDelete);
-
-
-            Context.Expensehistoryconnectors.Remove(itemToDelete);
-
-            try
-            {
-                Context.SaveChanges();
-            }
-            catch
-            {
-                Context.Entry(itemToDelete).State = EntityState.Unchanged;
-                throw;
-            }
-
-            OnAfterExpensehistoryconnectorDeleted(itemToDelete);
 
             return itemToDelete;
         }

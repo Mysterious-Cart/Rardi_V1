@@ -38,13 +38,13 @@
         </RadzenStack>
     </RadzenCard>
     <RadzenCard Style="-width: fit-content; width: 235px; height: fit-content;">
-        <RadzenDataGrid  AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" @ref="@grid2" TItem ="Models.mydb.Expensehistoryconnector" Data ="@MonthlyExpense" Style="height: 60vh; border-radius:25px;Width:200px;">
+        <RadzenDataGrid  AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" @ref="@grid2" TItem ="Models.mydb.Dailyexpense" Data ="@MonthlyExpense" Style="height: 60vh; border-radius:25px;Width:200px;">
             <GroupHeaderTemplate>
                 <@context.GroupDescriptor.GetTitle(): @(context.Date)/>
             </GroupHeaderTemplate>
             <Columns>
-                <RadzenDataGridColumn title="Note" TItem ="Models.mydb.Expensehistoryconnector" Property="Note"></RadzenDataGridColumn>
-                <RadzenDataGridColumn title="Total" TItem ="Models.mydb.Expensehistoryconnector" Property="Total"></RadzenDataGridColumn>
+                <RadzenDataGridColumn title="Note" TItem ="Models.mydb.Dailyexpense" Property="Note"></RadzenDataGridColumn>
+                <RadzenDataGridColumn title="Total" TItem ="Models.mydb.Dailyexpense" Property="Total"></RadzenDataGridColumn>
             </Columns>
         </RadzenDataGrid>
     </RadzenCard>
