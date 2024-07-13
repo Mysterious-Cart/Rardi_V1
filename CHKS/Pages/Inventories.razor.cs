@@ -46,6 +46,9 @@ namespace CHKS.Pages
 
         protected string OriginalName;
 
+        [Inject]
+        protected SecurityService Security { get; set; }
+
         protected async Task Search(ChangeEventArgs args)
         {
             search = $"{args.Value}";

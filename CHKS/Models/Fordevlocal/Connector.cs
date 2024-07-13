@@ -29,5 +29,9 @@ namespace CHKS.Models.fordevlocal
 
         [Required]
         public decimal Total { get; set; }
+
+        public decimal? Discount { get; set; }
+
+        public decimal? PriceOverwrite { get; set; }
     }
 }

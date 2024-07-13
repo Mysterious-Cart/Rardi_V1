@@ -1,4 +1,5 @@
 @inherits LayoutComponentBase
+
 <RadzenComponents />
 
 <RadzenLayout style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body';">
@@ -8,7 +9,23 @@
                 <RadzenSidebarToggle Click="@SidebarToggleClick"></RadzenSidebarToggle>
             </RadzenColumn>
             <RadzenColumn Size="7">
-                <RadzenStack AlignItems="AlignItems.Center" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End"></RadzenStack>
+                <RadzenStack AlignItems="AlignItems.Center" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
+                    <RadzenProfileMenu Visible="@Security.IsAuthenticated()" Click="@ProfileMenuClick">
+                        <ChildContent>
+
+                            @if(Security.IsInRole(new string[]{"Admin" ,"Dev"})){
+                                <RadzenProfileMenuItem Path="profile" Icon="settings" Text="Profile" />
+                                <RadzenProfileMenuItem Path="application-users" Icon="person" Text="Users" />
+                                <RadzenProfileMenuItem Path="application-roles" Icon="security" Text="Roles" />
+                            }
+                            <RadzenProfileMenuItem Text="Logout" Value="Logout" Icon="power_settings_new" />
+                        </ChildContent>
+                        <Template>
+                            @Security.User?.Name
+                            <RadzenGravatar Email="@Security.User?.Name" />
+                        </Template>
+                    </RadzenProfileMenu>
+                </RadzenStack>
             </RadzenColumn>
         </RadzenRow>
     </RadzenHeader>
@@ -17,7 +34,7 @@
     </RadzenBody>
     <RadzenSidebar Expanded="@sidebarExpanded" style="z-index: 2">
         <RadzenStack AlignItems="Radzen.AlignItems.Center" class="rz-py-4 rz-py-lg-6" Style="padding: var(--rz-panel-menu-item-padding); border-bottom: var(--rz-panel-menu-item-border);">
-            <RadzenImage Path="images/logo.png"  style="width: 200px; height: 190px;" AlternateText="Application logo"></RadzenImage>
+            <RadzenImage Path="logo.ico"  style="width: 200px; height: 190px;" AlternateText="Application logo"></RadzenImage>
         </RadzenStack>
         <RadzenPanelMenu Style="font-family:'Khmer OS Battambang'; font-size:1.2rem;">
             <RadzenPanelMenuItem Text="ទំព័រគិតលុយ" Path=""  />

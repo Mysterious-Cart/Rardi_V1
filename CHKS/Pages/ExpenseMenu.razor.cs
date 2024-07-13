@@ -33,6 +33,9 @@ namespace CHKS.Pages
         protected string Note;
         protected decimal? Expense;
 
+        [Inject]
+        protected SecurityService Security { get; set; }
+
         protected async Task btnClick(){
             
         }

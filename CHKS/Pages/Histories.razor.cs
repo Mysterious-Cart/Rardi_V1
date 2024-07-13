@@ -45,6 +45,9 @@ namespace CHKS.Pages
 
         protected DateTime ChosenDate;
 
+        [Inject]
+        protected SecurityService Security { get; set; }
+
         protected async Task Search(ChangeEventArgs args)
         {
             search = $"{args.Value}";

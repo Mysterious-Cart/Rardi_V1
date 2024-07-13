@@ -91,6 +91,9 @@ namespace CHKS.Pages
 
         protected bool errorVisible;
 
+        [Inject]
+        protected SecurityService Security { get; set; }
+
         protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.Historyconnector data)
         {
             await grid1.EditRow(data);

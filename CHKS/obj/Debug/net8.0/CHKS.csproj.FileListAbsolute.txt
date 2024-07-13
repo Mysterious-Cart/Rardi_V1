@@ -216,3 +216,11 @@ C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\obj\Debug\net8.0\refint\CHKS.dll
 C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\obj\Debug\net8.0\CHKS.pdb
 C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\obj\Debug\net8.0\CHKS.genruntimeconfig.cache
 C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\obj\Debug\net8.0\ref\CHKS.dll
+C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Debug\net8.0\Microsoft.AspNetCore.HeaderPropagation.dll
+C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Debug\net8.0\Microsoft.AspNetCore.OData.dll
+C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Debug\net8.0\Microsoft.OData.Core.dll
+C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Debug\net8.0\Microsoft.OData.Edm.dll
+C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Debug\net8.0\Microsoft.OData.ModelBuilder.dll
+C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\bin\Debug\net8.0\Microsoft.Spatial.dll
+C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\obj\Debug\net8.0\CHKS.MvcApplicationPartsAssemblyInfo.cs

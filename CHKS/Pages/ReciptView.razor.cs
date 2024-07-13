@@ -46,6 +46,9 @@ namespace CHKS.Pages
         [Parameter]
         public string ID {get; set;}
 
+        [Inject]
+        protected SecurityService Security { get; set; }
+
         protected override async Task OnInitializedAsync()
         { 
             Historyconnector = await MydbService.GetHistoryconnectors();

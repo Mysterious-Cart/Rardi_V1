@@ -54,6 +54,9 @@ namespace CHKS.Pages
         protected decimal? ProductTotal = 0;
         protected decimal? ServiceTotal = 0;
 
+        [Inject]
+        protected SecurityService Security { get; set; }
+
         protected override async Task OnInitializedAsync()
         {    
             await GetHistoryBaseOfChoosenDate();

@@ -37,6 +37,9 @@ namespace CHKS.Pages
         [Parameter]
         public string[] Info {get; set;}
 
+        [Inject]
+        protected SecurityService Security { get; set; }
+
         protected void Close(){
             if(Info[0]=="Cart ID"){
                 DialogService.Close(CartID);

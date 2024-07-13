@@ -60,6 +60,9 @@ namespace CHKS.Pages
         
         protected CHKS.Models.mydb.Connector connector = new(){GeneratedKey="", CartId=0,Product ="", Qty=0 };
 
+        [Inject]
+        protected SecurityService Security { get; set; }
+
         protected async Task OpenExpenseMenu()
         {
             await DialogService.OpenAsync<ExpenseMenu>("Expense Menu");

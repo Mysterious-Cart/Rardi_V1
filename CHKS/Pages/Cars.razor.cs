@@ -43,6 +43,9 @@ namespace CHKS.Pages
         protected bool Mode = false;
         protected bool isEditing = false;
 
+        [Inject]
+        protected SecurityService Security { get; set; }
+
         protected override async Task OnInitializedAsync()
         {
             cars = await mydbService.GetCars();
