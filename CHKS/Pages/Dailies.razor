@@ -1,5 +1,4 @@
-@page "/dailies"
-
+@page "/dailies"
 @attribute [Authorize]
 
 <PageTitle>Daily</PageTitle>
@@ -9,11 +8,11 @@
         <RadzenRow AlignItems="AlignItems.Center" Style="margin-bottom: 25; ">
             <RadzenCard Style="width:100%"  >
                 <RadzenStack Orientation = "Orientation.Horizontal" AlignItems = "AlignItems.Center" Gap="20px">
-                    <RadzenText Text="ទិន្នន័យប្រចាំថ្ងៃ" TextStyle = "TextStyle.H4" Style="Margin-right:15px"/>
-                    <RadzenText Text="សរុប:" TextStyle="TextStyle.Overline" style="font-size:large"/>
+                    <RadzenText Text="Daily Record" TextStyle = "TextStyle.H4" Style="Margin-right:15px"/>
+                    <RadzenText Text="Total:" TextStyle="TextStyle.Overline" style="font-size:large"/>
                     <RadzenText Text="@Total" TextStyle = "TextStyle.DisplayH5" Style="Margin-right:15px"/>
       
-                    <RadzenText Text="ចំណាយសរុប:" TextStyle="TextStyle.Overline" style="font-size:large"/>
+                    <RadzenText Text="Expense Total:" TextStyle="TextStyle.Overline" style="font-size:large"/>
                     <RadzenText Text="@ExpenseTotal" TextStyle = "TextStyle.DisplayH5" Style="Margin-right:15px"/>                 
                 </RadzenStack>
                 <RadzenText Text="@dates"/>
@@ -26,7 +25,7 @@
             <RadzenRow>
                 <RadzenStack AlignItems="AlignItems.End" Orientation="Orientation.Horizontal" Style="Width:100%;">
                     <RadzenButton Icon="priority_high" ButtonStyle="ButtonStyle.Danger" style="border-radius:5px" Click="@LoadNotImport"/>
-                    <RadzenText Text="សំខាន់! មានទំនិញខ្លះខ្វាស់កាតតម្លៃទិញចូល" TextStyle="TextStyle.DisplayH6"/>
+                    <RadzenText Text="Note! There are missing Import Price! Note: Click the Red Exclaimation Mark to view the Missing Data." TextStyle="TextStyle.DisplayH6"/>
                 </RadzenStack>
             </RadzenRow>
         }else{
@@ -43,7 +42,7 @@
                     <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.Advanced" style="height:65vh; min-width:fit-content"
                         Data="@History" TItem="CHKS.Models.mydb.History" RowSelect="@OpenHistory">
                         <Columns>
-                            <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="CashoutDate" Title="ថ្ងៃគិតលុយ">
+                            <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="CashoutDate" Title="ថ្ងៃទី">
                             </RadzenDataGridColumn>
                             <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Plate" Title="ផ្លាកលេខ">
                             </RadzenDataGridColumn>
@@ -57,16 +56,16 @@
                         <RadzenDataGrid @ref="grid1" ColumnWidth="100px" AllowFiltering="false" AllowPaging="false" AllowSorting="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})
                             Data="@Historyconnectors" TItem="CHKS.Models.mydb.Historyconnector" GridLines="Radzen.DataGridGridLines.None" >
                             <Columns>
-                                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Product" Title="ឈ្មេាះទំនេញ">
+                                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Product" Title="Name">
                                 </RadzenDataGridColumn>
-                                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Qty" Title="ចំនួន">
+                                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Qty" Title="Qty">
                                 </RadzenDataGridColumn>
-                                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Inventory.Import" Title="តម្លៃទិញ">
+                                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Inventory.Import" Title="Import">
                                     <EditTemplate Context="Historyconnector">
                                         <RadzenNumeric style="display: block; width: 100%" @bind-Value="@Historyconnector.Inventory.Import" Name="Import" />
                                     </EditTemplate>
                                 </RadzenDataGridColumn>
-                                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Inventory.Export" Title="តម្លៃលក់">
+                                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Inventory.Export" Title="Export">
                                     <EditTemplate Context="Historyconnector">
                                         <RadzenNumeric style="display: block; width: 100%" @bind-Value="@Historyconnector.Export" Name="Export" />
                                     </EditTemplate>
@@ -99,12 +98,12 @@
             <RadzenButton Icon="add" Text="Add Expense" Click="@AddBtnClick" style="width:300px" />
             <RadzenDataGrid @ref="grid2" Data="@Dailyexpenses" TItem="Models.mydb.Dailyexpense" RowCreate="@GridCreate" RowUpdate="@GridRowUpdate" style="width:300px">
                 <Columns>
-                    <RadzenDataGridColumn TItem="Models.mydb.Dailyexpense" Property="Note" Title="ចំណាំ" Width="90px">
+                    <RadzenDataGridColumn TItem="Models.mydb.Dailyexpense" Property="Note" Title="Note" Width="90px">
                         <EditTemplate Context="expense">
                             <RadzenTextBox @bind-Value="@expense.Note" />
                         </EditTemplate>
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="Models.mydb.Dailyexpense" Property="Expense" Title="ចំណាយ">
+                    <RadzenDataGridColumn TItem="Models.mydb.Dailyexpense" Property="Expense" Title="Expense">
                         <EditTemplate Context="expense">
                             <RadzenNumeric @bind-Value="@expense.Expense" />
                         </EditTemplate>

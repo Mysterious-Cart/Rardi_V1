@@ -20,18 +20,18 @@
         <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.SimpleWithMenu" Style="height: 60vh;"
             Data="@cars" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate" RowSelect="@SelectCar" TItem="CHKS.Models.mydb.Car" GotoFirstPageOnSort="true">
             <Columns>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Car" Property="Plate" Title="ផ្លាកលេខ">
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Car" Property="Plate" Title="Plate">
                   <EditTemplate Context="car">
                       <RadzenTextBox style="display: block; width: 100%" @bind-Value="@car.Plate" Name="Plate" />
                       <RadzenRequiredValidator Component="Plate" Text="Plate is required" style="position: absolute;" />
                   </EditTemplate>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Car" Property="Phone" Title="លេខទុស័ព្ទ">
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Car" Property="Phone" Title="Phone">
                   <EditTemplate Context="car">
                       <RadzenTextBox style="display: block; width: 100%" @bind-Value="@car.Phone" Name="Phone" />
                   </EditTemplate>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Car" Property="Type" Title="ប្រភេទឡាន">
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Car" Property="Type" Title="Type">
                   <EditTemplate Context="car">
                       <RadzenTextBox style="display: block; width: 100%" @bind-Value="@car.Type" Name="Type" />
                   </EditTemplate>
@@ -62,11 +62,11 @@
             <RadzenDataGrid @ref="grid1" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" ShowPagingSummary="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})
                 Data="@Carts" RowSelect="@SelectCar" TItem="CHKS.Models.mydb.Cart">
                 <Columns>
-                    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Cart" Property="Plate" Title="ផ្លាកលេខ">
+                    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Cart" Property="Plate" Title="Plate">
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Cart" Property="CartId" Title="លេខតាង">
+                    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Cart" Property="CartId" Title="Cart">
                     </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Cart" Property="Car.Type" Title="ប្រភេទឡាន">
+                    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Cart" Property="Car.Type" Title="Type">
                     </RadzenDataGridColumn>
                 </Columns>
             </RadzenDataGrid>
