@@ -32,17 +32,9 @@ namespace CHKS.Shared
         [Inject]
         protected NotificationService NotificationService { get; set; }
 
-        private bool sidebarExpanded = true;
-        protected bool IsLeveled = false;
-
 
         [Inject]
         protected SecurityService Security { get; set; }
-
-        void SidebarToggleClick()
-        {
-            sidebarExpanded = !sidebarExpanded;
-        }
 
         protected void ProfileMenuClick(RadzenProfileMenuItem args)
         {

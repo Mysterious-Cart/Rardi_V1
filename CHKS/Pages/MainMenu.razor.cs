@@ -35,7 +35,7 @@ namespace CHKS.Pages
 
 
         protected CHKS.Models.mydb.Car CustomerLists;
-        protected Models.mydb.Cart Customer = new Models.mydb.Cart{Plate="", CartId=0, };
+        protected Models.mydb.Cart Customer = new(){Plate="", CartId=0, };
 
         protected bool? SelectionState = null;//False for Customer Mode, True for Cart Modes
         protected bool Selection = false;//False for selecting, True for already selected
@@ -43,6 +43,9 @@ namespace CHKS.Pages
         protected string Phone;
         protected string CarType;       
         protected string RowTotal = "0";
+
+        protected string CustomerDataExpand = "customerDatalist-expanded-false";
+        protected string icon = "start";
 
         protected string TodayTotal = "$0";
 
@@ -70,6 +73,11 @@ namespace CHKS.Pages
         protected async override Task OnInitializedAsync()
         {
             Retotal();
+        }
+
+        protected async Task OnAfterRenderAsync()
+        {
+            await Expand();
         }
 
         protected async void Retotal(){
@@ -106,7 +114,7 @@ namespace CHKS.Pages
 
                 if(result is CHKS.Models.mydb.Car)
                 {
-                    var Id = await DialogService.OpenAsync<SingleInputPopUp>("Cart ID", new Dictionary<string, object>{{"Info",new string[]{"Cart ID"}}});
+                    var Id = await DialogService.OpenAsync<SingleInputPopUp>("បង្កើតលេខតំណាង", new Dictionary<string, object>{{"Info",new string[]{"Cart ID"}}}, new DialogOptions{Width="450px"});
                     if(Id != null && Id is int)
                     {
                             Customer.CartId = Id;
@@ -399,7 +407,18 @@ namespace CHKS.Pages
             Grid1.CancelEditRow(data);
             await MydbService.CancelConnectorChanges(data);
         }
+
+        private async Task Expand(){
+            if(CustomerDataExpand == "customerDatalist-expanded-false"){
+                CustomerDataExpand = "customerDatalist-expanded-true";
+                icon="keyboard_return";
+            }else{
+                CustomerDataExpand = "customerDatalist-expanded-false";
+                icon="start";
+            }
+        }
     }
 
+    
     
 }

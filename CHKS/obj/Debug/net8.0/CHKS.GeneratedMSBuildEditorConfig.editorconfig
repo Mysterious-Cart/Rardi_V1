@@ -9,123 +9,123 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = CHKS
 build_property.RootNamespace = CHKS
-build_property.ProjectDir = /home/chhan-soeng/Documents/GitHub/Pos/CHKS/
+build_property.ProjectDir = C:\Users\soeng\OneDrive\Documents\GitRepoForPos\Pos\CHKS\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = /home/chhan-soeng/Documents/GitHub/Pos/CHKS
+build_property.MSBuildProjectDirectory = C:\Users\soeng\OneDrive\Documents\GitRepoForPos\Pos\CHKS
 build_property._RazorSourceGeneratorDebug = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/App.razor]
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/AddApplicationRole.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWRkQXBwbGljYXRpb25Sb2xlLnJhem9y
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/AddApplicationRole.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRkQXBwbGljYXRpb25Sb2xlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/AddApplicationUser.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQWRkQXBwbGljYXRpb25Vc2VyLnJhem9y
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/AddApplicationUser.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRkQXBwbGljYXRpb25Vc2VyLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/ApplicationRoles.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQXBwbGljYXRpb25Sb2xlcy5yYXpvcg==
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/ApplicationRoles.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXBwbGljYXRpb25Sb2xlcy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/ApplicationUsers.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQXBwbGljYXRpb25Vc2Vycy5yYXpvcg==
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/ApplicationUsers.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXBwbGljYXRpb25Vc2Vycy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/Cars.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ2Fycy5yYXpvcg==
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/Cars.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2Fycy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/Company.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvQ29tcGFueS5yYXpvcg==
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/Company.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcGFueS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/Dailies.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRGFpbGllcy5yYXpvcg==
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/Dailies.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFpbGllcy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/EditApplicationUser.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRWRpdEFwcGxpY2F0aW9uVXNlci5yYXpvcg==
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/EditApplicationUser.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRWRpdEFwcGxpY2F0aW9uVXNlci5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/ExpenseMenu.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvRXhwZW5zZU1lbnUucmF6b3I=
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/ExpenseMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXhwZW5zZU1lbnUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/Histories.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSGlzdG9yaWVzLnJhem9y
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/Histories.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSGlzdG9yaWVzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/Inventories.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvSW52ZW50b3JpZXMucmF6b3I=
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/Inventories.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW52ZW50b3JpZXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/Login.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTG9naW4ucmF6b3I=
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/MainMenu.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvTWFpbk1lbnUucmF6b3I=
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/MainMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWFpbk1lbnUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/PaymentForm.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUGF5bWVudEZvcm0ucmF6b3I=
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/PaymentForm.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGF5bWVudEZvcm0ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/PrintPage.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUHJpbnRQYWdlLnJhem9y
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/PrintPage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJpbnRQYWdlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/Profile.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUHJvZmlsZS5yYXpvcg==
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/Profile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJvZmlsZS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/ReciptView.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvUmVjaXB0Vmlldy5yYXpvcg==
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/ReciptView.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVjaXB0Vmlldy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/SecurityCode.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvU2VjdXJpdHlDb2RlLnJhem9y
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/SecurityCode.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2VjdXJpdHlDb2RlLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/SingleInputPopUp.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvU2luZ2xlSW5wdXRQb3BVcC5yYXpvcg==
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/SingleInputPopUp.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2luZ2xlSW5wdXRQb3BVcC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/Statistic.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvU3RhdGlzdGljLnJhem9y
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/Statistic.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3RhdGlzdGljLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/Unauthorized.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvVW5hdXRob3JpemVkLnJhem9y
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/Unauthorized.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVW5hdXRob3JpemVkLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/_Imports.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX0ltcG9ydHMucmF6b3I=
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Shared/LoginLayout.razor]
-build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL0xvZ2luTGF5b3V0LnJhem9y
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Shared/LoginLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExvZ2luTGF5b3V0LnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Shared/MainLayout.razor]
-build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL01haW5MYXlvdXQucmF6b3I=
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Shared/RedirectToLogin.razor]
-build_metadata.AdditionalFiles.TargetPath = U2hhcmVkL1JlZGlyZWN0VG9Mb2dpbi5yYXpvcg==
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Shared/RedirectToLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFJlZGlyZWN0VG9Mb2dpbi5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/_Imports.razor]
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/chhan-soeng/Documents/GitHub/Pos/CHKS/Pages/_Host.cshtml]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXMvX0hvc3QuY3NodG1s
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/_Host.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0hvc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

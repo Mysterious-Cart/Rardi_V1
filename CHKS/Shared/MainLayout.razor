@@ -1,13 +1,12 @@
 @inherits LayoutComponentBase
-
+<head>
+    <link href="css/Layout.css" rel="stylesheet"/>
+</head>
 <RadzenComponents />
 
-<RadzenLayout style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body';">
+<RadzenLayout style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body';  ">
     <RadzenHeader>
-        <RadzenRow JustifyContent="JustifyContent.Start" AlignItems="AlignItems.Center" Gap="0">
-            <RadzenColumn Size="5">
-                <RadzenSidebarToggle Click="@SidebarToggleClick"></RadzenSidebarToggle>
-            </RadzenColumn>
+        <RadzenRow JustifyContent="JustifyContent.End" AlignItems="AlignItems.Center" Gap="0">
             <RadzenColumn Size="7">
                 <RadzenStack AlignItems="AlignItems.Center" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End">
                     <RadzenProfileMenu Visible="@Security.IsAuthenticated()" Click="@ProfileMenuClick">
@@ -29,24 +28,19 @@
             </RadzenColumn>
         </RadzenRow>
     </RadzenHeader>
-    <RadzenBody Expanded="@sidebarExpanded">
+    <RadzenBody style="background-color:#F1F1F2;">
          @Body
     </RadzenBody>
-    <RadzenSidebar Expanded="@sidebarExpanded" style="z-index: 2">
-        <RadzenStack AlignItems="Radzen.AlignItems.Center" class="rz-py-4 rz-py-lg-6" Style="padding: var(--rz-panel-menu-item-padding); border-bottom: var(--rz-panel-menu-item-border);">
-            <RadzenImage Path="logo.ico"  style="width: 200px; height: 190px;" AlternateText="Application logo"></RadzenImage>
-        </RadzenStack>
-        <RadzenPanelMenu Style="font-family:'Khmer OS Battambang'; font-size:1.2rem;">
-            <RadzenPanelMenuItem Text="ទំព័រគិតលុយ" Path=""  />
-            <RadzenPanelMenuItem Text="គ្រប់គ្រងទំនេញ" Path="inventories" />
-            <RadzenPanelMenuItem Text="ថ្ងៃនេះ" Path="Dailies" />
-            <RadzenPanelMenuItem Text="ទិន្នន័យ" Path="statistic" />
-            <RadzenPanelMenuItem Text="ប្រវ័ត្តិ" Path="histories" />
-            <RadzenPanelMenuItem Text="ក្រុមហ៊ុន" Path="company" />
+    <RadzenSidebar Expanded="true" class="sidebar" >
+        <RadzenPanelMenu  Style="margin-top: 20dvh;" >
+            <RadzenStack JustifyContent="JustifyContent.SpaceEvenly" Style="overflow:hidden;" Wrap="Radzen.FlexWrap.NoWrap">
+                <RadzenPanelMenuItem Text="ទំព័រគិតលុយ" Path="" Icon="home_" class="panelmenuitem" />
+                <RadzenPanelMenuItem Text="គ្រប់គ្រងទំនេញ" Path="inventories" Icon="inventory_" class="panelmenuitem" />
+                <RadzenPanelMenuItem Text="ថ្ងៃនេះ" Path="Dailies" Icon="assignment_" class="panelmenuitem"/>
+                <RadzenPanelMenuItem Text="ទិន្នន័យ" Path="statistic"  Icon="bar_chart_" class="panelmenuitem"/>
+                <RadzenPanelMenuItem Text="ប្រវ័ត្តិ" Path="histories" Icon="history_" class="panelmenuitem"/>
+                <RadzenPanelMenuItem Text="ក្រុមហ៊ុន" Path="company" Icon="apartment_" class="panelmenuitem"/>
+            </RadzenStack>
         </RadzenPanelMenu>
-        <RadzenStack AlignItems="Radzen.AlignItems.Center" Gap="0" class="rz-py-4 rz-py-lg-6" Style="padding: var(--rz-panel-menu-item-padding);">
-            <RadzenText Text="CHKS v2.7 Beta" TextStyle="Radzen.Blazor.TextStyle.Caption" TagName="Radzen.Blazor.TagName.P" TextAlign="Radzen.TextAlign.Center" />
-            <RadzenText Text="Copyright Ⓒ 2024" TextStyle="Radzen.Blazor.TextStyle.Caption" class="rz-mb-0" TagName="Radzen.Blazor.TagName.P" TextAlign="Radzen.TextAlign.Center" />
-        </RadzenStack>
     </RadzenSidebar>
 </RadzenLayout>

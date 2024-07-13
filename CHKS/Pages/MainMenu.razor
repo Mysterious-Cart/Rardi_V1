@@ -1,26 +1,36 @@
-@page "/"
+@page "/"
+
 @attribute [Authorize]
-<RadzenStack Orientation="Orientation.Horizontal">
-    <PageTitle>MainMenu</PageTitle>
-    <RadzenCard Style="margin-bottom: 2%; border-radius:25px; width:70%" >
-        <RadzenStack Orientation="Orientation.Horizontal"  AlignItems="AlignItems.End" Wrap="FlexWrap.Wrap" Style="margin-top:10px">
-            <RadzenRow Style="margin-left:10px; margin-bottom:auto; margin-top:auto;">
-                <RadzenText Text="លេខតំណាង:" style="font-family:'Khmer OS Battambang'; font-size:1.5rem; width:130px; line-height:30px; "/>
-                <RadzenText style="font-size:1.5rem; margin-top:auto; margin-bottom:auto"><b>@(Customer.CartId == 0? "N/A" : Customer.CartId)</b></RadzenText>
-            </RadzenRow>
-            <RadzenRow Style="margin-left:20px; margin-bottom:auto; margin-top:auto;">
-                <RadzenText Text="លេខទូរស័ព្ទ:" style="font-family:'Khmer OS Battambang'; font-size:1.5rem; width:130px; line-height:30px"/>
-                <RadzenText style="font-size:1.5rem; margin-top:auto; margin-bottom:auto"><b>@(Phone==null?"N/A":Phone)</b></RadzenText>
-            </RadzenRow>
-            <RadzenRow Style="margin-left:20px; margin-bottom:auto; margin-top:auto;">
-                <RadzenText Text="ផ្លាកលេខ:" style="font-family:'Khmer OS Battambang';  font-size:1.5rem; width:fit-content;"/>
-                <RadzenText style="font-size:1.5rem;"><b>@(Customer.Plate==""?"N/A": Customer.Plate)</b></RadzenText>
-            </RadzenRow>
-            <RadzenRow Style="margin-left:20px;margin-bottom:auto; margin-top:auto;">
-                <RadzenText Text="មាខឡាន:" style="font-family:'Khmer OS Battambang';font-size:1.5rem; width:fit-content;"/>
-                <RadzenText style="font-size:1.5rem;" ><b>@(CarType==null?"N/A": CarType)</b></RadzenText>
-            </RadzenRow>
-            <RadzenStack Orientation="Orientation.Horizontal" Reverse="true" Gap="5px" AlignItems="AlignItems.End" JustifyContent="JustifyContent.SpaceEvenly" style="height:2%; width:fit-content;; margin-left:auto;">
+<head>
+    <link href="css/Page.css" rel="stylesheet"/>
+</head>
+
+<RadzenStack Orientation="Orientation.Horizontal" >
+    <PageTitle >MainMenu</PageTitle>
+    <RadzenCard  Style="margin-bottom: 2%; border-radius:10px; width:70%; margin-left:30px; margin-top:30px;" >
+        <RadzenStack Orientation="Orientation.Horizontal"  AlignItems="AlignItems.End" Wrap="FlexWrap.NoWrap" Style="width: 100%;">
+            <div class="@CustomerDataExpand">
+                <RadzenRow class="DataGridRow">
+                    <RadzenText Text="ផ្លាកលេខ:" style="font-family:'Khmer OS Battambang';  font-size:1.5rem; width:fit-content;"/>
+                    <RadzenText style="font-size:1.5rem;"><b>@(Customer.Plate==""?"N/A": Customer.Plate)</b></RadzenText>
+                </RadzenRow>
+                <RadzenButton Icon="@icon" Style="background-color: transparent; color:#28282B;" Click="@Expand"/>
+                <RadzenRow class="DataGridRow">
+                    <RadzenText Text="លេខទូរស័ព្ទ:" style="font-family:'Khmer OS Battambang'; font-size:1.5rem; width:130px; line-height:30px"/>
+                    <RadzenText style="font-size:1.5rem; margin-top:auto; margin-bottom:auto"><b>@(Phone==null?"N/A":Phone)</b></RadzenText>
+                </RadzenRow>
+                <RadzenRow class="DataGridRow">
+                    <RadzenText Text="លេខតំណាង:" style="font-family:'Khmer OS Battambang'; font-size:1.5rem; width:130px; line-height:30px; "/>
+                    <RadzenText style="font-size:1.5rem; margin-top:auto; margin-bottom:auto"><b>@(Customer.CartId == 0? "N/A" : Customer.CartId)</b></RadzenText>
+                </RadzenRow>
+
+                <RadzenRow class="DataGridRow">
+                    <RadzenText Text="មាខឡាន:" style="font-family:'Khmer OS Battambang';font-size:1.5rem; width:fit-content;"/>
+                    <RadzenText style="font-size:1.5rem;" ><b>@(CarType==null?"N/A": CarType)</b></RadzenText>
+                </RadzenRow>
+            </div>
+
+            <RadzenStack Orientation="Orientation.Horizontal" Reverse="true" Gap="5px" AlignItems="AlignItems.End" JustifyContent="JustifyContent.SpaceEvenly" style="height:2%; width:fit-content;; margin-left:auto; margin-top:auto; margin-bottom:auto">
                 <RadzenButton Icon="add"  Click="@OpenCustomerList" Disabled=@Selection Style="margin-left: auto;"></RadzenButton>   
                 
                 @if(SelectionState == false){
@@ -35,6 +45,7 @@
                     <RadzenButton Icon="save" Click="@ResetToDefault" Style="width:25%" ButtonStyle=@ButtonStyle.Success>Save</RadzenButton>
                 }
             </RadzenStack>
+
         </RadzenStack>
         <RadzenStack Orientation="Orientation.Vertical" style="margin-top:40px">
             @if(SelectionState != null)
@@ -102,14 +113,6 @@
                 </Columns>
             </RadzenDataGrid>
         </RadzenStack>
-        </RadzenCard>        
-        <RadzenCard Style="width: 17%; border-radius:40px; margin-left:auto; border-width:2px; border-color: black; padding-top:50px;" >
-        <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center">
-            <RadzenText Text="Today is:" TextStyle="TextStyle.Overline" Style="font-size:larger;"/>
-            <RadzenText Text="@today" TextStyle="TextStyle.DisplayH6"/>
-            <RadzenText Text="Total Today" TextStyle="TextStyle.Overline" Style="font-size:large;"/>
-            <RadzenText Text="@TodayTotal" TextStyle="TextStyle.DisplayH6"/>
-            <RadzenText Text="Total Expense" TextStyle="TextStyle.Overline" Style="font-size:large;"/>
-        </RadzenStack>
-    </RadzenCard>
+    </RadzenCard>        
+        
 </RadzenStack>

@@ -97,7 +97,8 @@ namespace CHKS.Pages
             foreach(var i in TestHistories.ToList()){
                 char[] seperator = {':','('};
                 string[] Temp = i.CashoutDate.Split(seperator,2);
-                if( TimeStart <= DateTime.Parse(Temp[0]) && DateTime.Parse(Temp[0]) <= TimeEnd){
+                Console.WriteLine(Temp[0],Temp[1]);
+                if( TimeStart <= DateTime.ParseExact(Temp[0],"dd/MM/yyyy",null) && DateTime.ParseExact(Temp[0],"dd/MM/yyyy",null) <= TimeEnd){
                     tempHis.Add(i);
                 }
             }

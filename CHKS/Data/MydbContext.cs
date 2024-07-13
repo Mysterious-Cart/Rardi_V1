@@ -22,6 +22,54 @@ namespace CHKS.Data
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<CHKS.Models.mydb.Aspnetuserlogin>().HasKey(table => new {
+                table.LoginProvider, table.ProviderKey
+            });
+
+            builder.Entity<CHKS.Models.mydb.Aspnetuserrole>().HasKey(table => new {
+                table.UserId, table.RoleId
+            });
+
+            builder.Entity<CHKS.Models.mydb.Aspnetusertoken>().HasKey(table => new {
+                table.UserId, table.LoginProvider, table.Name
+            });
+
+            builder.Entity<CHKS.Models.mydb.Aspnetroleclaim>()
+              .HasOne(i => i.Aspnetrole)
+              .WithMany(i => i.Aspnetroleclaims)
+              .HasForeignKey(i => i.RoleId)
+              .HasPrincipalKey(i => i.Id);
+
+            builder.Entity<CHKS.Models.mydb.Aspnetuserclaim>()
+              .HasOne(i => i.Aspnetuser)
+              .WithMany(i => i.Aspnetuserclaims)
+              .HasForeignKey(i => i.UserId)
+              .HasPrincipalKey(i => i.Id);
+
+            builder.Entity<CHKS.Models.mydb.Aspnetuserlogin>()
+              .HasOne(i => i.Aspnetuser)
+              .WithMany(i => i.Aspnetuserlogins)
+              .HasForeignKey(i => i.UserId)
+              .HasPrincipalKey(i => i.Id);
+
+            builder.Entity<CHKS.Models.mydb.Aspnetuserrole>()
+              .HasOne(i => i.Aspnetrole)
+              .WithMany(i => i.Aspnetuserroles)
+              .HasForeignKey(i => i.RoleId)
+              .HasPrincipalKey(i => i.Id);
+
+            builder.Entity<CHKS.Models.mydb.Aspnetuserrole>()
+              .HasOne(i => i.Aspnetuser)
+              .WithMany(i => i.Aspnetuserroles)
+              .HasForeignKey(i => i.UserId)
+              .HasPrincipalKey(i => i.Id);
+
+            builder.Entity<CHKS.Models.mydb.Aspnetusertoken>()
+              .HasOne(i => i.Aspnetuser)
+              .WithMany(i => i.Aspnetusertokens)
+              .HasForeignKey(i => i.UserId)
+              .HasPrincipalKey(i => i.Id);
+
             builder.Entity<CHKS.Models.mydb.Cart>()
               .HasOne(i => i.Car)
               .WithMany(i => i.Carts)
@@ -57,6 +105,10 @@ namespace CHKS.Data
               .WithMany(i => i.Historyconnectors)
               .HasForeignKey(i => i.Product)
               .HasPrincipalKey(i => i.Name);
+
+            builder.Entity<CHKS.Models.mydb.Aspnetuser>()
+              .Property(p => p.LockoutEnd)
+              .HasColumnType("datetime(6)");
 
             builder.Entity<CHKS.Models.mydb.Cart>()
               .Property(p => p.Total)
@@ -123,6 +175,22 @@ namespace CHKS.Data
               .HasPrecision(10,3);
             this.OnModelBuilding(builder);
         }
+
+        public DbSet<CHKS.Models.mydb.Efmigrationshistory> Efmigrationshistories { get; set; }
+
+        public DbSet<CHKS.Models.mydb.Aspnetroleclaim> Aspnetroleclaims { get; set; }
+
+        public DbSet<CHKS.Models.mydb.Aspnetrole> Aspnetroles { get; set; }
+
+        public DbSet<CHKS.Models.mydb.Aspnetuserclaim> Aspnetuserclaims { get; set; }
+
+        public DbSet<CHKS.Models.mydb.Aspnetuserlogin> Aspnetuserlogins { get; set; }
+
+        public DbSet<CHKS.Models.mydb.Aspnetuserrole> Aspnetuserroles { get; set; }
+
+        public DbSet<CHKS.Models.mydb.Aspnetuser> Aspnetusers { get; set; }
+
+        public DbSet<CHKS.Models.mydb.Aspnetusertoken> Aspnetusertokens { get; set; }
 
         public DbSet<CHKS.Models.mydb.Car> Cars { get; set; }
 

@@ -1,0 +1,19 @@
+.sidebar{
+    width: 44px;    
+    z-index: 2; 
+    background-color:#28282B;
+    overflow: hidden;
+}
+
+.sidebar:hover{
+    overflow-y: hidden;
+    width: 250px;
+ 
+}
+
+.panelmenuitem{
+    padding-left: 5px;
+    width: 200px;
+    font-size: 1.2rem;
+    height: 70px; 
+}

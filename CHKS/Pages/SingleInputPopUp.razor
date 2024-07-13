@@ -1,4 +1,5 @@
-@page "/single-input-pop-up"
+@page "/single-input-pop-up"
+
 @attribute [Authorize]
 
 <PageTitle>SingleInputPopUp</PageTitle>
@@ -6,35 +7,38 @@
 <RadzenRow>
     <RadzenStack Orientation="Orientation.Horizontal">
         @if(Info[0] == "Cart ID"){
-            <RadzenRow>
+            <RadzenRow style="width:fit-content;">
                 <RadzenNumeric @bind-Value="CartID" title="CartID" Placeholder="Required" Min=1/>
                 <RadzenNumericRangeValidator Component="CartID" Min="1"/>
             </RadzenRow>
+            <RadzenButton Click="@Close" Icon="add_circle_outline" Text="បញ្ចូល" Style="font-family: 'Khmer OS Battambang' "/>
+
         }else if(Info[0]== "Choosing Date"){
-            <RadzenRow>
+            <RadzenRow style="width:fit-content">
                 <RadzenDatePicker @bind-Value="ChosenDate" title="Date" Placeholder="Required"/>
             </RadzenRow>
-        }else if(Info[0] == "Qty")
-        {
+            <RadzenButton Click="@Close" Icon="add_circle_outline" Text="បង្កើត"/>
 
+        }else if(Info[0] == "Qty"){
+
+            <RadzenStack>
+                <RadzenStack Gap="1px">
+                    <RadzenText Text="តម្លៃដើម" Style="font-family: 'Khmer OS Battambang' " />
+                    <RadzenTextBox Text="@Info[1]"/>
+                </RadzenStack>
+                <RadzenStack Gap="1px">
+                    <RadzenText Text="តម្លៃថ្មី" Style="font-family: 'Khmer OS Battambang' " />
+                    <RadzenNumeric @bind-Value="Product[0]" title="NewPrice" Placeholder="Required" Min=0/>
+                    <RadzenNumericRangeValidator Component="NewPrice" Min="0"/>
+                </RadzenStack>
+                <RadzenStack Gap="1px">
+                    <RadzenText Text="បញ្ចុះតម្លៃ(គិតជាភាគរយ)" Style="font-family: 'Khmer OS Battambang' " />
+                    <RadzenNumeric @bind-Value="Product[1]" title="Discount" Placeholder="Required" Min=1 Max="100"/>
+                    <RadzenNumericRangeValidator Component="Discount" Min="1" Max="100"/>
+                </RadzenStack>
+                <RadzenButton Click="@Close" Icon="add_circle_outline" Text="បញ្ចូល" Style="font-family: 'Khmer OS Battambang' "/>
+            </RadzenStack>
         }
-        <RadzenStack>
-            <RadzenStack Gap="1px">
-                <RadzenText Text="តម្លៃដើម" Style="font-family: 'Khmer OS Battambang' " />
-                <RadzenTextBox Text="@Info[1]"/>
-            </RadzenStack>
-            <RadzenStack Gap="1px">
-                <RadzenText Text="តម្លៃថ្មី" Style="font-family: 'Khmer OS Battambang' " />
-                <RadzenNumeric @bind-Value="Product[0]" title="NewPrice" Placeholder="Required" Min=0/>
-                <RadzenNumericRangeValidator Component="NewPrice" Min="0"/>
-            </RadzenStack>
-            <RadzenStack Gap="1px">
-                <RadzenText Text="បញ្ចុះតម្លៃ(គិតជាភាគរយ)" Style="font-family: 'Khmer OS Battambang' " />
-                <RadzenNumeric @bind-Value="Product[1]" title="Discount" Placeholder="Required" Min=1 Max="100"/>
-                <RadzenNumericRangeValidator Component="Discount" Min="1" Max="100"/>
-            </RadzenStack>
-            <RadzenButton Click="@Close" Icon="add_circle_outline" Text="បញ្ចូល" Style="font-family: 'Khmer OS Battambang' "/>
-        </RadzenStack>
 
     </RadzenStack>
 

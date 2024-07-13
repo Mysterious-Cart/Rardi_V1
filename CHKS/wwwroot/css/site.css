@@ -18,7 +18,7 @@
 }
 
 :root {
-    font-size: var(--rz-root-font-size);
+    font-size: 1rem;
     --rz-text-font-family: 'Khmer OS Battambang',Comfortaa, 'Times New Roman', BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
 }
 
