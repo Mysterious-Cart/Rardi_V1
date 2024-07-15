@@ -68,6 +68,7 @@ namespace CHKS.Pages
             
         }
 
+
         protected async Task Search(ChangeEventArgs args)
         {
             
@@ -86,7 +87,6 @@ namespace CHKS.Pages
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-
             if(isEditMode == false && isModifying == false ){
                 await searchbar.Element.FocusAsync();
             }

@@ -22,7 +22,7 @@
                 </RadzenCard>
 
                 <RadzenCard class="@Cartlist">
-                    <RadzenStack Orientation="Orientation.Horizontal" Reverse="true" Gap="5px" AlignItems="AlignItems.Normal" JustifyContent="JustifyContent.SpaceBetween" style="height:100%; width:fit-content; margin-left:auto; ">
+                    <RadzenStack Orientation="Orientation.Horizontal" Reverse="true" Gap="5px" AlignItems="AlignItems.Normal" JustifyContent="JustifyContent.SpaceBetween" style="height:100%; width:250px; margin-left:auto; ">
                     
                         @if(SelectionState == false || SelectionState == true ){
                             <RadzenButton Text="លុប" ButtonStyle="@ButtonStyle.Danger" Style="width:70px" Click="@DeleteCustomer"/>
@@ -36,7 +36,7 @@
             </RadzenStack>  
 
             <div style="z-index: 2; position:relative;">
-                <RadzenCard  Style="margin-bottom: 2%; border-radius:15px; margin-left:30px; height:75dvh" >
+                <RadzenCard  Style="margin-bottom: 2%; border-radius:15px; margin-left:30px; height:75dvh; box-shadow:0px 0px 20px 2px lightgray" >
                     <RadzenStack Orientation="Orientation.Horizontal"  AlignItems="AlignItems.End" Wrap="FlexWrap.NoWrap" Style="width: 100%;">
                         <div class="@CustomerDataExpand">
                             <RadzenRow class="DataGridRow">

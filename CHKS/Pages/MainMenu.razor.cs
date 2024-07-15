@@ -181,7 +181,7 @@ namespace CHKS.Pages
                     ResetToDefault();
                 }
             }
-            await SwitchDisplayMode();
+            
         }
 
 
@@ -294,6 +294,7 @@ namespace CHKS.Pages
             await SwitchDisplayMode();
 
         }
+
         protected async Task AddItemtoCart()
         {
             var Product = await DialogService.OpenAsync<Inventories>("Select Product", new Dictionary<string, object>{{"IsDialog","true"}}, new DialogOptions{Width="80%", Height="80%"});

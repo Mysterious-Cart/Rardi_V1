@@ -5370,19 +5370,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Kim hong\\.nuget\\packages\\": {}
+    "C:\\Users\\soeng\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\CHKS.csproj",
+      "projectUniqueName": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\CHKS.csproj",
       "projectName": "CHKS",
-      "projectPath": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\CHKS.csproj",
-      "packagesPath": "C:\\Users\\Kim hong\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\obj\\",
+      "projectPath": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\CHKS.csproj",
+      "packagesPath": "C:\\Users\\soeng\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\Kim hong\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\soeng\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -5390,6 +5395,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -5471,7 +5477,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.301/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
