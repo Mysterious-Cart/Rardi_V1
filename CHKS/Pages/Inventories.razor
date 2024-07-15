@@ -4,7 +4,8 @@
 @using System.Globalization
 
 <PageTitle>Inventories</PageTitle>
-<RadzenStack>
+
+<RadzenStack @onkeydown="@getBar">
     <RadzenRow AlignItems="AlignItems.Center">
         <RadzenColumn Size="12" SizeMD="6">
             <RadzenText Text="Inventories" TextStyle="TextStyle.H3" TagName="TagName.H1" />
@@ -15,7 +16,7 @@
             </RadzenStack>
         </RadzenColumn>
     </RadzenRow>
-    <RadzenTextBox Placeholder="Search ..." style="display: block; width: 100%" @oninput="@Search" aria-label="Search by all string columns" @bind-Value="search" />
+    <RadzenTextBox Placeholder="Search ..." style="display: block; width: 100%" @oninput="@Search" aria-label="Search by all string columns" @bind-Value="search" @ref="@searchbar" TabIndex=0/>
     <RadzenRow>
       <RadzenColumn SizeMD=12>
         <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.Advanced"  ShowPagingSummary="true" Style="height:60vh;"
@@ -23,8 +24,7 @@
             <Columns>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Barcode" Title="Barcode" Width="30%" OrderIndex="1">
                     <EditTemplate Context="inventory">
-                        <RadzenNumeric style="display: block; width: 100%" @bind-Value="@inventory.Barcode" Name="Barcode" />
-                        <RadzenRequiredValidator Component="Name" Text="Name is required" style="position: absolute;" />
+                        <RadzenNumeric style="display: block; width: 100%" @bind-Value="@inventory.Barcode" Name="Barcode"/>
                     </EditTemplate>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Name" Title="Name" Width="30%" OrderIndex="1">

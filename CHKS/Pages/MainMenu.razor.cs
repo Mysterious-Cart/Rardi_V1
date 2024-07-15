@@ -79,6 +79,8 @@ namespace CHKS.Pages
             Retotal();
         }
 
+
+
         protected async Task OnAfterRenderAsync()
         {
             await Expand();
@@ -298,7 +300,6 @@ namespace CHKS.Pages
             VisibilityOfServiceCharge = false;
 
         }
-
         protected async Task AddItemtoCart()
         {
             var Product = await DialogService.OpenAsync<Inventories>("Select Product", new Dictionary<string, object>{{"IsDialog","true"}}, new DialogOptions{Width="80%", Height="80%"});
@@ -334,6 +335,7 @@ namespace CHKS.Pages
 
 
         }
+
 
         protected async void CalculateTotal(){
             RowTotal = Connectors != null || Connectors != Enumerable.Empty<Models.mydb.Connector>()? "$" + Math.Round(Customer.Total.GetValueOrDefault(),2) : 0 + "$";
@@ -464,6 +466,7 @@ namespace CHKS.Pages
             await grid2.UpdateRow(data);
 
         }
+
 
         protected async Task CancelButtonClick(MouseEventArgs args, CHKS.Models.mydb.Dailyexpense data)
         {

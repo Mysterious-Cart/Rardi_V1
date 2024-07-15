@@ -19,10 +19,10 @@ namespace CHKS.Models.mydb
 
         public decimal? Export { get; set; }
 
+        public long? Barcode { get; set; }
+
         [Column("Normalize_Name")]
         public string NormalizeName { get; set; }
-
-        public int? Barcode { get; set; }
 
         public ICollection<Connector> Connectors { get; set; }
 

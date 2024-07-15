@@ -49,22 +49,50 @@ namespace CHKS.Pages
         [Inject]
         protected SecurityService Security { get; set; }
 
+        private string Barcode;
+        protected async Task getBar(KeyboardEventArgs keyboard){
+            if(IsDialog == "true"){
+                if(keyboard.Key != "Enter" && keyboard.CtrlKey == false && keyboard.ShiftKey == false && keyboard.AltKey == false && long.TryParse(keyboard.Key,out long key)==true){
+                    Barcode += key;
+                }else if(keyboard.CtrlKey == false && keyboard.ShiftKey == false && keyboard.AltKey == false ){
+                    if(keyboard.Key == "Enter" && Barcode != ""){
+                        if(inventories.Any() == true){
+                            await SelectProduct(inventories.FirstOrDefault());
+                            Barcode = "";
+                        }else{
+                            await DialogService.Alert("ទំនេញមិនមាន។", "សំខាន់");
+                        }
+                    }
+                }
+            }
+            
+        }
+
         protected async Task Search(ChangeEventArgs args)
         {
             search = $"{args.Value}";
 
             await grid0.GoToPage(0);
 
-            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) && i.Name != (@1) ", FilterParameters = new object[] { search , "Service Charge"} });
+            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) && i.Name != (@1) || i.Barcode.ToString().Contains(@0) ", FilterParameters = new object[] { search , "Service Charge"} });
         }
         protected override async Task OnInitializedAsync()
+        {   
+            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) && i.Name != (@1) || i.Barcode.ToString().Contains(@0)", FilterParameters = new object[] { search , "Service Charge"} }); 
+        }
+
+        RadzenTextBox searchbar;
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) && i.Name != (@1)", FilterParameters = new object[] { search , "Service Charge"} }); 
+            if(isEditMode == false && isModifying == false ){
+                await searchbar.Element.FocusAsync();
+            }
         }
 
         protected async Task SelectProduct(CHKS.Models.mydb.Inventory Product){
             if(Product.Stock!=0 && IsDialog == "true" && isModifying == false){
-                var Qty = await DialogService.OpenAsync<SingleInputPopUp>("Qty", new Dictionary<string, object>{{"Info",new string[]{"Qty", Product.Export.ToString()}}}, new DialogOptions{Width="15%"});
+                var Qty = await DialogService.OpenAsync<SingleInputPopUp>(Product.Name, new Dictionary<string, object>{{"Info",new string[]{"Qty", Product.Export.ToString()}}}, new DialogOptions{Width="13%"});
 
                 if(Qty is Array && Qty[0] != null && Qty[0] is decimal && Qty[0] <= Product.Stock){
                     Models.mydb.Inventory Temp = new Models.mydb.Inventory{};
