@@ -1,0 +1,131 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = CHKS
+build_property.RootNamespace = CHKS
+build_property.ProjectDir = C:\Users\soeng\OneDrive\Documents\gitrepoforpos\pos\chks\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\soeng\OneDrive\Documents\gitrepoforpos\pos\chks
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/AddApplicationRole.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRkQXBwbGljYXRpb25Sb2xlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/AddApplicationUser.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRkQXBwbGljYXRpb25Vc2VyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/ApplicationRoles.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXBwbGljYXRpb25Sb2xlcy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/ApplicationUsers.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXBwbGljYXRpb25Vc2Vycy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/Cars.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2Fycy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/Company.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcGFueS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/Dailies.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFpbGllcy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/EditApplicationUser.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRWRpdEFwcGxpY2F0aW9uVXNlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/ExpenseMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXhwZW5zZU1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/Histories.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSGlzdG9yaWVzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/Inventories.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW52ZW50b3JpZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/MainMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWFpbk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/PaymentForm.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGF5bWVudEZvcm0ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/PrintPage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJpbnRQYWdlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/Profile.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJvZmlsZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/ReciptView.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVjaXB0Vmlldy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/SecurityCode.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2VjdXJpdHlDb2RlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/SingleInputPopUp.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2luZ2xlSW5wdXRQb3BVcC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/Statistic.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3RhdGlzdGljLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/Unauthorized.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVW5hdXRob3JpemVkLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Shared/LoginLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExvZ2luTGF5b3V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Shared/RedirectToLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFJlZGlyZWN0VG9Mb2dpbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/gitrepoforpos/pos/chks/Pages/_Host.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0hvc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 

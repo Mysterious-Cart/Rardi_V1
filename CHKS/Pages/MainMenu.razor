@@ -5,114 +5,159 @@
     <link href="css/Page.css" rel="stylesheet"/>
 </head>
 
-<RadzenStack Orientation="Orientation.Horizontal" >
+<RadzenStack Orientation="Orientation.Horizontal" Style="min-width: fit-content;"  >
     <PageTitle >MainMenu</PageTitle>
-    <RadzenCard  Style="margin-bottom: 2%; border-radius:10px; width:70%; margin-left:30px; margin-top:30px;" >
-        <RadzenStack Orientation="Orientation.Horizontal"  AlignItems="AlignItems.End" Wrap="FlexWrap.NoWrap" Style="width: 100%;">
-            <div class="@CustomerDataExpand">
-                <RadzenRow class="DataGridRow">
-                    <RadzenText Text="ផ្លាកលេខ:" style="font-family:'Khmer OS Battambang';  font-size:1.5rem; width:fit-content;"/>
-                    <RadzenText style="font-size:1.5rem;"><b>@(Customer.Plate==""?"N/A": Customer.Plate)</b></RadzenText>
-                </RadzenRow>
-                <RadzenButton Icon="@icon" Style="background-color: transparent; color:#28282B;" Click="@Expand"/>
-                <RadzenRow class="DataGridRow">
-                    <RadzenText Text="លេខទូរស័ព្ទ:" style="font-family:'Khmer OS Battambang'; font-size:1.5rem; width:130px; line-height:30px"/>
-                    <RadzenText style="font-size:1.5rem; margin-top:auto; margin-bottom:auto"><b>@(Phone==null?"N/A":Phone)</b></RadzenText>
-                </RadzenRow>
-                <RadzenRow class="DataGridRow">
-                    <RadzenText Text="លេខតំណាង:" style="font-family:'Khmer OS Battambang'; font-size:1.5rem; width:130px; line-height:30px; "/>
-                    <RadzenText style="font-size:1.5rem; margin-top:auto; margin-bottom:auto"><b>@(Customer.CartId == 0? "N/A" : Customer.CartId)</b></RadzenText>
-                </RadzenRow>
-
-                <RadzenRow class="DataGridRow">
-                    <RadzenText Text="មាខឡាន:" style="font-family:'Khmer OS Battambang';font-size:1.5rem; width:fit-content;"/>
-                    <RadzenText style="font-size:1.5rem;" ><b>@(CarType==null?"N/A": CarType)</b></RadzenText>
-                </RadzenRow>
-            </div>
-
-            <RadzenStack Orientation="Orientation.Horizontal" Reverse="true" Gap="5px" AlignItems="AlignItems.End" JustifyContent="JustifyContent.SpaceEvenly" style="height:2%; width:fit-content;; margin-left:auto; margin-top:auto; margin-bottom:auto">
-                <RadzenButton Icon="add"  Click="@OpenCustomerList" Disabled=@Selection Style="margin-left: auto;"></RadzenButton>   
-                
-                @if(SelectionState == false){
-                    <RadzenButton Text="Cancel" ButtonStyle=@ButtonStyle.Danger Style="width:25%" Click="@DeleteCustomer"/>
-                    <RadzenButton Text="Cash out"  Click="@CashOut" Style="width:30%"></RadzenButton>
-                    <RadzenButton Icon="save" Click="@ResetToDefault" Style="width:30%" ButtonStyle=@ButtonStyle.Success>Create</RadzenButton>
+    <RadzenStack  Orientation="Orientation.Horizontal">
+        <RadzenStack style="width: 70%;" Gap=0 Orientation="Orientation.Vertical">
+            <div Style="z-index=1; width:100%; height:70px">
+                <RadzenCard style="height: 100%; border-radius:15px 15px 0px 0px; background-color:#28282B; margin-left:auto; margin-right:2%; width:fit-content">
+                    <RadzenStack Orientation="Orientation.Horizontal" Reverse="true" Gap="5px" AlignItems="AlignItems.Normal" JustifyContent="JustifyContent.SpaceBetween" style="height:100%; width:fit-content; margin-left:auto; ">
+                        <RadzenButton Icon="add"  Click="@OpenCustomerList" Disabled=@Selection Style="margin-left: auto;"/>
                     
-                }else if(SelectionState == true)
-                {
-                    <RadzenButton Text="Delete cart" Style="width:35%" ButtonStyle=@ButtonStyle.Danger Click=@DeleteCustomer/>
-                    <RadzenButton Text="Cash out"  Click="@CashOut" Style="width:30%"></RadzenButton>
-                    <RadzenButton Icon="save" Click="@ResetToDefault" Style="width:25%" ButtonStyle=@ButtonStyle.Success>Save</RadzenButton>
-                }
-            </RadzenStack>
+                        @if(SelectionState == false || SelectionState == true ){
+                            <RadzenButton Text="លុប" ButtonStyle="@ButtonStyle.Danger" Style="width:70px" Click="@DeleteCustomer"/>
+                            <RadzenButton Icon="save" Click="@ResetToDefault" Style="width:70px" ButtonStyle=@ButtonStyle.Primary>រក្សាទុក</RadzenButton>
+                            <RadzenButton Text="គិតលុយ" ButtonStyle="@ButtonStyle.Success" Click="@CashOut"/>
+                            
+                        }
+                    </RadzenStack> 
+                </RadzenCard>
+            </div>  
+            <div style="z-index: 2; position:relative;">
+                <RadzenCard  Style="margin-bottom: 2%; border-radius:15px; margin-left:30px; height:84dvh" >
+                    <RadzenStack Orientation="Orientation.Horizontal"  AlignItems="AlignItems.End" Wrap="FlexWrap.NoWrap" Style="width: 100%;">
+                        <div class="@CustomerDataExpand">
+                            <RadzenRow class="DataGridRow">
+                                <RadzenText Text="ផ្លាកលេខ:" style="font-family:'Khmer OS Battambang';  font-size:1.5rem; width:fit-content;"/>
+                                <RadzenText style="font-size:1.5rem; margin-left:10px"><b>@(Customer.Plate==""?"N/A": Customer.Plate)</b></RadzenText>
+                            </RadzenRow>
+                            <RadzenButton Icon="@icon" Style="background-color: transparent; color:#28282B;" Click="@Expand"/>
+                            <RadzenRow class="DataGridRow">
+                                <RadzenText Text="លេខទូរស័ព្ទ:" style="font-family:'Khmer OS Battambang'; font-size:1.5rem; width:130px; line-height:30px"/>
+                                <RadzenText style="font-size:1.5rem; margin-top:auto; margin-bottom:auto"><b>@(Phone==null?"N/A":Phone)</b></RadzenText>
+                            </RadzenRow>
+                            <RadzenRow class="DataGridRow">
+                                <RadzenText Text="លេខតំណាង:" style="font-family:'Khmer OS Battambang'; font-size:1.5rem; width:130px; line-height:30px; "/>
+                                <RadzenText style="font-size:1.5rem; margin-top:auto; margin-bottom:auto"><b>@(Customer.CartId == 0? "N/A" : Customer.CartId)</b></RadzenText>
+                            </RadzenRow>
 
+                            <RadzenRow class="DataGridRow">
+                                <RadzenText Text="មាខឡាន:" style="font-family:'Khmer OS Battambang';font-size:1.5rem; width:fit-content;"/>
+                                <RadzenText style="font-size:1.5rem;" ><b>@(CarType==null?"N/A": CarType)</b></RadzenText>
+                            </RadzenRow>
+                        </div>
+
+                        @if(SelectionState != null)
+                        {
+                            <RadzenStack Orientation = "Orientation.Horizontal" AlignItems ="AlignItems.Start" Style="margin-left: auto; width:150px; margin-top:auto; margin-bottom:auto" Reverse="true" Gap="1%">
+                                <RadzenButton Click="@AddItemtoCart">ជ្រើលទំនេញ</RadzenButton>
+                            </RadzenStack>
+                        }
+
+                    </RadzenStack>
+                    <RadzenStack Orientation="Orientation.Vertical" style="margin-top:40px">
+
+
+                        <RadzenDataGrid @ref="Grid1" AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="15" 
+                        Data="@Connectors" TItem="Models.mydb.Connector" AllowColumnPicking="false" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate" Style = "height: 100%; border-width: 0px; border-radius:25px; font-family:'Khmer OS Battambang'; 
+                        box-shadow: 0px 0px 3px 1px #D1D9E0; ">
+                            
+                            <Columns >
+                                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Product" Title="ឈ្មោះទំនេញ" TextAlign="TextAlign.Center" MinWidth="210px" Width="210px">
+                                    <FooterTemplate>
+                                        <RadzenTextBox Placeholder="ប្រភទសេវាកម្ម" Visible ="@VisibilityOfServiceCharge" @bind-Value="ServiceType" style="font-family:'Khmer OS Battambang'"/>
+                                    </FooterTemplate>
+                                </RadzenDataGridColumn>
+                                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Qty" Title ="ចំនួន" TextAlign="TextAlign.Center" MinWidth="100px" Width="100px">
+                                    <EditTemplate Context="connector">
+                                        <RadzenNumeric style="display: block; width: 100%" @bind-Value="@connector.Qty" Name="Qty" Min=1/>
+                                    </EditTemplate>
+                                                                
+                                    <FooterTemplate>
+                                        <RadzenNumeric TValue="decimal" Min=0 Visible="@VisibilityOfServiceCharge" @bind-Value="ServiceFees"/>
+                                    </FooterTemplate>
+                                </RadzenDataGridColumn>
+                                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="connector.PriceOverwrite" Title="តមៃ្លលក់" TextAlign="TextAlign.Center" FormatString="${0:N2}" MinWidth="120px" Width="120px">
+                                    <FooterTemplate>
+                                        <RadzenButton Icon="add" Visible="@VisibilityOfServiceCharge" Click="@AddServiceCharge"/>
+                                    </FooterTemplate>
+                                </RadzenDataGridColumn>
+                                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Total" Title="សរុប" TextAlign="TextAlign.Center" FormatString="${0:N2}" MinWidth="120px" Width="120px">
+                                    <FooterTemplate>
+                                        <RadzenText style="font-size: 1.2rem ;">  សរុប($): <b>@RowTotal</b> </RadzenText>
+                                    </FooterTemplate>
+                                </RadzenDataGridColumn>
+                                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Note" Title="ចំណាំ" TextAlign="TextAlign.Center" MinWidth="210px" Width="210px">
+                                    <EditTemplate Context="connector">
+                                        <RadzenTextBox style="display: block; width: 100%" @bind-Value="@connector.Note" Name="Note" Min=1 />
+                                    </EditTemplate>
+
+                                </RadzenDataGridColumn>
+                                <RadzenDataGridColumn MinWidth="170px" Width="170px">
+                                    <EditTemplate Context="connector">
+                                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                            style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
+                                            Click=@(args => SaveButtonClick(args, connector)) @onclick:stopPropagation="true" />
+                                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                            Click=@(args => CancelButtonClick(args, connector)) @onclick:stopPropagation="true" />
+                                    </EditTemplate>
+                                    <Template Context="connector">
+
+                                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                            style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
+                                            Click=@(args => EditButtonClick(args, connector)) @onclick:stopPropagation="true" />
+
+                                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Medium"
+                                            Shade="Shade.Lighter" Variant="Variant.Flat"
+                                            Click=@(args => GridDeleteButtonClick(args, connector)) @onclick:stopPropagation="true" />
+                                    </Template>
+
+                                </RadzenDataGridColumn>
+                            </Columns>
+                        </RadzenDataGrid>
+                    </RadzenStack>
+                </RadzenCard> 
+            </div>
         </RadzenStack>
-        <RadzenStack Orientation="Orientation.Vertical" style="margin-top:40px">
-            @if(SelectionState != null)
-            {
-                <RadzenStack Orientation = "Orientation.Horizontal" AlignItems ="AlignItems.Start" Reverse="true" Gap="1%">
-                    <RadzenButton Click="@AddItemtoCart">Add</RadzenButton>
-                </RadzenStack>
-            }
-
-            <RadzenDataGrid @ref="Grid1" AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowSorting="true" PageSize="15" 
-            Data="@Connectors" TItem="Models.mydb.Connector" AllowColumnPicking="false" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate" Style = "height: 70dvh; border-width: 0px; border-radius:25px; font-family:'Khmer OS Battambang'; 
-            box-shadow: 0px 0px 3px 1px #D1D9E0; ">
-                
-                <Columns >
-                    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Product" Title="ឈ្មោះទំនេញ" TextAlign="TextAlign.Center" MinWidth="210px" Width="210px">
-                        <FooterTemplate>
-                            <RadzenTextBox Placeholder="ប្រភទសេវាកម្ម" Visible ="@VisibilityOfServiceCharge" @bind-Value="ServiceType" style="font-family:'Khmer OS Battambang'"/>
-                        </FooterTemplate>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Qty" Title ="ចំនួន" TextAlign="TextAlign.Center" MinWidth="100px" Width="100px">
-                        <EditTemplate Context="connector">
-                            <RadzenNumeric style="display: block; width: 100%" @bind-Value="@connector.Qty" Name="Qty" Min=1/>
-                        </EditTemplate>
-                                                    
-                        <FooterTemplate>
-                            <RadzenNumeric TValue="decimal" Min=0 Visible="@VisibilityOfServiceCharge" @bind-Value="ServiceFees"/>
-                        </FooterTemplate>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Inventory.Export" Title="តមៃ្លលក់" TextAlign="TextAlign.Center" FormatString="${0:N2}" MinWidth="120px" Width="120px">
-                        <FooterTemplate>
-                            <RadzenButton Icon="add" Visible="@VisibilityOfServiceCharge" Click="@AddServiceCharge"/>
-                        </FooterTemplate>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Total" Title="សរុប" TextAlign="TextAlign.Center" FormatString="${0:N2}" MinWidth="120px" Width="120px">
-                        <FooterTemplate>
-                            <p style="font-size: 1.2rem ;">  សរុប($): <b> @(Connectors != null ? "$" + Math.Round(Customer.Total.GetValueOrDefault(),2) : "$" + 0)</b> </p>
-                        </FooterTemplate>
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Note" Title="ចំណាំ" TextAlign="TextAlign.Center" MinWidth="210px" Width="210px">
-                        <EditTemplate Context="connector">
-                            <RadzenTextBox style="display: block; width: 100%" @bind-Value="@connector.Note" Name="Note" Min=1 />
-                        </EditTemplate>
-
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn MinWidth="170px" Width="170px">
-                        <EditTemplate Context="connector">
-                            <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium"
-                                style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
-                                Click=@(args => SaveButtonClick(args, connector)) @onclick:stopPropagation="true" />
-                            <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
-                                Click=@(args => CancelButtonClick(args, connector)) @onclick:stopPropagation="true" />
-                        </EditTemplate>
-                        <Template Context="connector">
+        <RadzenCard Style=" width:20%; min-width:fit-content; margin-left:auto; margin-right:50px; border-radius:15px; height:90dvh" >
+                <RadzenStack>
+                <RadzenText Text="List Of Expense:" TextStyle="TextStyle.Overline" TextAlign="TextAlign.Center" style="font-size:x-large; margin-bottom:10px; width:300px"/>
+                <RadzenButton Icon="add" Text="Add Expense" Click="@AddBtnClick" style="width:300px" />
+                <RadzenDataGrid @ref="grid2" Data="@Dailyexpenses" TItem="Models.mydb.Dailyexpense" RowCreate="@GridCreate" RowUpdate="@GridRowUpdate" style="width:300px">
+                    <Columns>
+                        <RadzenDataGridColumn TItem="Models.mydb.Dailyexpense" Property="Note" Title="ចំណាំ" Width="90px">
+                            <EditTemplate Context="expense">
+                                <RadzenTextBox @bind-Value="@expense.Note" />
+                            </EditTemplate>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn TItem="Models.mydb.Dailyexpense" Property="Expense" Title="ចំណាយ">
+                            <EditTemplate Context="expense">
+                                <RadzenNumeric @bind-Value="@expense.Expense" />
+                            </EditTemplate>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn>
+                            <EditTemplate Context="expense">
+                                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                    style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
+                                    Click=@(args => SaveButtonClick(args, expense)) @onclick:stopPropagation="true" />
+                                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                    Click=@(args => CancelButtonClick(args, expense)) @onclick:stopPropagation="true" />
+                            </EditTemplate>
+                            <Template Context="expense">
 
                             <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
                                 style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
-                                Click=@(args => EditButtonClick(args, connector)) @onclick:stopPropagation="true" />
+                                Click=@(args => EditButtonClick(args, expense)) @onclick:stopPropagation="true" />
 
                             <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Medium"
                                 Shade="Shade.Lighter" Variant="Variant.Flat"
-                                Click=@(args => GridDeleteButtonClick(args, connector)) @onclick:stopPropagation="true" />
+                                Click=@(args => GridDeleteButtonClick(args, expense)) @onclick:stopPropagation="true" />
                         </Template>
-
-                    </RadzenDataGridColumn>
-                </Columns>
-            </RadzenDataGrid>
-        </RadzenStack>
-    </RadzenCard>        
+                        </RadzenDataGridColumn>
+                    </Columns>
+                </RadzenDataGrid>
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenStack> 
         
 </RadzenStack>

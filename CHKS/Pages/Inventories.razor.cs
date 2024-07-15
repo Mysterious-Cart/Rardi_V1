@@ -66,16 +66,17 @@ namespace CHKS.Pages
             if(Product.Stock!=0 && IsDialog == "true" && isModifying == false){
                 var Qty = await DialogService.OpenAsync<SingleInputPopUp>("Qty", new Dictionary<string, object>{{"Info",new string[]{"Qty", Product.Export.ToString()}}}, new DialogOptions{Width="15%"});
 
-                if(Qty != null && Qty is decimal && Qty <= Product.Stock){
+                if(Qty is Array && Qty[0] != null && Qty[0] is decimal && Qty[0] <= Product.Stock){
                     Models.mydb.Inventory Temp = new Models.mydb.Inventory{};
-                    Product.Stock = Product.Stock - Qty;
+                    Product.Stock = Product.Stock - Qty[0];
                     await mydbService.UpdateInventory(Product.Name, Product);
-                    Temp.Export = Product.Export;
-                    Temp.Import = Product.Import;
+                    Temp.Export = Qty[1];
+                    Temp.Import = Qty[2];
                     Temp.Name = Product.Name;
-                    Temp.Stock = Qty;
+                    Temp.Stock = Qty[0];
+                    
                     DialogService.Close(Temp);
-                }else if(Qty != null && Qty > Product.Stock){
+                }else if(Qty is Array && Qty[0] != null && Qty[0] > Product.Stock){
                     await DialogService.Alert("Too much! Not available In stock. Have Left: " + Product.Stock + ".","Warning");
                     await SelectProduct(Product);
                 }

@@ -159,8 +159,8 @@ namespace CHKS.Pages
                 await grid2.Reload();
             }catch(Exception exc){
                 if(exc.Message =="Item already available"){
-                    await DialogService.Alert("Apology, This product already exist. Please choose a different name or update the already existed product.","Important");
-                    await grid0.Reload();
+                    await DialogService.Alert("Apology, This expense already listed. Please choose a different name or update the already listed expense.","Important");
+                    await grid2.Reload();
                 }
             }
         }

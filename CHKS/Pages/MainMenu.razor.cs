@@ -55,11 +55,13 @@ namespace CHKS.Pages
 
         protected static string today = DateTime.Now.ToString("dd/MM/yy");
 
+        protected IEnumerable<Models.mydb.Dailyexpense> Dailyexpenses;
         protected IEnumerable<CHKS.Models.mydb.Cart> Carts;
         protected IEnumerable<CHKS.Models.mydb.Connector> Connectors;
         protected IEnumerable<CHKS.Models.mydb.Inventory> Inventories;
 
         protected RadzenDataGrid<CHKS.Models.mydb.Connector> Grid1;
+        protected RadzenDataGrid<Models.mydb.Dailyexpense> grid2;
         
         protected CHKS.Models.mydb.Connector connector = new(){GeneratedKey="", CartId=0,Product ="", Qty=0 };
 
@@ -72,6 +74,8 @@ namespace CHKS.Pages
         }
         protected async override Task OnInitializedAsync()
         {
+            Dailyexpenses = await MydbService.GetDailyexpenses();
+            Dailyexpenses = Dailyexpenses.Where(i => i.Key.Contains(DateTime.Now.ToString("dd/MM/yyyy")));
             Retotal();
         }
 
@@ -136,6 +140,7 @@ namespace CHKS.Pages
                         }
                     }
 
+
                 }else if(result is null)
                 {
                     Selection = false;
@@ -155,7 +160,8 @@ namespace CHKS.Pages
 
                     Connectors = await MydbService.GetConnectors(new Query{Filter=$@"i => i.CartId == (@0)", FilterParameters = new object[] {Customer.CartId}});
                     VisibilityOfServiceCharge = true;
-                    Customer.Total = Connectors.Sum(i => i.Total);                   
+                    Customer.Total = Connectors.Sum(i => i.Total);        
+                    CalculateTotal();           
                 }
 
             }
@@ -273,6 +279,7 @@ namespace CHKS.Pages
                     }
 
                 };
+                CalculateTotal();
             }
         }
         
@@ -285,6 +292,7 @@ namespace CHKS.Pages
             Selection = false;
             Phone = "N/A";
             CarType ="N/A";
+            RowTotal = "0 $";
 
             Connectors = Enumerable.Empty<CHKS.Models.mydb.Connector>();
             VisibilityOfServiceCharge = false;
@@ -295,23 +303,24 @@ namespace CHKS.Pages
         {
             var Product = await DialogService.OpenAsync<Inventories>("Select Product", new Dictionary<string, object>{{"IsDialog","true"}}, new DialogOptions{Width="80%", Height="80%"});
             if(Product != null){
-                connector = new();
-                connector.CartId = Customer.CartId;
-                connector.GeneratedKey = String.Concat(Customer.CartId, Product.Name);
-                connector.Product = Product.Name;
-                connector.Note = "";
-                connector.Qty = Product.Stock;// Stock here are not in stock, it the chosen value pass from the user input;
-
+                connector = new(){
+                    CartId = Customer.CartId,
+                    GeneratedKey = String.Concat(Customer.CartId, Product.Name),
+                    Product = Product.Name,
+                    Note = "",
+                    Qty = Product.Stock,// Stock here are not in stock, it the chosen value pass from the user input;
+                    PriceOverwrite = Product.Export,
+                    Discount = Product.Import
+                };
                 try {
-                    connector.Total = Product.Stock * Product.Export;
+                    connector.Total = (Product.Stock * Product.Export) - ((Product.Stock * Product.Export * Product.Import)/100);
                     await MydbService.CreateConnector(connector);
-                    
                     await Grid1.Reload();
                 }catch(Exception exc){
                     if(exc.Message == "Item already available"){
                         var GetQty = await MydbService.GetConnectorByGeneratedKey(connector.GeneratedKey);
                         connector.Qty = GetQty.Qty + connector.Qty;
-                        connector.Total = connector.Qty * Product.Export;
+                        connector.Total = connector.Qty * Product.Export - ((Product.Stock * Product.Export * Product.Import)/100);
                         await MydbService.UpdateConnector(connector.GeneratedKey, connector);
                         await Grid1.Reload();
                     }
@@ -319,10 +328,15 @@ namespace CHKS.Pages
                     Connectors = await MydbService.GetConnectors(new Query{Filter=$@"i => i.CartId == (@0)", FilterParameters = new object[] {Customer.CartId}});
                     Customer.Total = Connectors.Sum(i => i.Total);
                     await MydbService.UpdateCart(Customer.CartId, Customer);
+                    CalculateTotal();
                 }
             }
 
 
+        }
+
+        protected async void CalculateTotal(){
+            RowTotal = Connectors != null || Connectors != Enumerable.Empty<Models.mydb.Connector>()? "$" + Math.Round(Customer.Total.GetValueOrDefault(),2) : 0 + "$";
         }
 
         protected async Task GridDeleteButtonClick(MouseEventArgs args, CHKS.Models.mydb.Connector Product)
@@ -332,6 +346,8 @@ namespace CHKS.Pages
                 if (await DialogService.Confirm("Are you sure you want to delete this item?") == true)
                 {
                     await MydbService.DeleteConnector(Product.GeneratedKey);
+                    await ResetTotal();
+                    CalculateTotal();
                     if(Product.Product != "Service Charge"){
                         Models.mydb.Inventory UpdatedProduct = new(){
                             Name = Product.Product,
@@ -342,6 +358,7 @@ namespace CHKS.Pages
                         await MydbService.UpdateInventory(Product.Product, UpdatedProduct   );
                     }
                     await Grid1.Reload();
+                    
                 }
             }
             catch (Exception ex){
@@ -417,8 +434,59 @@ namespace CHKS.Pages
                 icon="start";
             }
         }
-    }
+    
 
     
-    
+        protected async Task AddBtnClick(MouseEventArgs args)
+        {
+            await grid2.InsertRow(new Models.mydb.Dailyexpense());
+        }
+
+        protected async Task GridDeleteButtonClick(MouseEventArgs args, CHKS.Models.mydb.Dailyexpense data){
+            try{
+                if(await DialogService.Confirm("Are you sure?", "Important!", new ConfirmOptions{OkButtonText="Yes", CancelButtonText="No"})== true){
+                    await MydbService.DeleteDailyexpense(data.Key);
+                    await grid2.Reload();
+                }
+            }catch(Exception exc){
+                
+            }
+        }
+
+        protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.Dailyexpense data)
+        {
+            await grid2.EditRow(data);
+
+        }
+
+        protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Dailyexpense data)
+        {
+            await grid2.UpdateRow(data);
+
+        }
+
+        protected async Task CancelButtonClick(MouseEventArgs args, CHKS.Models.mydb.Dailyexpense data)
+        {
+            grid2.CancelEditRow(data);
+            await MydbService.CancelDailyexpenseChanges(data);
+        }
+
+        protected async Task GridCreate(Models.mydb.Dailyexpense data){
+            try{
+                data.Key = DateTime.Now.ToString("dd/MM/yyyy") + ":" + data.Note;
+                await MydbService.CreateDailyexpense(data);
+                await grid2.Reload();
+            }catch(Exception exc){
+                if(exc.Message =="Item already available"){
+                    await DialogService.Alert("Apology, This product already exist. Please choose a different name or update the already existed product.","Important");
+                    await grid2.Reload();
+                }
+            }
+        }
+
+        protected async Task GridRowUpdate(CHKS.Models.mydb.Dailyexpense args)
+        {
+            await MydbService.UpdateDailyexpense(args.Key, args);
+        }
+    }
 }

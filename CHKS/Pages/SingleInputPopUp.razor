@@ -14,6 +14,7 @@
             <RadzenButton Click="@Close" Icon="add_circle_outline" Text="បញ្ចូល" Style="font-family: 'Khmer OS Battambang' "/>
 
         }else if(Info[0]== "Choosing Date"){
+
             <RadzenRow style="width:fit-content">
                 <RadzenDatePicker @bind-Value="ChosenDate" title="Date" Placeholder="Required"/>
             </RadzenRow>
@@ -24,17 +25,22 @@
             <RadzenStack>
                 <RadzenStack Gap="1px">
                     <RadzenText Text="តម្លៃដើម" Style="font-family: 'Khmer OS Battambang' " />
-                    <RadzenTextBox Text="@Info[1]"/>
+                    <RadzenTextBox @bind-Value="@Info[1]" ReadOnly=true/>
+                </RadzenStack>
+                <RadzenStack Gap="1px">
+                    <RadzenText Text="ចំនួន" Style="font-family: 'Khmer OS Battambang' " />
+                    <RadzenNumeric @bind-Value="Product[0]" title="Qty" Placeholder="Required" Min=0/>
+                    <RadzenNumericRangeValidator Component="Qty" Min="0"/>
                 </RadzenStack>
                 <RadzenStack Gap="1px">
                     <RadzenText Text="តម្លៃថ្មី" Style="font-family: 'Khmer OS Battambang' " />
-                    <RadzenNumeric @bind-Value="Product[0]" title="NewPrice" Placeholder="Required" Min=0/>
+                    <RadzenNumeric @bind-Value="Product[1]" title="NewPrice" Placeholder="Required" Min=0/>
                     <RadzenNumericRangeValidator Component="NewPrice" Min="0"/>
                 </RadzenStack>
                 <RadzenStack Gap="1px">
                     <RadzenText Text="បញ្ចុះតម្លៃ(គិតជាភាគរយ)" Style="font-family: 'Khmer OS Battambang' " />
-                    <RadzenNumeric @bind-Value="Product[1]" title="Discount" Placeholder="Required" Min=1 Max="100"/>
-                    <RadzenNumericRangeValidator Component="Discount" Min="1" Max="100"/>
+                    <RadzenNumeric @bind-Value="Product[2]" title="Discount" Placeholder="Required" Min=0 Max="100"/>
+                    <RadzenNumericRangeValidator Component="Discount" Min="0" Max="100"/>
                 </RadzenStack>
                 <RadzenButton Click="@Close" Icon="add_circle_outline" Text="បញ្ចូល" Style="font-family: 'Khmer OS Battambang' "/>
             </RadzenStack>
