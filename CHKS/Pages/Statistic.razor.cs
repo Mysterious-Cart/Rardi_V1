@@ -78,6 +78,10 @@ namespace CHKS.Pages
 
         }
 
+        protected async Task OpenHistory(Models.mydb.History args){
+            await DialogService.OpenAsync<ReciptView>("", new Dictionary<string, object>{{"ID",args.CashoutDate}}, new DialogOptions{Width="50%", Height="70%"});
+        }  
+
         protected async Task GetAllNumber(){
             Historyconnectors = await MydbService.GetHistoryconnectors();
             Total = Histories.Sum(i => i.Total);

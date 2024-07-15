@@ -1,4 +1,5 @@
-@page "/statistic"
+@page "/statistic"
+
 @attribute [Authorize]
 
 <PageTitle>Statistic</PageTitle>
@@ -26,7 +27,8 @@
                 <RadzenDatePicker @bind-Value="@TimeEnd" InitialViewDate="@DateTime.Now" Name="To" DateFormat="dd/MM/yyyy" Max="@DateTime.Now" Change="@GetHistoryBaseOfChoosenDate"/>
             </RadzenStack>
 
-            <RadzenDataGrid AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" @ref="@grid1" TItem ="Models.mydb.History" Data ="@Histories" Style="height: 100%; min-width:600px; width:40%; border-radius:25px;">
+            <RadzenDataGrid AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" @ref="@grid1" TItem ="Models.mydb.History" Data ="@Histories" Style="height: 100%; min-width:600px; width:40%; border-radius:25px;"
+            RowSelect="@OpenHistory">
                 <Columns>
                     <RadzenDataGridColumn title="Date" TItem ="Models.mydb.History" Property="CashoutDate"></RadzenDataGridColumn>
                     <RadzenDataGridColumn title="Plate" TItem ="Models.mydb.History" Property="Plate"></RadzenDataGridColumn>

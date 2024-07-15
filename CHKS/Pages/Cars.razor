@@ -2,19 +2,9 @@
 
 <PageTitle>Cars</PageTitle>
 <RadzenStack>
-    <RadzenRow AlignItems="AlignItems.Center">
-        <RadzenColumn Size="12" SizeMD="6">
-        </RadzenColumn>
-        <RadzenColumn Size="12" SizeMD="6">
-            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End" Gap="0.5rem">
-                @if(Mode == false){<RadzenButton Icon="add_circle_outline" Text="Add" Click="@AddButtonClick" Variant="Variant.Flat" />}
-                <RadzenToggleButton Text="Toggle" Click="@switchMode" Variant="Variant.Flat" />
-            </RadzenStack>
-        </RadzenColumn>
-    </RadzenRow>
+    <RadzenButton Icon="add_circle_outline" Text="Add" Click="@AddButtonClick" Variant="Variant.Flat"  Style="margin-left:auto"/>
     <RadzenRow>
       <RadzenColumn SizeMD=12>
-      @if(Mode == false){
         <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.SimpleWithMenu" Style="height: 60vh;"
             Data="@cars" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate" RowSelect="@SelectCar" TItem="CHKS.Models.mydb.Car" GotoFirstPageOnSort="true">
             <Columns>
@@ -56,19 +46,6 @@
             </Columns>
 
         </RadzenDataGrid>
-        }else{
-            <RadzenDataGrid @ref="grid1" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" ShowPagingSummary="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})
-                Data="@Carts" RowSelect="@SelectCar" TItem="CHKS.Models.mydb.Cart">
-                <Columns>
-                    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Cart" Property="Plate" Title="ផ្លាកលេខ">
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Cart" Property="CartId" Title="លេខតាង">
-                    </RadzenDataGridColumn>
-                    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Cart" Property="Car.Type" Title="ប្រភេទឡាន">
-                    </RadzenDataGridColumn>
-                </Columns>
-            </RadzenDataGrid>
-        }
 
     </RadzenColumn>
   </RadzenRow>

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\chks\\CHKS.csproj": {}
+    "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\CHKS.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\chks\\CHKS.csproj": {
+    "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\CHKS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\chks\\CHKS.csproj",
+        "projectUniqueName": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\CHKS.csproj",
         "projectName": "CHKS",
-        "projectPath": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\chks\\CHKS.csproj",
+        "projectPath": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\CHKS.csproj",
         "packagesPath": "C:\\Users\\Kim hong\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\chks\\obj\\",
+        "outputPath": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Kim hong\\AppData\\Roaming\\NuGet\\NuGet.Config",

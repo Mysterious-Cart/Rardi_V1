@@ -74,6 +74,7 @@ namespace CHKS.Pages
         }
         protected async override Task OnInitializedAsync()
         {
+            Carts = await MydbService.GetCarts();
             Dailyexpenses = await MydbService.GetDailyexpenses();
             Dailyexpenses = Dailyexpenses.Where(i => i.Key.Contains(DateTime.Now.ToString("dd/MM/yyyy")));
             Retotal();
@@ -112,61 +113,51 @@ namespace CHKS.Pages
             await Grid1.Reload();
         }
 
-        protected async Task OpenCustomerList()
-        {
-            if(Selection == false){
-
-                var result = await DialogService.OpenAsync<Cars>("CustomerList",new Dictionary<string, object>{}, new DialogOptions{Width="60%", Height="80%"});
-
-                if(result is CHKS.Models.mydb.Car)
+        protected async Task CreateCustomer(){
+            var result = await DialogService.OpenAsync<Cars>("CustomerList",new Dictionary<string, object>{}, new DialogOptions{Width="60%", Height="80%"});
+            if(result != null){
+                var Id = await DialogService.OpenAsync<SingleInputPopUp>("បង្កើតលេខតំណាង", new Dictionary<string, object>{{"Info",new string[]{"Cart ID"}}}, new DialogOptions{Width="450px"});
+                if(Id != null && Id is int)
                 {
-                    var Id = await DialogService.OpenAsync<SingleInputPopUp>("បង្កើតលេខតំណាង", new Dictionary<string, object>{{"Info",new string[]{"Cart ID"}}}, new DialogOptions{Width="450px"});
-                    if(Id != null && Id is int)
-                    {
-                            Customer.CartId = Id;
-                            Customer.Plate = result.Plate;
-                            Phone = result.Phone;
-                            CarType = result.Type;
-                            Customer.Total = 0;
-                            SelectionState = false;
-                            Selection = true;
-                            VisibilityOfServiceCharge = true;
-                        try{
-                            await MydbService.CreateCart(Customer);
-                        }catch(Exception exc){
-                            if(exc.Message == "Item already available"){
-                                await DialogService.Alert("This cart ID already exist.","Important");
-                                ResetToDefault();
-                                VisibilityOfServiceCharge = false;
-                            }
+                    Customer.CartId = Id;
+                    Customer.Plate = result.Plate;
+                    Phone = result.Phone;
+                    CarType = result.Type;
+                    Customer.Total = 0;
+                    SelectionState = false;
+                    Selection = true;
+                    VisibilityOfServiceCharge = true;
+                    try{
+                        await MydbService.CreateCart(Customer);
+                    }catch(Exception exc){
+                        if(exc.Message == "Item already available"){
+                            await DialogService.Alert("This cart ID already exist.","Important");
+                            ResetToDefault();
+                            VisibilityOfServiceCharge = false;
                         }
                     }
-
-
-                }else if(result is null)
-                {
-                    Selection = false;
-
-                }else if(result is CHKS.Models.mydb.Cart)
-                {
-                    Customer.CartId = result.CartId;
-                    Customer.Plate = result.Plate;
-                    Customer.Car = result.Car;
-
-
-                    Phone = Customer.Car.Phone;
-                    CarType = Customer.Car.Type;
-
-                    SelectionState = true;
-                    Selection = true;
-
-                    Connectors = await MydbService.GetConnectors(new Query{Filter=$@"i => i.CartId == (@0)", FilterParameters = new object[] {Customer.CartId}});
-                    VisibilityOfServiceCharge = true;
-                    Customer.Total = Connectors.Sum(i => i.Total);        
-                    CalculateTotal();           
                 }
-
             }
+            await SwitchDisplayMode();
+        }
+
+        protected async Task SelectCustomerFromExistingList(Models.mydb.Cart Cart){
+            Customer.CartId = Cart.CartId;
+            Customer.Plate = Cart.Plate;
+            Customer.Car = Cart.Car;
+
+
+            Phone = Customer.Car.Phone;
+            CarType = Customer.Car.Type;
+
+            SelectionState = true;
+            Selection = true;
+
+            Connectors = await MydbService.GetConnectors(new Query{Filter=$@"i => i.CartId == (@0)", FilterParameters = new object[] {Customer.CartId}});
+            VisibilityOfServiceCharge = true;
+            Customer.Total = Connectors.Sum(i => i.Total);        
+            CalculateTotal();   
+            await SwitchDisplayMode();        
         }
 
         protected async Task ResetTotal(){
@@ -190,6 +181,7 @@ namespace CHKS.Pages
                     ResetToDefault();
                 }
             }
+            await SwitchDisplayMode();
         }
 
 
@@ -256,6 +248,7 @@ namespace CHKS.Pages
 
                         await MydbService.DeleteCart(Customer.CartId);
                         ResetToDefault();
+                        await SwitchDisplayMode();
                         VisibilityOfServiceCharge = false;
                     }
                 }
@@ -298,6 +291,7 @@ namespace CHKS.Pages
 
             Connectors = Enumerable.Empty<CHKS.Models.mydb.Connector>();
             VisibilityOfServiceCharge = false;
+            await SwitchDisplayMode();
 
         }
         protected async Task AddItemtoCart()
@@ -452,6 +446,21 @@ namespace CHKS.Pages
                 }
             }catch(Exception exc){
                 
+            }
+        }
+
+        bool DMode = false; //false is hide cartlist. true is display cartlist
+        string Cartpicker = "MainMenu-CartPicker-Display";
+        string Cartlist = "MainMenu-CartList-Option-Hide";
+        protected async Task SwitchDisplayMode(){
+            if(DMode == false){
+                DMode = true;
+                Cartlist = "MainMenu-CartList-Option-Display";
+                Cartpicker = "MainMenu-CartPicker-Hide";
+            }else{
+                DMode = false;
+                Cartlist = "MainMenu-CartList-Option-Hide";
+                Cartpicker = "MainMenu-CartPicker-Display";
             }
         }
 

@@ -70,6 +70,7 @@ namespace CHKS.Pages
 
         protected async Task Search(ChangeEventArgs args)
         {
+            
             search = $"{args.Value}";
 
             await grid0.GoToPage(0);
@@ -85,6 +86,7 @@ namespace CHKS.Pages
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+
             if(isEditMode == false && isModifying == false ){
                 await searchbar.Element.FocusAsync();
             }
@@ -127,6 +129,15 @@ namespace CHKS.Pages
             {
                 if (await DialogService.Confirm("Are you sure?") == true)
                 {
+                    Models.mydb.InventoryTrashcan trashed = new(){
+                        Date = DateTime.Now.ToString(),
+                        Name = inventory.Name,
+                        Barcode = inventory.Barcode,
+                        Stock = inventory.Stock,
+                        Import = inventory.Import,
+                        Export = inventory.Export,
+                    };
+                    await mydbService.CreateInventoryTrashcan(trashed);
                     var deleteResult = await mydbService.DeleteInventory(inventory.Name);
 
                     if (deleteResult != null)

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "CrRFjgsQdTA=",
+  "dgSpecHash": "igigsZ5RnGk=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\chks\\CHKS.csproj",
+  "projectFilePath": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\CHKS.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Kim hong\\.nuget\\packages\\dartsassbuilder\\1.0.0\\dartsassbuilder.1.0.0.nupkg.sha512",
     "C:\\Users\\Kim hong\\.nuget\\packages\\documentformat.openxml\\3.0.2\\documentformat.openxml.3.0.2.nupkg.sha512",

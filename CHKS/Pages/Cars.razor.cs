@@ -40,7 +40,6 @@ namespace CHKS.Pages
         protected RadzenDataGrid<CHKS.Models.mydb.Car> grid0;
         protected RadzenDataGrid<CHKS.Models.mydb.Cart> grid1;
 
-        protected bool Mode = false;
         protected bool isEditing = false;
 
         [Inject]
@@ -82,14 +81,6 @@ namespace CHKS.Pages
                     Summary = $"Error",
                     Detail = $"Unable to delete Car"
                 });
-            }
-        }
-
-        protected void switchMode(){
-            if(Mode == true){
-                Mode = false;
-            }else{
-                Mode = true;
             }
         }
 
