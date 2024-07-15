@@ -1,4 +1,5 @@
-@page "/inventories"
+@page "/inventories"
+
 @attribute [Authorize]
 @using System.Globalization
 
@@ -20,6 +21,12 @@
         <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.Advanced"  ShowPagingSummary="true" Style="height:60vh;"
             Data="@inventories" RowUpdate="@GridRowUpdate" RowSelect="@SelectProduct" RowCreate="@GridRowCreate" TItem="CHKS.Models.mydb.Inventory">
             <Columns>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Barcode" Title="Barcode" Width="30%" OrderIndex="1">
+                    <EditTemplate Context="inventory">
+                        <RadzenNumeric style="display: block; width: 100%" @bind-Value="@inventory.Barcode" Name="Barcode" />
+                        <RadzenRequiredValidator Component="Name" Text="Name is required" style="position: absolute;" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Name" Title="Name" Width="30%" OrderIndex="1">
                     <EditTemplate Context="inventory">
                         <RadzenTextBox style="display: block; width: 100%" @bind-Value="@inventory.Name" Name="Name" />
