@@ -52,14 +52,14 @@ namespace CHKS.Pages
         private string Barcode;
         protected async Task getBar(KeyboardEventArgs keyboard){
             if(IsDialog == "true"){
-                if(keyboard.Key != "Enter" && keyboard.CtrlKey == false && keyboard.ShiftKey == false && keyboard.AltKey == false && long.TryParse(keyboard.Key,out long key)==true){
-                    Barcode += key;
+                if(keyboard.Key != "Enter" && keyboard.CtrlKey == false && keyboard.ShiftKey == false && keyboard.AltKey == false ){
+                    Barcode += keyboard.Key;
                 }else if(keyboard.CtrlKey == false && keyboard.ShiftKey == false && keyboard.AltKey == false ){
                     if(keyboard.Key == "Enter" && Barcode != ""){
-                        if(inventories.Any() == true){
+                        if(inventories.Any() == true && inventories.FirstOrDefault().Barcode == Barcode){
                             await SelectProduct(inventories.FirstOrDefault());
                             Barcode = "";
-                        }else{
+                        }else if( inventories.Any() == false){
                             await DialogService.Alert("ទំនេញមិនមាន។", "សំខាន់");
                         }
                     }
@@ -76,11 +76,11 @@ namespace CHKS.Pages
 
             await grid0.GoToPage(0);
 
-            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) && i.Name != (@1) || i.Barcode.ToString().Contains(@0) ", FilterParameters = new object[] { search , "Service Charge"} });
+            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) && i.Name != (@1) || i.Barcode.Contains(@0) ", FilterParameters = new object[] { search , "Service Charge"} });
         }
         protected override async Task OnInitializedAsync()
         {   
-            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) && i.Name != (@1) || i.Barcode.ToString().Contains(@0)", FilterParameters = new object[] { search , "Service Charge"} }); 
+            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) && i.Name != (@1) || i.Barcode.Contains(@0)", FilterParameters = new object[] { search , "Service Charge"} }); 
         }
 
         RadzenTextBox searchbar;
@@ -167,6 +167,9 @@ namespace CHKS.Pages
                 if(Checking == null){
                     string tempname = args.Name;
                     args.Name = OriginalName;
+                    if(args.Import == null){
+                        args.Import = 0;
+                    }
                     await GridDeleteButtonClick(args);
                     try{
                         args.Name = tempname;

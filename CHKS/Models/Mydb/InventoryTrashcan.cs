@@ -21,6 +21,9 @@ namespace CHKS.Models.mydb
 
         public decimal? Export { get; set; }
 
-        public long? Barcode { get; set; }
+        public string Barcode { get; set; }
+
+        [Column("inventory_trashcancol")]
+        public string InventoryTrashcancol { get; set; }
     }
 }
