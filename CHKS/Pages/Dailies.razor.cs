@@ -63,8 +63,8 @@ namespace CHKS.Pages
         }
 
         protected async Task GetAllNumberForToday(){
-            Total = History.Sum(i => i.Total).ToString();
-            ExpenseTotal = Dailyexpenses.Sum(i => i.Expense).ToString();
+            Total = History.Sum(i => i.Total).ToString() + " $";
+            ExpenseTotal = Dailyexpenses.Sum(i => i.Expense).ToString() + " $";
         }
 
         protected async Task LoadNotImport(){

@@ -9,7 +9,7 @@
 
 <PageTitle>Inventories</PageTitle>
 
-<RadzenStack @onkeydown="@getBar">
+<RadzenStack @onkeydown="@getBar" class="AllPage">
     <RadzenColumn style="margin-left: auto; ">
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End" Gap="0.5rem">
             <RadzenButton Icon="add_shopping_cart" Text="បញ្ចូលទំនេញ"/>
@@ -22,33 +22,33 @@
         <RadzenDataGrid @ref="grid0" ColumnWidth="200px" AllowFiltering="true" FilterMode="FilterMode.Advanced"  ShowPagingSummary="true" Style="height:60vh; font-size:x-larger; font-family:"
             Data="@inventories" RowUpdate="@GridRowUpdate" RowSelect="@SelectProduct" RowCreate="@GridRowCreate" TItem="CHKS.Models.mydb.Inventory">
             <Columns>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Barcode" Title="Barcode" Width="30%" OrderIndex="1">
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Barcode" Title="កូដ" Width="30%" OrderIndex="1">
                     <EditTemplate Context="inventory">
                         <RadzenNumeric style=" width: 100%" @bind-Value="@inventory.Barcode" Name="Barcode"/>
                     </EditTemplate>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Name" Title="Name" Width="30%" OrderIndex="1">
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Name" Title="ឈ្មោះ" Width="30%" OrderIndex="1">
                     <EditTemplate Context="inventory">
                         <RadzenTextBox style="width: 100%" @bind-Value="@inventory.Name" Name="Name" />
                         <RadzenRequiredValidator Component="Name" Text="Name is required" style="position: absolute;" />
                     </EditTemplate>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Stock" Title="Stock" Width="20%" FormatString="{0:N2}">
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Stock" Title="ក្នុងស្តុក" Width="20%" FormatString="{0:N2}">
                   <EditTemplate Context="inventory">
                       <RadzenNumeric style="width: 100%" @bind-Value="@inventory.Stock" Name="Stock" Format="N2" ShowUpDown = "false"/>
                   </EditTemplate>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Import" Title="Import" Width="20%" FormatString="${0:N2}">
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Import" Title="តម្លៃទិញចូល" Width="20%" FormatString="${0:N2}">
                   <EditTemplate Context="inventory">
                       <RadzenNumeric style="width: 100%" @bind-Value="@inventory.Import" Name="Import" Format="N2" ShowUpDown = "false" />
                   </EditTemplate>
                 </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Export" Title="Export" Width="20%" FormatString="${0:N2}">
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Export" Title="តម្លៃលក់" Width="20%" FormatString="${0:N2}">
                   <EditTemplate Context="inventory">
                       <RadzenNumeric style="width: 100%" @bind-Value="@inventory.Export" Name="Export"  Format="N2"  ShowUpDown = "false"/>
                   </EditTemplate>
                   <FooterTemplate>
-                        <RadzenText TextStyle="TextStyle.DisplayH6">Total Item: @(inventories.Count())</RadzenText>
+                        <RadzenText TextStyle="TextStyle.DisplayH6">សរុបមុខទំនេញ: @(inventories.Count())</RadzenText>
                   </FooterTemplate>
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Filterable="false" Sortable="false" Width="156px" TextAlign="TextAlign.Center">

@@ -1,3 +1,10 @@
+.AllPage{
+    font-family: 'Khmer OS Battambang', Comfortaa, Arial;
+    margin-left: auto;
+    margin-right:auto;
+}
+
+
 .customerDatalist-expanded-false{
     overflow: hidden;
     width: 220px;
@@ -31,3 +38,64 @@
     margin-top:auto;
     min-width: 150px;
 }
+
+.MainMenu-CartList-Option-Display{
+    transition:  width 2s, border-radius 1.2s, margin-right 2s ease-out;
+    overflow: hidden;
+    height: 90%; 
+    border-radius: 15px; 
+    background-color:#28282B; 
+    margin-left:auto; 
+    width: 120% ;
+    border-radius:0px 15px 15px 0px;
+    border: none;
+
+}
+
+.MainMenu-CartList-Option-Hide{
+    transition:  width 2s, margin-right 2s, border-radius 1.2s ease-out;
+    height: 90%; 
+    border-radius:15px; 
+    background-color:#28282B;
+    margin-right:40%;
+    border-radius:0px 15px 15px 0px;
+    border: none;
+    width: 0px;
+}
+
+.MainMenu-CartPicker-Display{
+    transition-delay: 50ms;
+    transition: border-radius 500ms, margin-left 2s, width 2s ease-out;
+    height: 90%; 
+    border: none;
+    border-radius:15px 0px 0px 15px; 
+    background-color:#28282B; 
+    margin-right:auto; 
+    margin-left:3%;
+    width:60%;
+
+}
+
+.MainMenu-CartPicker-Hide{
+    transition-delay: 100ms;    
+    transition: border-radius 1s, margin-left 2s, width 2s ease-out;
+    height: 90%; 
+    border: none;
+    border-radius:15px 0px 0px 15px; 
+    background-color:#28282B; 
+    margin-left:65%;
+    width:0%;
+
+}
+
+.loadpage-hidden{
+    overflow:hidden; 
+    width:1px;
+}
+
+.loadpage-load{
+    transition: width 2s ease-in-out;
+    overflow: hidden;
+    width:100%;
+}
+

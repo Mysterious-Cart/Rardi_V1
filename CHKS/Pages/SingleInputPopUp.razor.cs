@@ -44,7 +44,6 @@ namespace CHKS.Pages
 
         protected async override Task OnInitializedAsync()
         {
-            
             if(Info[0] == "Qty"){
                 Info[1] = Math.Round(decimal.Parse(Info[1]),2).ToString();
                 Product[1] = decimal.Parse(Info[1]); 
@@ -57,9 +56,6 @@ namespace CHKS.Pages
             }else if(Info[0]=="Choosing Date"){
                 DialogService.Close(ChosenDate.ToString("dd/MM/yyyy"));
             }else if(Info[0] == "Qty") {
-                if(Product[1] == 0){
-                    Product[1] = decimal.Parse(Info[1]);
-                }
                 DialogService.Close(Product);
             }
 

@@ -3,20 +3,23 @@
 @attribute [Authorize]
 
 <PageTitle>Daily</PageTitle>
+<head>
+    <link href="css/Page.css" rel="stylesheet"/>
+</head>
 
-<RadzenStack Orientation="Orientation.Horizontal">
+<RadzenStack Orientation="Orientation.Horizontal" class="AllPage">
     <RadzenStack Style="width: 80%;">
         <RadzenRow AlignItems="AlignItems.Center" Style="margin-bottom: 25; ">
-            <RadzenCard Style="width:100%"  >
+            <RadzenCard Style="width:100%; background-color:#28282B; border-radius:15px"  >
                 <RadzenStack Orientation = "Orientation.Horizontal" AlignItems = "AlignItems.Center" Gap="20px">
-                    <RadzenText Text="ទិន្នន័យប្រចាំថ្ងៃ" TextStyle = "TextStyle.H4" Style="Margin-right:15px"/>
-                    <RadzenText Text="សរុប:" TextStyle="TextStyle.Overline" style="font-size:large"/>
-                    <RadzenText Text="@Total" TextStyle = "TextStyle.DisplayH5" Style="Margin-right:15px"/>
+                    <RadzenText Text="ទិន្នន័យប្រចាំថ្ងៃ"  style=" Margin-right:15px;margin-top:10px; font-size:xx-large; font-family:'Khmer OS Battambang'; color:white"/>
+                    <RadzenText Text="សរុប:"  style="font-size:x-large;margin-top:30px; font-family:'Khmer OS Battambang';color:white"/>
+                    <RadzenText Text=@Total  Style="Margin-right:15px; margin-top:30px; font-size:xx-large; font-family:'Khmer OS Battambang';color:white" />
       
-                    <RadzenText Text="ចំណាយសរុប:" TextStyle="TextStyle.Overline" style="font-size:large"/>
-                    <RadzenText Text="@ExpenseTotal" TextStyle = "TextStyle.DisplayH5" Style="Margin-right:15px"/>                 
+                    <RadzenText Text="ចំណាយសរុប:"  style="font-size:x-large; margin-top:30px;font-family:'Khmer OS Battambang';color:white"/>
+                    <RadzenText Text="@ExpenseTotal"  Style="Margin-right:15p; margin-top:30px; font-size:xx-large;font-family:'Khmer OS Battambang';color:white"/>                 
                 </RadzenStack>
-                <RadzenText Text="@dates"/>
+                <RadzenText Text="@dates" Style="margin-top:20px;font-family:'Khmer OS Battambang'; color:white"/>
             </RadzenCard>
         </RadzenRow>
         
@@ -26,14 +29,14 @@
             <RadzenRow>
                 <RadzenStack AlignItems="AlignItems.End" Orientation="Orientation.Horizontal" Style="Width:100%;">
                     <RadzenButton Icon="priority_high" ButtonStyle="ButtonStyle.Danger" style="border-radius:5px" Click="@LoadNotImport"/>
-                    <RadzenText Text="សំខាន់! មានទំនិញខ្លះខ្វាស់កាតតម្លៃទិញចូល" TextStyle="TextStyle.DisplayH6"/>
+                    <RadzenText Text="សំខាន់! មានទំនិញខ្លះខ្វាស់កាតតម្លៃទិញចូល" Style="font-size: xx-large;font-family:'Khmer OS Battambang"/>
                 </RadzenStack>
             </RadzenRow>
         }else{
             <RadzenRow>
                 <RadzenStack AlignItems="AlignItems.End" Orientation="Orientation.Horizontal" Style="Width:100%;">
                     <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" style="border-radius:5px"/>
-                    <RadzenText Text="All data are correct. No error detected." TextStyle="TextStyle.DisplayH6"/>
+                    <RadzenText Text="All data are correct. No error detected."/>
                 </RadzenStack>
             </RadzenRow>
         }

@@ -137,8 +137,9 @@ namespace CHKS.Pages
                         }
                     }
                 }
+                await SwitchDisplayMode();
             }
-            await SwitchDisplayMode();
+            
         }
 
         protected async Task SelectCustomerFromExistingList(Models.mydb.Cart Cart){
@@ -187,18 +188,18 @@ namespace CHKS.Pages
 
         protected async Task CashOut(){
             if(Connectors != Enumerable.Empty<Models.mydb.Connector>()){
-                if(await DialogService.Confirm("Are you sure you want to cash out?","Important!") == true){
-                    List<decimal?> payment = await DialogService.OpenAsync<PaymentForm>("Payment",new Dictionary<string, object>{{"Total",Customer.Total}}, new DialogOptions{Width="35%"});
+                if(await DialogService.Confirm("តើអ្នកច្បាស់ដែរឫទេ?","សំខាន់!") == true){
+                    List<decimal?> payment = await DialogService.OpenAsync<PaymentForm>("គិតលុយ",new Dictionary<string, object>{{"Total",Customer.Total}}, new DialogOptions{Width="35%"});
 
                     if(payment != null){
 
                         string time = "";
 
-                        if(await DialogService.Confirm("Do you wish to change Cashout Date?","Note", new ConfirmOptions{OkButtonText = "Yes", CancelButtonText="No",CloseDialogOnEsc=false, ShowClose=false}) == false){
+                        if(await DialogService.Confirm("តើអ្នកចង់ប្តូរថ្ងៃទីគិតលុយដែរឫទេ?","Note", new ConfirmOptions{OkButtonText = "Yes", CancelButtonText="No",CloseDialogOnEsc=false, ShowClose=false}) == false){
                             time = DateTime.Now.ToString("dd/MM/yyyy") + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")";
                         }else{
                             
-                            time = await DialogService.OpenAsync<SingleInputPopUp>("Choosing Date", new Dictionary<string, object>{{"Info", new string[]{"Choosing Date"}}}, new DialogOptions{Width="20%"});
+                            time = await DialogService.OpenAsync<SingleInputPopUp>("រើសថ្ងៃទី", new Dictionary<string, object>{{"Info", new string[]{"Choosing Date"}}}, new DialogOptions{Width="20%"});
                             time = time!=null? time + ":" + Customer.CartId + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")": DateTime.Now.ToString("dd/MM/yyyy") + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")";
                         }
 
@@ -248,11 +249,10 @@ namespace CHKS.Pages
 
                         await MydbService.DeleteCart(Customer.CartId);
                         ResetToDefault();
-                        await SwitchDisplayMode();
                         VisibilityOfServiceCharge = false;
                     }
                 }
-            }else{await DialogService.Alert("You have no items in cart.","Note!");}
+            }else{await DialogService.Alert("បញ្ចាក់អ្នកគ្មានទំនេញនៅក្នុងអត្ថជននេះទេ.","បញ្ចាក់!");}
         }
 
         protected async Task ClearAllProduct(){
@@ -340,7 +340,7 @@ namespace CHKS.Pages
         {
             try
             {
-                if (await DialogService.Confirm("Are you sure you want to delete this item?") == true)
+                if (await DialogService.Confirm("អ្នកទ្រាមនឺងលុបទំនេញ។ តើអ្នកច្បាស់ដែរឬទេ?") == true)
                 {
                     await MydbService.DeleteConnector(Product.GeneratedKey);
                     await ResetTotal();
@@ -374,7 +374,7 @@ namespace CHKS.Pages
             Models.mydb.Connector OldOne = await MydbService.GetConnectorByGeneratedKey(args.GeneratedKey);
             if((args.Qty-OldOne.Qty)<=args.Inventory.Stock && args.Product != "Service Charge")
                 {
-                args.Total = args.Qty * args.Inventory.Export.GetValueOrDefault(1);
+                args.Total = args.Qty * args.PriceOverwrite.GetValueOrDefault();
                 Models.mydb.Inventory Temp = new Models.mydb.Inventory{
                     Name = args.Product,
                     Import = args.Inventory.Import,
@@ -388,7 +388,7 @@ namespace CHKS.Pages
                 args.Qty = 1;
                 await MydbService.UpdateConnector(args.GeneratedKey, args);
             }else{
-                await DialogService.Alert("Not enough in Stock! Only have " + args.Inventory.Stock + " Left.");
+                await DialogService.Alert("មិនមានស្តុងគ្រប់។ សល់ត្រឹមតែ" + args.Inventory.Stock + " ប៉ុណ្ណោះ។");
                 await Grid1.Reload();
             }
             
@@ -441,7 +441,7 @@ namespace CHKS.Pages
 
         protected async Task GridDeleteButtonClick(MouseEventArgs args, CHKS.Models.mydb.Dailyexpense data){
             try{
-                if(await DialogService.Confirm("Are you sure?", "Important!", new ConfirmOptions{OkButtonText="Yes", CancelButtonText="No"})== true){
+                if(await DialogService.Confirm("តើអ្នកច្បាស់ដែរឬទេ?", "សំខាន់!", new ConfirmOptions{OkButtonText="Yes", CancelButtonText="No"})== true){
                     await MydbService.DeleteDailyexpense(data.Key);
                     await grid2.Reload();
                 }
@@ -491,7 +491,7 @@ namespace CHKS.Pages
                 await grid2.Reload();
             }catch(Exception exc){
                 if(exc.Message =="Item already available"){
-                    await DialogService.Alert("Apology, This product already exist. Please choose a different name or update the already existed product.","Important");
+                    await DialogService.Alert("សូមអាទ្យាស្រ័យ ទំនេញនេះគឺមានហើយ. សូមរ់ើសឈ្មោះផ្សេងឫប្តូរទិន្នន័យទៅលើទំនេញដែលមានរួច។.","សំខាន់");
                     await grid2.Reload();
                 }
             }

@@ -97,8 +97,8 @@ namespace CHKS.Pages
                 var Qty = await DialogService.OpenAsync<SingleInputPopUp>(Product.Name, new Dictionary<string, object>{{"Info",new string[]{"Qty", Product.Export.ToString()}}}, new DialogOptions{Width="13%"});
 
                 if(Qty is Array && Qty[0] != null && Qty[0] is decimal && Qty[0] <= Product.Stock){
-                    Models.mydb.Inventory Temp = new Models.mydb.Inventory{};
-                    Product.Stock = Product.Stock - Qty[0];
+                    Models.mydb.Inventory Temp = new(){};
+                    Product.Stock -=  Qty[0];
                     await mydbService.UpdateInventory(Product.Name, Product);
                     Temp.Export = Qty[1];
                     Temp.Import = Qty[2];

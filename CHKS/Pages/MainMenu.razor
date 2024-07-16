@@ -5,7 +5,7 @@
     <link href="css/Page.css" rel="stylesheet"/>
 </head>
 
-<RadzenStack Orientation="Orientation.Horizontal" Style="min-width: fit-content;"  >
+<RadzenStack Orientation="Orientation.Horizontal" Style="min-width: fit-content;"  class="AllPage">
     <PageTitle >MainMenu</PageTitle>
     <RadzenStack  Orientation="Orientation.Horizontal">
         <RadzenStack style="width: 60%" Gap=0 Orientation="Orientation.Vertical">
@@ -90,6 +90,9 @@
                                     </FooterTemplate>
                                 </RadzenDataGridColumn>
                                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="connector.PriceOverwrite" Title="តមៃ្លលក់" TextAlign="TextAlign.Center" FormatString="${0:N2}" MinWidth="120px" Width="120px">
+                                    <EditTemplate Context="connector">
+                                        <RadzenNumeric style="display: block; width: 100%" @bind-Value="@connector.PriceOverwrite" Name="Note" Min=0 />
+                                    </EditTemplate>
                                     <FooterTemplate>
                                         <RadzenButton Icon="add" Visible="@VisibilityOfServiceCharge" Click="@AddServiceCharge"/>
                                     </FooterTemplate>
