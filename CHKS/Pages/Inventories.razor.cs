@@ -56,12 +56,23 @@ namespace CHKS.Pages
                     Barcode += keyboard.Key;
                 }else if(keyboard.CtrlKey == false && keyboard.ShiftKey == false && keyboard.AltKey == false ){
                     if(keyboard.Key == "Enter" && Barcode != ""){
-                        if(inventories.Any() == true && inventories.FirstOrDefault().Barcode == Barcode){
+                        if(inventories.Any() == true){
                             await SelectProduct(inventories.FirstOrDefault());
                             Barcode = "";
                         }else if( inventories.Any() == false){
                             await DialogService.Alert("ទំនេញមិនមាន។", "សំខាន់");
                         }
+                    }
+                }
+            }else{
+                if(keyboard.Key != "Enter" && keyboard.CtrlKey == false && keyboard.ShiftKey == false && keyboard.AltKey == false && keyboard.Key != "Backspace" ){
+                    Barcode += keyboard.Key;
+                }else if(keyboard.Key != "Enter" && keyboard.CtrlKey == false && keyboard.ShiftKey == false && keyboard.AltKey == false && keyboard.Key == "Backspace" && Barcode != "" ){
+                    Barcode.Remove(Barcode.Length - 1);
+                }else if(keyboard.CtrlKey == false && keyboard.ShiftKey == false && keyboard.AltKey == false ){
+                    if(keyboard.Key == "Enter" && Barcode != ""){
+                        inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) && i.Name != (@1) || i.Barcode.Contains(@0) ", FilterParameters = new object[] { Barcode , "Service Charge"} });
+                        Barcode = "";
                     }
                 }
             }
@@ -78,6 +89,7 @@ namespace CHKS.Pages
 
             inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) && i.Name != (@1) || i.Barcode.Contains(@0) ", FilterParameters = new object[] { search , "Service Charge"} });
         }
+
         protected override async Task OnInitializedAsync()
         {   
             inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) && i.Name != (@1) || i.Barcode.Contains(@0)", FilterParameters = new object[] { search , "Service Charge"} }); 

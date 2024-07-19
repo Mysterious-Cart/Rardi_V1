@@ -10,54 +10,110 @@
 
 <RadzenStack class="AllPage" Orientation="Orientation.Horizontal">
 
-    <RadzenStack Style="width: 75%">
-        <RadzenRow Style="width: fit-content;">
-            <RadzenCard Style="background-color: #28282B; border-radius:15px" >
-                <RadzenStack Orientation = "Orientation.Horizontal" AlignItems = "AlignItems.Center" Gap="20px" Style="padding: 20px;">
-                    <RadzenText Text="ទិន្នន័យប្រចាំខែ" Style="margin-right:15px; font-family:'Khmer OS Battambang'​; font-size:xx-large; color:White"/>
-                    <RadzenText Text="សរុប:" style="font-size:x-large; font-family:'Khmer OS Battambang';color:White"/>
-                    <RadzenText Text="@Math.Round(@Total.GetValueOrDefault(),2).ToString()" Style="margin-right:15px; font-family:'Khmer OS Battambang';font-size:x-large;color:White"/>
-                    <RadzenText Text="សរុបទំនេញ:"  style="font-size:x-large; font-family:'Khmer OS Battambang';color:White "/>
-                    <RadzenText Text="@Math.Round(@ProductTotal.GetValueOrDefault(),2).ToString()" Style="margin-right:15px;font-size:x-large; font-family:'Khmer OS Battambang';color:White"/>
-                    <RadzenText Text="សរុបសេវា:"  style="font-size:x-large; font-family:'Khmer OS Battambang';color:White"/>
-                    <RadzenText Text="@Math.Round(@ServiceTotal.GetValueOrDefault(),2).ToString()"   Style="Margin-right:15px; font-family:'Khmer OS Battambang'; font-size:x-large;color:White"/>                
+    <RadzenStack Style="width: 80%">
+        <RadzenStack Orientation="Orientation.Horizontal" Style="overflow-x:scroll;">
+            <RadzenCard class="Statistic-Info-Overview-Card" >
+                <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Wrap="FlexWrap.NoWrap" class="Statistic-Info-Overview-Card-RadzenStack">
+                    <RadzenLabel Text="សរុប:" class="Statistic-Info-Overview-Card-RadzenLabel" />
+                    <RadzenText Text="@(Math.Round(Total.GetValueOrDefault(),2).ToString() + ' '+ '$')" class="Statistic-Info-Overview-Card-RadzenText"/>            
                 </RadzenStack>
             </RadzenCard>
-        </RadzenRow>
+            <RadzenCard class="Statistic-Info-Overview-Card" >
+                <RadzenStack Orientation = "Orientation.Vertical" AlignItems = "AlignItems.End" Wrap="FlexWrap.NoWrap" class="Statistic-Info-Overview-Card-RadzenStack">
+                    <RadzenLabel Text="សរុបតម្លៃដើម:" class="Statistic-Info-Overview-Card-RadzenLabel" />
+                    <RadzenText Text="@(Math.Round(ImportTotal.GetValueOrDefault(),2).ToString() + ' '+ '$')" class="Statistic-Info-Overview-Card-RadzenText"/>
+                </RadzenStack>
+            </RadzenCard>
+            <RadzenCard class="Statistic-Info-Overview-Card" >
+                <RadzenStack Orientation = "Orientation.Vertical" AlignItems = "AlignItems.End" Wrap="FlexWrap.NoWrap" class="Statistic-Info-Overview-Card-RadzenStack">
+                    <RadzenLabel Text="សរុបទំនេញ:" class="Statistic-Info-Overview-Card-RadzenLabel"/>
+                    <RadzenText Text="@(Math.Round(ProductTotal.GetValueOrDefault(),2).ToString() + ' '+ '$')" class="Statistic-Info-Overview-Card-RadzenText"/>
+                </RadzenStack>
+            </RadzenCard>
+            <RadzenCard class="Statistic-Info-Overview-Card" >
+                <RadzenStack Orientation = "Orientation.Vertical" AlignItems = "AlignItems.End" Wrap="FlexWrap.NoWrap" class="Statistic-Info-Overview-Card-RadzenStack" >
+                    <RadzenLabel Text="សរុបសេវា:" class="Statistic-Info-Overview-Card-RadzenLabel"/>
+                    <RadzenText Text="@(Math.Round(ServiceTotal.GetValueOrDefault(),2).ToString() + ' '+ '$' )"   class="Statistic-Info-Overview-Card-RadzenText"/>        
+                </RadzenStack>
+            </RadzenCard>
+            <RadzenCard class="Statistic-Info-Overview-Card">
+                <RadzenStack Orientation = "Orientation.Vertical" AlignItems = "AlignItems.End" Wrap="FlexWrap.NoWrap" class="Statistic-Info-Overview-Card-RadzenStack">
+                    <RadzenLabel Text="ចំណាយ:" class="Statistic-Info-Overview-Card-RadzenLabel"/>
+                    <RadzenText Text="@(Math.Round(MonthlyExpense.Sum(i => i.Expense).GetValueOrDefault()).ToString() + ' ' +'$')" class="Statistic-Info-Overview-Card-RadzenText"/>                
+                </RadzenStack>
+            </RadzenCard>
+        </RadzenStack>
 
-        <RadzenCard style="Width:100%;">
-            <RadzenStack style="width: 50%; height: 74dvh">
+        <RadzenCard class="Statistic-Setting-Card">
+            <RadzenStack>
                 <RadzenStack Orientation="Orientation.Horizontal" Gap="10px" AlignItems="AlignItems.Center">
-                    <RadzenLabel Text="From" Component="From"/>
-                    <RadzenDatePicker @bind-Value="@TimeStart" InitialViewDate="@DateTime.Now" Name="From" DateFormat="dd/MM/yyyy" Max="@DateTime.Now" Change="@GetHistoryBaseOfChoosenDate"/>
-                    <RadzenLabel Text="To" Component="To"/>
+                    <RadzenLabel Text="ពីថ្ងៃទី" Component="From" class="Statistic-Setting-Card-RadzenLabel"/>
+                    <RadzenDatePicker @bind-Value="@TimeStart" Name="From" DateFormat="dd/MM/yyyy" Max="@DateTime.Now" Change="@GetHistoryBaseOfChoosenDate" />
+                    <RadzenLabel Text="ដល់" Component="To" class="Statistic-Setting-Card-RadzenLabel"/>
                     <RadzenDatePicker @bind-Value="@TimeEnd" InitialViewDate="@DateTime.Now" Name="To" DateFormat="dd/MM/yyyy" Max="@DateTime.Now" Change="@GetHistoryBaseOfChoosenDate"/>
                 </RadzenStack>
+            </RadzenStack>
+        </RadzenCard>
 
-                <RadzenDataGrid AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" @ref="@grid1" TItem ="Models.mydb.History" Data ="@Histories" Style="height: 100%; min-width:600px; width:100%; border-radius:25px;"
-                RowSelect="@OpenHistory">
+        <RadzenStack Orientation="Orientation.Horizontal" style="height: 64dvh;">
+
+            <RadzenCard style="Width:50%;">
+                <RadzenDataGrid AllowFiltering="true" FilterMode="FilterMode.Advanced" GridLines="Radzen.DataGridGridLines.Horizontal" AllowVirtualization=true AllowSorting="true" @ref="@grid1" TItem ="Models.mydb.History" Data ="@Histories" Style="height: 100%; min-width:600px; width:100%; border-radius:25px;"
+                RowSelect="@OpenHistory" AllowColumnResize=true AllowPaging=false>
                     <Columns>
-                        <RadzenDataGridColumn title="Date" TItem ="Models.mydb.History" Property="CashoutDate"></RadzenDataGridColumn>
-                        <RadzenDataGridColumn title="Plate" TItem ="Models.mydb.History" Property="Plate"></RadzenDataGridColumn>
-                        <RadzenDataGridColumn title="Total" TItem ="Models.mydb.History" Property="Total" FormatString="${0:N2}">
+                        <RadzenDataGridColumn title="ថ្ងៃទី" TItem ="Models.mydb.History" Property="CashoutDate"></RadzenDataGridColumn>
+                        <RadzenDataGridColumn title="ផ្លាកលេខ" TItem ="Models.mydb.History" Property="Plate"></RadzenDataGridColumn>
+                        <RadzenDataGridColumn Title="ម៉ាកឡាន" TItem ="Models.mydb.History" Property="Car.Type"/>
+                        <RadzenDataGridColumn title="សរុប" TItem ="Models.mydb.History" Property="Total" FormatString="${0:N2}">
                         </RadzenDataGridColumn>
 
                     </Columns>
                 </RadzenDataGrid>
+            </RadzenCard>
 
-            </RadzenStack>
-        </RadzenCard>
+            <RadzenCard style="Width:50%;">
+
+                <RadzenDataGrid AllowFiltering="true" FilterMode="FilterMode.Advanced" GridLines="Radzen.DataGridGridLines.Horizontal" AllowVirtualization=true AllowSorting="true" @ref="@grid3" TItem ="Models.mydb.Historyconnector" Data ="@ProductWithoutImport" Style="height: 100%; min-width:600px; width:100%; border-radius:25px;"
+                AllowColumnResize=true RowUpdate="@GridRowUpdate">
+
+                    <Columns>
+                        <RadzenDataGridColumn title="ឈ្មោះ" TItem ="Models.mydb.Historyconnector" Property="Product"/>
+                        <RadzenDataGridColumn title="តម្លៃដើម" TItem ="Models.mydb.Historyconnector" Property="Inventory.Import">
+                            <EditTemplate Context="Historyconnector">
+                                <RadzenNumeric @bind-Value="@Historyconnector.Inventory.Import" Min=0/>
+                            </EditTemplate>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn >
+                            <EditTemplate Context = "Historyconnector">
+                                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                    style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
+                                    Click=@(args => SaveButtonClick(args, Historyconnector)) @onclick:stopPropagation="true" />
+                                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                    Click=@(args => CancelButtonClick(args, Historyconnector)) @onclick:stopPropagation="true" />
+                            </EditTemplate>
+                            <Template Context="Historyconnector">
+                                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                    style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
+                                    Click=@(args => EditButtonClick(args, Historyconnector)) @onclick:stopPropagation="true" />
+                            </Template>
+                        </RadzenDataGridColumn>
+                    </Columns>
+
+                </RadzenDataGrid>
+
+            </RadzenCard>
+
+        </RadzenStack>
+        
             
     </RadzenStack>
+
     <RadzenCard Style=" width: 25%; height: 90dvh ; margin-right:auto">
-        <RadzenDataGrid  AllowFiltering="true" FilterMode="FilterMode.Advanced" AllowPaging="true" AllowSorting="true" @ref="@grid2" TItem ="Models.mydb.Dailyexpense" Data ="@MonthlyExpense" Style="height: 60vh; border-radius:25px;Width:100%;">
-            <GroupHeaderTemplate>
-                <@context.GroupDescriptor.GetTitle(): @(context.Date)/>
-            </GroupHeaderTemplate>
+        <RadzenDataGrid  AllowFiltering="true" FilterMode="FilterMode.CheckBoxList" AllowPaging="true" AllowSorting="true" @ref="@grid2" TItem ="Models.mydb.Dailyexpense" Data ="@MonthlyExpense" Style="height: 60vh; border-radius:25px;Width:100%;" AllowColumnResize=true>
             <Columns>
                 <RadzenDataGridColumn title="Note" TItem ="Models.mydb.Dailyexpense" Property="Key"></RadzenDataGridColumn>
-                <RadzenDataGridColumn title="Note" TItem ="Models.mydb.Dailyexpense" Property="Note"></RadzenDataGridColumn>
-                <RadzenDataGridColumn title="Total" TItem ="Models.mydb.Dailyexpense" Property="Expense"></RadzenDataGridColumn>
+                <RadzenDataGridColumn title="Note" TItem ="Models.mydb.Dailyexpense" Property="Note" Width="150px"></RadzenDataGridColumn>
+                <RadzenDataGridColumn title="Total" TItem ="Models.mydb.Dailyexpense" Property="Expense" Width="80px" FormatString="$ {0:N2}"></RadzenDataGridColumn>
             </Columns>
         </RadzenDataGrid>
     </RadzenCard>

@@ -1,41 +1,41 @@
-@page "/recipt-view"
+@page "/recipt-view"
+
 @attribute [Authorize]
 
 <PageTitle>ReciptView</PageTitle>
 
 <RadzenRow Style="margin-bottom: 3%;">
-    <RadzenCard style="Width:100%">
+    <RadzenCard style="Width:100%; background-color:#28282B; height:70px; border-radius:15px; padding-top:25px" >
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
             <RadzenRow AlignItems="AlignItems.Center">
-                <RadzenText Text="Date:" TextStyle="TextStyle.Overline" Style="font-size:xx-large"/>
-                <RadzenText Text="@Date" TextStyle="TextStyle.DisplayH5"/>
+                <RadzenText Text="ថ្ងៃទី:"  Style="font-size:xx-large; color:aliceblue; font-family:'Khmer OS Battambang"/>
+                <RadzenText Text="@Date" Style="font-size:xx-large; color:aliceblue; font-family:'Khmer OS Battambang"/>
             </RadzenRow>
             <RadzenRow AlignItems="AlignItems.Center" style="margin-left:10px">
-                <RadzenText Text="Plate:" TextStyle="TextStyle.Overline" Style="font-size:xx-large"/>
-                <RadzenText Text="@CustomerID" TextStyle="TextStyle.DisplayH5"/>
+                <RadzenText Text="ផ្លាកលេខ:" Style="font-size:xx-large; color:aliceblue; font-family:'Khmer OS Battambang"/>
+                <RadzenText Text="@CustomerID" Style="font-size:xx-large; color:aliceblue;font-family:'Khmer OS Battambang"/>
             </RadzenRow>
         </RadzenStack>
     </RadzenCard>
-    <RadzenDataGrid @ref="grid0" ColumnWidth="150px" AllowFiltering="false" Data="@Historyconnector" TItem="CHKS.Models.mydb.Historyconnector" GridLines="Radzen.DataGridGridLines.None" style="Height:45vh;">
+    <RadzenDataGrid @ref="grid0" AllowFiltering="false" Data="@Historyconnector" TItem="CHKS.Models.mydb.Historyconnector" GridLines="Radzen.DataGridGridLines.Horizontal" style="Height:45vh; border-radius:15px;" AllowColumnResize=true>
      <Columns>
-        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Product" Title="Name">
+        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Product" Title="Name" Width="350px" TextAlign="TextAlign.Center">
         </RadzenDataGridColumn>
-    <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Qty" Title="Qty">
-
+        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Qty" Title="Qty" FormatString="{0:N2}" Width="50px" TextAlign="TextAlign.Center">
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Inventory.Import" Title="Import" FormatString="${0:N2}" > 
+        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Inventory.Import" Title="Import" FormatString="${0:N2}" TextAlign="TextAlign.Center" Width="100px"> 
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Export" Title="Export" FormatString="${0:N2}">
+        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Export" Title="Export" FormatString="${0:N2}"TextAlign="TextAlign.Center" Width="100px">
             <EditTemplate Context="Historyconnector">
                 <RadzenNumeric style="display: block; width: 100%" @bind-Value="@Historyconnector.Export" Name="Export" />
             </EditTemplate>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Note" Title="Note">
+        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Note" Title="Note" TextAlign="TextAlign.Center" Width="200px">
             <EditTemplate Context="Historyconnector">
                 <RadzenTextBox style="display: block; width: 100%" @bind-Value="@Historyconnector.Note" Name="Note" />
             </EditTemplate>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn>
+        <RadzenDataGridColumn TextAlign="TextAlign.Center">
             <EditTemplate Context = "Historyconnector">
                 <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium"
                     style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"

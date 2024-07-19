@@ -99,3 +99,47 @@
     width:100%;
 }
 
+.Statistic-Info-Overview-Card{
+    background-color: #28282B; 
+    border-radius:15px ; 
+    height: 130px;
+    width: 20%;
+    min-width: fit-content;
+}
+
+.Statistic-Info-Overview-Card-RadzenStack{
+    min-width:fit-content; 
+    overflow: hidden;
+    min-height:fit-content;
+    height: 100%;
+}
+
+.Statistic-Info-Overview-Card-RadzenLabel{
+    align-self: flex-start;
+    font-size: medium; 
+    font-family:'Khmer OS Battambang';
+    color: lightgray;
+}
+
+.Statistic-Info-Overview-Card-RadzenText{
+    align-self: center;
+    font-family:'Khmer OS Battambang';
+    font-size:xx-large;
+    color:White;
+    margin-top: 5px;
+    width: max-content;
+}
+
+.Statistic-Setting-Card{
+    background-color: #28282B; 
+    border-radius:15px ; 
+    height: max-content;
+    width: 100%;
+    min-width: fit-content;
+}
+
+.Statistic-Setting-Card-RadzenLabel{
+    color: white;
+    font-family: 'Khmer OS Battambang';
+    font-size:larger
+}

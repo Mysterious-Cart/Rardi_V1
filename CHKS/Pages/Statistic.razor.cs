@@ -37,13 +37,15 @@ namespace CHKS.Pages
         protected IEnumerable<Models.mydb.History> Histories;
         protected IEnumerable<Models.mydb.History> TestHistories;
         protected IEnumerable<Models.mydb.Historyconnector> Historyconnectors;
+        protected IEnumerable<Models.mydb.Historyconnector> ProductWithoutImport;
         protected IEnumerable<Models.mydb.Dailyexpense> MonthlyExpense;
 
         protected RadzenDataGrid<Models.mydb.History> grid1;
         protected RadzenDataGrid<Models.mydb.Dailyexpense> grid2;
+        protected RadzenDataGrid<Models.mydb.Historyconnector> grid3;
 
-        protected static DateTime TimeEnd = DateTime.Now;
-        protected static DateTime? TimeStart = DateTime.Now.AddDays(-DateTime.Today.Day + 1);
+        protected static DateTime TimeEnd = DateTime.Today;
+        protected static DateTime? TimeStart = DateTime.Today.AddDays(-DateTime.Today.Day​ + 1);
 
         protected TimeSpan DateSelected = TimeEnd.Subtract(TimeStart.GetValueOrDefault().AddDays(-DateTime.Today.Day + 1));
 
@@ -53,6 +55,7 @@ namespace CHKS.Pages
         protected decimal? Total;
         protected decimal? ProductTotal = 0;
         protected decimal? ServiceTotal = 0;
+        protected decimal? ImportTotal = 0;
 
         [Inject]
         protected SecurityService Security { get; set; }
@@ -61,6 +64,7 @@ namespace CHKS.Pages
         {    
             await GetHistoryBaseOfChoosenDate();
             await GetMonthlyExpense();  
+            await GetProductWithoutImport();
 
         }
 
@@ -69,7 +73,7 @@ namespace CHKS.Pages
             List<Models.mydb.Dailyexpense> TempList = new();
             foreach(var Expense in MonthlyExpense.ToList()){
                 string[] temp = Expense.Key.Split(":");
-                if(TimeStart < DateTime.Parse(temp[0]) && DateTime.Parse(temp[0]) <= DateTime.Today){
+                if(TimeStart < DateTime.Parse(temp[0]) && DateTime.Parse(temp[0]) <= TimeEnd){
                     TempList.Add(Expense);
                 }
             }
@@ -83,6 +87,9 @@ namespace CHKS.Pages
         }  
 
         protected async Task GetAllNumber(){
+            ServiceTotal = 0;
+            ProductTotal = 0;
+            ImportTotal = 0;
             Historyconnectors = await MydbService.GetHistoryconnectors();
             Total = Histories.Sum(i => i.Total);
             foreach(var history in Histories.ToList()){
@@ -91,23 +98,69 @@ namespace CHKS.Pages
                 TempHisCon = TempHisCon.Where(i => i.CartId == history.CashoutDate);
                 ServiceTotal += TempHisCon.Sum(i => i.Product == "Service Charge"?i.Export:0);
                 ProductTotal += TempHisCon.Sum(i => i.Product != "Service Charge"?i.Export * i.Qty:0 );
+                ImportTotal += TempHisCon.Sum(i => i.Inventory.Import);
             }
         }
 
+        protected async Task GetProductWithoutImport(){
+            TimeStart = DateTime.Parse(TimeStart.GetValueOrDefault().ToString("dd/MM/yyyy"));
+            TimeEnd = DateTime.Parse(TimeEnd.ToString("dd/MM/yyyy"));
+            IEnumerable<Models.mydb.Historyconnector> TempHis = Historyconnectors;
+            List<Models.mydb.Historyconnector> TempList = new(); 
+            Console.WriteLine(TimeStart);
+            foreach(var item in TempHis){
+                char[] seperator = {':','('};
+                string[] Temp = item.CartId.Split(seperator,2);
+                
+                if(TimeStart <= DateTime.ParseExact(Temp[0],"dd/MM/yyyy",null) && DateTime.ParseExact(Temp[0],"dd/MM/yyyy",null) <= TimeEnd && item.Inventory.Import == 0 && item.Product != "Service Charge"){
+                    TempList.Add(item);
+                }
+                
+            }
+            ProductWithoutImport = TempList;
+        }
+
         protected async Task GetHistoryBaseOfChoosenDate(){
+            await GetMonthlyExpense();
             List<Models.mydb.History> tempHis = new();
             Histories = Enumerable.Empty<Models.mydb.History>();
             TestHistories = await MydbService.GetHistories();
             foreach(var i in TestHistories.ToList()){
                 char[] seperator = {':','('};
                 string[] Temp = i.CashoutDate.Split(seperator,2);
-                Console.WriteLine(Temp[0],Temp[1]);
+
                 if( TimeStart <= DateTime.ParseExact(Temp[0],"dd/MM/yyyy",null) && DateTime.ParseExact(Temp[0],"dd/MM/yyyy",null) <= TimeEnd){
                     tempHis.Add(i);
                 }
             }
             Histories = tempHis;
+            
             await GetAllNumber();
+            await GetProductWithoutImport();
+        }
+
+        protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.Historyconnector data)
+        {
+            await grid3.EditRow(data);
+        }
+
+         protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Historyconnector data)
+        {
+            await grid3.UpdateRow(data);
+            await GetProductWithoutImport();
+            await grid3.Reload();
+            
+        }
+
+        protected async Task CancelButtonClick(MouseEventArgs args, CHKS.Models.mydb.Historyconnector data)
+        {
+            grid3.CancelEditRow(data);
+            await MydbService.CancelHistoryconnectorChanges(data);
+        }
+
+        protected async Task GridRowUpdate(CHKS.Models.mydb.Historyconnector args)
+        {
+            await MydbService.UpdateHistoryconnector(args.Id, args);
         }
 
     }
