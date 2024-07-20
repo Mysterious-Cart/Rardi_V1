@@ -28,16 +28,6 @@ builder.Services.AddDbContext<CHKS.Data.mydbContext>(options =>
 {
     options.UseMySql(builder.Configuration.GetConnectionString("mydbConnection"), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("mydbConnection")));
 });
-builder.Services.AddScoped<CHKS.fordevService>();
-builder.Services.AddDbContext<CHKS.Data.fordevContext>(options =>
-{
-    options.UseMySql(builder.Configuration.GetConnectionString("fordevConnection"), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("fordevConnection")));
-});
-builder.Services.AddScoped<CHKS.fordevlocalService>();
-builder.Services.AddDbContext<CHKS.Data.fordevlocalContext>(options =>
-{
-    options.UseMySql(builder.Configuration.GetConnectionString("fordevlocalConnection"), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("fordevlocalConnection")));
-});
 builder.Services.AddHttpClient("CHKS").ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { UseCookies = false }).AddHeaderPropagation(o => o.Headers.Add("Cookie"));
 builder.Services.AddHeaderPropagation(o => o.Headers.Add("Cookie"));
 builder.Services.AddAuthentication();

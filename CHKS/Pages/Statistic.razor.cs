@@ -57,6 +57,11 @@ namespace CHKS.Pages
         protected decimal? ServiceTotal = 0;
         protected decimal? ImportTotal = 0;
 
+        protected decimal? TotalDollar = 0;
+        protected decimal? TotalBaht = 0;
+        protected decimal? TotalRiel = 0;
+        protected decimal? TotalBank = 0;
+
         [Inject]
         protected SecurityService Security { get; set; }
 
@@ -65,6 +70,7 @@ namespace CHKS.Pages
             await GetHistoryBaseOfChoosenDate();
             await GetMonthlyExpense();  
             await GetProductWithoutImport();
+            await GetTypeOfMoneyTotal();
 
         }
 
@@ -86,10 +92,24 @@ namespace CHKS.Pages
             await DialogService.OpenAsync<ReciptView>("", new Dictionary<string, object>{{"ID",args.CashoutDate}}, new DialogOptions{Width="50%", Height="70%"});
         }  
 
+        private bool showCashInfo = false;
+        private static string SubCardClass = "Statistic-Info-Overview-SubCard-Hide";
+        private void ShowHideCashInfo(){
+            if(showCashInfo == true){
+                showCashInfo = false;
+                SubCardClass = "Statistic-Info-Overview-SubCard-Hide";
+            }else{
+                showCashInfo=true;
+                SubCardClass = "Statistic-Info-Overview-SubCard-Show";
+            }
+        }
+
         protected async Task GetAllNumber(){
+
             ServiceTotal = 0;
             ProductTotal = 0;
             ImportTotal = 0;
+
             Historyconnectors = await MydbService.GetHistoryconnectors();
             Total = Histories.Sum(i => i.Total);
             foreach(var history in Histories.ToList()){
@@ -98,8 +118,17 @@ namespace CHKS.Pages
                 TempHisCon = TempHisCon.Where(i => i.CartId == history.CashoutDate);
                 ServiceTotal += TempHisCon.Sum(i => i.Product == "Service Charge"?i.Export:0);
                 ProductTotal += TempHisCon.Sum(i => i.Product != "Service Charge"?i.Export * i.Qty:0 );
-                ImportTotal += TempHisCon.Sum(i => i.Inventory.Import);
+                ImportTotal += TempHisCon.Sum(i => i.Inventory.Import * i.Qty);
             }
+            
+        }
+
+        protected async Task GetTypeOfMoneyTotal(){
+            TotalBaht = Histories.Sum(i => i.Baht);
+            TotalDollar = Histories.Sum(i => i.Dollar);
+            TotalRiel =  Histories.Sum(i => i.Riel);
+            TotalBank = Histories.Sum(i => i.Bank);
+            
         }
 
         protected async Task GetProductWithoutImport(){
@@ -112,7 +141,7 @@ namespace CHKS.Pages
                 char[] seperator = {':','('};
                 string[] Temp = item.CartId.Split(seperator,2);
                 
-                if(TimeStart <= DateTime.ParseExact(Temp[0],"dd/MM/yyyy",null) && DateTime.ParseExact(Temp[0],"dd/MM/yyyy",null) <= TimeEnd && item.Inventory.Import == 0 && item.Product != "Service Charge"){
+                if(TimeStart <= DateTime.ParseExact(Temp[0],"dd/MM/yyyy",null) && DateTime.ParseExact(Temp[0],"dd/MM/yyyy",null) <= TimeEnd && item.Product != "Service Charge" && (item.Inventory.Import == 0 || item.Inventory.Import == null) ){
                     TempList.Add(item);
                 }
                 
@@ -137,6 +166,7 @@ namespace CHKS.Pages
             
             await GetAllNumber();
             await GetProductWithoutImport();
+            await GetTypeOfMoneyTotal();
         }
 
         protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.Historyconnector data)

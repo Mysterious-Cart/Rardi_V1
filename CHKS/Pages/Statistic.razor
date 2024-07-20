@@ -11,35 +11,60 @@
 <RadzenStack class="AllPage" Orientation="Orientation.Horizontal">
 
     <RadzenStack Style="width: 80%">
-        <RadzenStack Orientation="Orientation.Horizontal" Style="overflow-x:scroll;">
+
+        <RadzenStack Orientation="Orientation.Horizontal" Style="overflow-x:scroll; overflow-y:hidden">
             <RadzenCard class="Statistic-Info-Overview-Card" >
                 <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Wrap="FlexWrap.NoWrap" class="Statistic-Info-Overview-Card-RadzenStack">
-                    <RadzenLabel Text="សរុប:" class="Statistic-Info-Overview-Card-RadzenLabel" />
-                    <RadzenText Text="@(Math.Round(Total.GetValueOrDefault(),2).ToString() + ' '+ '$')" class="Statistic-Info-Overview-Card-RadzenText"/>            
+                    <RadzenRow JustifyContent="JustifyContent.Center" style="width:100%; height:25px;">
+                        <RadzenLabel Text="សរុប:" class="RadzenLabel" />
+                        <RadzenButton Icon="info_outline" IconColor="White" Click="@ShowHideCashInfo" Style="background-color: transparent; border-radius:10px; margin-left:auto; margin-bottom:auto"/>
+                    </RadzenRow>
+                    <RadzenText Text="@(Math.Round(Total.GetValueOrDefault(),2).ToString() + ' '+ '$')" class="RadzenText"/>       
+                </RadzenStack>
+                
+            </RadzenCard>
+            <RadzenCard class="@SubCardClass" >
+                <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Left" class="RadzenStack" Gap="1px">
+                    <RadzenRow class="RadzenRow">
+                        <RadzenLabel Text="Bank: "/>  
+                        <RadzenText Text=@TotalBank.ToString() class="RadzenText" />
+                    </RadzenRow>
+                    <RadzenRow class="RadzenRow">
+                        <RadzenLabel Text="Dollar: "/>  
+                        <RadzenText Text="@TotalDollar.ToString()" class="RadzenText"/>
+                    </RadzenRow>
+                    <RadzenRow class="RadzenRow">
+                        <RadzenLabel Text="Baht: "/>  
+                        <RadzenText Text="@TotalBaht.ToString()" class="RadzenText" />
+                    </RadzenRow>
+                    <RadzenRow class="RadzenRow">
+                        <RadzenLabel Text="Riel: "/>  
+                        <RadzenText Text="@TotalRiel.ToString()" class="RadzenText" />
+                    </RadzenRow>
+                </RadzenStack>  
+            </RadzenCard>
+            <RadzenCard class="Statistic-Info-Overview-Card" >
+                <RadzenStack Orientation = "Orientation.Vertical" AlignItems = "AlignItems.End" Wrap="FlexWrap.NoWrap" class="RadzenStack">
+                    <RadzenLabel Text="សរុបតម្លៃដើម:" class="RadzenLabel" />
+                    <RadzenText Text="@(Math.Round(ImportTotal.GetValueOrDefault(),2).ToString() + ' '+ '$')" class="RadzenText"/>
                 </RadzenStack>
             </RadzenCard>
             <RadzenCard class="Statistic-Info-Overview-Card" >
-                <RadzenStack Orientation = "Orientation.Vertical" AlignItems = "AlignItems.End" Wrap="FlexWrap.NoWrap" class="Statistic-Info-Overview-Card-RadzenStack">
-                    <RadzenLabel Text="សរុបតម្លៃដើម:" class="Statistic-Info-Overview-Card-RadzenLabel" />
-                    <RadzenText Text="@(Math.Round(ImportTotal.GetValueOrDefault(),2).ToString() + ' '+ '$')" class="Statistic-Info-Overview-Card-RadzenText"/>
+                <RadzenStack Orientation = "Orientation.Vertical" AlignItems = "AlignItems.End" Wrap="FlexWrap.NoWrap" class="RadzenStack">
+                    <RadzenLabel Text="សរុបទំនេញ:" class="RadzenLabel"/>
+                    <RadzenText Text="@(Math.Round(ProductTotal.GetValueOrDefault(),2).ToString() + ' '+ '$')" class="RadzenText"/>
                 </RadzenStack>
             </RadzenCard>
             <RadzenCard class="Statistic-Info-Overview-Card" >
-                <RadzenStack Orientation = "Orientation.Vertical" AlignItems = "AlignItems.End" Wrap="FlexWrap.NoWrap" class="Statistic-Info-Overview-Card-RadzenStack">
-                    <RadzenLabel Text="សរុបទំនេញ:" class="Statistic-Info-Overview-Card-RadzenLabel"/>
-                    <RadzenText Text="@(Math.Round(ProductTotal.GetValueOrDefault(),2).ToString() + ' '+ '$')" class="Statistic-Info-Overview-Card-RadzenText"/>
-                </RadzenStack>
-            </RadzenCard>
-            <RadzenCard class="Statistic-Info-Overview-Card" >
-                <RadzenStack Orientation = "Orientation.Vertical" AlignItems = "AlignItems.End" Wrap="FlexWrap.NoWrap" class="Statistic-Info-Overview-Card-RadzenStack" >
-                    <RadzenLabel Text="សរុបសេវា:" class="Statistic-Info-Overview-Card-RadzenLabel"/>
-                    <RadzenText Text="@(Math.Round(ServiceTotal.GetValueOrDefault(),2).ToString() + ' '+ '$' )"   class="Statistic-Info-Overview-Card-RadzenText"/>        
+                <RadzenStack Orientation = "Orientation.Vertical" AlignItems = "AlignItems.End" Wrap="FlexWrap.NoWrap" class="RadzenStack" >
+                    <RadzenLabel Text="សរុបសេវា:" class="RadzenLabel"/>
+                    <RadzenText Text="@(Math.Round(ServiceTotal.GetValueOrDefault(),2).ToString() + ' '+ '$' )"   class="RadzenText"/>        
                 </RadzenStack>
             </RadzenCard>
             <RadzenCard class="Statistic-Info-Overview-Card">
-                <RadzenStack Orientation = "Orientation.Vertical" AlignItems = "AlignItems.End" Wrap="FlexWrap.NoWrap" class="Statistic-Info-Overview-Card-RadzenStack">
-                    <RadzenLabel Text="ចំណាយ:" class="Statistic-Info-Overview-Card-RadzenLabel"/>
-                    <RadzenText Text="@(Math.Round(MonthlyExpense.Sum(i => i.Expense).GetValueOrDefault()).ToString() + ' ' +'$')" class="Statistic-Info-Overview-Card-RadzenText"/>                
+                <RadzenStack Orientation = "Orientation.Vertical" AlignItems = "AlignItems.End" Wrap="FlexWrap.NoWrap" class="RadzenStack">
+                    <RadzenLabel Text="ចំណាយ:" class="RadzenLabel"/>
+                    <RadzenText Text="@(Math.Round(MonthlyExpense.Sum(i => i.Expense).GetValueOrDefault()).ToString() + ' ' +'$')" class="RadzenText"/>                
                 </RadzenStack>
             </RadzenCard>
         </RadzenStack>
@@ -47,9 +72,9 @@
         <RadzenCard class="Statistic-Setting-Card">
             <RadzenStack>
                 <RadzenStack Orientation="Orientation.Horizontal" Gap="10px" AlignItems="AlignItems.Center">
-                    <RadzenLabel Text="ពីថ្ងៃទី" Component="From" class="Statistic-Setting-Card-RadzenLabel"/>
+                    <RadzenLabel Text="ពីថ្ងៃទី" Component="From" class="RadzenLabel"/>
                     <RadzenDatePicker @bind-Value="@TimeStart" Name="From" DateFormat="dd/MM/yyyy" Max="@DateTime.Now" Change="@GetHistoryBaseOfChoosenDate" />
-                    <RadzenLabel Text="ដល់" Component="To" class="Statistic-Setting-Card-RadzenLabel"/>
+                    <RadzenLabel Text="ដល់" Component="To" class="RadzenLabel"/>
                     <RadzenDatePicker @bind-Value="@TimeEnd" InitialViewDate="@DateTime.Now" Name="To" DateFormat="dd/MM/yyyy" Max="@DateTime.Now" Change="@GetHistoryBaseOfChoosenDate"/>
                 </RadzenStack>
             </RadzenStack>

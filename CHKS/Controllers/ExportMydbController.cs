@@ -159,6 +159,20 @@ namespace CHKS.Controllers
             return ToExcel(ApplyQuery(await service.GetCarts(), Request.Query, false), fileName);
         }
 
+        [HttpGet("/export/mydb/cashbacks/csv")]
+        [HttpGet("/export/mydb/cashbacks/csv(fileName='{fileName}')")]
+        public async Task<FileStreamResult> ExportCashbacksToCSV(string fileName = null)
+        {
+            return ToCSV(ApplyQuery(await service.GetCashbacks(), Request.Query, false), fileName);
+        }
+
+        [HttpGet("/export/mydb/cashbacks/excel")]
+        [HttpGet("/export/mydb/cashbacks/excel(fileName='{fileName}')")]
+        public async Task<FileStreamResult> ExportCashbacksToExcel(string fileName = null)
+        {
+            return ToExcel(ApplyQuery(await service.GetCashbacks(), Request.Query, false), fileName);
+        }
+
         [HttpGet("/export/mydb/connectors/csv")]
         [HttpGet("/export/mydb/connectors/csv(fileName='{fileName}')")]
         public async Task<FileStreamResult> ExportConnectorsToCSV(string fileName = null)

@@ -36,6 +36,7 @@ namespace CHKS.Pages
 
         protected IEnumerable<CHKS.Models.mydb.History> History;
         protected IEnumerable<CHKS.Models.mydb.Historyconnector> Historyconnectors;
+        protected IEnumerable<Models.mydb.Cashback> Cashbacks;
         protected IEnumerable<Models.mydb.Dailyexpense> Dailyexpenses;
         protected CHKS.Models.mydb.Inventory Inventories;
 
@@ -49,9 +50,12 @@ namespace CHKS.Pages
         protected RadzenDataGrid<CHKS.Models.mydb.Historyconnector> grid1;
         protected RadzenDataGrid<CHKS.Models.mydb.History> grid0;
         protected RadzenDataGrid<Models.mydb.Dailyexpense> grid2;
+        protected RadzenDataGrid<Models.mydb.Cashback> grid3;
 
         protected override async Task OnInitializedAsync()
         {
+            Cashbacks = await mydbService.GetCashbacks();
+            Cashbacks = Cashbacks.Where(i => i.Key.Contains(DateTime.Now.ToString("dd/MM/yyyy")));
             Dailyexpenses = await mydbService.GetDailyexpenses();
             Dailyexpenses = Dailyexpenses.Where(i => i.Key.Contains(DateTime.Now.ToString("dd/MM/yyyy")));
             History = await mydbService.GetHistories();
@@ -66,6 +70,7 @@ namespace CHKS.Pages
             Total = History.Sum(i => i.Total).ToString() + " $";
             ExpenseTotal = Dailyexpenses.Sum(i => i.Expense).ToString() + " $";
         }
+
 
         protected async Task LoadNotImport(){
             if(changeDataMode==false ){
@@ -165,9 +170,63 @@ namespace CHKS.Pages
             }
         }
 
+        protected async Task AddBtnClickCashback(MouseEventArgs args)
+        {
+            await grid3.InsertRow(new Models.mydb.Cashback());
+        }
+
         protected async Task GridRowUpdate(CHKS.Models.mydb.Dailyexpense args)
         {
             await mydbService.UpdateDailyexpense(args.Key, args);
+        }
+
+
+        protected async Task GridDeleteButtonClick(MouseEventArgs args, CHKS.Models.mydb.Cashback data){
+            try{
+                if(await DialogService.Confirm("Are you sure?", "Important!", new ConfirmOptions{OkButtonText="Yes", CancelButtonText="No"})== true){
+                    await mydbService.DeleteCashback(data.Key);
+                    await grid3.Reload();
+                }
+            }catch(Exception exc){
+                
+            }
+        }
+
+        protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.Cashback data)
+        {
+            await grid3.EditRow(data);
+
+        }
+
+
+        protected async Task GridCreate(Models.mydb.Cashback data){
+            try{
+                data.Key = DateTime.Now.ToString("dd/MM/yyyy") + ":" + data.Name;
+                await mydbService.CreateCashback(data);
+                await grid3.Reload();
+            }catch(Exception exc){
+                if(exc.Message =="Item already available"){
+                    await DialogService.Alert("Apology, This expense already listed. Please choose a different name or update the already listed expense.","Important");
+                    await grid3.Reload();
+                }
+            }
+        }
+
+        protected async Task GridRowUpdate(CHKS.Models.mydb.Cashback args)
+        {
+            await mydbService.UpdateCashback(args.Key, args);
+        }
+
+        protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Cashback data)
+        {
+            await grid3.UpdateRow(data);
+
+        }
+
+        protected async Task CancelButtonClick(MouseEventArgs args, CHKS.Models.mydb.Cashback data)
+        {
+            grid3.CancelEditRow(data);
+            await mydbService.CancelCashbackChanges(data);
         }
 
     }

@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CHKS.Models.fordevlocal
+namespace CHKS.Models.mydb
 {
-    [Table("dailyexpense")]
-    public partial class Dailyexpense
+    [Table("cashback")]
+    public partial class Cashback
     {
-        [Required]
-        public string Note { get; set; }
-
-        public decimal? Expense { get; set; }
-
         [Key]
         [Required]
         public string Key { get; set; }
+
+        public string Name { get; set; }
+
+        public decimal? Amount { get; set; }
     }
 }

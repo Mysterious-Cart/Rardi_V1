@@ -1701,6 +1701,167 @@ namespace CHKS
             return itemToDelete;
         }
     
+        public async Task ExportCashbacksToExcel(Query query = null, string fileName = null)
+        {
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/cashbacks/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/cashbacks/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+        }
+
+        public async Task ExportCashbacksToCSV(Query query = null, string fileName = null)
+        {
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/cashbacks/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/cashbacks/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+        }
+
+        partial void OnCashbacksRead(ref IQueryable<CHKS.Models.mydb.Cashback> items);
+
+        public async Task<IQueryable<CHKS.Models.mydb.Cashback>> GetCashbacks(Query query = null)
+        {
+            var items = Context.Cashbacks.AsQueryable();
+
+
+            if (query != null)
+            {
+                if (!string.IsNullOrEmpty(query.Expand))
+                {
+                    var propertiesToExpand = query.Expand.Split(',');
+                    foreach(var p in propertiesToExpand)
+                    {
+                        items = items.Include(p.Trim());
+                    }
+                }
+
+                ApplyQuery(ref items, query);
+            }
+
+            OnCashbacksRead(ref items);
+
+            return await Task.FromResult(items);
+        }
+
+        partial void OnCashbackGet(CHKS.Models.mydb.Cashback item);
+        partial void OnGetCashbackByKey(ref IQueryable<CHKS.Models.mydb.Cashback> items);
+
+
+        public async Task<CHKS.Models.mydb.Cashback> GetCashbackByKey(string key)
+        {
+            var items = Context.Cashbacks
+                              .AsNoTracking()
+                              .Where(i => i.Key == key);
+
+ 
+            OnGetCashbackByKey(ref items);
+
+            var itemToReturn = items.FirstOrDefault();
+
+            OnCashbackGet(itemToReturn);
+
+            return await Task.FromResult(itemToReturn);
+        }
+
+        partial void OnCashbackCreated(CHKS.Models.mydb.Cashback item);
+        partial void OnAfterCashbackCreated(CHKS.Models.mydb.Cashback item);
+
+        public async Task<CHKS.Models.mydb.Cashback> CreateCashback(CHKS.Models.mydb.Cashback cashback)
+        {
+            OnCashbackCreated(cashback);
+
+            var existingItem = Context.Cashbacks
+                              .Where(i => i.Key == cashback.Key)
+                              .FirstOrDefault();
+
+            if (existingItem != null)
+            {
+               throw new Exception("Item already available");
+            }            
+
+            try
+            {
+                Context.Cashbacks.Add(cashback);
+                Context.SaveChanges();
+            }
+            catch
+            {
+                Context.Entry(cashback).State = EntityState.Detached;
+                throw;
+            }
+
+            OnAfterCashbackCreated(cashback);
+
+            return cashback;
+        }
+
+        public async Task<CHKS.Models.mydb.Cashback> CancelCashbackChanges(CHKS.Models.mydb.Cashback item)
+        {
+            var entityToCancel = Context.Entry(item);
+            if (entityToCancel.State == EntityState.Modified)
+            {
+              entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
+              entityToCancel.State = EntityState.Unchanged;
+            }
+
+            return item;
+        }
+
+        partial void OnCashbackUpdated(CHKS.Models.mydb.Cashback item);
+        partial void OnAfterCashbackUpdated(CHKS.Models.mydb.Cashback item);
+
+        public async Task<CHKS.Models.mydb.Cashback> UpdateCashback(string key, CHKS.Models.mydb.Cashback cashback)
+        {
+            OnCashbackUpdated(cashback);
+
+            var itemToUpdate = Context.Cashbacks
+                              .Where(i => i.Key == cashback.Key)
+                              .FirstOrDefault();
+
+            if (itemToUpdate == null)
+            {
+               throw new Exception("Item no longer available");
+            }
+                
+            var entryToUpdate = Context.Entry(itemToUpdate);
+            entryToUpdate.CurrentValues.SetValues(cashback);
+            entryToUpdate.State = EntityState.Modified;
+
+            Context.SaveChanges();
+
+            OnAfterCashbackUpdated(cashback);
+
+            return cashback;
+        }
+
+        partial void OnCashbackDeleted(CHKS.Models.mydb.Cashback item);
+        partial void OnAfterCashbackDeleted(CHKS.Models.mydb.Cashback item);
+
+        public async Task<CHKS.Models.mydb.Cashback> DeleteCashback(string key)
+        {
+            var itemToDelete = Context.Cashbacks
+                              .Where(i => i.Key == key)
+                              .FirstOrDefault();
+
+            if (itemToDelete == null)
+            {
+               throw new Exception("Item no longer available");
+            }
+
+            OnCashbackDeleted(itemToDelete);
+
+
+            Context.Cashbacks.Remove(itemToDelete);
+
+            try
+            {
+                Context.SaveChanges();
+            }
+            catch
+            {
+                Context.Entry(itemToDelete).State = EntityState.Unchanged;
+                throw;
+            }
+
+            OnAfterCashbackDeleted(itemToDelete);
+
+            return itemToDelete;
+        }
+    
         public async Task ExportConnectorsToExcel(Query query = null, string fileName = null)
         {
             navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/connectors/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/connectors/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);

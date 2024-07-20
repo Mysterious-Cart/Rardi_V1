@@ -5,19 +5,27 @@
 <PageTitle>ReciptView</PageTitle>
 
 <RadzenRow Style="margin-bottom: 3%;">
-    <RadzenCard style="Width:100%; background-color:#28282B; height:70px; border-radius:15px; padding-top:25px" >
+    <RadzenCard style="Width:100%; background-color:#28282B; height:110px; border-radius:15px; padding-top:25px" >
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
             <RadzenRow AlignItems="AlignItems.Center">
-                <RadzenText Text="ថ្ងៃទី:"  Style="font-size:xx-large; color:aliceblue; font-family:'Khmer OS Battambang"/>
-                <RadzenText Text="@Date" Style="font-size:xx-large; color:aliceblue; font-family:'Khmer OS Battambang"/>
+                <RadzenText Text="ថ្ងៃទី:"  Style="font-size:x-large; color:aliceblue; font-family:'Khmer OS Battambang"/>
+                <RadzenText Text="@Date" Style="font-size:x-large; color:aliceblue; font-family:'Khmer OS Battambang"/>
             </RadzenRow>
             <RadzenRow AlignItems="AlignItems.Center" style="margin-left:10px">
-                <RadzenText Text="ផ្លាកលេខ:" Style="font-size:xx-large; color:aliceblue; font-family:'Khmer OS Battambang"/>
-                <RadzenText Text="@CustomerID" Style="font-size:xx-large; color:aliceblue;font-family:'Khmer OS Battambang"/>
+                <RadzenText Text="ផ្លាកលេខ:" Style="font-size:x-large; color:aliceblue; font-family:'Khmer OS Battambang"/>
+                <RadzenText Text="@CustomerID" Style="font-size:x-large; color:aliceblue;font-family:'Khmer OS Battambang"/>
+            </RadzenRow>
+            <RadzenRow AlignItems="AlignItems.Center" style="margin-left:10px">
+                <RadzenText Text="ម៉ាកឡាន:" Style="font-size:x-large; color:aliceblue; font-family:'Khmer OS Battambang"/>
+                <RadzenText Text="@History.Car.Type" Style="font-size:x-large; color:aliceblue;font-family:'Khmer OS Battambang"/>
+            </RadzenRow>
+            <RadzenRow AlignItems="AlignItems.Center" style="margin-left:10px">
+                <RadzenText Text="លេខទូរសព្ទ:" Style="font-size:x-large; color:aliceblue; font-family:'Khmer OS Battambang"/>
+                <RadzenText Text="@History.Car.Phone" Style="font-size:x-large; color:aliceblue;font-family:'Khmer OS Battambang"/>
             </RadzenRow>
         </RadzenStack>
     </RadzenCard>
-    <RadzenDataGrid @ref="grid0" AllowFiltering="false" Data="@Historyconnector" TItem="CHKS.Models.mydb.Historyconnector" GridLines="Radzen.DataGridGridLines.Horizontal" style="Height:45vh; border-radius:15px;" AllowColumnResize=true>
+    <RadzenDataGrid @ref="grid0" AllowFiltering="false" Data="@Historyconnector" TItem="CHKS.Models.mydb.Historyconnector" GridLines="Radzen.DataGridGridLines.Horizontal" style="Height:35vh; border-radius:15px;" AllowColumnResize=true AllowPaging=false>
      <Columns>
         <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Product" Title="Name" Width="350px" TextAlign="TextAlign.Center">
         </RadzenDataGridColumn>
@@ -52,5 +60,12 @@
         
      </Columns>
     </RadzenDataGrid>
-
+    <RadzenCard style="Width:30%; background-color:#28282B; height:60px; border-radius:15px; padding-top:20px; margin-left:auto" >
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.End">
+            <RadzenRow style="width:fit-content; ">
+                <RadzenText Text="សរុប:"  Style="font-size:x-large; color:aliceblue; font-family:'Khmer OS Battambang'; margin-right:auto"/>
+                <RadzenText Text="@( '$'+ Math.Round(History.Total.GetValueOrDefault(),2).ToString())" Style="font-size:x-large; color:aliceblue; font-family:'Khmer OS Battambang'; margin-left:auto"/>
+            </RadzenRow>
+        </RadzenStack>
+    </RadzenCard>
 </RadzenRow>

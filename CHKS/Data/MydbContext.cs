@@ -114,6 +114,10 @@ namespace CHKS.Data
               .Property(p => p.Total)
               .HasPrecision(10,2);
 
+            builder.Entity<CHKS.Models.mydb.Cashback>()
+              .Property(p => p.Amount)
+              .HasPrecision(10,2);
+
             builder.Entity<CHKS.Models.mydb.Connector>()
               .Property(p => p.Qty)
               .HasPrecision(10,2);
@@ -207,6 +211,8 @@ namespace CHKS.Data
         public DbSet<CHKS.Models.mydb.Car> Cars { get; set; }
 
         public DbSet<CHKS.Models.mydb.Cart> Carts { get; set; }
+
+        public DbSet<CHKS.Models.mydb.Cashback> Cashbacks { get; set; }
 
         public DbSet<CHKS.Models.mydb.Connector> Connectors { get; set; }
 
