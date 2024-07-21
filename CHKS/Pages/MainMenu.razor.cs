@@ -35,7 +35,7 @@ namespace CHKS.Pages
 
 
         protected CHKS.Models.mydb.Car CustomerLists;
-        protected Models.mydb.Cart Customer = new(){Plate="", CartId=0, };
+        protected Models.mydb.Cart Customer = new();
 
         protected bool? SelectionState = null;//False for Customer Mode, True for Cart Modes
         protected bool Selection = false;//False for selecting, True for already selected
@@ -142,7 +142,7 @@ namespace CHKS.Pages
             
         }
 
-        protected async Task SelectCustomerFromExistingList(Models.mydb.Cart Cart){
+        protected async Task OpenCart(Models.mydb.Cart Cart){
             Customer.CartId = Cart.CartId;
             Customer.Plate = Cart.Plate;
             Customer.Car = Cart.Car;
@@ -171,7 +171,7 @@ namespace CHKS.Pages
         }
 
         protected async Task DeleteCustomer(){
-            if(await DialogService.Confirm("Are you sure?","Important!", new ConfirmOptions{OkButtonText="Yes", CancelButtonText="No"}) == true)
+            if(await DialogService.Confirm("តើអ្នកច្បាស់ដែរឫទេ?","សំខាន់!", new ConfirmOptions{OkButtonText="Yes", CancelButtonText="No"}) == true)
             {
                 if(Connectors != null){
                     await ClearAllProduct();
@@ -282,7 +282,7 @@ namespace CHKS.Pages
 
         protected async void ResetToDefault(){
 
-            Customer = new Models.mydb.Cart{Plate="N/A"};
+            Customer = new Models.mydb.Cart();
             SelectionState = null;
             Selection = false;
             Phone = "N/A";
