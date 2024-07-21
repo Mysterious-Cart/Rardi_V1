@@ -49,6 +49,9 @@ namespace CHKS.Pages
 
         protected TimeSpan DateSelected = TimeEnd.Subtract(TimeStart.GetValueOrDefault().AddDays(-DateTime.Today.Day + 1));
 
+        private bool showCashInfo = false;
+        private string SubCardClass = "Statistic-Info-Overview-SubCard-Hide";
+
         protected string StringType = "C";
         protected string Culture = "us-US";
 
@@ -90,11 +93,10 @@ namespace CHKS.Pages
 
         protected async Task OpenHistory(Models.mydb.History args){
             await DialogService.OpenAsync<ReciptView>("", new Dictionary<string, object>{{"ID",args.CashoutDate}}, new DialogOptions{Width="50%", Height="70%"});
+            await RefreshPage();
         }  
 
-        private bool showCashInfo = false;
-        private static string SubCardClass = "Statistic-Info-Overview-SubCard-Hide";
-        private void ShowHideCashInfo(){
+        private async Task ShowHideCashInfo(){
             if(showCashInfo == true){
                 showCashInfo = false;
                 SubCardClass = "Statistic-Info-Overview-SubCard-Hide";
@@ -149,6 +151,10 @@ namespace CHKS.Pages
             ProductWithoutImport = TempList;
         }
 
+        protected async Task RefreshPage(){
+            await GetHistoryBaseOfChoosenDate();
+        }
+
         protected async Task GetHistoryBaseOfChoosenDate(){
             await GetMonthlyExpense();
             List<Models.mydb.History> tempHis = new();
@@ -179,6 +185,7 @@ namespace CHKS.Pages
             await grid3.UpdateRow(data);
             await GetProductWithoutImport();
             await grid3.Reload();
+            await RefreshPage();
             
         }
 

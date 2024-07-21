@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.VisualBasic.CompilerServices;
 using Radzen;
 using Radzen.Blazor;
+using System.Globalization;
 
 namespace CHKS.Pages
 {
@@ -69,6 +70,30 @@ namespace CHKS.Pages
         protected async Task GetAllNumberForToday(){
             Total = History.Sum(i => i.Total).ToString() + " $";
             ExpenseTotal = Dailyexpenses.Sum(i => i.Expense).ToString() + " $";
+        }
+
+        private CultureInfo DollarSign = new CultureInfo("us-US");
+        private CultureInfo BahtSign = new CultureInfo("kh-KH");
+        private CultureInfo RielSign = new CultureInfo("th-TH");
+        protected string PaymentType;
+        protected async Task GetPaymentTypeOfHistory(){
+            foreach(var Customer in History){
+                if(Customer.Baht != 0){
+                    
+                }
+
+                if(Customer.Riel != 0){
+                    
+                }
+
+                if(Customer.Dollar != 0){
+                    
+                }
+
+                if(Customer.Bank != 0){
+                    
+                }
+            }
         }
 
 

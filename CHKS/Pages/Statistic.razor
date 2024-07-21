@@ -8,36 +8,42 @@
 
 <PageTitle>Statistic</PageTitle>
 
-<RadzenStack class="AllPage" Orientation="Orientation.Horizontal">
+<RadzenStack Orientation="Orientation.Horizontal">
 
     <RadzenStack Style="width: 80%">
 
         <RadzenStack Orientation="Orientation.Horizontal" Style="overflow-x:scroll; overflow-y:hidden">
             <RadzenCard class="Statistic-Info-Overview-Card" >
-                <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Wrap="FlexWrap.NoWrap" class="Statistic-Info-Overview-Card-RadzenStack">
+                <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Wrap="FlexWrap.NoWrap" class="RadzenStack">
+                    <RadzenLabel Text="ប្រាក់ចំណេញ:" class="RadzenLabel" />
+                    <RadzenText Text="@(Math.Round(((ProductTotal-ImportTotal) + ServiceTotal).GetValueOrDefault(),2).ToString() + ' ' +'$')" class="RadzenText"/>       
+                </RadzenStack>
+            </RadzenCard>
+            <RadzenCard class="Statistic-Info-Overview-Card" >
+                <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Wrap="FlexWrap.NoWrap" class="RadzenStack">
                     <RadzenRow JustifyContent="JustifyContent.Center" style="width:100%; height:25px;">
                         <RadzenLabel Text="សរុប:" class="RadzenLabel" />
                         <RadzenButton Icon="info_outline" IconColor="White" Click="@ShowHideCashInfo" Style="background-color: transparent; border-radius:10px; margin-left:auto; margin-bottom:auto"/>
                     </RadzenRow>
                     <RadzenText Text="@(Math.Round(Total.GetValueOrDefault(),2).ToString() + ' '+ '$')" class="RadzenText"/>       
                 </RadzenStack>
-                
             </RadzenCard>
+
             <RadzenCard class="@SubCardClass" >
                 <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Left" class="RadzenStack" Gap="1px">
-                    <RadzenRow class="RadzenRow">
+                    <RadzenRow style="width:100%">
                         <RadzenLabel Text="Bank: "/>  
                         <RadzenText Text=@TotalBank.ToString() class="RadzenText" />
                     </RadzenRow>
-                    <RadzenRow class="RadzenRow">
+                    <RadzenRow style="width:100%">
                         <RadzenLabel Text="Dollar: "/>  
                         <RadzenText Text="@TotalDollar.ToString()" class="RadzenText"/>
                     </RadzenRow>
-                    <RadzenRow class="RadzenRow">
+                    <RadzenRow style="width:100%">
                         <RadzenLabel Text="Baht: "/>  
                         <RadzenText Text="@TotalBaht.ToString()" class="RadzenText" />
                     </RadzenRow>
-                    <RadzenRow class="RadzenRow">
+                    <RadzenRow style="width:100%">
                         <RadzenLabel Text="Riel: "/>  
                         <RadzenText Text="@TotalRiel.ToString()" class="RadzenText" />
                     </RadzenRow>
@@ -136,7 +142,7 @@
     <RadzenCard Style=" width: 25%; height: 90dvh ; margin-right:auto">
         <RadzenDataGrid  AllowFiltering="true" FilterMode="FilterMode.CheckBoxList" AllowPaging="true" AllowSorting="true" @ref="@grid2" TItem ="Models.mydb.Dailyexpense" Data ="@MonthlyExpense" Style="height: 60vh; border-radius:25px;Width:100%;" AllowColumnResize=true>
             <Columns>
-                <RadzenDataGridColumn title="Note" TItem ="Models.mydb.Dailyexpense" Property="Key"></RadzenDataGridColumn>
+                <RadzenDataGridColumn title="Date" TItem ="Models.mydb.Dailyexpense" Property="Key"></RadzenDataGridColumn>
                 <RadzenDataGridColumn title="Note" TItem ="Models.mydb.Dailyexpense" Property="Note" Width="150px"></RadzenDataGridColumn>
                 <RadzenDataGridColumn title="Total" TItem ="Models.mydb.Dailyexpense" Property="Expense" Width="80px" FormatString="$ {0:N2}"></RadzenDataGridColumn>
             </Columns>

@@ -197,3 +197,35 @@
     font-family: 'Khmer OS Battambang';
     font-size:larger
 }
+
+.Daily-Info-Overview-Card{
+    background-color: #28282B; 
+    border-radius:15px ; 
+    height: 130px;
+    width: 20%;
+    min-width: fit-content;
+    z-index: 1;
+}
+
+.Daily-Info-Overview-Card .RadzenLabel{
+    align-self: flex-start;
+    font-size: medium; 
+    font-family:'Khmer OS Battambang';
+    color: lightgray;
+}
+
+.Daily-Info-Overview-Card .RadzenText{
+    align-self: center;
+    font-family:'Khmer OS Battambang';
+    font-size:xx-large;
+    color:White;
+    margin-top: 5px;
+    width: max-content;
+}
+
+.Daily-Info-Overview-Card .RadzenStack{
+    min-width:fit-content; 
+    overflow: hidden;
+    min-height:fit-content;
+    height: 100%;
+}

@@ -7,43 +7,25 @@
     <link href="css/Page.css" rel="stylesheet"/>
 </head>
 
-<RadzenStack Orientation="Orientation.Horizontal" class="AllPage">
+<RadzenStack Orientation="Orientation.Horizontal">
     <RadzenStack Style="width: 80%;">
-        <RadzenRow AlignItems="AlignItems.Center" Style="margin-bottom: 25; ">
-            <RadzenCard Style="width:100%; background-color:#28282B; border-radius:15px"  >
-                <RadzenStack Orientation = "Orientation.Horizontal" AlignItems = "AlignItems.Center" Gap="20px">
-                    <RadzenText Text="ទិន្នន័យប្រចាំថ្ងៃ"  style=" Margin-right:15px;margin-top:10px; font-size:xx-large; font-family:'Khmer OS Battambang'; color:white"/>
-                    <RadzenText Text="សរុប:"  style="font-size:x-large;margin-top:30px; font-family:'Khmer OS Battambang';color:white"/>
-                    <RadzenText Text=@Total  Style="Margin-right:15px; margin-top:30px; font-size:xx-large; font-family:'Khmer OS Battambang';color:white" />
-      
-                    <RadzenText Text="ចំណាយសរុប:"  style="font-size:x-large; margin-top:30px;font-family:'Khmer OS Battambang';color:white"/>
-                    <RadzenText Text="@ExpenseTotal"  Style="Margin-right:15p; margin-top:30px; font-size:xx-large;font-family:'Khmer OS Battambang';color:white"/>                 
+        <RadzenStack AlignItems="AlignItems.Center" Orientation="Orientation.Horizontal" >
+            <RadzenCard class="Daily-Info-Overview-Card">
+                <RadzenStack class="RadzenStack">
+                        <RadzenLabel Text="សរុប:"  class="RadzenLabel"/>
+                        <RadzenText Text=@Total  class="RadzenText" />
                 </RadzenStack>
-                <RadzenText Text="@dates" Style="margin-top:20px;font-family:'Khmer OS Battambang'; color:white"/>
             </RadzenCard>
-        </RadzenRow>
-        
-
-        @if(NoEmptyImport == false)
-        {
-            <RadzenRow>
-                <RadzenStack AlignItems="AlignItems.End" Orientation="Orientation.Horizontal" Style="Width:100%;">
-                    <RadzenButton Icon="priority_high" ButtonStyle="ButtonStyle.Danger" style="border-radius:5px" Click="@LoadNotImport"/>
-                    <RadzenText Text="សំខាន់! មានទំនិញខ្លះខ្វាស់កាតតម្លៃទិញចូល" Style="font-size: xx-large;font-family:'Khmer OS Battambang"/>
+            <RadzenCard class="Daily-Info-Overview-Card">
+                <RadzenStack class="RadzenStack">
+                    <RadzenLabel Text="ចំណាយសរុប:"  class="RadzenLabel"/>
+                    <RadzenText Text="@ExpenseTotal"  class="RadzenText"/>
                 </RadzenStack>
-            </RadzenRow>
-        }else{
-            <RadzenRow>
-                <RadzenStack AlignItems="AlignItems.End" Orientation="Orientation.Horizontal" Style="Width:100%;">
-                    <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" style="border-radius:5px"/>
-                    <RadzenText Text="All data are correct. No error detected."/>
-                </RadzenStack>
-            </RadzenRow>
-        }
-        <RadzenRow Style="width: 100%;">
+            </RadzenCard>
+        </RadzenStack>
             <RadzenStack Orientation="Orientation.Horizontal">
                 <RadzenCard style="height: 100%; width:100%;">
-                    <RadzenDataGrid @ref="grid0" ColumnWidth="100px"   AllowFiltering="true" FilterMode="FilterMode.Advanced" style="height:65vh; min-width:fit-content"
+                    <RadzenDataGrid @ref="grid0" ColumnWidth="100px"   AllowFiltering="true" FilterMode="FilterMode.Advanced" style="height:70dvh; min-width:fit-content"
                         Data="@History" TItem="CHKS.Models.mydb.History" RowSelect="@OpenHistory">
                         <Columns>
                             <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="CashoutDate" Title="ថ្ងៃគិតលុយ">
@@ -66,45 +48,42 @@
                         </Columns>
                     </RadzenDataGrid>
                 </RadzenCard>
-                @if(changeDataMode == true){
-                    <RadzenCard Style="width: 50%;">
-                        <RadzenDataGrid @ref="grid1" ColumnWidth="100px" AllowFiltering="false" AllowPaging="false" AllowSorting="true" PageSizeOptions=@(new int[]{5, 10, 20, 30})
-                            Data="@Historyconnectors" TItem="CHKS.Models.mydb.Historyconnector" GridLines="Radzen.DataGridGridLines.None" >
-                            <Columns>
-                                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Product" Title="ឈ្មេាះទំនេញ">
-                                </RadzenDataGridColumn>
-                                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Qty" Title="ចំនួន">
-                                </RadzenDataGridColumn>
-                                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Inventory.Import" Title="តម្លៃទិញ">
-                                    <EditTemplate Context="Historyconnector">
-                                        <RadzenNumeric style="display: block; width: 100%" @bind-Value="@Historyconnector.Inventory.Import" Name="Import" />
-                                    </EditTemplate>
-                                </RadzenDataGridColumn>
-                                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Historyconnector.Export" Title="តម្លៃលក់">
-                                    <EditTemplate Context="Historyconnector">
-                                        <RadzenNumeric style="display: block; width: 100%" @bind-Value="@Historyconnector.Export" Name="Export" />
-                                    </EditTemplate>
-                                </RadzenDataGridColumn>
-                                <RadzenDataGridColumn>
-                                    <EditTemplate Context = "Historyconnector">
-                                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium"
-                                            style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
-                                            Click=@(args => SaveButtonClick(args, Historyconnector)) @onclick:stopPropagation="true" />
-                                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
-                                            Click=@(args => CancelButtonClick(args, Historyconnector)) @onclick:stopPropagation="true" />
-                                    </EditTemplate>
-                                    <Template Context="Historyconnector">
-                                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
-                                            style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
-                                            Click=@(args => EditButtonClick(args, Historyconnector)) @onclick:stopPropagation="true" />
-                                    </Template>
-                                </RadzenDataGridColumn>
-                            </Columns>
-                        </RadzenDataGrid>
-                    </RadzenCard>
-                }
+                <RadzenCard Style="width: 50%;">
+                    <RadzenDataGrid @ref="grid1" AllowFiltering="false" AllowPaging="false" AllowColumnResize=true
+                        Data="@Historyconnectors" TItem="CHKS.Models.mydb.Historyconnector" GridLines="Radzen.DataGridGridLines.None" >
+                        <Columns>
+                            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Product" Title="ឈ្មេាះទំនេញ" Width="100px">
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Qty" Title="ចំនួន">
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Inventory.Import" Title="តម្លៃទិញ">
+                                <EditTemplate Context="Historyconnector">
+                                    <RadzenNumeric style="display: block; width: 100%" @bind-Value="@Historyconnector.Inventory.Import" Name="Import" />
+                                </EditTemplate>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Historyconnector.Export" Title="តម្លៃលក់">
+                                <EditTemplate Context="Historyconnector">
+                                    <RadzenNumeric style="display: block; width: 100%" @bind-Value="@Historyconnector.Export" Name="Export" />
+                                </EditTemplate>
+                            </RadzenDataGridColumn>
+                            <RadzenDataGridColumn>
+                                <EditTemplate Context = "Historyconnector">
+                                    <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                        style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
+                                        Click=@(args => SaveButtonClick(args, Historyconnector)) @onclick:stopPropagation="true" />
+                                    <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                        Click=@(args => CancelButtonClick(args, Historyconnector)) @onclick:stopPropagation="true" />
+                                </EditTemplate>
+                                <Template Context="Historyconnector">
+                                    <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                        style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
+                                        Click=@(args => EditButtonClick(args, Historyconnector)) @onclick:stopPropagation="true" />
+                                </Template>
+                            </RadzenDataGridColumn>
+                        </Columns>
+                    </RadzenDataGrid>
+                </RadzenCard>
             </RadzenStack>
-        </RadzenRow>
     </RadzenStack>
     <RadzenStack Orientation="Orientation.Vertical">
         <RadzenCard Style=" width:20%; min-width:fit-content; height:50%; padding:10px;" >

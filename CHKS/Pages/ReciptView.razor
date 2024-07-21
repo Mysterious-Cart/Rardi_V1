@@ -25,7 +25,8 @@
             </RadzenRow>
         </RadzenStack>
     </RadzenCard>
-    <RadzenDataGrid @ref="grid0" AllowFiltering="false" Data="@Historyconnector" TItem="CHKS.Models.mydb.Historyconnector" GridLines="Radzen.DataGridGridLines.Horizontal" style="Height:35vh; border-radius:15px;" AllowColumnResize=true AllowPaging=false>
+    <RadzenDataGrid @ref="grid0" AllowFiltering="false" Data="@Historyconnector" TItem="CHKS.Models.mydb.Historyconnector" GridLines="Radzen.DataGridGridLines.Horizontal" style="Height:35vh; border-radius:15px;" 
+    AllowColumnResize=true AllowPaging=false RowUpdate="@GridRowUpdate">
      <Columns>
         <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Product" Title="Name" Width="350px" TextAlign="TextAlign.Center">
         </RadzenDataGridColumn>

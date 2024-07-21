@@ -86,5 +86,11 @@ namespace CHKS.Pages
             await MydbService.CancelHistoryconnectorChanges(data);
         }
 
+        protected async Task GridRowUpdate(CHKS.Models.mydb.Historyconnector args)
+        {
+            await MydbService.UpdateHistoryconnector(args.Id, args);
+            
+        }
+
     }
 }
