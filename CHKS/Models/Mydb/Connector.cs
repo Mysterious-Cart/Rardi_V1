@@ -11,8 +11,6 @@ namespace CHKS.Models.mydb
         [Required]
         public int CartId { get; set; }
 
-        public Cart Cart { get; set; }
-
         [Required]
         public string Product { get; set; }
 
@@ -21,17 +19,15 @@ namespace CHKS.Models.mydb
         [Required]
         public decimal Qty { get; set; }
 
+        [Required]
         public string Note { get; set; }
 
         [Key]
         [Required]
         public string GeneratedKey { get; set; }
 
-        [Required]
-        public decimal Total { get; set; }
+        public decimal? PriceOverwrite { get; set; }
 
         public decimal? Discount { get; set; }
-
-        public decimal? PriceOverwrite { get; set; }
     }
 }

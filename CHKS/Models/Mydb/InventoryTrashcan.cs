@@ -5,25 +5,21 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CHKS.Models.mydb
 {
-    [Table("inventory_trashcan")]
-    public partial class InventoryTrashcan
+    [Table("inventorytrashcan")]
+    public partial class Inventorytrashcan
     {
         [Key]
-        [Column("date")]
         [Required]
         public string Date { get; set; }
 
         public string Name { get; set; }
 
-        public decimal? Stock { get; set; }
-
         public decimal? Import { get; set; }
 
         public decimal? Export { get; set; }
 
-        public string Barcode { get; set; }
+        public decimal? Stock { get; set; }
 
-        [Column("inventory_trashcancol")]
-        public string InventoryTrashcancol { get; set; }
+        public long? Barcode { get; set; }
     }
 }

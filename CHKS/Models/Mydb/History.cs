@@ -12,20 +12,17 @@ namespace CHKS.Models.mydb
         [Required]
         public string CashoutDate { get; set; }
 
-        [Required]
         public string Plate { get; set; }
 
-        public Car Car { get; set; }
-
         public decimal? Total { get; set; }
-
-        public decimal? Bank { get; set; }
 
         public decimal? Dollar { get; set; }
 
         public decimal? Baht { get; set; }
 
         public decimal? Riel { get; set; }
+
+        public decimal? Bank { get; set; }
 
         public ICollection<Historyconnector> Historyconnectors { get; set; }
     }

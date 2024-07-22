@@ -35,7 +35,7 @@ namespace CHKS.Pages
 
 
         protected CHKS.Models.mydb.Car CustomerLists;
-        protected Models.mydb.Cart Customer = new();
+        protected Models.mydb.Cart Customer = new(){Plate=null};
 
         protected bool? SelectionState = null;//False for Customer Mode, True for Cart Modes
         protected bool Selection = false;//False for selecting, True for already selected
@@ -81,13 +81,6 @@ namespace CHKS.Pages
             Retotal();
         }
 
-
-
-        protected async Task OnAfterRenderAsync()
-        {
-            await Expand();
-        }
-
         protected async void Retotal(){
             IEnumerable<Models.mydb.History> history = await MydbService.GetHistories();
             history = history.Where(i => i.CashoutDate.Contains(today));
@@ -115,51 +108,53 @@ namespace CHKS.Pages
         }
 
         protected async Task CreateCustomer(){
-            var result = await DialogService.OpenAsync<Cars>("CustomerList",new Dictionary<string, object>{}, new DialogOptions{Width="60%", Height="80%"});
-            if(result != null){
-                var Id = await DialogService.OpenAsync<SingleInputPopUp>("បង្កើតលេខតំណាង", new Dictionary<string, object>{{"Info",new string[]{"Cart ID"}}}, new DialogOptions{Width="450px"});
-                if(Id != null && Id is int)
-                {
-                    Customer.CartId = Id;
-                    Customer.Plate = result.Plate;
-                    Phone = result.Phone;
-                    CarType = result.Type;
-                    Customer.Total = 0;
-                    SelectionState = false;
-                    Selection = true;
-                    VisibilityOfServiceCharge = true;
-                    try{
-                        await MydbService.CreateCart(Customer);
-                    }catch(Exception exc){
-                        if(exc.Message == "Item already available"){
-                            await DialogService.Alert("This cart ID already exist.","Important");
-                            ResetToDefault();
-                            VisibilityOfServiceCharge = false;
+            if(Customer.Plate == null){
+                var result = await DialogService.OpenAsync<Cars>("CustomerList",new Dictionary<string, object>{}, new DialogOptions{Width="60%", Height="80%"});
+                if(result != null){
+                    var Id = await DialogService.OpenAsync<SingleInputPopUp>("បង្កើតលេខតំណាង", new Dictionary<string, object>{{"Info",new string[]{"Cart ID"}}}, new DialogOptions{Width="450px"});
+                    if(Id != null && Id is int)
+                    {
+                        Customer.CartId = Id;
+                        Customer.Plate = result.Plate;
+                        Phone = result.Phone;
+                        CarType = result.Type;
+                        Customer.Total = 0;
+                        SelectionState = false;
+                        Selection = true;
+                        VisibilityOfServiceCharge = true;
+                        try{
+                            await MydbService.CreateCart(Customer);
+                        }catch(Exception exc){
+                            if(exc.Message == "Item already available"){
+                                await DialogService.Alert("This cart ID already exist.","Important");
+                                ResetToDefault();
+                                VisibilityOfServiceCharge = false;
+                            }
                         }
                     }
                 }
-                await SwitchDisplayMode();
             }
             
         }
 
         protected async Task OpenCart(Models.mydb.Cart Cart){
-            Customer.CartId = Cart.CartId;
-            Customer.Plate = Cart.Plate;
-            Customer.Car = Cart.Car;
+            if(Customer.Plate == null){
+                Customer.CartId = Cart.CartId;
+                Customer.Plate = Cart.Plate;
+                Customer.Car = Cart.Car;
 
 
-            Phone = Customer.Car.Phone;
-            CarType = Customer.Car.Type;
+                Phone = Customer.Car.Phone;
+                CarType = Customer.Car.Type;
 
-            SelectionState = true;
-            Selection = true;
+                SelectionState = true;
+                Selection = true;
 
-            Connectors = await MydbService.GetConnectors(new Query{Filter=$@"i => i.CartId == (@0)", FilterParameters = new object[] {Customer.CartId}});
-            VisibilityOfServiceCharge = true;
-            Customer.Total = Connectors.Sum(i => i.Total);        
-            CalculateTotal();   
-            await SwitchDisplayMode();        
+                Connectors = await MydbService.GetConnectors(new Query{Filter=$@"i => i.CartId == (@0)", FilterParameters = new object[] {Customer.CartId}});
+                VisibilityOfServiceCharge = true;
+                Customer.Total = Connectors.Sum(i => i.Total);        
+                CalculateTotal();   
+            }   
         }
 
         protected async Task ResetTotal(){
@@ -292,16 +287,15 @@ namespace CHKS.Pages
 
             Connectors = Enumerable.Empty<CHKS.Models.mydb.Connector>();
             VisibilityOfServiceCharge = false;
-            await SwitchDisplayMode();
 
         }
 
         protected async Task AddItemtoCart(Models.mydb.Inventory Product)
         {
             if(Customer.Plate != null){
-                Console.WriteLine("havecustomer");
-                if(Product.Stock!=0){
-                    var Qty = await DialogService.OpenAsync<SingleInputPopUp>(Product.Name, new Dictionary<string, object>{{"Info",new string[]{"Qty", Product.Export.ToString()}}}, new DialogOptions{Width="13%"});
+                IEnumerable<Models.mydb.Connector> TempConnector = Connectors.Where(i => i.CartId == Customer.CartId);
+                if(Product.Stock!=0 && TempConnector == Enumerable.Empty<Models.mydb.Connector>()){
+                    var Qty = await DialogService.OpenAsync<SingleInputPopUp>(Product.Name, new Dictionary<string, object>{{"Info",new string[]{"Qty", Product.Export.ToString()}}}, new DialogOptions{Width="250px"});
 
                     if(Qty is Array && Qty[0] != null && Qty[0] is decimal && Qty[0] <= Product.Stock){
                         Models.mydb.Inventory Temp = new(){};
@@ -337,14 +331,15 @@ namespace CHKS.Pages
                             Connectors = await MydbService.GetConnectors(new Query{Filter=$@"i => i.CartId == (@0)", FilterParameters = new object[] {Customer.CartId}});
                             Customer.Total = Connectors.Sum(i => i.Total);
                             await MydbService.UpdateCart(Customer.CartId, Customer);
-                        }
-                        
+                        }  
                     }else if(Qty is Array && Qty[0] != null && Qty[0] > Product.Stock){
                         await DialogService.Alert("Too much! Not available In stock. Have Left: " + Product.Stock + ".","Warning");
-                    }else if(Product.Stock == 0){
-                        await DialogService.Alert("Not available In stock");
                     }
-                
+
+                }else if(Product.Stock == 0){
+                    await DialogService.Alert("Not available In stock");
+                }else{
+                    
                 }
             
                 
@@ -469,21 +464,6 @@ namespace CHKS.Pages
                 }
             }catch(Exception exc){
                 
-            }
-        }
-
-        bool DMode = false; //false is hide cartlist. true is display cartlist
-        string Cartpicker = "MainMenu-CartPicker-Display";
-        string Cartlist = "MainMenu-CartList-Option-Hide";
-        protected async Task SwitchDisplayMode(){
-            if(DMode == false){
-                DMode = true;
-                Cartlist = "MainMenu-CartList-Option-Display";
-                Cartpicker = "MainMenu-CartPicker-Hide";
-            }else{
-                DMode = false;
-                Cartlist = "MainMenu-CartList-Option-Hide";
-                Cartpicker = "MainMenu-CartPicker-Display";
             }
         }
 

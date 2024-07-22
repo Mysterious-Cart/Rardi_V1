@@ -12,20 +12,17 @@ namespace CHKS.Models.mydb
         [Required]
         public string Name { get; set; }
 
-        [Required]
-        public decimal Stock { get; set; }
+        public decimal? Stock { get; set; }
 
         public decimal? Import { get; set; }
 
         public decimal? Export { get; set; }
 
-        public string Barcode { get; set; }
-
         [Column("Normalize_Name")]
         public string NormalizeName { get; set; }
 
-        public ICollection<Connector> Connectors { get; set; }
+        public long? Barcode { get; set; }
 
-        public ICollection<Historyconnector> Historyconnectors { get; set; }
+        public ICollection<Connector> Connectors { get; set; }
     }
 }

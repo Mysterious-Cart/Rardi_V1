@@ -19,7 +19,5 @@ namespace CHKS.Models.mydb
         public int CartId { get; set; }
 
         public decimal? Total { get; set; }
-
-        public ICollection<Connector> Connectors { get; set; }
     }
 }
