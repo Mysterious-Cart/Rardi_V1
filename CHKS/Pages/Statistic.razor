@@ -12,11 +12,12 @@
 
     <RadzenStack Style="width: 80%">
 
-        <RadzenStack Orientation="Orientation.Horizontal" Style="overflow-x:scroll; overflow-y:hidden">
-            <RadzenCard class="Statistic-Info-Overview-Card" >
-                <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Wrap="FlexWrap.NoWrap" class="RadzenStack">
+        <RadzenStack Orientation="Orientation.Horizontal" Style="overflow-x:scroll; overflow-y:hidden" AlignItems="AlignItems.Center">
+            <RadzenCard class="Statistic-Info-Overview-Card" Style="height: 150px;" >
+                <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Wrap="FlexWrap.NoWrap" class="RadzenStack" Style="height:300px">
                     <RadzenLabel Text="ប្រាក់ចំណេញ:" class="RadzenLabel" />
-                    <RadzenText Text="@(Math.Round(((ProductTotal-ImportTotal) + ServiceTotal).GetValueOrDefault(),2).ToString() + ' ' +'$')" class="RadzenText"/>       
+                    <RadzenText Text="@(Math.Round((((ProductTotal-ImportTotal) + ServiceTotal)-(MonthlyExpense.Sum(i => i.Expense).GetValueOrDefault())).GetValueOrDefault(),2).ToString() + ' ' +'$')" class="RadzenText"/>
+                    <RadzenText Text = "((សរុបទំនេញ - សរុបតម្លៃដើម) - ចំណាយ)) + សេវាសរុប" style="font-size: small; color:gray; "/>
                 </RadzenStack>
             </RadzenCard>
             <RadzenCard class="Statistic-Info-Overview-Card" >
@@ -41,11 +42,11 @@
                     </RadzenRow>
                     <RadzenRow style="width:100%">
                         <RadzenLabel Text="Baht: "/>  
-                        <RadzenText Text="@TotalBaht.ToString()" class="RadzenText" />
+                        <RadzenText Text="@Math.Round(TotalBaht.GetValueOrDefault()).ToString()" class="RadzenText" />
                     </RadzenRow>
                     <RadzenRow style="width:100%">
                         <RadzenLabel Text="Riel: "/>  
-                        <RadzenText Text="@TotalRiel.ToString()" class="RadzenText" />
+                        <RadzenText Text="@Math.Round(TotalRiel.GetValueOrDefault()).ToString(@NumberFormat)" class="RadzenText" />
                     </RadzenRow>
                 </RadzenStack>  
             </RadzenCard>

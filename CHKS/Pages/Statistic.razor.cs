@@ -52,6 +52,7 @@ namespace CHKS.Pages
         private bool showCashInfo = false;
         private string SubCardClass = "Statistic-Info-Overview-SubCard-Hide";
 
+        protected string NumberFormat = "#,##0";
         protected string StringType = "C";
         protected string Culture = "us-US";
 

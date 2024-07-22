@@ -74,6 +74,7 @@ namespace CHKS.Pages
         }
         protected async override Task OnInitializedAsync()
         {
+            Inventories = await MydbService.GetInventories();
             Carts = await MydbService.GetCarts();
             Dailyexpenses = await MydbService.GetDailyexpenses();
             Dailyexpenses = Dailyexpenses.Where(i => i.Key.Contains(DateTime.Now.ToString("dd/MM/yyyy")));
@@ -295,39 +296,60 @@ namespace CHKS.Pages
 
         }
 
-        protected async Task AddItemtoCart()
+        protected async Task AddItemtoCart(Models.mydb.Inventory Product)
         {
-            var Product = await DialogService.OpenAsync<Inventories>("Select Product", new Dictionary<string, object>{{"IsDialog","true"}}, new DialogOptions{Width="80%", Height="80%"});
-            if(Product != null){
-                connector = new(){
-                    CartId = Customer.CartId,
-                    GeneratedKey = String.Concat(Customer.CartId, Product.Name),
-                    Product = Product.Name,
-                    Note = "",
-                    Qty = Product.Stock,// Stock here are not in stock, it the chosen value pass from the user input;
-                    PriceOverwrite = Product.Export,
-                    Discount = Product.Import
-                };
-                try {
-                    connector.Total = (Product.Stock * Product.Export) - ((Product.Stock * Product.Export * Product.Import)/100);
-                    await MydbService.CreateConnector(connector);
-                    await Grid1.Reload();
-                }catch(Exception exc){
-                    if(exc.Message == "Item already available"){
-                        var GetQty = await MydbService.GetConnectorByGeneratedKey(connector.GeneratedKey);
-                        connector.Qty = GetQty.Qty + connector.Qty;
-                        connector.Total = connector.Qty * Product.Export - ((Product.Stock * Product.Export * Product.Import)/100);
-                        await MydbService.UpdateConnector(connector.GeneratedKey, connector);
-                        await Grid1.Reload();
-                    }
-                }finally{
-                    Connectors = await MydbService.GetConnectors(new Query{Filter=$@"i => i.CartId == (@0)", FilterParameters = new object[] {Customer.CartId}});
-                    Customer.Total = Connectors.Sum(i => i.Total);
-                    await MydbService.UpdateCart(Customer.CartId, Customer);
-                    CalculateTotal();
-                }
-            }
+            if(Customer.Plate != null){
+                Console.WriteLine("havecustomer");
+                if(Product.Stock!=0){
+                    var Qty = await DialogService.OpenAsync<SingleInputPopUp>(Product.Name, new Dictionary<string, object>{{"Info",new string[]{"Qty", Product.Export.ToString()}}}, new DialogOptions{Width="13%"});
 
+                    if(Qty is Array && Qty[0] != null && Qty[0] is decimal && Qty[0] <= Product.Stock){
+                        Models.mydb.Inventory Temp = new(){};
+                        Product.Stock -=  Qty[0];
+                        await MydbService.UpdateInventory(Product.Name, Product);
+                        Temp.Export = Qty[1];
+                        Temp.Import = Qty[2];
+                        Temp.Name = Product.Name;
+                        Temp.Stock = Qty[0];
+
+                        connector = new(){
+                            CartId = Customer.CartId,
+                            GeneratedKey = String.Concat(Customer.CartId, Product.Name),
+                            Product = Temp.Name,
+                            Note = "",
+                            Qty = Temp.Stock,// Stock here are not in stock, it the chosen value pass from the user input;
+                            PriceOverwrite = Temp.Export,
+                            Discount = Temp.Import
+                        };
+                        try {
+                            connector.Total = ((Product.Stock * Product.Export) - ((Product.Stock * Product.Export * Product.Import)/100)).GetValueOrDefault();
+                            await MydbService.CreateConnector(connector);
+                            await Grid1.Reload();
+                        }catch(Exception exc){
+                            if(exc.Message == "Item already available"){
+                                var GetQty = await MydbService.GetConnectorByGeneratedKey(connector.GeneratedKey);
+                                connector.Qty = GetQty.Qty + connector.Qty;
+                                connector.Total = (connector.Qty * Product.Export - ((Product.Stock * Product.Export * Product.Import)/100)).GetValueOrDefault();
+                                await MydbService.UpdateConnector(connector.GeneratedKey, connector);
+                                await Grid1.Reload();
+                            }
+                        }finally{
+                            Connectors = await MydbService.GetConnectors(new Query{Filter=$@"i => i.CartId == (@0)", FilterParameters = new object[] {Customer.CartId}});
+                            Customer.Total = Connectors.Sum(i => i.Total);
+                            await MydbService.UpdateCart(Customer.CartId, Customer);
+                        }
+                        
+                    }else if(Qty is Array && Qty[0] != null && Qty[0] > Product.Stock){
+                        await DialogService.Alert("Too much! Not available In stock. Have Left: " + Product.Stock + ".","Warning");
+                    }else if(Product.Stock == 0){
+                        await DialogService.Alert("Not available In stock");
+                    }
+                
+                }
+            
+                
+                
+            }
 
         }
 
