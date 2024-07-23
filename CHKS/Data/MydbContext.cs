@@ -77,16 +77,34 @@ namespace CHKS.Data
               .HasPrincipalKey(i => i.Plate);
 
             builder.Entity<CHKS.Models.mydb.Connector>()
+              .HasOne(i => i.Cart)
+              .WithMany(i => i.Connectors)
+              .HasForeignKey(i => i.CartId)
+              .HasPrincipalKey(i => i.CartId);
+
+            builder.Entity<CHKS.Models.mydb.Connector>()
               .HasOne(i => i.Inventory)
               .WithMany(i => i.Connectors)
               .HasForeignKey(i => i.Product)
               .HasPrincipalKey(i => i.Name);
+
+            builder.Entity<CHKS.Models.mydb.History>()
+              .HasOne(i => i.Car)
+              .WithMany(i => i.Histories)
+              .HasForeignKey(i => i.Plate)
+              .HasPrincipalKey(i => i.Plate);
 
             builder.Entity<CHKS.Models.mydb.Historyconnector>()
               .HasOne(i => i.History)
               .WithMany(i => i.Historyconnectors)
               .HasForeignKey(i => i.CartId)
               .HasPrincipalKey(i => i.CashoutDate);
+
+            builder.Entity<CHKS.Models.mydb.Historyconnector>()
+              .HasOne(i => i.Inventory)
+              .WithMany(i => i.Historyconnectors)
+              .HasForeignKey(i => i.Product)
+              .HasPrincipalKey(i => i.Name);
 
             builder.Entity<CHKS.Models.mydb.Aspnetuser>()
               .Property(p => p.LockoutEnd)
@@ -105,11 +123,11 @@ namespace CHKS.Data
               .HasPrecision(10,2);
 
             builder.Entity<CHKS.Models.mydb.Connector>()
-              .Property(p => p.PriceOverwrite)
+              .Property(p => p.Discount)
               .HasPrecision(10,2);
 
             builder.Entity<CHKS.Models.mydb.Connector>()
-              .Property(p => p.Discount)
+              .Property(p => p.PriceOverwrite)
               .HasPrecision(10,2);
 
             builder.Entity<CHKS.Models.mydb.Dailyexpense>()
@@ -118,6 +136,10 @@ namespace CHKS.Data
 
             builder.Entity<CHKS.Models.mydb.History>()
               .Property(p => p.Total)
+              .HasPrecision(10,2);
+
+            builder.Entity<CHKS.Models.mydb.History>()
+              .Property(p => p.Bank)
               .HasPrecision(10,2);
 
             builder.Entity<CHKS.Models.mydb.History>()
@@ -132,8 +154,8 @@ namespace CHKS.Data
               .Property(p => p.Riel)
               .HasPrecision(10,2);
 
-            builder.Entity<CHKS.Models.mydb.History>()
-              .Property(p => p.Bank)
+            builder.Entity<CHKS.Models.mydb.Historyconnector>()
+              .Property(p => p.Qty)
               .HasPrecision(10,2);
 
             builder.Entity<CHKS.Models.mydb.Historyconnector>()
@@ -142,26 +164,26 @@ namespace CHKS.Data
 
             builder.Entity<CHKS.Models.mydb.Inventory>()
               .Property(p => p.Stock)
-              .HasPrecision(10,2);
+              .HasPrecision(10,3);
 
             builder.Entity<CHKS.Models.mydb.Inventory>()
               .Property(p => p.Import)
-              .HasPrecision(10,2);
+              .HasPrecision(10,3);
 
             builder.Entity<CHKS.Models.mydb.Inventory>()
               .Property(p => p.Export)
-              .HasPrecision(10,2);
+              .HasPrecision(10,3);
 
-            builder.Entity<CHKS.Models.mydb.Inventorytrashcan>()
-              .Property(p => p.Import)
-              .HasPrecision(10,2);
-
-            builder.Entity<CHKS.Models.mydb.Inventorytrashcan>()
-              .Property(p => p.Export)
-              .HasPrecision(10,2);
-
-            builder.Entity<CHKS.Models.mydb.Inventorytrashcan>()
+            builder.Entity<CHKS.Models.mydb.InventoryTrashcan>()
               .Property(p => p.Stock)
+              .HasPrecision(10,2);
+
+            builder.Entity<CHKS.Models.mydb.InventoryTrashcan>()
+              .Property(p => p.Import)
+              .HasPrecision(10,2);
+
+            builder.Entity<CHKS.Models.mydb.InventoryTrashcan>()
+              .Property(p => p.Export)
               .HasPrecision(10,2);
             this.OnModelBuilding(builder);
         }
@@ -190,8 +212,6 @@ namespace CHKS.Data
 
         public DbSet<CHKS.Models.mydb.Connector> Connectors { get; set; }
 
-        public DbSet<CHKS.Models.mydb.Daily> Dailies { get; set; }
-
         public DbSet<CHKS.Models.mydb.Dailyexpense> Dailyexpenses { get; set; }
 
         public DbSet<CHKS.Models.mydb.History> Histories { get; set; }
@@ -200,7 +220,9 @@ namespace CHKS.Data
 
         public DbSet<CHKS.Models.mydb.Inventory> Inventories { get; set; }
 
-        public DbSet<CHKS.Models.mydb.Inventorytrashcan> Inventorytrashcans { get; set; }
+        public DbSet<CHKS.Models.mydb.InventoryTrashcan> InventoryTrashcans { get; set; }
+
+        public DbSet<CHKS.Models.mydb.ProductClass> ProductClasses { get; set; }
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {

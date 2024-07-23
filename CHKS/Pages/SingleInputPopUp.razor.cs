@@ -46,6 +46,7 @@ namespace CHKS.Pages
         {
             if(Info[0] == "Qty"){
                 Info[1] = Math.Round(decimal.Parse(Info[1]),2).ToString();
+                Info[2] = Math.Round(decimal.Parse(Info[2]),2).ToString();
                 Product[1] = decimal.Parse(Info[1]); 
             }
         }

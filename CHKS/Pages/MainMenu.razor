@@ -1,5 +1,5 @@
 @page "/"
-
+@using System.Globalization
 @attribute [Authorize]
 <head>
     <link href="css/Page.css" rel="stylesheet"/>
@@ -32,14 +32,13 @@
                 </div>
                 @if(Carts != null){
                     @foreach( var customer in Carts){
-                        Console.WriteLine(customer.Plate);
                         <div Style="min-width: 320px; border-radius:10px; height: 120px; background-color:antiquewhite; padding: 20px;border:solid ;border-width:1px; border-color:burlywood" @onclick="@(args => OpenCart(customer))">
                             <RadzenRow JustifyContent="JustifyContent.Center" Style="height: 35px;">
                                 <p Style="font-size: x-large; font-family: 'Khmer OS Battambang'; margin-right:auto; color:#28282B"><b>@(customer.Plate + "#" + customer.CartId)</b></p>
                                 <div Style="width:max-content; height: 25px; margin-left:auto; background-color:chocolate; border-radius:15px; border:solid; border-width:2px; border-color:chocolate; color:white; text-align:center; vertical-align:middle; padding-left:5px; padding-right:5px">Working</div>
                             </RadzenRow>
                             <RadzenRow JustifyContent="JustifyContent.Center" Style="height: 25px; ">
-                                <p Style="font-size: medium; font-family: 'Khmer OS Battambang'; margin-right:auto; color: gray;">@Security.User?.Name</p>
+                                <p Style="font-size: medium; font-family: 'Khmer OS Battambang'; margin-right:auto; color: gray;">@customer.Creator</p>
                                 <p Style="font-size: medium; font-family: 'Khmer OS Battambang'; margin-left: auto; color: gray"></p>
                             </RadzenRow>
                             <RadzenRow JustifyContent="JustifyContent.Center" Style="height: 20px; margin-top:3px">
@@ -70,16 +69,21 @@
                 
             </div>
         </RadzenRow>-->
-        <RadzenRow Style="margin-top: 5px;">
+        <RadzenRow Style="margin-top: 5px; display:inline-block">
             <h1 Style="font-size: x-large; font-family: 'Khmer OS Battambang'; color:#28282B">ទំនិញ</h1>
+            <RadzenButton Icon="add" style="width:25px; height:25px; border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:gray; padding:1.5px;margin-left:auto"/>
         </RadzenRow>
-        <RadzenRow  Style=" height: 70dvh; width:100%; overflow-y: scroll; overflow-x: hidden;">
-            <div Style=" display:flex; flex-wrap:wrap; align-content:space-between; scroll-snap-type: y mandatory; scroll-snap-align: center; scroll-snap-stop: always;">
+        <RadzenRow Style="display: inline-block;">
+            <input @bind-value="@search" @oninput="@Search" style="border-radius:15px; border-width:1px; width:95%; margin-left:auto; margin-right:auto"></input>
+            <RadzenButton Icon="camera_enhance" style="width:25px; height:25px; border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:gray; padding:1.5px;margin-left:auto"/>
+        </RadzenRow>
+        <RadzenRow  Style=" height: 62dvh; width:100%; overflow-y: scroll; overflow-x: hidden;">
+            <div Style=" display:flex; flex-wrap:wrap; align-content:flex-start; scroll-snap-type: y proximity; scroll-snap-align:inherit; scroll-snap-stop: always; width:100%">
                 @if(Inventories != null){
                     @foreach(var product in Inventories){
-                        <div style="width:320px; height:150px; background-color:transparent; border-radius:15px; padding:20px; border:solid; border-color:lightgray; 
+                        <div style="width:32%; height:150px; background-color:transparent; border-radius:15px; padding:20px; border:solid; border-color:lightgray; 
                         border-width:2px; margin-left:10px; margin-top:10px;" @onclick= "@(args => AddItemtoCart(product))" >
-                            <RadzenRow>
+                            <RadzenRow Style="display: inline-flex; height:10px">
 
                                 @if(@product.Stock == 0){
                                     <div style="width:40%; background-color: red; height:10px; border-radius:15px;"></div>
@@ -88,15 +92,18 @@
                                 }else if(@product.Stock >= 4){
                                     <div style="width:40%; background-color: #059142; height:10px; border-radius:15px;"></div>
                                 }
-
+                                
                                 
                             </RadzenRow>
-                            <RadzenStack Orientation="Orientation.Vertical" Style="margin-top:20px">
-                                <RadzenRow Style="height:30px">
+                            <RadzenStack Orientation="Orientation.Vertical" Style="margin-top:10px">
+                                <RadzenRow Style="height:20px">
                                     <p style="font-family: 'Khmer OS Battambang'; font-size:1.3rem; margin-top:5px"><b>@product.Name</b></p>
                                 </RadzenRow>
-                                <RadzenRow Style="height:30px">
+                                <RadzenRow Style="height:10px">
                                     <p style="font-family: 'Khmer OS Battambang'; font-size:larger; color:gray"><b>$ @Math.Round(product.Export.GetValueOrDefault(),2).ToString()</b></p>
+                                </RadzenRow>
+                                <RadzenRow>
+                                    <p style="font-family: 'Khmer OS Battambang'; font-size:1.3rem; height:5px;color:gray">  @product.Barcode</p>
                                 </RadzenRow>
                             </RadzenStack>
                         </div>
@@ -111,35 +118,47 @@
     <div Style="margin-left:auto; width:30%; height:100dvh; background-color: #fff; border-radius:15px 0px 0px 15px">
         <div Style="margin-top: 40px; margin-left:60px">
             <RadzenRow Style="width:80%" AlignItems="AlignItems.Start">
-                <p style="font-family: 'Khmer OS Battambang'; font-size: 2rem; color:#28282B; margin-right:auto; overflow:hidden; width:190px "><b>@(Customer.Plate != null?Customer.Plate + "#" + Customer.CartId:"********")</b></p>
+                <p style="font-family: 'Khmer OS Battambang'; font-size: 1.8rem; color:#28282B; margin-right:auto; overflow:hidden; width:190px "><b>@(Customer.Plate != null?Customer.Plate + "#" + Customer.CartId:"********")</b></p>
                 <RadzenButton Icon="save" Click="@ResetToDefault" style="width:25px; height:25px;border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:green; padding:1.5px;"/>
                 <RadzenButton Icon="delete" Click="@DeleteCustomer"style="width:25px; height:25px;border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:red; padding:1.5px"/>
             </RadzenRow>
             
             <RadzenRow AlignItems="AlignItems.Center">
                 <p style="font-family: 'Khmer OS Battambang'; font-size: medium; color:gray; margin-right:auto; height:20px"><b>@(Customer.Car != null?Customer.Car.Type:"Unknown")</b></p>
-                <p style="font-family: 'Khmer OS Battambang'; font-size: medium; color:gray; margin-right:20%; "><b>@Security.User?.Name</b></p>
+                <p style="font-family: 'Khmer OS Battambang'; font-size: medium; color:gray; margin-right:20%; "><b>@Customer.Creator</b></p>
             </RadzenRow>
-            <p style="font-family: 'Khmer OS Battambang'; font-size: medium; color:gray; margin-right:auto; height:10px "><b>@(Customer.Car != null?Customer.Car.Phone:0)</b></p>
+            <RadzenRow Style="display: flex; width:100%">
+                <p style="font-family: 'Khmer OS Battambang'; font-size: medium; color:gray; margin-right:auto; height:10px "><b>@(Customer.Car != null?Customer.Car.Phone:0)</b></p>
+                <p style="font-family: 'Khmer OS Battambang'; font-size: medium; color:gray; margin-right:auto; height:10px;"><b>ឡានក្រុមហ៊ុម</b></p>
+                
+            </RadzenRow>
+            
 
             <div style="color:lightgray; overflow:hidden; height:20px; width:80%">
                 ---------------------------------------------------------------------------------------
             </div>
 
-            <div style="width:83%; height:60dvh ;">
-                <RadzenStack Orientation="Orientation.Vertical" Gap="10px" Style="overflow-x: hidden; overflow-y:hidden">
+            <div style="width:83%; height:61dvh ;">
+                <RadzenStack Orientation="Orientation.Vertical" Gap="10px" Style="overflow-x: hidden; overflow-y:scroll; height:100%">
                 @if(Customer.Plate != null && Connectors != null){
                     @foreach (var Hiscon in Connectors)
                     {
                         <div style="width:98%; height:110px; border-radius:15px; background-color:whitesmoke">
                             <RadzenStack Orientation="Orientation.Horizontal">
                                 <RadzenStack Style="width:fit-content; height:100%; margin-left:5%" Orientation="Orientation.Vertical" Gap="0px">
-                                    <RadzenButton Icon="add" style="width: 12px; height:2px; background-color:transparent; border-width:0px;color:#28282B"/>
+                                    <RadzenButton Icon="add" style="width: 12px; height:2px; background-color:transparent; border-width:0px;color:#28282B" Click= "@(args => ChangeQty(Hiscon, 1))"/>
                                     <div ReadOnly=true Style="border-radius: 30px; width:35px; height:35px; background-color:white; text-align:center; padding-top:10px"> @Math.Round(Hiscon.Qty).ToString()</div>
-                                    <RadzenButton Icon="remove" Style="width: 12px; height:2px; background-color:transparent; border-width:0px;color:#28282B"/>
+                                    <RadzenButton Icon="remove" Style="width: 12px; height:2px; background-color:transparent; border-width:0px;color:#28282B" Click="@(args => ChangeQty(Hiscon, -1))"/>
                                 </RadzenStack>
-                                <RadzenStack Style="margin-top: 45px; margin-left:20px">
-                                    <RadzenText Text="@Hiscon.Product" Style="font-family: 'Khmer OS Battambang';  font-size:x-large; color:#28282B"/>
+                                <RadzenStack Style="margin-top: 30px; margin-left:15px; width:100%" >
+                                    <RadzenStack style= "height:10px"Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start">
+                                        <RadzenText Text="@Hiscon.Product" Style="font-family: 'Khmer OS Battambang';  font-size:large; color:#28282B"/>
+                                        <RadzenButton Icon="delete" Click="@args => ChangeQty(Hiscon, 2)" style="width:25px; height:25px;border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:red; padding:1.5px;margin-right:20px; margin-left:auto; "/>
+                                    </RadzenStack>
+                                    <RadzenRow Style="height: 10px;">
+                                        <RadzenText Text="@('$' + Math.Round(Hiscon.PriceOverwrite.GetValueOrDefault(),2).ToString()) " Style="font-family: 'Khmer OS Battambang';  font-size:medium; color:lightgray; height:3px"/>
+                                        <RadzenText Text="@Hiscon.Note" Style="font-family: 'Khmer OS Battambang';  font-size:medium; color:lightgray"/>
+                                    </RadzenRow>
                                 </RadzenStack>
                             </RadzenStack>
                         </div>
@@ -148,9 +167,32 @@
                 </RadzenStack>
             </div>
 
+            <div style="color:lightgray; overflow:hidden; height:20px; width:80%">
+                ---------------------------------------------------------------------------------------
+            </div>
+            <div style="color:lightgray; overflow:hidden; height:30px; width:80%; margin-top:auto; display:inline-flex">
+                <p style="font-size: x-large; font-family:'Khmer OS Battambang'; color: #28282B; margin-right:auto"><b>Total</b></p>
+                <p style="font-size: x-large; font-family:'Khmer OS Battambang'; color: #28282B; margin-left:auto"><b>@(Connectors != null?Connectors.Sum(i => (i.PriceOverwrite * i.Qty).GetValueOrDefault()).ToString("c",new CultureInfo("us-US")):"$ 0.00")</b></p>
+            </div>
+            <div style="color:lightgray; overflow:hidden; height:20px; width:80%">
+                ---------------------------------------------------------------------------------------
+            </div>
+            
+
+            <div style="color:lightgray; overflow:hidden; height:120px; width:100%">
+                <RadzenButton Icon="print" style="width:80%; background-color:transparent; border-radius:15px; border:solid; border-width:1px; border-color:lightgray; color:gray; margin-bottom:5px" Text="Print" Click="@PrintReceipt"/>
+                <RadzenButton Icon="attach_money" style="width:80%; background-color:darkseagreen; border-radius:15px; border:solid; border-width:1px; border-color:lightgray; color:gray; font-family: 'Khmer OS Battambang;'" Text="គិតលុយ" Click="@CashOut"/>
+            </div>
+            
+
             
         </div>
     </div>
 
 </RadzenStack>
+
+
+<div id="snackbar" class="@ToastState">
+    @ToastString
+</div>
 

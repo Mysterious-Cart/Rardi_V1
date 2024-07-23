@@ -1,10 +1,10 @@
-function ScrollToTop() {
-    try {
-        console.log('ScrollToTop() rz-data-grid-data')
-        var elem = document.getElementsByClassName("rz-data-grid-data")[0];
-        elem.scrollTop = 0;
-    }
-    catch (ex) {
-        console.log(ex);
-    }
+function ShowToast() {
+  // Get the snackbar DIV
+  var x = document.getElementById("snackbar");
+
+  // Add the "show" class to DIV
+  x.className = "show";
+
+  // After 3 seconds, remove the show class from DIV
+  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
 }

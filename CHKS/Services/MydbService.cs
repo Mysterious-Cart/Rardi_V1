@@ -1509,6 +1509,7 @@ namespace CHKS
             var itemToDelete = Context.Cars
                               .Where(i => i.Plate == plate)
                               .Include(i => i.Carts)
+                              .Include(i => i.Histories)
                               .FirstOrDefault();
 
             if (itemToDelete == null)
@@ -1672,6 +1673,7 @@ namespace CHKS
         {
             var itemToDelete = Context.Carts
                               .Where(i => i.CartId == cartid)
+                              .Include(i => i.Connectors)
                               .FirstOrDefault();
 
             if (itemToDelete == null)
@@ -1876,6 +1878,7 @@ namespace CHKS
         {
             var items = Context.Connectors.AsQueryable();
 
+            items = items.Include(i => i.Cart);
             items = items.Include(i => i.Inventory);
 
             if (query != null)
@@ -1907,6 +1910,7 @@ namespace CHKS
                               .AsNoTracking()
                               .Where(i => i.GeneratedKey == generatedkey);
 
+            items = items.Include(i => i.Cart);
             items = items.Include(i => i.Inventory);
  
             OnGetConnectorByGeneratedKey(ref items);
@@ -2019,167 +2023,6 @@ namespace CHKS
             }
 
             OnAfterConnectorDeleted(itemToDelete);
-
-            return itemToDelete;
-        }
-    
-        public async Task ExportDailiesToExcel(Query query = null, string fileName = null)
-        {
-            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/dailies/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/dailies/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
-        }
-
-        public async Task ExportDailiesToCSV(Query query = null, string fileName = null)
-        {
-            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/dailies/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/dailies/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
-        }
-
-        partial void OnDailiesRead(ref IQueryable<CHKS.Models.mydb.Daily> items);
-
-        public async Task<IQueryable<CHKS.Models.mydb.Daily>> GetDailies(Query query = null)
-        {
-            var items = Context.Dailies.AsQueryable();
-
-
-            if (query != null)
-            {
-                if (!string.IsNullOrEmpty(query.Expand))
-                {
-                    var propertiesToExpand = query.Expand.Split(',');
-                    foreach(var p in propertiesToExpand)
-                    {
-                        items = items.Include(p.Trim());
-                    }
-                }
-
-                ApplyQuery(ref items, query);
-            }
-
-            OnDailiesRead(ref items);
-
-            return await Task.FromResult(items);
-        }
-
-        partial void OnDailyGet(CHKS.Models.mydb.Daily item);
-        partial void OnGetDailyByDate(ref IQueryable<CHKS.Models.mydb.Daily> items);
-
-
-        public async Task<CHKS.Models.mydb.Daily> GetDailyByDate(int date)
-        {
-            var items = Context.Dailies
-                              .AsNoTracking()
-                              .Where(i => i.Date == date);
-
- 
-            OnGetDailyByDate(ref items);
-
-            var itemToReturn = items.FirstOrDefault();
-
-            OnDailyGet(itemToReturn);
-
-            return await Task.FromResult(itemToReturn);
-        }
-
-        partial void OnDailyCreated(CHKS.Models.mydb.Daily item);
-        partial void OnAfterDailyCreated(CHKS.Models.mydb.Daily item);
-
-        public async Task<CHKS.Models.mydb.Daily> CreateDaily(CHKS.Models.mydb.Daily daily)
-        {
-            OnDailyCreated(daily);
-
-            var existingItem = Context.Dailies
-                              .Where(i => i.Date == daily.Date)
-                              .FirstOrDefault();
-
-            if (existingItem != null)
-            {
-               throw new Exception("Item already available");
-            }            
-
-            try
-            {
-                Context.Dailies.Add(daily);
-                Context.SaveChanges();
-            }
-            catch
-            {
-                Context.Entry(daily).State = EntityState.Detached;
-                throw;
-            }
-
-            OnAfterDailyCreated(daily);
-
-            return daily;
-        }
-
-        public async Task<CHKS.Models.mydb.Daily> CancelDailyChanges(CHKS.Models.mydb.Daily item)
-        {
-            var entityToCancel = Context.Entry(item);
-            if (entityToCancel.State == EntityState.Modified)
-            {
-              entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
-              entityToCancel.State = EntityState.Unchanged;
-            }
-
-            return item;
-        }
-
-        partial void OnDailyUpdated(CHKS.Models.mydb.Daily item);
-        partial void OnAfterDailyUpdated(CHKS.Models.mydb.Daily item);
-
-        public async Task<CHKS.Models.mydb.Daily> UpdateDaily(int date, CHKS.Models.mydb.Daily daily)
-        {
-            OnDailyUpdated(daily);
-
-            var itemToUpdate = Context.Dailies
-                              .Where(i => i.Date == daily.Date)
-                              .FirstOrDefault();
-
-            if (itemToUpdate == null)
-            {
-               throw new Exception("Item no longer available");
-            }
-                
-            var entryToUpdate = Context.Entry(itemToUpdate);
-            entryToUpdate.CurrentValues.SetValues(daily);
-            entryToUpdate.State = EntityState.Modified;
-
-            Context.SaveChanges();
-
-            OnAfterDailyUpdated(daily);
-
-            return daily;
-        }
-
-        partial void OnDailyDeleted(CHKS.Models.mydb.Daily item);
-        partial void OnAfterDailyDeleted(CHKS.Models.mydb.Daily item);
-
-        public async Task<CHKS.Models.mydb.Daily> DeleteDaily(int date)
-        {
-            var itemToDelete = Context.Dailies
-                              .Where(i => i.Date == date)
-                              .FirstOrDefault();
-
-            if (itemToDelete == null)
-            {
-               throw new Exception("Item no longer available");
-            }
-
-            OnDailyDeleted(itemToDelete);
-
-
-            Context.Dailies.Remove(itemToDelete);
-
-            try
-            {
-                Context.SaveChanges();
-            }
-            catch
-            {
-                Context.Entry(itemToDelete).State = EntityState.Unchanged;
-                throw;
-            }
-
-            OnAfterDailyDeleted(itemToDelete);
 
             return itemToDelete;
         }
@@ -2361,6 +2204,7 @@ namespace CHKS
         {
             var items = Context.Histories.AsQueryable();
 
+            items = items.Include(i => i.Car);
 
             if (query != null)
             {
@@ -2391,6 +2235,7 @@ namespace CHKS
                               .AsNoTracking()
                               .Where(i => i.CashoutDate == cashoutdate);
 
+            items = items.Include(i => i.Car);
  
             OnGetHistoryByCashoutDate(ref items);
 
@@ -2524,6 +2369,7 @@ namespace CHKS
             var items = Context.Historyconnectors.AsQueryable();
 
             items = items.Include(i => i.History);
+            items = items.Include(i => i.Inventory);
 
             if (query != null)
             {
@@ -2555,6 +2401,7 @@ namespace CHKS
                               .Where(i => i.Id == id);
 
             items = items.Include(i => i.History);
+            items = items.Include(i => i.Inventory);
  
             OnGetHistoryconnectorById(ref items);
 
@@ -2805,6 +2652,7 @@ namespace CHKS
             var itemToDelete = Context.Inventories
                               .Where(i => i.Name == name)
                               .Include(i => i.Connectors)
+                              .Include(i => i.Historyconnectors)
                               .FirstOrDefault();
 
             if (itemToDelete == null)
@@ -2832,21 +2680,21 @@ namespace CHKS
             return itemToDelete;
         }
     
-        public async Task ExportInventorytrashcansToExcel(Query query = null, string fileName = null)
+        public async Task ExportInventoryTrashcansToExcel(Query query = null, string fileName = null)
         {
             navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/inventorytrashcans/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/inventorytrashcans/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
-        public async Task ExportInventorytrashcansToCSV(Query query = null, string fileName = null)
+        public async Task ExportInventoryTrashcansToCSV(Query query = null, string fileName = null)
         {
             navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/inventorytrashcans/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/inventorytrashcans/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
-        partial void OnInventorytrashcansRead(ref IQueryable<CHKS.Models.mydb.Inventorytrashcan> items);
+        partial void OnInventoryTrashcansRead(ref IQueryable<CHKS.Models.mydb.InventoryTrashcan> items);
 
-        public async Task<IQueryable<CHKS.Models.mydb.Inventorytrashcan>> GetInventorytrashcans(Query query = null)
+        public async Task<IQueryable<CHKS.Models.mydb.InventoryTrashcan>> GetInventoryTrashcans(Query query = null)
         {
-            var items = Context.Inventorytrashcans.AsQueryable();
+            var items = Context.InventoryTrashcans.AsQueryable();
 
 
             if (query != null)
@@ -2863,39 +2711,39 @@ namespace CHKS
                 ApplyQuery(ref items, query);
             }
 
-            OnInventorytrashcansRead(ref items);
+            OnInventoryTrashcansRead(ref items);
 
             return await Task.FromResult(items);
         }
 
-        partial void OnInventorytrashcanGet(CHKS.Models.mydb.Inventorytrashcan item);
-        partial void OnGetInventorytrashcanByDate(ref IQueryable<CHKS.Models.mydb.Inventorytrashcan> items);
+        partial void OnInventoryTrashcanGet(CHKS.Models.mydb.InventoryTrashcan item);
+        partial void OnGetInventoryTrashcanByDate(ref IQueryable<CHKS.Models.mydb.InventoryTrashcan> items);
 
 
-        public async Task<CHKS.Models.mydb.Inventorytrashcan> GetInventorytrashcanByDate(string date)
+        public async Task<CHKS.Models.mydb.InventoryTrashcan> GetInventoryTrashcanByDate(string date)
         {
-            var items = Context.Inventorytrashcans
+            var items = Context.InventoryTrashcans
                               .AsNoTracking()
                               .Where(i => i.Date == date);
 
  
-            OnGetInventorytrashcanByDate(ref items);
+            OnGetInventoryTrashcanByDate(ref items);
 
             var itemToReturn = items.FirstOrDefault();
 
-            OnInventorytrashcanGet(itemToReturn);
+            OnInventoryTrashcanGet(itemToReturn);
 
             return await Task.FromResult(itemToReturn);
         }
 
-        partial void OnInventorytrashcanCreated(CHKS.Models.mydb.Inventorytrashcan item);
-        partial void OnAfterInventorytrashcanCreated(CHKS.Models.mydb.Inventorytrashcan item);
+        partial void OnInventoryTrashcanCreated(CHKS.Models.mydb.InventoryTrashcan item);
+        partial void OnAfterInventoryTrashcanCreated(CHKS.Models.mydb.InventoryTrashcan item);
 
-        public async Task<CHKS.Models.mydb.Inventorytrashcan> CreateInventorytrashcan(CHKS.Models.mydb.Inventorytrashcan inventorytrashcan)
+        public async Task<CHKS.Models.mydb.InventoryTrashcan> CreateInventoryTrashcan(CHKS.Models.mydb.InventoryTrashcan inventorytrashcan)
         {
-            OnInventorytrashcanCreated(inventorytrashcan);
+            OnInventoryTrashcanCreated(inventorytrashcan);
 
-            var existingItem = Context.Inventorytrashcans
+            var existingItem = Context.InventoryTrashcans
                               .Where(i => i.Date == inventorytrashcan.Date)
                               .FirstOrDefault();
 
@@ -2906,7 +2754,7 @@ namespace CHKS
 
             try
             {
-                Context.Inventorytrashcans.Add(inventorytrashcan);
+                Context.InventoryTrashcans.Add(inventorytrashcan);
                 Context.SaveChanges();
             }
             catch
@@ -2915,12 +2763,12 @@ namespace CHKS
                 throw;
             }
 
-            OnAfterInventorytrashcanCreated(inventorytrashcan);
+            OnAfterInventoryTrashcanCreated(inventorytrashcan);
 
             return inventorytrashcan;
         }
 
-        public async Task<CHKS.Models.mydb.Inventorytrashcan> CancelInventorytrashcanChanges(CHKS.Models.mydb.Inventorytrashcan item)
+        public async Task<CHKS.Models.mydb.InventoryTrashcan> CancelInventoryTrashcanChanges(CHKS.Models.mydb.InventoryTrashcan item)
         {
             var entityToCancel = Context.Entry(item);
             if (entityToCancel.State == EntityState.Modified)
@@ -2932,14 +2780,14 @@ namespace CHKS
             return item;
         }
 
-        partial void OnInventorytrashcanUpdated(CHKS.Models.mydb.Inventorytrashcan item);
-        partial void OnAfterInventorytrashcanUpdated(CHKS.Models.mydb.Inventorytrashcan item);
+        partial void OnInventoryTrashcanUpdated(CHKS.Models.mydb.InventoryTrashcan item);
+        partial void OnAfterInventoryTrashcanUpdated(CHKS.Models.mydb.InventoryTrashcan item);
 
-        public async Task<CHKS.Models.mydb.Inventorytrashcan> UpdateInventorytrashcan(string date, CHKS.Models.mydb.Inventorytrashcan inventorytrashcan)
+        public async Task<CHKS.Models.mydb.InventoryTrashcan> UpdateInventoryTrashcan(string date, CHKS.Models.mydb.InventoryTrashcan inventorytrashcan)
         {
-            OnInventorytrashcanUpdated(inventorytrashcan);
+            OnInventoryTrashcanUpdated(inventorytrashcan);
 
-            var itemToUpdate = Context.Inventorytrashcans
+            var itemToUpdate = Context.InventoryTrashcans
                               .Where(i => i.Date == inventorytrashcan.Date)
                               .FirstOrDefault();
 
@@ -2954,17 +2802,17 @@ namespace CHKS
 
             Context.SaveChanges();
 
-            OnAfterInventorytrashcanUpdated(inventorytrashcan);
+            OnAfterInventoryTrashcanUpdated(inventorytrashcan);
 
             return inventorytrashcan;
         }
 
-        partial void OnInventorytrashcanDeleted(CHKS.Models.mydb.Inventorytrashcan item);
-        partial void OnAfterInventorytrashcanDeleted(CHKS.Models.mydb.Inventorytrashcan item);
+        partial void OnInventoryTrashcanDeleted(CHKS.Models.mydb.InventoryTrashcan item);
+        partial void OnAfterInventoryTrashcanDeleted(CHKS.Models.mydb.InventoryTrashcan item);
 
-        public async Task<CHKS.Models.mydb.Inventorytrashcan> DeleteInventorytrashcan(string date)
+        public async Task<CHKS.Models.mydb.InventoryTrashcan> DeleteInventoryTrashcan(string date)
         {
-            var itemToDelete = Context.Inventorytrashcans
+            var itemToDelete = Context.InventoryTrashcans
                               .Where(i => i.Date == date)
                               .FirstOrDefault();
 
@@ -2973,10 +2821,10 @@ namespace CHKS
                throw new Exception("Item no longer available");
             }
 
-            OnInventorytrashcanDeleted(itemToDelete);
+            OnInventoryTrashcanDeleted(itemToDelete);
 
 
-            Context.Inventorytrashcans.Remove(itemToDelete);
+            Context.InventoryTrashcans.Remove(itemToDelete);
 
             try
             {
@@ -2988,7 +2836,168 @@ namespace CHKS
                 throw;
             }
 
-            OnAfterInventorytrashcanDeleted(itemToDelete);
+            OnAfterInventoryTrashcanDeleted(itemToDelete);
+
+            return itemToDelete;
+        }
+    
+        public async Task ExportProductClassesToExcel(Query query = null, string fileName = null)
+        {
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/productclasses/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/productclasses/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+        }
+
+        public async Task ExportProductClassesToCSV(Query query = null, string fileName = null)
+        {
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/productclasses/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/productclasses/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+        }
+
+        partial void OnProductClassesRead(ref IQueryable<CHKS.Models.mydb.ProductClass> items);
+
+        public async Task<IQueryable<CHKS.Models.mydb.ProductClass>> GetProductClasses(Query query = null)
+        {
+            var items = Context.ProductClasses.AsQueryable();
+
+
+            if (query != null)
+            {
+                if (!string.IsNullOrEmpty(query.Expand))
+                {
+                    var propertiesToExpand = query.Expand.Split(',');
+                    foreach(var p in propertiesToExpand)
+                    {
+                        items = items.Include(p.Trim());
+                    }
+                }
+
+                ApplyQuery(ref items, query);
+            }
+
+            OnProductClassesRead(ref items);
+
+            return await Task.FromResult(items);
+        }
+
+        partial void OnProductClassGet(CHKS.Models.mydb.ProductClass item);
+        partial void OnGetProductClassById(ref IQueryable<CHKS.Models.mydb.ProductClass> items);
+
+
+        public async Task<CHKS.Models.mydb.ProductClass> GetProductClassById(string id)
+        {
+            var items = Context.ProductClasses
+                              .AsNoTracking()
+                              .Where(i => i.Id == id);
+
+ 
+            OnGetProductClassById(ref items);
+
+            var itemToReturn = items.FirstOrDefault();
+
+            OnProductClassGet(itemToReturn);
+
+            return await Task.FromResult(itemToReturn);
+        }
+
+        partial void OnProductClassCreated(CHKS.Models.mydb.ProductClass item);
+        partial void OnAfterProductClassCreated(CHKS.Models.mydb.ProductClass item);
+
+        public async Task<CHKS.Models.mydb.ProductClass> CreateProductClass(CHKS.Models.mydb.ProductClass productclass)
+        {
+            OnProductClassCreated(productclass);
+
+            var existingItem = Context.ProductClasses
+                              .Where(i => i.Id == productclass.Id)
+                              .FirstOrDefault();
+
+            if (existingItem != null)
+            {
+               throw new Exception("Item already available");
+            }            
+
+            try
+            {
+                Context.ProductClasses.Add(productclass);
+                Context.SaveChanges();
+            }
+            catch
+            {
+                Context.Entry(productclass).State = EntityState.Detached;
+                throw;
+            }
+
+            OnAfterProductClassCreated(productclass);
+
+            return productclass;
+        }
+
+        public async Task<CHKS.Models.mydb.ProductClass> CancelProductClassChanges(CHKS.Models.mydb.ProductClass item)
+        {
+            var entityToCancel = Context.Entry(item);
+            if (entityToCancel.State == EntityState.Modified)
+            {
+              entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
+              entityToCancel.State = EntityState.Unchanged;
+            }
+
+            return item;
+        }
+
+        partial void OnProductClassUpdated(CHKS.Models.mydb.ProductClass item);
+        partial void OnAfterProductClassUpdated(CHKS.Models.mydb.ProductClass item);
+
+        public async Task<CHKS.Models.mydb.ProductClass> UpdateProductClass(string id, CHKS.Models.mydb.ProductClass productclass)
+        {
+            OnProductClassUpdated(productclass);
+
+            var itemToUpdate = Context.ProductClasses
+                              .Where(i => i.Id == productclass.Id)
+                              .FirstOrDefault();
+
+            if (itemToUpdate == null)
+            {
+               throw new Exception("Item no longer available");
+            }
+                
+            var entryToUpdate = Context.Entry(itemToUpdate);
+            entryToUpdate.CurrentValues.SetValues(productclass);
+            entryToUpdate.State = EntityState.Modified;
+
+            Context.SaveChanges();
+
+            OnAfterProductClassUpdated(productclass);
+
+            return productclass;
+        }
+
+        partial void OnProductClassDeleted(CHKS.Models.mydb.ProductClass item);
+        partial void OnAfterProductClassDeleted(CHKS.Models.mydb.ProductClass item);
+
+        public async Task<CHKS.Models.mydb.ProductClass> DeleteProductClass(string id)
+        {
+            var itemToDelete = Context.ProductClasses
+                              .Where(i => i.Id == id)
+                              .FirstOrDefault();
+
+            if (itemToDelete == null)
+            {
+               throw new Exception("Item no longer available");
+            }
+
+            OnProductClassDeleted(itemToDelete);
+
+
+            Context.ProductClasses.Remove(itemToDelete);
+
+            try
+            {
+                Context.SaveChanges();
+            }
+            catch
+            {
+                Context.Entry(itemToDelete).State = EntityState.Unchanged;
+                throw;
+            }
+
+            OnAfterProductClassDeleted(itemToDelete);
 
             return itemToDelete;
         }

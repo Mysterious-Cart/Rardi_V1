@@ -1,5 +1,6 @@
 @layout MainLayout
-@page "/print-page"
+@page "/print-page"
+
 @attribute [Authorize]
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
@@ -16,7 +17,7 @@
 
     <RadzenStack Orientation="Orientation.Horizontal">
         <RadzenRow>
-            <RadzenImage Path="images/logo.png" Style="width: 250px; height: 250px; margin-left: 20px" />
+            <RadzenImage Path="images/Full_logo.png" Style="width: 250px; height: 250px; margin-left: 20px" />
         </RadzenRow>
         <RadzenStack Orientation="Orientation.Vertical" Style=" width:100%;">
             <RadzenStack AlignItems="AlignItems.Center">
@@ -115,7 +116,7 @@
                             <RadzenText style="font-size: x-large; font-family:'Khmer OS Battambang'; height:20px; margin-top:10px;"><b>​ តម្លៃរាយ</b></RadzenText>
                         </HeaderTemplate>
                         <Template Context="connector">
-                            <a style="font-size: x-large;"> @connector.Total.ToString("C", new CultureInfo("en-US")) </a>
+                            <a style="font-size: x-large;"> @((connector.Qty * connector.PriceOverwrite).GetValueOrDefault().ToString("C", new CultureInfo("en-US")))</a>
                         </Template>
                     </RadzenDataGridColumn>
                     <RadzenDataGridColumn TItem="CHKS.Models.mydb.Connector" Property="Total" FormatString="${0:N2}" TextAlign="TextAlign.Center" Width="100px">
@@ -123,7 +124,7 @@
                             <RadzenText style="font-size: x-large; font-family:'Khmer OS Battambang'; height:20px; margin-top:10px;"><b> តម្លៃសរុប </b></RadzenText>
                         </HeaderTemplate>
                         <Template Context="connector">
-                            <a style="font-size: x-large;"> @connector.Total.ToString("C", new CultureInfo("en-US")) </a>
+                            <a style="font-size: x-large;"> @((connector.Qty * connector.PriceOverwrite).GetValueOrDefault().ToString("C", new CultureInfo("en-US")))</a>
                         </Template>
                     </RadzenDataGridColumn>
                 </Columns>
@@ -180,22 +181,18 @@
         Connector = await MydbService.GetConnectors();
         Connector = Connector.Where(i => i.CartId == Id);
 
-        total = Connector.Sum(i => i.Total).ToString("C", new CultureInfo("en-US") );
+        total = (Connector.Sum(i => i.PriceOverwrite * i.Qty )).GetValueOrDefault().ToString("C", new CultureInfo("en-US") );
 
     }
 
         protected async override Task OnAfterRenderAsync(bool firstRender)
         {
             await printMe();
-            Connector = null;
-            Customer = null;
-            CustomerCart = null;
             DialogService.Close();
         }
 
         protected async Task printMe(){
             await JSRuntime.InvokeVoidAsync("window.print");
-            DialogService.Close();
         }
 
 }

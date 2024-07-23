@@ -88,7 +88,7 @@
     <RadzenStack Orientation="Orientation.Vertical">
         <RadzenCard Style=" width:20%; min-width:fit-content; height:50%; padding:10px;" >
             <RadzenStack Style="height:100%">
-                <RadzenText Text="List Of Cashbacks:" TextStyle="TextStyle.Overline" TextAlign="TextAlign.Center" style="font-size:x-large; margin-bottom:10px; width:300px"/>
+                <RadzenText Text="លុយអាប់:" TextStyle="TextStyle.Overline" TextAlign="TextAlign.Center" style="font-size:x-large; margin-bottom:10px; width:300px"/>
                 <RadzenButton Icon="add" Text="Add Cashback" Click="@AddBtnClickCashback" style="width:300px" />
                 <RadzenDataGrid @ref="grid3" Data="@Cashbacks" TItem="Models.mydb.Cashback" RowCreate="@GridCreate" RowUpdate="@GridRowUpdate" style="width:300px; height:70%;" AllowPaging=false>
                     <Columns>
@@ -127,7 +127,7 @@
         </RadzenCard>
         <RadzenCard Style=" width:20%; min-width:fit-content;height:50%; padding:10px" >
             <RadzenStack style="height:100%">
-                <RadzenText Text="List Of Expense:" TextStyle="TextStyle.Overline" TextAlign="TextAlign.Center" style="font-size:x-large; margin-bottom:10px; width:300px"/>
+                <RadzenText Text="ចំណាយ:" TextStyle="TextStyle.Overline" TextAlign="TextAlign.Center" style="font-size:x-large; margin-bottom:10px; width:300px"/>
                 <RadzenButton Icon="add" Text="Add Expense" Click="@AddBtnClick" style="width:300px" />
                 <RadzenDataGrid @ref="grid2" Data="@Dailyexpenses" TItem="Models.mydb.Dailyexpense" RowCreate="@GridCreate" RowUpdate="@GridRowUpdate" style="width:300px ; height:100%" AllowPaging=true >
                     <Columns>
