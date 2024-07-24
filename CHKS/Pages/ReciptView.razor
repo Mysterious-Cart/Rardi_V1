@@ -25,12 +25,18 @@
             </RadzenRow>
         </RadzenStack>
     </RadzenCard>
+    <div style="Width:100%; background-color:#28282B; height:50px; border-radius:15px;padding:5px; ">
+        <RadzenButton Style="margin-left:auto; color:white; border-radius:15px;" Icon="add_circle_outline" Click="@OpenInventory"/>
+    </div>
     <RadzenDataGrid @ref="grid0" AllowFiltering="false" Data="@Historyconnector" TItem="CHKS.Models.mydb.Historyconnector" GridLines="Radzen.DataGridGridLines.Horizontal" style="Height:35vh; border-radius:15px;" 
     AllowColumnResize=true AllowPaging=false RowUpdate="@GridRowUpdate">
      <Columns>
         <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Product" Title="Name" Width="350px" TextAlign="TextAlign.Center">
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Qty" Title="Qty" FormatString="{0:N2}" Width="50px" TextAlign="TextAlign.Center">
+            <EditTemplate Context="Historyconnector">
+                <RadzenNumeric style="display: block; width: 100%" @bind-Value="@Historyconnector.Qty" Name="Qty" />
+            </EditTemplate>
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Inventory.Import" Title="Import" FormatString="${0:N2}" TextAlign="TextAlign.Center" Width="100px"> 
         </RadzenDataGridColumn>

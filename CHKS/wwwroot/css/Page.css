@@ -256,3 +256,13 @@
     opacity: 100%
 
 }
+
+#ToggleBar{
+    width:30px; 
+    font-size: medium; 
+    color:gray; 
+    margin-right:auto; 
+    height:30px; 
+    background-color:lightgray; 
+    border-radius:5px
+}

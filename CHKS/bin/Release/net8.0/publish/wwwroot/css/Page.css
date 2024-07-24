@@ -135,7 +135,7 @@
     background-color: whitesmoke; 
     border-radius:15px ; 
     height: 110px;
-    width: 15%;
+    width: 20%;
     align-self: center;
     margin-left: -30px;
     z-index: 0;
@@ -180,7 +180,7 @@
 
 .Statistic-Info-Overview-SubCard-Show .RadzenText{
     width: 10px;
-    margin-right: auto;
+    margin-right: 40%;
     margin-left: auto; 
 }
 
@@ -228,4 +228,41 @@
     overflow: hidden;
     min-height:fit-content;
     height: 100%;
+}
+
+#snackbar {
+    transition: top 500ms, opacity 500ms linear;
+    min-width: 250px; /* Set a default minimum width */
+    margin-left: -125px; /* Divide value of min-width by 2 */
+    background-color: #333; /* Black background color */
+    color: #fff; /* White text color */
+    text-align: center; /* Centered text */
+    border-radius: 10px; /* Rounded borders */
+    padding: 16px; /* Padding */
+    position: fixed; /* Sit on top of the screen */
+    z-index: 1; /* Add a z-index if needed */
+    right: 50%; /* Center the snackbar */
+    top:0px;
+    opacity: 0%;
+    font-family: 'Khmer OS Battambang';
+    font-size:x-large;
+    min-height:20px;
+    padding:10px;
+}
+
+#snackbar.show {
+    transition: top 500ms, opacity 500ms linear;
+    top:10px;
+    opacity: 100%
+
+}
+
+#ToggleBar{
+    width:30px; 
+    font-size: medium; 
+    color:gray; 
+    margin-right:auto; 
+    height:30px; 
+    background-color:lightgray; 
+    border-radius:5px
 }

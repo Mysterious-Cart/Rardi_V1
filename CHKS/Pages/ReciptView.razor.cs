@@ -68,6 +68,33 @@ namespace CHKS.Pages
             
         }
 
+        protected async Task OpenInventory(){
+            var product = await DialogService.OpenAsync<Inventories>("Choose", new Dictionary<string, object>{{"IsDialog", "true"}}, new DialogOptions{Width="80%"});
+            IEnumerable<Models.mydb.Historyconnector> CheckForAlreadyExist = await MydbService.GetHistoryconnectors();
+            CheckForAlreadyExist = CheckForAlreadyExist.Where(i => i.Product == product.Name);
+            if(product != null && CheckForAlreadyExist.Any() == false ){
+                Models.mydb.Historyconnector TempHiscon = new(){
+                    Id = product.Name + DateTime.Now.ToString(),
+                    Product = product.Name,
+                    Qty = product.Stock,
+                    Export = product.Export,
+                    CartId = History.CashoutDate,
+                    Note = "",
+                };
+                try{
+                    await MydbService.CreateHistoryconnector(TempHiscon);
+                }catch(Exception exc){
+                }
+            }else if(product != null) {
+                Models.mydb.Historyconnector ThisProduct = CheckForAlreadyExist.FirstOrDefault();
+                ThisProduct.Qty += product.Stock;
+                try{
+                    await MydbService.UpdateHistoryconnector(ThisProduct.Id, ThisProduct);
+                }catch(Exception exc){
+                }
+            }
+        }
+
 
 
         protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.Historyconnector data)

@@ -106,7 +106,7 @@ namespace CHKS.Pages
 
         protected async Task SelectProduct(CHKS.Models.mydb.Inventory Product){
             if(Product.Stock!=0 && IsDialog == "true" && isModifying == false){
-                var Qty = await DialogService.OpenAsync<SingleInputPopUp>(Product.Name, new Dictionary<string, object>{{"Info",new string[]{"Qty", Product.Export.ToString()}}}, new DialogOptions{Width="13%"});
+                var Qty = await DialogService.OpenAsync<SingleInputPopUp>(Product.Name, new Dictionary<string, object>{{"Info",new string[]{"Qty", Product.Export.ToString(),Product.Stock.ToString()}}}, new DialogOptions{Width="13%"});
 
                 if(Qty is Array && Qty[0] != null && Qty[0] is decimal && Qty[0] <= Product.Stock){
                     Models.mydb.Inventory Temp = new(){};
