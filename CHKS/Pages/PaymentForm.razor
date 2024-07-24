@@ -1,13 +1,14 @@
-@page "/payment--form"
+@page "/payment--form"
+
 @attribute [Authorize]
 @using System.Globalization
 <RadzenRow>
     <RadzenCard style="width:fit-content;">
         <RadzenStack Orientation="Orientation.Horizontal">
             <RadzenStack Orientation="Orientation.Vertical" Gap="35px">
-                    <RadzenLabel Component="Total" Text="Total ($): "/>
-                    <RadzenLabel Component="Baht" Text="Baht: "/>
-                    <RadzenLabel Component="Dollar" Text="Dollar: "/>
+                    <RadzenLabel Component="Total" Text="សរុប ($): "/>
+                    <RadzenLabel Component="Baht" Text="បាត: "/>
+                    <RadzenLabel Component="Dollar" Text="ដុលា: "/>
             </RadzenStack>
             <RadzenStack>
                     <RadzenTextBox title="Total" ReadOnly ="true" Value="@Total.ToString()" Style="margin-left:1%"/>
@@ -17,8 +18,8 @@
                     <RadzenNumericRangeValidator Min="0" Component="Dollar"/>
             </RadzenStack>
             <RadzenStack Gap="35px">
-                    <RadzenLabel Component="Bank" Text="Bank: "/>
-                    <RadzenLabel Component="Riel" Text="Riel: "/>
+                    <RadzenLabel Component="Bank" Text="ABA: "/>
+                    <RadzenLabel Component="Riel" Text="រៀល: "/>
 
             </RadzenStack>
             <RadzenStack>
@@ -30,7 +31,7 @@
 
         </RadzenStack>
             <RadzenColumn Style="margin-top: 25px;">            
-                <RadzenButton title="Submit" locked="true" Click="@CashOut" Style="margin-left:1%; width:100%" Icon="paid" Text="Pay" ButtonStyle="ButtonStyle.Warning"/>
+                <RadzenButton title="Submit" locked="true" Click="@CashOut" Style="margin-left:1%; width:100%" Icon="paid" Text="គិតលុយ" ButtonStyle="ButtonStyle.Warning"/>
             </RadzenColumn>
     </RadzenCard>
 </RadzenRow>

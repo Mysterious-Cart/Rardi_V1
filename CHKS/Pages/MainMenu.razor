@@ -79,11 +79,11 @@
             <RadzenButton Icon="camera_enhance" style="width:25px; height:25px; border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:gray; padding:1.5px;margin-left:auto"/>
         </RadzenRow>
         <RadzenRow  Style=" height: 62dvh; width:100%; overflow-y: scroll; overflow-x: hidden;">
-            <div Style=" display:flex; flex-wrap:wrap; align-content:flex-start; scroll-snap-type: y proximity; scroll-snap-align:inherit; scroll-snap-stop: always; width:100%">
+            <div Style=" display:flex; flex-wrap:wrap; align-content:flex-start; scroll-snap-type: y proximity; scroll-snap-align:inherit; scroll-snap-stop: always; width:100%;">
                 @if(Inventories != null){
                     @foreach(var product in Inventories){
                         <div style="width:32%; height:150px; background-color:transparent; border-radius:15px; padding:20px; border:solid; border-color:lightgray; 
-                        border-width:2px; margin-left:10px; margin-top:10px;" @onclick= "@(args => AddItemtoCart(product))" >
+                        border-width:2px; margin-left:10px; margin-top:10px; " @onclick= "@(args => AddItemtoCart(product))" >
                             <RadzenRow Style="display: inline-flex; height:10px">
 
                                 @if(@product.Stock == 0){
@@ -116,8 +116,8 @@
         
     </RadzenStack>
 
-    <div Style="margin-left:auto; width:30%; height:100dvh; background-color: #fff; border-radius:15px 0px 0px 15px">
-        <div Style="margin-top: 40px; margin-left:60px">
+    <div Style="margin-left:auto; width:30%; height:100dvh; background-color: #fff; border-radius:15px 0px 0px 15px; ">
+        <div Style="margin-top: 40px; margin-left:60px;">
             <RadzenRow Style="width:80%" AlignItems="AlignItems.Start">
                 <p style="font-family: 'Khmer OS Battambang'; font-size: 1.3vw; color:#28282B; margin-right:auto; overflow:hidden; width:190px "><b>@(Customer.Plate != null?Customer.Plate + "#" + Customer.CartId:"********")</b></p>
                 <RadzenButton Icon="save" Click="@ResetToDefault" style="width:25px; height:25px;border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:green; padding:1.5px;"/>
@@ -130,7 +130,7 @@
             </RadzenRow>
             <RadzenRow Style="display:inline-flexbox; width:100%; justify-content:flex-start">
                 <p style="font-family: 'Khmer OS Battambang'; font-size: medium; color:gray; margin-right:auto; height:10px "><b>@(Customer.Car != null?Customer.Car.Phone:0)</b></p>
-                <RadzenRow>
+                <RadzenRow Style="margin-right: 18%;">
                     <p style="font-family: 'Khmer OS Battambang'; font-size: medium; color:gray; margin-right:auto; height:10px;"><b>ឡានក្រុមហ៊ុម</b></p>
                     <div id="ToggleBar"></div>
                 </RadzenRow>
