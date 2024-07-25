@@ -266,3 +266,15 @@
     background-color:lightgray; 
     border-radius:5px
 }
+
+#ToggleBar.Show{
+    width:30px; 
+    font-size: medium; 
+    color:gray; 
+    margin-right:auto; 
+    height:30px; 
+    background-color:gray; 
+    border-radius:5px;
+    background-image: url("icon/check.png");
+    background-size: cover;
+}

@@ -32,7 +32,7 @@ namespace CHKS.Pages
         protected NotificationService NotificationService { get; set; }
 
         protected int CartID;
-        protected Decimal[] Product = {1, 0, 0};
+        protected string[] Product = {"1", "0", ""};
         protected DateOnly ChosenDate;
         protected string GivenMoney;
 
@@ -44,10 +44,16 @@ namespace CHKS.Pages
 
         protected async override Task OnInitializedAsync()
         {
-            if(Info[0] == "Qty"){
+            if(Info[0] == "Qty" ){
                 Info[1] = Math.Round(decimal.Parse(Info[1]),2).ToString();
                 Info[2] = Math.Round(decimal.Parse(Info[2]),2).ToString();
-                Product[1] = decimal.Parse(Info[1]); 
+                Product[1] = Info[1]; 
+            }else if(Info[0] == "EditItem"){
+                Info[1] = Math.Round(decimal.Parse(Info[1]),2).ToString();
+                Info[2] = Math.Round(decimal.Parse(Info[2]),2).ToString();
+                Product[0] = Info[2];
+                Product[1] = Info[1]; 
+                Product[2] = Info[3];
             }
         }
 
@@ -56,7 +62,7 @@ namespace CHKS.Pages
                 DialogService.Close(CartID);
             }else if(Info[0]=="Choosing Date"){
                 DialogService.Close(ChosenDate.ToString("dd/MM/yyyy"));
-            }else if(Info[0] == "Qty") {
+            }else if(Info[0] == "Qty" || Info[0] == "EditItem") {
                 DialogService.Close(Product);
             }
 

@@ -22,6 +22,8 @@ namespace CHKS.Models.mydb
 
         public string Creator { get; set; }
 
+        public short? Company { get; set; }
+
         public ICollection<Connector> Connectors { get; set; }
     }
 }

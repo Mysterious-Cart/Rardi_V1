@@ -45,6 +45,16 @@ namespace CHKS.Pages
         [Inject]
         protected SecurityService Security { get; set; }
 
+        protected string search = "";
+
+        protected async Task Search(ChangeEventArgs args)
+        {
+            
+            search = $"{args.Value}";
+
+            cars = cars.Where(i => i.Plate.Contains(search));
+        }
+
         protected override async Task OnInitializedAsync()
         {
             cars = await mydbService.GetCars();

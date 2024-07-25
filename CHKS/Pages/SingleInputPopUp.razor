@@ -21,7 +21,25 @@
             <RadzenButton Click="@Close" Icon="add_circle_outline" Text="បង្កើត"/>
 
         }else if(Info[0] == "Qty"){
-            Console.WriteLine(Info[2]);
+            <RadzenStack>
+                <RadzenStack Gap="1px">
+                    <RadzenText Text="តម្លៃលក់ដើម" Style="font-family: 'Khmer OS Battambang' " />
+                    <RadzenTextBox @bind-Value="@Info[1]" ReadOnly=true/>
+                </RadzenStack>
+                <RadzenStack Gap="1px">
+                    <RadzenText Text="ចំនួន" Style="font-family: 'Khmer OS Battambang' " />
+                    <RadzenNumeric @bind-Value="Product[0]" title="Qty" Placeholder="Required" Min=0 Max="@decimal.Parse(@Info[2])"/>
+                    <RadzenNumericRangeValidator Component="Qty" Min="0" Max="@Decimal.Parse(@Info[2])"/>
+                    <RadzenText>ក្នុងស្តុកសល់: @Info[2]</RadzenText>
+                </RadzenStack>
+                <RadzenStack Gap="1px">
+                    <RadzenText Text="តម្លៃថ្មី" Style="font-family: 'Khmer OS Battambang' " />
+                    <RadzenNumeric @bind-Value="Product[1]" title="NewPrice" Placeholder="Required" Min=0/>
+                    <RadzenNumericRangeValidator Component="NewPrice" Min="0"/>
+                </RadzenStack>
+                <RadzenButton Click="@Close" Icon="add_circle_outline" Text="បញ្ចូល" Style="font-family: 'Khmer OS Battambang' "/>
+            </RadzenStack>
+        }else if(Info[0] == "EditItem"){
             <RadzenStack>
                 <RadzenStack Gap="1px">
                     <RadzenText Text="តម្លៃលក់ដើម" Style="font-family: 'Khmer OS Battambang' " />
@@ -39,9 +57,8 @@
                     <RadzenNumericRangeValidator Component="NewPrice" Min="0"/>
                 </RadzenStack>
                 <RadzenStack Gap="1px">
-                    <RadzenText Text="បញ្ចុះតម្លៃ(គិតជាភាគរយ)" Style="font-family: 'Khmer OS Battambang' " />
-                    <RadzenNumeric @bind-Value="Product[2]" title="Discount" Placeholder="Required" Min=0 Max="100"/>
-                    <RadzenNumericRangeValidator Component="Discount" Min="0" Max="100"/>
+                    <RadzenText Text="ចំណាំ" Style="font-family: 'Khmer OS Battambang' " />
+                    <RadzenTextBox @bind-Value="Product[2]" title="Note" Placeholder="Required"/>
                 </RadzenStack>
                 <RadzenButton Click="@Close" Icon="add_circle_outline" Text="បញ្ចូល" Style="font-family: 'Khmer OS Battambang' "/>
             </RadzenStack>

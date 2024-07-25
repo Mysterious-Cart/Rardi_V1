@@ -29,6 +29,10 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\icon\\check.png",
+      "PackagePath": "staticwebassets\\icon\\check.png"
+    },
+    {
       "Id": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\images\\Full_logo.png",
       "PackagePath": "staticwebassets\\images\\Full_logo.png"
     },

@@ -27,6 +27,10 @@ namespace CHKS.Models.mydb
 
         public decimal? Riel { get; set; }
 
+        public sbyte? Company { get; set; }
+
+        public string User { get; set; }
+
         public ICollection<Historyconnector> Historyconnectors { get; set; }
     }
 }

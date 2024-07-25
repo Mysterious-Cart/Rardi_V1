@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "0c+nJzYtbVQLlBOUUP8gtQeZRN1IA4T7ScjdKH+rmKs=",
+  "Hash": "fnOtoEnMaZPLj1fcLH3K3ADFzKovugmZKbainYbC0V0=",
   "Source": "CHKS",
   "BasePath": "_content/CHKS",
   "Mode": "Default",
@@ -1079,6 +1079,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\Font\\KhmerOS_battambang.ttf"
+    },
+    {
+      "Identity": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\icon\\check.png",
+      "SourceId": "CHKS",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\",
+      "BasePath": "_content/CHKS",
+      "RelativePath": "icon/check.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\icon\\check.png"
     },
     {
       "Identity": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\images\\Full_logo.png",

@@ -123,10 +123,6 @@ namespace CHKS.Data
               .HasPrecision(10,2);
 
             builder.Entity<CHKS.Models.mydb.Connector>()
-              .Property(p => p.Discount)
-              .HasPrecision(10,2);
-
-            builder.Entity<CHKS.Models.mydb.Connector>()
               .Property(p => p.PriceOverwrite)
               .HasPrecision(10,2);
 

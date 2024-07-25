@@ -106,6 +106,7 @@
                                 <RadzenRow>
                                     <p style="font-family: 'Khmer OS Battambang'; font-size:1.3em; height:5px;color:gray">  @product.Barcode</p>
                                 </RadzenRow>
+
                             </RadzenStack>
                         </div>
                     }
@@ -132,7 +133,7 @@
                 <p style="font-family: 'Khmer OS Battambang'; font-size: medium; color:gray; margin-right:auto; height:10px "><b>@(Customer.Car != null?Customer.Car.Phone:0)</b></p>
                 <RadzenRow Style="margin-right: 18%;">
                     <p style="font-family: 'Khmer OS Battambang'; font-size: medium; color:gray; margin-right:auto; height:10px;"><b>ឡានក្រុមហ៊ុម</b></p>
-                    <div id="ToggleBar"></div>
+                    <div id="ToggleBar" class="@ToggleButtonClass" @onclick="@Togglebutton" ></div>
                 </RadzenRow>
             </RadzenRow>
             
@@ -150,17 +151,18 @@
                             <RadzenStack Orientation="Orientation.Horizontal">
                                 <RadzenStack Style="width:fit-content; height:100%; margin-left:5%" Orientation="Orientation.Vertical" Gap="0px">
                                     <RadzenButton Icon="add" style="width: 12px; height:2px; background-color:transparent; border-width:0px;color:#28282B" Click= "@(args => ChangeQty(Hiscon, 1))"/>
-                                    <div ReadOnly=true Style="border-radius: 30px; width:35px; height:35px; background-color:white; text-align:center; padding-top:10px"> @Math.Round(Hiscon.Qty).ToString()</div>
+                                    <div Style="border-radius: 30px; width:35px; height:35px; background-color:white; text-align:center; padding-top:10px"> @Math.Round(Hiscon.Qty).ToString()</div>
                                     <RadzenButton Icon="remove" Style="width: 12px; height:2px; background-color:transparent; border-width:0px;color:#28282B" Click="@(args => ChangeQty(Hiscon, -1))"/>
                                 </RadzenStack>
                                 <RadzenStack Style="margin-top: 30px; margin-left:15px; width:100%" >
-                                    <RadzenStack style= "height:10px"Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start">
-                                        <RadzenText Text="@Hiscon.Product" Style="font-family: 'Khmer OS Battambang';  font-size:large; color:#28282B"/>
+                                    <RadzenStack style= "height:10px"Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start" >
+                                        <RadzenText Text="@Hiscon.Product" Style="font-family: 'Khmer OS Battambang';  font-size:1vw; color:#28282B; height:8% ;widht:100%;overflow-y:scroll; overflow:visible"/>
                                         <RadzenButton Icon="delete" Click="@(args => ChangeQty(Hiscon, 2))" style="width:25px; height:25px;border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:red; padding:1.5px;margin-right:20px; margin-left:auto; "/>
                                     </RadzenStack>
-                                    <RadzenRow Style="height: 10px;">
+                                    <RadzenRow Style="height: 10px; margin-top:5px" AlignItems="AlignItems.Center">
                                         <RadzenText Text="@('$' + Math.Round(Hiscon.PriceOverwrite.GetValueOrDefault(),2).ToString())" Style="font-family: 'Khmer OS Battambang';  font-size:medium; color:lightgray; height:3px"/>
                                         <RadzenText Text="@Hiscon.Note" Style="font-family: 'Khmer OS Battambang';  font-size:medium; color:lightgray"/>
+                                        <RadzenButton icon="edit" style="width:25px; height:20px;border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:blue; padding:1.5px;margin-right:20px; margin-left:auto; margin-top:5px" Click="@(args => @EditProduct(Hiscon))"/>
                                     </RadzenRow>
                                 </RadzenStack>
                             </RadzenStack>

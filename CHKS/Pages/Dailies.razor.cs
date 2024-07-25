@@ -60,14 +60,28 @@ namespace CHKS.Pages
             Dailyexpenses = await mydbService.GetDailyexpenses();
             Dailyexpenses = Dailyexpenses.Where(i => i.Key.Contains(DateTime.Now.ToString("dd/MM/yyyy")));
             History = await mydbService.GetHistories();
-            History = History.Where(i => LikeOperator.LikeString(i.CashoutDate, dates + "*", Microsoft.VisualBasic.CompareMethod.Text));
             Historyconnectors = await mydbService.GetHistoryconnectors();
             changeDataMode = false;
             GetProductWithoutImport();
             await GetAllNumberForToday();
+            await GetHistory();
+        }
+
+        protected async Task GetHistory(){
+            List<Models.mydb.History> tempHis = new();
+            foreach(var i in History.ToList()){
+                char[] seperator = {':','('};
+                string[] Temp = i.CashoutDate.Split(seperator,2);
+                if( DateTime.ParseExact(Temp[0],"dd/MM/yyyy",null) == DateTime.Today){
+                    tempHis.Add(i);
+                }
+            }
+            History = Enumerable.Empty<Models.mydb.History>();
+            History = tempHis;
         }
 
         protected async Task GetAllNumberForToday(){
+            History = History.Where(i => i.Company == 0);
             Total = History.Sum(i => i.Total).ToString() + " $";
             ExpenseTotal = Dailyexpenses.Sum(i => i.Expense).ToString() + " $";
         }
@@ -75,26 +89,6 @@ namespace CHKS.Pages
         private CultureInfo DollarSign = new CultureInfo("us-US");
         private CultureInfo BahtSign = new CultureInfo("kh-KH");
         private CultureInfo RielSign = new CultureInfo("th-TH");
-        protected string PaymentType;
-        protected async Task GetPaymentTypeOfHistory(){
-            foreach(var Customer in History){
-                if(Customer.Baht != 0){
-                    
-                }
-
-                if(Customer.Riel != 0){
-                    
-                }
-
-                if(Customer.Dollar != 0){
-                    
-                }
-
-                if(Customer.Bank != 0){
-                    
-                }
-            }
-        }
 
 
         protected async Task LoadNotImport(){

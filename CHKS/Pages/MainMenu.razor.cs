@@ -35,27 +35,13 @@ namespace CHKS.Pages
 
 
         protected CHKS.Models.mydb.Car CustomerLists;
-        protected Models.mydb.Cart Customer = new(){Plate=null};
-
-        protected bool? SelectionState = null;//False for Customer Mode, True for Cart Modes
-        protected bool Selection = false;//False for selecting, True for already selected
-
-        protected string Phone;
-        protected string CarType;       
-        protected string RowTotal = "0";
+        protected Models.mydb.Cart Customer = new(){Plate=null};    
 
         protected string CustomerDataExpand = "customerDatalist-expanded-false";
         protected string icon = "start";
 
-        protected string TodayTotal = "$0";
-
-        protected bool VisibilityOfServiceCharge = false;
-        protected string ServiceType;
-        protected decimal ServiceFees=0;
-
         protected static string today = DateTime.Now.ToString("dd/MM/yy");
 
-        protected IEnumerable<Models.mydb.Dailyexpense> Dailyexpenses;
         protected IEnumerable<CHKS.Models.mydb.Cart> Carts;
         protected IEnumerable<CHKS.Models.mydb.Connector> Connectors;
         protected IEnumerable<CHKS.Models.mydb.Inventory> Inventories;
@@ -63,10 +49,29 @@ namespace CHKS.Pages
         protected RadzenDataGrid<CHKS.Models.mydb.Connector> Grid1;
         protected RadzenDataGrid<Models.mydb.Dailyexpense> grid2;
         
-        protected CHKS.Models.mydb.Connector connector = new(){GeneratedKey="", CartId=0,Product ="", Qty=0 };
+        protected CHKS.Models.mydb.Connector connector = new(){};
 
         [Inject]
         protected SecurityService Security { get; set; }
+
+        private string ToggleButtonClass = "";
+        protected async void Togglebutton(){
+            if(Customer.Plate != null){
+                if(ToggleButtonClass == ""  ){
+                    ToggleButtonClass = "Show";
+                    Customer.Company = 1;
+                    await UpdateCart(Customer);
+                }else{
+                    ToggleButtonClass =  "";
+                    Customer.Company = 0;
+                    await UpdateCart(Customer);
+                }
+            }
+        }
+
+        protected async Task UpdateCart(Models.mydb.Cart Customer){
+            await MydbService.UpdateCart(Customer.CartId, Customer);
+        }
 
         protected async Task OpenExpenseMenu()
         {
@@ -76,9 +81,6 @@ namespace CHKS.Pages
         {
             Inventories = await MydbService.GetInventories();
             Carts = await MydbService.GetCarts();
-            Dailyexpenses = await MydbService.GetDailyexpenses();
-            Dailyexpenses = Dailyexpenses.Where(i => i.Key.Contains(DateTime.Now.ToString("dd/MM/yyyy")));
-            Retotal();
         }
 
         protected string search = "";
@@ -91,30 +93,6 @@ namespace CHKS.Pages
             Inventories = await MydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) || i.Barcode.Contains(@0) ", FilterParameters = new object[] { search , "Service Charge"} });
         }
 
-        protected async void Retotal(){
-            IEnumerable<Models.mydb.History> history = await MydbService.GetHistories();
-            history = history.Where(i => i.CashoutDate.Contains(today));
-            TodayTotal = "$"+ history.Sum(i => i.Total).ToString();
-        }       
-
-        protected async Task AddServiceCharge(){
-
-            Models.mydb.Connector Service = new Models.mydb.Connector{
-                CartId = Customer.CartId,
-                Product = "Service Charge",
-                Qty = 1,
-                Note = ServiceType,
-                GeneratedKey = Customer.CartId + ServiceType,
-            };
-
-            await MydbService.CreateConnector(Service);
-            ServiceType = "";
-            ServiceFees = 0;
-            Connectors = await MydbService.GetConnectors();
-            Connectors = Connectors.Where(i => i.CartId == Customer.CartId);
-            Customer.Total = Connectors.Sum(i => i.PriceOverwrite * i.Qty );
-            await Grid1.Reload();
-        }
 
         protected async Task CreateCustomer(){
             if(Customer.Plate == null){
@@ -125,21 +103,14 @@ namespace CHKS.Pages
                     {
                         Customer.CartId = Id;
                         Customer.Plate = result.Plate;
-                        Customer.Creator = Security.User?.NormalizedUserName;
-                        Phone = result.Phone;
-                        CarType = result.Type;
-                        Customer.Total = 0;
-                        SelectionState = false;
-                        Selection = true;
-                        VisibilityOfServiceCharge = true;
-                        
+                        Customer.Creator = Security.User?.NormalizedUserName;       
+                        Customer.Company = 0;                 
                         try{
                             await MydbService.CreateCart(Customer);
                         }catch(Exception exc){
                             if(exc.Message == "Item already available"){
                                 await DialogService.Alert("This cart ID already exist.","Important");
                                 await ResetToDefault();
-                                VisibilityOfServiceCharge = false;
                             }
                         }finally{
                             Customer = new();
@@ -150,21 +121,32 @@ namespace CHKS.Pages
             
         }
 
+        protected async Task EditProduct(Models.mydb.Connector Product){
+            var UpdatedItems = await DialogService.OpenAsync<SingleInputPopUp>(Product.Product, new Dictionary<string, object>{{"Info",new string[]{"EditItem", Product.PriceOverwrite.ToString(), Product.Qty.ToString(), Product.Note}}}, new DialogOptions{Width="250px"});
+            if(UpdatedItems != null){
+                Product.Qty = decimal.Parse(UpdatedItems[0]);
+                Product.PriceOverwrite = decimal.Parse(UpdatedItems[1]);
+                Product.Note = UpdatedItems[2];
+                try{
+                    await MydbService.UpdateConnector(Product.GeneratedKey, Product);
+                }catch(Exception exc){
+
+                }
+            }
+        }
+
         protected async Task OpenCart(Models.mydb.Cart Cart){
             if(Customer.Plate == null){
+                if(Cart.Company == 1){
+                    ToggleButtonClass = "Show";
+                }
                 Customer.CartId = Cart.CartId;
                 Customer.Plate = Cart.Plate;
                 Customer.Car = Cart.Car;
                 Customer.Creator = Cart.Creator;
-
-                Phone = Customer.Car.Phone;
-                CarType = Customer.Car.Type;
-
-                SelectionState = true;
-                Selection = true;
+                Customer.Company = Cart.Company;
 
                 Connectors = await MydbService.GetConnectors(new Query{Filter=$@"i => i.CartId == (@0)", FilterParameters = new object[] {Customer.CartId}});
-                VisibilityOfServiceCharge = true;
                 Customer.Total = Connectors.Sum(i => i.PriceOverwrite * i.Qty );       
                 await Toasting("បើកអតិថជន");
             }   
@@ -201,13 +183,19 @@ namespace CHKS.Pages
         
         protected async Task ChangeQty(Models.mydb.Connector Product, int Changes){
             
-            if(Product.Inventory.Stock > 0 && Product.Qty != 0 && Changes == 1 || Changes == -1){
+            if(Product.Inventory.Stock > 0 && Product.Qty >= 1 && Changes == 1 || Changes == -1){
+                
                 Product.Inventory.Stock -= Changes;
                 await MydbService.UpdateInventory(Product.Inventory.Name, Product.Inventory);
                 Product.Qty += Changes;
                 await MydbService.UpdateConnector(Product.GeneratedKey, Product);
+                if(Product.Qty == 0){
+                    Product.Inventory.Stock += Product.Qty;
+                    await MydbService.UpdateInventory(Product.Inventory.Name, Product.Inventory);
+                    await MydbService.DeleteConnector(Product.GeneratedKey);
+                }
                 await Toasting(Changes > 0?"ដកទំនេញចេញពីស្តុក":"ថែមទំនេញចូលស្តុក");
-            }else if(Product.Inventory.Stock >= 0 && Changes > 1){
+            }else if(Product.Inventory.Stock >= 0 && Changes > 1 ){
                 Product.Inventory.Stock += Product.Qty;
                 await MydbService.UpdateInventory(Product.Inventory.Name, Product.Inventory);
                 await MydbService.DeleteConnector(Product.GeneratedKey);
@@ -227,39 +215,41 @@ namespace CHKS.Pages
 
 
         protected async Task CashOut(){
-            if(Customer.Plate  !=  null){
+            if(Customer.Plate  !=  null ){
                 if(Connectors.ToList().Any() == true){
                     if(await DialogService.Confirm("តើអ្នកច្បាស់ដែរឫទេ?","សំខាន់!") == true){
-                        List<decimal?> payment = await DialogService.OpenAsync<PaymentForm>("គិតលុយ",new Dictionary<string, object>{{"Total",Customer.Total}}, new DialogOptions{Width="35%"});
+                        if(Customer.Company != 1){
+                            List<decimal?> payment = await DialogService.OpenAsync<PaymentForm>("គិតលុយ",new Dictionary<string, object>{{"Total",Customer.Total}}, new DialogOptions{Width="35%"});
 
-                        if(payment != null){
+                            if(payment != null){
 
-                            string time = "";
+                                string time = "";
 
-                            if(await DialogService.Confirm("តើអ្នកចង់ប្តូរថ្ងៃទីគិតលុយដែរឫទេ?","Note", new ConfirmOptions{OkButtonText = "Yes", CancelButtonText="No",CloseDialogOnEsc=false, ShowClose=false}) == false){
-                                time = DateTime.Now.ToString("dd/MM/yyyy") + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")";
-                            }else{
+                                if(await DialogService.Confirm("តើអ្នកចង់ប្តូរថ្ងៃទីគិតលុយដែរឫទេ?","Note", new ConfirmOptions{OkButtonText = "Yes", CancelButtonText="No",CloseDialogOnEsc=false, ShowClose=false}) == false){
+                                    time = DateTime.Now.ToString("dd/MM/yyyy") + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")";
+                                }else{
+                                    
+                                    time = await DialogService.OpenAsync<SingleInputPopUp>("រើសថ្ងៃទី", new Dictionary<string, object>{{"Info", new string[]{"Choosing Date"}}}, new DialogOptions{Width="20%"});
+                                    time = time!=null? time + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")": DateTime.Now.ToString("dd/MM/yyyy") + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")";
+                                }
+                                Models.mydb.History History = new Models.mydb.History{
+                                    CashoutDate = time,
+                                    Plate = Customer.Plate,
+                                    Total = Customer.Total,
+                                    Bank = payment[0],
+                                    Dollar = payment[1],
+                                    Baht = payment[2],
+                                    Riel = payment[3],
+                                    Company = 0,
+                                    User = Security.User?.Name,
+                                    
+                                };
+                                await MydbService.CreateHistory(History);
                                 
-                                time = await DialogService.OpenAsync<SingleInputPopUp>("រើសថ្ងៃទី", new Dictionary<string, object>{{"Info", new string[]{"Choosing Date"}}}, new DialogOptions{Width="20%"});
-                                time = time!=null? time + ":" + Customer.CartId + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")": DateTime.Now.ToString("dd/MM/yyyy") + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")";
-                            }
-                            
-                            Models.mydb.History History = new Models.mydb.History{
-                                CashoutDate = time,
-                                Plate = Customer.Plate,
-                                Total = Customer.Total,
-                                Bank = payment[0],
-                                Dollar = payment[1],
-                                Baht = payment[2],
-                                Riel = payment[3],
-                            };
-                            await MydbService.CreateHistory(History);
 
 
-                            foreach(var i in Connectors.ToList())
-                            {   
-                                if(i.Product != "Service Charge")
-                                {
+                                foreach(var i in Connectors.ToList())
+                                {   
                                     Models.mydb.Historyconnector historyconnector = new Models.mydb.Historyconnector{
                                         Id = i.GeneratedKey + time,
                                         Product = i.Product,
@@ -270,14 +260,58 @@ namespace CHKS.Pages
                                     };
 
                                     await MydbService.CreateHistoryconnector(historyconnector);
-                                }
+
+                                };
+
+                                await MydbService.DeleteCart(Customer.CartId);
+                                await ResetToDefault();
+                                await Toasting("គិតលុយបានសម្រេច់");
+                            }
+                        }else{
+
+                            string time = "";
+                            if(await DialogService.Confirm("តើអ្នកចង់ប្តូរថ្ងៃទីគិតលុយដែរឫទេ?","Note", new ConfirmOptions{OkButtonText = "Yes", CancelButtonText="No",CloseDialogOnEsc=false, ShowClose=false}) == false){
+                                time = DateTime.Now.ToString("dd/MM/yyyy") + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")";
+                            }else{
+                                
+                                time = await DialogService.OpenAsync<SingleInputPopUp>("រើសថ្ងៃទី", new Dictionary<string, object>{{"Info", new string[]{"Choosing Date"}}}, new DialogOptions{Width="20%"});
+                                time = time!=null? time + ":" + Customer.CartId + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")": DateTime.Now.ToString("dd/MM/yyyy") + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")";
+                            }
+                            Models.mydb.History History = new Models.mydb.History{
+                                CashoutDate = time,
+                                Plate = Customer.Plate,
+                                Total = Customer.Total,
+                                Bank = 0,
+                                Dollar = 0,
+                                Baht = 0,
+                                Riel = 0,
+                                Company = 1,
+                                User = Security.User?.Name,
+                                
+                            };
+                            await MydbService.CreateHistory(History);
+                            
+
+
+                            foreach(var i in Connectors.ToList())
+                            {   
+                                Models.mydb.Historyconnector historyconnector = new Models.mydb.Historyconnector{
+                                    Id = i.GeneratedKey + time,
+                                    Product = i.Product,
+                                    Export = i.PriceOverwrite,
+                                    Qty = i.Qty,
+                                    CartId = time,
+                                    Note = i.Note
+                                };
+
+                                await MydbService.CreateHistoryconnector(historyconnector);
 
                             };
 
                             await MydbService.DeleteCart(Customer.CartId);
                             await ResetToDefault();
-                            VisibilityOfServiceCharge = false;
                             await Toasting("គិតលុយបានសម្រេច់");
+                            
                         }
                     }
                 }else{await DialogService.Alert("បញ្ចាក់អ្នកគ្មានទំនេញនៅក្នុងអត្ថជននេះទេ.","បញ្ចាក់!");}
@@ -316,11 +350,7 @@ namespace CHKS.Pages
             if(Customer.Plate != null){
                 
                 Customer = new Models.mydb.Cart();
-                SelectionState = null;
-                Selection = false;
-                Phone = "N/A";
-                CarType ="N/A";
-                RowTotal = "0 $";
+                ToggleButtonClass = "";
 
                 Connectors = Enumerable.Empty<CHKS.Models.mydb.Connector>();                
             }
@@ -333,23 +363,17 @@ namespace CHKS.Pages
                 if(Product.Stock!=0 && TempConnector.ToList().Any() == false){
                     var Qty = await DialogService.OpenAsync<SingleInputPopUp>(Product.Name, new Dictionary<string, object>{{"Info",new string[]{"Qty", Product.Export.ToString(), Product.Stock.ToString()}}}, new DialogOptions{Width="250px"});
 
-                    if(Qty is Array && Qty[0] != null && Qty[0] is decimal && Qty[0] <= Product.Stock){
-                        Models.mydb.Inventory Temp = new(){};
-                        Product.Stock -=  Qty[0];
+                    if(Qty != null && decimal.Parse(Qty[0]) <= Product.Stock){
+                        Product.Stock -=  decimal.Parse(Qty[0]);
                         await MydbService.UpdateInventory(Product.Name, Product);
-                        Temp.Export = Qty[1];
-                        Temp.Import = Qty[2];
-                        Temp.Name = Product.Name;
-                        Temp.Stock = Qty[0];
 
                         connector = new(){
                             CartId = Customer.CartId,
                             GeneratedKey = String.Concat(Customer.CartId, Product.Name),
-                            Product = Temp.Name,
-                            Note = "",
-                            Qty = Temp.Stock,// Stock here are not in stock, it the chosen value pass from the user input;
-                            PriceOverwrite = Temp.Export,
-                            Discount = Temp.Import
+                            Product = Product.Name,
+                            Note = Qty[2],
+                            Qty = decimal.Parse(Qty[0]),// Stock here are not in stock, it the chosen value pass from the user input;
+                            PriceOverwrite = decimal.Parse(Qty[1])
                         };
                         try {
                             await MydbService.CreateConnector(connector);
@@ -366,7 +390,7 @@ namespace CHKS.Pages
                             Customer.Total = Connectors.Sum(i => i.PriceOverwrite * i.Qty );
                             await MydbService.UpdateCart(Customer.CartId, Customer);
                         }  
-                    }else if(Qty is Array && Qty[0] != null && Qty[0] > Product.Stock){
+                    }else if(Qty != null && decimal.Parse(Qty[0]) > Product.Stock){
                         await DialogService.Alert("Too much! Not available In stock. Have Left: " + Product.Stock + ".","Warning");
                     }
 
@@ -387,6 +411,9 @@ namespace CHKS.Pages
             }
 
         }
+
+
+        
 
 
     }

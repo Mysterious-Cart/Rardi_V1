@@ -2,7 +2,10 @@
 
 <PageTitle>Cars</PageTitle>
 <RadzenStack>
-    <RadzenButton Icon="add_circle_outline" Text="Add" Click="@AddButtonClick" Variant="Variant.Flat"  Style="margin-left:auto"/>
+    <RadzenRow>
+        <InputText @bind-Value="@search" @oninput="@Search"></InputText>
+        <RadzenButton Icon="add_circle_outline" Text="Add" Click="@AddButtonClick" Variant="Variant.Flat"  Style="margin-left:auto"/>
+    </RadzenRow>
     <RadzenRow>
       <RadzenColumn SizeMD=12>
         <RadzenDataGrid @ref="grid0" ColumnWidth="200px"   AllowFiltering="true" FilterMode="FilterMode.SimpleWithMenu" Style="height: 60vh;"

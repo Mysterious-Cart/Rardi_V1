@@ -71,7 +71,7 @@ namespace CHKS.Pages
                     Barcode.Remove(Barcode.Length - 1);
                 }else if(keyboard.CtrlKey == false && keyboard.ShiftKey == false && keyboard.AltKey == false ){
                     if(keyboard.Key == "Enter" && Barcode != ""){
-                        inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) && i.Name != (@1) || i.Barcode.Contains(@0) ", FilterParameters = new object[] { Barcode , "Service Charge"} });
+                        inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) || i.Barcode.Contains(@0) ", FilterParameters = new object[] { Barcode , "Service Charge"} });
                         Barcode = "";
                     }
                 }
@@ -87,12 +87,12 @@ namespace CHKS.Pages
 
             await grid0.GoToPage(0);
 
-            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) && i.Name != (@1) || i.Barcode.Contains(@0) ", FilterParameters = new object[] { search , "Service Charge"} });
+            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0)|| i.Barcode.Contains(@0) ", FilterParameters = new object[] { search , "Service Charge"} });
         }
 
         protected override async Task OnInitializedAsync()
         {   
-            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) && i.Name != (@1) || i.Barcode.Contains(@0)", FilterParameters = new object[] { search , "Service Charge"} }); 
+            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) || i.Barcode.Contains(@0)", FilterParameters = new object[] { search , "Service Charge"} }); 
         }
 
         RadzenTextBox searchbar;
@@ -108,7 +108,7 @@ namespace CHKS.Pages
             if(Product.Stock!=0 && IsDialog == "true" && isModifying == false){
                 var Qty = await DialogService.OpenAsync<SingleInputPopUp>(Product.Name, new Dictionary<string, object>{{"Info",new string[]{"Qty", Product.Export.ToString(),Product.Stock.ToString()}}}, new DialogOptions{Width="13%"});
 
-                if(Qty is Array && Qty[0] != null && Qty[0] is decimal && Qty[0] <= Product.Stock){
+                if( Qty != null && decimal.Parse(Qty[0]) && decimal.Parse(Qty[0]) <= Product.Stock){
                     Models.mydb.Inventory Temp = new(){};
                     Product.Stock -=  Qty[0];
                     await mydbService.UpdateInventory(Product.Name, Product);
