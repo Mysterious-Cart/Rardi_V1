@@ -143,36 +143,42 @@
             </div>
 
             <div style="width:83%; height:61dvh ;">
-                <RadzenStack Orientation="Orientation.Vertical" Gap="10px" Style="overflow-x: hidden; overflow-y:scroll; height:100%">
-                @if(Customer.Plate != null && Connectors != null){
-                    @foreach (var Hiscon in Connectors)
-                    {
-                        <div style="width:98%; height:110px; border-radius:15px; background-color:whitesmoke">
-                            <RadzenStack Orientation="Orientation.Horizontal">
-                                <RadzenStack Style="width:fit-content; height:100%; margin-left:5%" Orientation="Orientation.Vertical" Gap="0px">
-                                    <RadzenButton Icon="add" style="width: 12px; height:2px; background-color:transparent; border-width:0px;color:#28282B" Click= "@(args => ChangeQty(Hiscon, 1))"/>
-                                    <div Style="border-radius: 30px; width:35px; height:35px; background-color:white; text-align:center; padding-top:10px"> @Math.Round(Hiscon.Qty).ToString()</div>
-                                    <RadzenButton Icon="remove" Style="width: 12px; height:2px; background-color:transparent; border-width:0px;color:#28282B" Click="@(args => ChangeQty(Hiscon, -1))"/>
-                                </RadzenStack>
-                                <RadzenStack Style="margin-top: 30px; margin-left:15px; width:100%" >
-                                    <RadzenStack style= "height:10px"Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start" >
-                                        <RadzenText Text="@Hiscon.Product" Style="font-family: 'Khmer OS Battambang';  font-size:1vw; color:#28282B; height:8% ;widht:100%;overflow-y:scroll; overflow:visible"/>
-                                        <RadzenButton Icon="delete" Click="@(args => ChangeQty(Hiscon, 2))" style="width:25px; height:25px;border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:red; padding:1.5px;margin-right:20px; margin-left:auto; "/>
+                <RadzenStack Orientation="Orientation.Vertical" Gap="10px" Style="overflow-x: hidden; overflow-y:scroll; height:92%">
+                    @if(Customer.Plate != null && Connectors != null){
+                        @foreach (var Hiscon in Connectors)
+                        {
+                            <div style="width:98%; height:110px; border-radius:15px; background-color:whitesmoke">
+                                <RadzenStack Orientation="Orientation.Horizontal">
+                                    <RadzenStack Style="width:fit-content; height:100%; margin-left:5%" Orientation="Orientation.Vertical" Gap="0px">
+                                        <RadzenButton Icon="add" style="width: 12px; height:2px; background-color:transparent; border-width:0px;color:#28282B" Click= "@(args => ChangeQty(Hiscon, 1))"/>
+                                        <div Style="border-radius: 30px; width:35px; height:35px; background-color:white; text-align:center; padding-top:10px"> @Math.Round(Hiscon.Qty).ToString()</div>
+                                        <RadzenButton Icon="remove" Style="width: 12px; height:2px; background-color:transparent; border-width:0px;color:#28282B" Click="@(args => ChangeQty(Hiscon, -1))"/>
                                     </RadzenStack>
-                                    <RadzenRow Style="height: 10px; margin-top:5px" AlignItems="AlignItems.Center">
-                                        <RadzenText Text="@('$' + Math.Round(Hiscon.PriceOverwrite.GetValueOrDefault(),2).ToString())" Style="font-family: 'Khmer OS Battambang';  font-size:medium; color:lightgray; height:3px"/>
-                                        <RadzenText Text="@Hiscon.Note" Style="font-family: 'Khmer OS Battambang';  font-size:medium; color:lightgray"/>
-                                        <RadzenButton icon="edit" style="width:25px; height:20px;border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:blue; padding:1.5px;margin-right:20px; margin-left:auto; margin-top:5px" Click="@(args => @EditProduct(Hiscon))"/>
-                                    </RadzenRow>
+                                    <RadzenStack Style="margin-top: 30px; margin-left:15px; width:100%" >
+                                        <RadzenStack style= "height:10px"Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start" >
+                                            <RadzenText Text="@Hiscon.Product" Style="font-family: 'Khmer OS Battambang';  font-size:1vw; color:#28282B; height:8% ;widht:100%;overflow-y:scroll; overflow:visible"/>
+                                            <RadzenButton Icon="delete" Click="@(args => ChangeQty(Hiscon, 2))" style="width:25px; height:25px;border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:red; padding:1.5px;margin-right:20px; margin-left:auto; "/>
+                                        </RadzenStack>
+                                        <RadzenRow Style="height: 10px; margin-top:5px" AlignItems="AlignItems.Center">
+                                            <RadzenText Text="@('$' + Math.Round(Hiscon.PriceOverwrite.GetValueOrDefault(),2).ToString())" Style="font-family: 'Khmer OS Battambang';  font-size:medium; color:lightgray; height:3px"/>
+                                            <RadzenText Text="@Hiscon.Note" Style="font-family: 'Khmer OS Battambang';  font-size:medium; color:lightgray"/>
+                                            <RadzenButton icon="edit" style="width:25px; height:20px;border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:blue; padding:1.5px;margin-right:20px; margin-left:auto; margin-top:5px" Click="@(args => @EditProduct(Hiscon))"/>
+                                        </RadzenRow>
+                                    </RadzenStack>
                                 </RadzenStack>
-                            </RadzenStack>
-                        </div>
+                            </div>
+                        }
                     }
-                }
                 </RadzenStack>
+                <div id="ShowUndo">
+                    <RadzenIcon style="margin-left: 5%; color:black" icon="warning"/>
+                    <p style="font-family: 'Khmer OS Battambang'; font-size:1em;color: black; margin-left:5%"><b>ត្រឡប់ក្រោយវិញ</b></p>
+                    <div style="width:25%; height:100%; background-color:gray; border-radius:10px; margin-left:auto; margin-right:1%; color:white; text-align:center; padding:2px">ត្រឡប់វិញ</div>
+                </div>
             </div>
+            
 
-            <div style="color:lightgray; overflow:hidden; height:20px; width:80%">
+            <div style="color:lightgray; overflow:hidden; height:20px; width:80%;">
                 ---------------------------------------------------------------------------------------
             </div>
             <div style="color:lightgray; overflow:hidden; height:30px; width:80%; margin-top:auto; display:inline-flex">

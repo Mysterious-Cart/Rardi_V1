@@ -193,6 +193,7 @@ namespace CHKS.Pages
                     Product.Inventory.Stock += Product.Qty;
                     await MydbService.UpdateInventory(Product.Inventory.Name, Product.Inventory);
                     await MydbService.DeleteConnector(Product.GeneratedKey);
+
                 }
                 await Toasting(Changes > 0?"ដកទំនេញចេញពីស្តុក":"ថែមទំនេញចូលស្តុក");
             }else if(Product.Inventory.Stock >= 0 && Changes > 1 ){
@@ -211,6 +212,10 @@ namespace CHKS.Pages
             ToastString = ToastText;
             await Task.Delay(700);
             ToastState = "";
+        }
+
+        protected async Task CreateNewProduct(){
+            
         }
 
 

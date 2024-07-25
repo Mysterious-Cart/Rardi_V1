@@ -278,3 +278,23 @@
     background-image: url("icon/check.png");
     background-size: cover;
 }
+
+#ShowUndo{
+    overflow:hidden;
+    background-color:gold; 
+    border-radius:15px; 
+    opacity:0%; 
+    padding:5px; 
+    display:inline-flex;
+}
+
+#ShowUndo.Show{
+    width:96%; 
+    height:6%; 
+    background-color:gold; 
+    border-radius:15px; 
+    opacity:80%; 
+    padding:5px; 
+    display:inline-flex;
+    visibility:visible;
+}
