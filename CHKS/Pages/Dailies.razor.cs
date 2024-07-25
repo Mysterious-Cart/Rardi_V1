@@ -63,7 +63,7 @@ namespace CHKS.Pages
             Historyconnectors = await mydbService.GetHistoryconnectors();
             changeDataMode = false;
             GetProductWithoutImport();
-            await GetAllNumberForToday();
+
             await GetHistory();
         }
 
@@ -78,6 +78,7 @@ namespace CHKS.Pages
             }
             History = Enumerable.Empty<Models.mydb.History>();
             History = tempHis;
+            await GetAllNumberForToday();
         }
 
         protected async Task GetAllNumberForToday(){
