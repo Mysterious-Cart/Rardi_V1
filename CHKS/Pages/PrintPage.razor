@@ -170,7 +170,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        
 
         today = DateTime.Now.ToString("dd/MM/yyyy");
         Customer = new Models.mydb.Car{};
@@ -193,6 +192,7 @@
 
         protected async Task printMe(){
             await JSRuntime.InvokeVoidAsync("window.print");
+            
         }
 
 }

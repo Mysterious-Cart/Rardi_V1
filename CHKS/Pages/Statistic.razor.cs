@@ -83,7 +83,7 @@ namespace CHKS.Pages
             List<Models.mydb.Dailyexpense> TempList = new();
             foreach(var Expense in MonthlyExpense.ToList()){
                 string[] temp = Expense.Key.Split(":");
-                if(TimeStart < DateTime.Parse(temp[0]) && DateTime.Parse(temp[0]) <= TimeEnd){
+                if(TimeStart < DateTime.ParseExact(temp[0],"dd/MM/yyyy",null) && DateTime.ParseExact(temp[0],"dd/MM/yyyy",null) <= TimeEnd){
                     TempList.Add(Expense);
                 }
             }
@@ -135,11 +135,10 @@ namespace CHKS.Pages
         }
 
         protected async Task GetProductWithoutImport(){
-            TimeStart = DateTime.Parse(TimeStart.GetValueOrDefault().ToString("dd/MM/yyyy"));
-            TimeEnd = DateTime.Parse(TimeEnd.ToString("dd/MM/yyyy"));
+            TimeStart = DateTime.ParseExact(TimeStart.GetValueOrDefault().ToString("dd/MM/yyyy"),"dd/MM/yyyy", null);
+            TimeEnd = DateTime.ParseExact(TimeEnd.ToString("dd/MM/yyyy"),"dd/MM/yyyy", null);
             IEnumerable<Models.mydb.Historyconnector> TempHis = Historyconnectors;
             List<Models.mydb.Historyconnector> TempList = new(); 
-            Console.WriteLine(TimeStart);
             foreach(var item in TempHis){
                 char[] seperator = {':','('};
                 string[] Temp = item.CartId.Split(seperator,2);
