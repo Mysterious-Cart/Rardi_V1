@@ -7,7 +7,7 @@
 <RadzenLayout style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body'; background-color:whitesmoke ">
          @Body
     <RadzenSidebar Expanded="true" >
-        <RadzenProfileMenu Visible="@Security.IsAuthenticated()" Click="@ProfileMenuClick" Style="background-color: #28282B;  border-color:#28282B; overflow:hidden; margin-left:-11px; width: 200px;">
+        <RadzenProfileMenu Visible="@Security.IsAuthenticated()" Click="@ProfileMenuClick" Style="background-color: #28282B;  border-color:#28282B; margin-left:10px; width: 200px;">
             <ChildContent >
                 <RadzenProfileMenuItem Text="Logout" Value="Logout" Icon="power_settings_new" />
             </ChildContent>
