@@ -3,6 +3,7 @@
 <PageTitle>Cars</PageTitle>
 <RadzenStack>
     <RadzenRow>
+        <InputText @bind-Value="@search" @oninput="@Search"></InputText>
         <RadzenButton Icon="add_circle_outline" Text="Add" Click="@AddButtonClick" Variant="Variant.Flat"  Style="margin-left:auto"/>
     </RadzenRow>
     <RadzenRow>

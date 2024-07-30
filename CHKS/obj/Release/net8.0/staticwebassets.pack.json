@@ -29,14 +29,6 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
-      "Id": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\icon\\angle-small-down.png",
-      "PackagePath": "staticwebassets\\icon\\angle-small-down.png"
-    },
-    {
-      "Id": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\icon\\angle-small-up.png",
-      "PackagePath": "staticwebassets\\icon\\angle-small-up.png"
-    },
-    {
       "Id": "C:\\Users\\Kim hong\\Documents\\GitHub\\Pos\\CHKS\\wwwroot\\icon\\check.png",
       "PackagePath": "staticwebassets\\icon\\check.png"
     },

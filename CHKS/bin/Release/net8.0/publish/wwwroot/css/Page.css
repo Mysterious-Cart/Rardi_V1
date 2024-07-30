@@ -240,7 +240,7 @@
     border-radius: 10px; /* Rounded borders */
     padding: 16px; /* Padding */
     position: fixed; /* Sit on top of the screen */
-    z-index: 10; /* Add a z-index if needed */
+    z-index: 1; /* Add a z-index if needed */
     right: 50%; /* Center the snackbar */
     top:0px;
     opacity: 0%;
@@ -257,25 +257,24 @@
 
 }
 
-
-
-#ShowUndo{
-    overflow:hidden;
-    background-color:gold; 
-    border-radius:15px; 
-    opacity:0%; 
-    padding:5px; 
-    display:inline-flex;
+#ToggleBar{
+    width:30px; 
+    font-size: medium; 
+    color:gray; 
+    margin-right:auto; 
+    height:30px; 
+    background-color:lightgray; 
+    border-radius:5px
 }
 
-#ShowUndo.Show{
-    width:96%; 
-    height:6%; 
-    background-color:gold; 
-    border-radius:15px; 
-    opacity:80%; 
-    padding:5px; 
-    display:inline-flex;
-    visibility:visible;
+#ToggleBar.Show{
+    width:30px; 
+    font-size: medium; 
+    color:gray; 
+    margin-right:auto; 
+    height:30px; 
+    background-color:gray; 
+    border-radius:5px;
+    background-image: url("icon/check.png");
+    background-size: cover;
 }
-
