@@ -220,6 +220,12 @@ namespace CHKS.Data
 
         public DbSet<CHKS.Models.mydb.ProductClass> ProductClasses { get; set; }
 
+        public DbSet<CHKS.Models.mydb.InventoryCaroption> InventoryCaroptions { get; set; }
+
+        public DbSet<CHKS.Models.mydb.InventoryOption> InventoryOptions { get; set; }
+
+        public DbSet<CHKS.Models.mydb.InventoryProductgroup> InventoryProductgroups { get; set; }
+
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
             configurationBuilder.Conventions.Add(_ => new BlankTriggerAddingConvention());

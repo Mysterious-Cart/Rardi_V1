@@ -3001,5 +3001,488 @@ namespace CHKS
 
             return itemToDelete;
         }
+    
+        public async Task ExportInventoryCaroptionsToExcel(Query query = null, string fileName = null)
+        {
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/inventorycaroptions/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/inventorycaroptions/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+        }
+
+        public async Task ExportInventoryCaroptionsToCSV(Query query = null, string fileName = null)
+        {
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/inventorycaroptions/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/inventorycaroptions/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+        }
+
+        partial void OnInventoryCaroptionsRead(ref IQueryable<CHKS.Models.mydb.InventoryCaroption> items);
+
+        public async Task<IQueryable<CHKS.Models.mydb.InventoryCaroption>> GetInventoryCaroptions(Query query = null)
+        {
+            var items = Context.InventoryCaroptions.AsQueryable();
+
+
+            if (query != null)
+            {
+                if (!string.IsNullOrEmpty(query.Expand))
+                {
+                    var propertiesToExpand = query.Expand.Split(',');
+                    foreach(var p in propertiesToExpand)
+                    {
+                        items = items.Include(p.Trim());
+                    }
+                }
+
+                ApplyQuery(ref items, query);
+            }
+
+            OnInventoryCaroptionsRead(ref items);
+
+            return await Task.FromResult(items);
+        }
+
+        partial void OnInventoryCaroptionGet(CHKS.Models.mydb.InventoryCaroption item);
+        partial void OnGetInventoryCaroptionByKey(ref IQueryable<CHKS.Models.mydb.InventoryCaroption> items);
+
+
+        public async Task<CHKS.Models.mydb.InventoryCaroption> GetInventoryCaroptionByKey(string key)
+        {
+            var items = Context.InventoryCaroptions
+                              .AsNoTracking()
+                              .Where(i => i.Key == key);
+
+ 
+            OnGetInventoryCaroptionByKey(ref items);
+
+            var itemToReturn = items.FirstOrDefault();
+
+            OnInventoryCaroptionGet(itemToReturn);
+
+            return await Task.FromResult(itemToReturn);
+        }
+
+        partial void OnInventoryCaroptionCreated(CHKS.Models.mydb.InventoryCaroption item);
+        partial void OnAfterInventoryCaroptionCreated(CHKS.Models.mydb.InventoryCaroption item);
+
+        public async Task<CHKS.Models.mydb.InventoryCaroption> CreateInventoryCaroption(CHKS.Models.mydb.InventoryCaroption inventorycaroption)
+        {
+            OnInventoryCaroptionCreated(inventorycaroption);
+
+            var existingItem = Context.InventoryCaroptions
+                              .Where(i => i.Key == inventorycaroption.Key)
+                              .FirstOrDefault();
+
+            if (existingItem != null)
+            {
+               throw new Exception("Item already available");
+            }            
+
+            try
+            {
+                Context.InventoryCaroptions.Add(inventorycaroption);
+                Context.SaveChanges();
+            }
+            catch
+            {
+                Context.Entry(inventorycaroption).State = EntityState.Detached;
+                throw;
+            }
+
+            OnAfterInventoryCaroptionCreated(inventorycaroption);
+
+            return inventorycaroption;
+        }
+
+        public async Task<CHKS.Models.mydb.InventoryCaroption> CancelInventoryCaroptionChanges(CHKS.Models.mydb.InventoryCaroption item)
+        {
+            var entityToCancel = Context.Entry(item);
+            if (entityToCancel.State == EntityState.Modified)
+            {
+              entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
+              entityToCancel.State = EntityState.Unchanged;
+            }
+
+            return item;
+        }
+
+        partial void OnInventoryCaroptionUpdated(CHKS.Models.mydb.InventoryCaroption item);
+        partial void OnAfterInventoryCaroptionUpdated(CHKS.Models.mydb.InventoryCaroption item);
+
+        public async Task<CHKS.Models.mydb.InventoryCaroption> UpdateInventoryCaroption(string key, CHKS.Models.mydb.InventoryCaroption inventorycaroption)
+        {
+            OnInventoryCaroptionUpdated(inventorycaroption);
+
+            var itemToUpdate = Context.InventoryCaroptions
+                              .Where(i => i.Key == inventorycaroption.Key)
+                              .FirstOrDefault();
+
+            if (itemToUpdate == null)
+            {
+               throw new Exception("Item no longer available");
+            }
+                
+            var entryToUpdate = Context.Entry(itemToUpdate);
+            entryToUpdate.CurrentValues.SetValues(inventorycaroption);
+            entryToUpdate.State = EntityState.Modified;
+
+            Context.SaveChanges();
+
+            OnAfterInventoryCaroptionUpdated(inventorycaroption);
+
+            return inventorycaroption;
+        }
+
+        partial void OnInventoryCaroptionDeleted(CHKS.Models.mydb.InventoryCaroption item);
+        partial void OnAfterInventoryCaroptionDeleted(CHKS.Models.mydb.InventoryCaroption item);
+
+        public async Task<CHKS.Models.mydb.InventoryCaroption> DeleteInventoryCaroption(string key)
+        {
+            var itemToDelete = Context.InventoryCaroptions
+                              .Where(i => i.Key == key)
+                              .FirstOrDefault();
+
+            if (itemToDelete == null)
+            {
+               throw new Exception("Item no longer available");
+            }
+
+            OnInventoryCaroptionDeleted(itemToDelete);
+
+
+            Context.InventoryCaroptions.Remove(itemToDelete);
+
+            try
+            {
+                Context.SaveChanges();
+            }
+            catch
+            {
+                Context.Entry(itemToDelete).State = EntityState.Unchanged;
+                throw;
+            }
+
+            OnAfterInventoryCaroptionDeleted(itemToDelete);
+
+            return itemToDelete;
+        }
+    
+        public async Task ExportInventoryOptionsToExcel(Query query = null, string fileName = null)
+        {
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/inventoryoptions/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/inventoryoptions/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+        }
+
+        public async Task ExportInventoryOptionsToCSV(Query query = null, string fileName = null)
+        {
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/inventoryoptions/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/inventoryoptions/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+        }
+
+        partial void OnInventoryOptionsRead(ref IQueryable<CHKS.Models.mydb.InventoryOption> items);
+
+        public async Task<IQueryable<CHKS.Models.mydb.InventoryOption>> GetInventoryOptions(Query query = null)
+        {
+            var items = Context.InventoryOptions.AsQueryable();
+
+
+            if (query != null)
+            {
+                if (!string.IsNullOrEmpty(query.Expand))
+                {
+                    var propertiesToExpand = query.Expand.Split(',');
+                    foreach(var p in propertiesToExpand)
+                    {
+                        items = items.Include(p.Trim());
+                    }
+                }
+
+                ApplyQuery(ref items, query);
+            }
+
+            OnInventoryOptionsRead(ref items);
+
+            return await Task.FromResult(items);
+        }
+
+        partial void OnInventoryOptionGet(CHKS.Models.mydb.InventoryOption item);
+        partial void OnGetInventoryOptionByKey(ref IQueryable<CHKS.Models.mydb.InventoryOption> items);
+
+
+        public async Task<CHKS.Models.mydb.InventoryOption> GetInventoryOptionByKey(string key)
+        {
+            var items = Context.InventoryOptions
+                              .AsNoTracking()
+                              .Where(i => i.Key == key);
+
+ 
+            OnGetInventoryOptionByKey(ref items);
+
+            var itemToReturn = items.FirstOrDefault();
+
+            OnInventoryOptionGet(itemToReturn);
+
+            return await Task.FromResult(itemToReturn);
+        }
+
+        partial void OnInventoryOptionCreated(CHKS.Models.mydb.InventoryOption item);
+        partial void OnAfterInventoryOptionCreated(CHKS.Models.mydb.InventoryOption item);
+
+        public async Task<CHKS.Models.mydb.InventoryOption> CreateInventoryOption(CHKS.Models.mydb.InventoryOption inventoryoption)
+        {
+            OnInventoryOptionCreated(inventoryoption);
+
+            var existingItem = Context.InventoryOptions
+                              .Where(i => i.Key == inventoryoption.Key)
+                              .FirstOrDefault();
+
+            if (existingItem != null)
+            {
+               throw new Exception("Item already available");
+            }            
+
+            try
+            {
+                Context.InventoryOptions.Add(inventoryoption);
+                Context.SaveChanges();
+            }
+            catch
+            {
+                Context.Entry(inventoryoption).State = EntityState.Detached;
+                throw;
+            }
+
+            OnAfterInventoryOptionCreated(inventoryoption);
+
+            return inventoryoption;
+        }
+
+        public async Task<CHKS.Models.mydb.InventoryOption> CancelInventoryOptionChanges(CHKS.Models.mydb.InventoryOption item)
+        {
+            var entityToCancel = Context.Entry(item);
+            if (entityToCancel.State == EntityState.Modified)
+            {
+              entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
+              entityToCancel.State = EntityState.Unchanged;
+            }
+
+            return item;
+        }
+
+        partial void OnInventoryOptionUpdated(CHKS.Models.mydb.InventoryOption item);
+        partial void OnAfterInventoryOptionUpdated(CHKS.Models.mydb.InventoryOption item);
+
+        public async Task<CHKS.Models.mydb.InventoryOption> UpdateInventoryOption(string key, CHKS.Models.mydb.InventoryOption inventoryoption)
+        {
+            OnInventoryOptionUpdated(inventoryoption);
+
+            var itemToUpdate = Context.InventoryOptions
+                              .Where(i => i.Key == inventoryoption.Key)
+                              .FirstOrDefault();
+
+            if (itemToUpdate == null)
+            {
+               throw new Exception("Item no longer available");
+            }
+                
+            var entryToUpdate = Context.Entry(itemToUpdate);
+            entryToUpdate.CurrentValues.SetValues(inventoryoption);
+            entryToUpdate.State = EntityState.Modified;
+
+            Context.SaveChanges();
+
+            OnAfterInventoryOptionUpdated(inventoryoption);
+
+            return inventoryoption;
+        }
+
+        partial void OnInventoryOptionDeleted(CHKS.Models.mydb.InventoryOption item);
+        partial void OnAfterInventoryOptionDeleted(CHKS.Models.mydb.InventoryOption item);
+
+        public async Task<CHKS.Models.mydb.InventoryOption> DeleteInventoryOption(string key)
+        {
+            var itemToDelete = Context.InventoryOptions
+                              .Where(i => i.Key == key)
+                              .FirstOrDefault();
+
+            if (itemToDelete == null)
+            {
+               throw new Exception("Item no longer available");
+            }
+
+            OnInventoryOptionDeleted(itemToDelete);
+
+
+            Context.InventoryOptions.Remove(itemToDelete);
+
+            try
+            {
+                Context.SaveChanges();
+            }
+            catch
+            {
+                Context.Entry(itemToDelete).State = EntityState.Unchanged;
+                throw;
+            }
+
+            OnAfterInventoryOptionDeleted(itemToDelete);
+
+            return itemToDelete;
+        }
+    
+        public async Task ExportInventoryProductgroupsToExcel(Query query = null, string fileName = null)
+        {
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/inventoryproductgroups/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/inventoryproductgroups/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+        }
+
+        public async Task ExportInventoryProductgroupsToCSV(Query query = null, string fileName = null)
+        {
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/inventoryproductgroups/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/inventoryproductgroups/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+        }
+
+        partial void OnInventoryProductgroupsRead(ref IQueryable<CHKS.Models.mydb.InventoryProductgroup> items);
+
+        public async Task<IQueryable<CHKS.Models.mydb.InventoryProductgroup>> GetInventoryProductgroups(Query query = null)
+        {
+            var items = Context.InventoryProductgroups.AsQueryable();
+
+
+            if (query != null)
+            {
+                if (!string.IsNullOrEmpty(query.Expand))
+                {
+                    var propertiesToExpand = query.Expand.Split(',');
+                    foreach(var p in propertiesToExpand)
+                    {
+                        items = items.Include(p.Trim());
+                    }
+                }
+
+                ApplyQuery(ref items, query);
+            }
+
+            OnInventoryProductgroupsRead(ref items);
+
+            return await Task.FromResult(items);
+        }
+
+        partial void OnInventoryProductgroupGet(CHKS.Models.mydb.InventoryProductgroup item);
+        partial void OnGetInventoryProductgroupByKey(ref IQueryable<CHKS.Models.mydb.InventoryProductgroup> items);
+
+
+        public async Task<CHKS.Models.mydb.InventoryProductgroup> GetInventoryProductgroupByKey(string key)
+        {
+            var items = Context.InventoryProductgroups
+                              .AsNoTracking()
+                              .Where(i => i.Key == key);
+
+ 
+            OnGetInventoryProductgroupByKey(ref items);
+
+            var itemToReturn = items.FirstOrDefault();
+
+            OnInventoryProductgroupGet(itemToReturn);
+
+            return await Task.FromResult(itemToReturn);
+        }
+
+        partial void OnInventoryProductgroupCreated(CHKS.Models.mydb.InventoryProductgroup item);
+        partial void OnAfterInventoryProductgroupCreated(CHKS.Models.mydb.InventoryProductgroup item);
+
+        public async Task<CHKS.Models.mydb.InventoryProductgroup> CreateInventoryProductgroup(CHKS.Models.mydb.InventoryProductgroup inventoryproductgroup)
+        {
+            OnInventoryProductgroupCreated(inventoryproductgroup);
+
+            var existingItem = Context.InventoryProductgroups
+                              .Where(i => i.Key == inventoryproductgroup.Key)
+                              .FirstOrDefault();
+
+            if (existingItem != null)
+            {
+               throw new Exception("Item already available");
+            }            
+
+            try
+            {
+                Context.InventoryProductgroups.Add(inventoryproductgroup);
+                Context.SaveChanges();
+            }
+            catch
+            {
+                Context.Entry(inventoryproductgroup).State = EntityState.Detached;
+                throw;
+            }
+
+            OnAfterInventoryProductgroupCreated(inventoryproductgroup);
+
+            return inventoryproductgroup;
+        }
+
+        public async Task<CHKS.Models.mydb.InventoryProductgroup> CancelInventoryProductgroupChanges(CHKS.Models.mydb.InventoryProductgroup item)
+        {
+            var entityToCancel = Context.Entry(item);
+            if (entityToCancel.State == EntityState.Modified)
+            {
+              entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
+              entityToCancel.State = EntityState.Unchanged;
+            }
+
+            return item;
+        }
+
+        partial void OnInventoryProductgroupUpdated(CHKS.Models.mydb.InventoryProductgroup item);
+        partial void OnAfterInventoryProductgroupUpdated(CHKS.Models.mydb.InventoryProductgroup item);
+
+        public async Task<CHKS.Models.mydb.InventoryProductgroup> UpdateInventoryProductgroup(string key, CHKS.Models.mydb.InventoryProductgroup inventoryproductgroup)
+        {
+            OnInventoryProductgroupUpdated(inventoryproductgroup);
+
+            var itemToUpdate = Context.InventoryProductgroups
+                              .Where(i => i.Key == inventoryproductgroup.Key)
+                              .FirstOrDefault();
+
+            if (itemToUpdate == null)
+            {
+               throw new Exception("Item no longer available");
+            }
+                
+            var entryToUpdate = Context.Entry(itemToUpdate);
+            entryToUpdate.CurrentValues.SetValues(inventoryproductgroup);
+            entryToUpdate.State = EntityState.Modified;
+
+            Context.SaveChanges();
+
+            OnAfterInventoryProductgroupUpdated(inventoryproductgroup);
+
+            return inventoryproductgroup;
+        }
+
+        partial void OnInventoryProductgroupDeleted(CHKS.Models.mydb.InventoryProductgroup item);
+        partial void OnAfterInventoryProductgroupDeleted(CHKS.Models.mydb.InventoryProductgroup item);
+
+        public async Task<CHKS.Models.mydb.InventoryProductgroup> DeleteInventoryProductgroup(string key)
+        {
+            var itemToDelete = Context.InventoryProductgroups
+                              .Where(i => i.Key == key)
+                              .FirstOrDefault();
+
+            if (itemToDelete == null)
+            {
+               throw new Exception("Item no longer available");
+            }
+
+            OnInventoryProductgroupDeleted(itemToDelete);
+
+
+            Context.InventoryProductgroups.Remove(itemToDelete);
+
+            try
+            {
+                Context.SaveChanges();
+            }
+            catch
+            {
+                Context.Entry(itemToDelete).State = EntityState.Unchanged;
+                throw;
+            }
+
+            OnAfterInventoryProductgroupDeleted(itemToDelete);
+
+            return itemToDelete;
+        }
         }
 }

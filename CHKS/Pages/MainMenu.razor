@@ -90,12 +90,14 @@
         </RadzenRow>-->
         <RadzenRow Style="margin-top: 5px; display:inline-block">
             <h1 Style="font-size: x-large; font-family: 'Khmer OS Battambang'; color:#28282B">ទំនិញ</h1>
-            <RadzenButton Icon="add" style="width:25px; height:25px; border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:gray; padding:1.5px;margin-left:auto"/>
         </RadzenRow>
-        <RadzenRow Style="display: inline-block;">
-            <input @bind-value="@search" @oninput="@Search" style="border-radius:15px; border-width:1px; width:95%; margin-left:auto; margin-right:auto"></input>
+        <RadzenRow Style="display:inline-flex; justify-content:flex-end">
+            <input @bind-value="@search" @oninput="@Search" style="border-radius:15px; border-width:1px; width:89%; margin-left:auto; margin-right:auto"></input>
+            <RadzenButton Icon="add" style="width:25px; height:25px; border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:gray; padding:1.5px;margin-left:auto" Click="@CreateNewProduct"/>
             <RadzenButton Icon="camera_enhance" style="width:25px; height:25px; border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:gray; padding:1.5px;margin-left:auto"/>
         </RadzenRow>
+        
+
         <RadzenRow  Style=" height: 62dvh; width:100%; overflow-y: scroll; overflow-x: hidden;">
             <div Style=" display:flex; flex-wrap:wrap; align-content:flex-start; scroll-snap-type: y proximity; scroll-snap-align:inherit; scroll-snap-stop: always; width:100%;">
                 @if(Inventories != null){
@@ -135,8 +137,9 @@
 
         
     </RadzenStack>
-
-    <div Style="margin-left:auto; width:30%; height:100dvh; background-color: #fff; border-radius:15px 0px 0px 15px; z-index:5 ">
+    
+    <!-- Right Side Bar-->
+    <div Style="margin-left:auto; width:30%; height:100dvh; background-color: #fff; border-radius:15px 0px 0px 15px; z-index:5; box-shadow:-10px 2px 25px lightgray;">
         <div Style="margin-top: 40px; margin-left:60px;">
             <RadzenRow Style="width:80%" AlignItems="AlignItems.Start">
                 <p style="font-family: 'Khmer OS Battambang'; font-size: 1.3vw; color:#28282B; margin-right:auto; overflow:hidden; width:190px "><b>@(Customer.Plate != null?Customer.Plate + "#" + Customer.CartId:"********")</b></p>
@@ -250,6 +253,7 @@
             
         </div>
     </div>
+    <!--End-->
 
 </RadzenStack>
 

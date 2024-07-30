@@ -16,8 +16,9 @@
 .panelmenuitem{
     padding-left: 5px;
     width: 200px;
-    font-size: 1.2rem;
+    font-size: 1.5em;
     height: 70px; 
-    background-color:#28282B;
+    color:#28282B;
+    background-color:white;
     font-family: 'Khmer OS Battambang', Comfortaa, Arial;
 }
