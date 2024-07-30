@@ -50,7 +50,6 @@ namespace CHKS.Pages
         protected IEnumerable<CHKS.Models.mydb.Connector> Connectors;
         protected IEnumerable<CHKS.Models.mydb.Inventory> Inventories;
         protected IEnumerable<CHKS.Models.mydb.History> RecentHistory;
-        protected IEnumerable<CHKS.Models.mydb.InventoryProductgroup> Productgroups;
 
         protected RadzenDataGrid<CHKS.Models.mydb.Connector> Grid1;
         protected RadzenDataGrid<Models.mydb.Dailyexpense> grid2;
@@ -104,7 +103,6 @@ namespace CHKS.Pages
         {
             Inventories = await MydbService.GetInventories();
             Carts = await MydbService.GetCarts();
-            Productgroups = await MydbService.GetInventoryProductgroups();
             await LoadRecentCashout();
         }
 
@@ -315,7 +313,7 @@ namespace CHKS.Pages
         }
 
         protected async Task CreateNewProduct(){
-            await DialogService.OpenAsync<NewProduct>("New Product",new Dictionary<string, object>{}, new DialogOptions{});
+            
         }
 
 
@@ -601,5 +599,10 @@ namespace CHKS.Pages
             }
 
         }
+        
+
+        
+
+
     }
 }

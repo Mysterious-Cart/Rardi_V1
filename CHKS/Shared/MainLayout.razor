@@ -6,25 +6,25 @@
 
 <RadzenLayout style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body'; background-color:whitesmoke ">
          @Body
-    <RadzenSidebar Expanded="true" Style="background-color:white; border:none; border-radius:15px; box-shadow:5px 5px 20px lightgray" >
-        <RadzenProfileMenu Visible="@Security.IsAuthenticated()" Click="@ProfileMenuClick" Style="background-color: white;  border-color:#28282B; width: 200px;">
-            <ChildContent>
+    <RadzenSidebar Expanded="true" >
+        <RadzenProfileMenu Visible="@Security.IsAuthenticated()" Click="@ProfileMenuClick" Style="background-color: #28282B;  border-color:#28282B; overflow:hidden; margin-left:-11px; width: 200px;">
+            <ChildContent >
                 <RadzenProfileMenuItem Text="Logout" Value="Logout" Icon="power_settings_new" />
             </ChildContent>
             <Template >
                 <RadzenGravatar Email="@Security.User?.Name" style="width: 30px; height:30px; margin-right:10px"/>
-                <p style="color:black; font-size:1.2em">@Security.User?.Name </p>
+                @Security.User?.Name
             </Template>
         </RadzenProfileMenu>
 
-        <RadzenPanelMenu  Style="margin-top: 20dvh" >
-            <RadzenStack JustifyContent="JustifyContent.SpaceEvenly" Style="overflow:hidden; background-color:white; width:100%" Wrap="Radzen.FlexWrap.NoWrap">
-                <RadzenPanelMenuItem Text="ទំព័រគិតលុយ" Path="" Icon="home_" class="panelmenuitem" IconColor="black" />
-                <RadzenPanelMenuItem Text="គ្រប់គ្រងទំនេញ" Path="inventories" Icon="inventory_" class="panelmenuitem" IconColor="black"/>
-                <RadzenPanelMenuItem Text="ថ្ងៃនេះ" Path="Dailies" Icon="assignment_" class="panelmenuitem" IconColor="black"/>
-                <RadzenPanelMenuItem Text="ទិន្នន័យ" Path="statistic"  Icon="bar_chart_" class="panelmenuitem" IconColor="black"/>
-                <RadzenPanelMenuItem Text="ប្រវ័ត្តិ" Path="histories" Icon="history_" class="panelmenuitem" IconColor="black"/>
-                <RadzenPanelMenuItem Text="ក្រុមហ៊ុន" Path="company" Icon="apartment_" class="panelmenuitem" IconColor="black"/>
+        <RadzenPanelMenu  Style="margin-top: 20dvh; " >
+            <RadzenStack JustifyContent="JustifyContent.SpaceEvenly" Style="overflow:hidden; background-color:#28282B;" Wrap="Radzen.FlexWrap.NoWrap">
+                <RadzenPanelMenuItem Text="ទំព័រគិតលុយ" Path="" Icon="home_" class="panelmenuitem" />
+                <RadzenPanelMenuItem Text="គ្រប់គ្រងទំនេញ" Path="inventories" Icon="inventory_" class="panelmenuitem" />
+                <RadzenPanelMenuItem Text="ថ្ងៃនេះ" Path="Dailies" Icon="assignment_" class="panelmenuitem"/>
+                <RadzenPanelMenuItem Text="ទិន្នន័យ" Path="statistic"  Icon="bar_chart_" class="panelmenuitem"/>
+                <RadzenPanelMenuItem Text="ប្រវ័ត្តិ" Path="histories" Icon="history_" class="panelmenuitem"/>
+                <RadzenPanelMenuItem Text="ក្រុមហ៊ុន" Path="company" Icon="apartment_" class="panelmenuitem"/>
             </RadzenStack>
         </RadzenPanelMenu>
     </RadzenSidebar>

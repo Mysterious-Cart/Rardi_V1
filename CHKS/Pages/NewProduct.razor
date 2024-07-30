@@ -1,5 +1,4 @@
-@page "/new-product"
-
+@page "/new-product"
 @attribute [Authorize]
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
@@ -9,48 +8,11 @@
 @inject NotificationService NotificationService
 
 <PageTitle>NewProduct</PageTitle>
-<RadzenRow Style="border:solid; border-width:1px; border-radius:10px; padding:10px  ">
-    <RadzenText Text="បង្កើតក្រុមទំនេញ" Style="margin-top:7px;" />
-    <RadzenTextBox Style="margin-left:auto; width: 60%"></RadzenTextBox>
-    <RadzenButton Text="បង្កើត" />
-</RadzenRow>
-<RadzenRow Style="border:solid; border-width:1px; border-radius:10px; padding:10px; margin-top:10px ">
-    <div style="width:100%">
-        <RadzenText Text="បង្កើតទំនេញ" Style="margin-top:7px;" />
-        <RadzenDropDownDataGrid Data="@GroupName" TextProperty="GroupName" @bind-Value="@ChosenGroup" Style="margin-left:auto; width: 40%" Placeholder="ក្រុមទំនេញ....." Multiple="true"/>
-        <RadzenTextBox Style="margin-left:auto; width: 50%" Placeholder="ឈ្មោះទំនេញ....."></RadzenTextBox>
-        <RadzenButton Text="បង្កើត" style="margin-top:10px" />
-    </div>
-</RadzenRow>
-<RadzenRow Style="border:solid; border-width:1px; border-radius:10px; padding:10px; margin-top:10px ">
-    <div style="width:100%">
-        <RadzenRow>
-            <RadzenText Text="បង្កើតទំនេញសម្រាប់ឡាន" Style="margin-top:7px;" />
-            <RadzenTextBox Placeholder="ម៉ាកឡាន....." Name="Brand" />
-            <RadzenLengthValidator Component="Brand" Text="Required" />  
-              
-        </RadzenRow>
-        <RadzenDropDownDataGrid Data="@Product" TextProperty="Option" @bind-Value="@ChosenProduct" Style="margin-left:auto; width: 30%" Placeholder="ក្រុមទំនេញ....."/>
-        <RadzenNumeric Style="width:15%; margin-top:10px" TValue="decimal"/>
-        <RadzenNumeric Style="width:25%"  TValue="decimal" Format="c"/>
-        <RadzenNumeric Style="width:25%" TValue="decimal" Format="c"/>
-        
-    </div>
-    <RadzenButton Text="បង្កើត" />
+<RadzenRow>
+    <RadzenColumn Size="12">
+        <RadzenText Text="NewProduct" TextStyle="TextStyle.H3" TagName="TagName.H1" />
+    </RadzenColumn>
 </RadzenRow>
 @code {
 
-    [Inject]
-    mydbService MydbService {get; set;}
-
-    protected IEnumerable<Models.mydb.InventoryProductgroup> ChosenGroup;
-    protected IEnumerable<Models.mydb.InventoryProductgroup> GroupName;
-
-    protected Models.mydb.InventoryOption ChosenProduct;
-    protected IEnumerable<Models.mydb.InventoryOption> Product;
-    protected async override Task OnInitializedAsync()
-    {
-        GroupName = await MydbService.GetInventoryProductgroups();
-        Product = await MydbService.GetInventoryOptions();
-    }
 }

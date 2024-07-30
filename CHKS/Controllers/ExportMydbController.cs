@@ -270,47 +270,5 @@ namespace CHKS.Controllers
         {
             return ToExcel(ApplyQuery(await service.GetProductClasses(), Request.Query, false), fileName);
         }
-
-        [HttpGet("/export/mydb/inventorycaroptions/csv")]
-        [HttpGet("/export/mydb/inventorycaroptions/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportInventoryCaroptionsToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetInventoryCaroptions(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/inventorycaroptions/excel")]
-        [HttpGet("/export/mydb/inventorycaroptions/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportInventoryCaroptionsToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetInventoryCaroptions(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/inventoryoptions/csv")]
-        [HttpGet("/export/mydb/inventoryoptions/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportInventoryOptionsToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetInventoryOptions(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/inventoryoptions/excel")]
-        [HttpGet("/export/mydb/inventoryoptions/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportInventoryOptionsToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetInventoryOptions(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/inventoryproductgroups/csv")]
-        [HttpGet("/export/mydb/inventoryproductgroups/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportInventoryProductgroupsToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetInventoryProductgroups(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/inventoryproductgroups/excel")]
-        [HttpGet("/export/mydb/inventoryproductgroups/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportInventoryProductgroupsToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetInventoryProductgroups(), Request.Query, false), fileName);
-        }
     }
 }
