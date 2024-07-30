@@ -173,7 +173,7 @@
     border-radius: 10px; /* Rounded borders */
     padding: 16px; /* Padding */
     position: fixed; /* Sit on top of the screen */
-    z-index: 1; /* Add a z-index if needed */
+    z-index: 10; /* Add a z-index if needed */
     right: 50%; /* Center the snackbar */
     top:0px;
     opacity: 0%;
@@ -190,27 +190,7 @@
 
 }
 
-#ToggleBar{
-    width:30px; 
-    font-size: medium; 
-    color:gray; 
-    margin-right:auto; 
-    height:30px; 
-    background-color:lightgray; 
-    border-radius:5px
-}
 
-#ToggleBar.Show{
-    width:30px; 
-    font-size: medium; 
-    color:white; 
-    margin-right:auto; 
-    height:30px; 
-    background-color:gray; 
-    border-radius:5px;
-    background-image: url("icon/check.png");
-    background-size: cover;
-}
 
 #ShowUndo{
     overflow:hidden;
@@ -231,3 +211,4 @@
     display:inline-flex;
     visibility:visible;
 }
+
