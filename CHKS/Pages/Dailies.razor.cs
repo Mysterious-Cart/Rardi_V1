@@ -86,10 +86,6 @@ namespace CHKS.Pages
             ExpenseTotal = Dailyexpenses.Sum(i => i.Expense).ToString() + " $";
         }
 
-        private CultureInfo DollarSign = new CultureInfo("us-US");
-        private CultureInfo BahtSign = new CultureInfo("kh-KH");
-        private CultureInfo RielSign = new CultureInfo("th-TH");
-
 
         protected async Task LoadNotImport(){
             if(changeDataMode==false ){

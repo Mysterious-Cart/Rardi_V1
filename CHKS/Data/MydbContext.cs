@@ -38,73 +38,85 @@ namespace CHKS.Data
               .HasOne(i => i.Aspnetrole)
               .WithMany(i => i.Aspnetroleclaims)
               .HasForeignKey(i => i.RoleId)
-              .HasPrincipalKey(i => i.Id);
+              .HasPrincipalKey(i => i.Id)
+              .OnDelete(DeleteBehavior.ClientNoAction);
 
             builder.Entity<CHKS.Models.mydb.Aspnetuserclaim>()
               .HasOne(i => i.Aspnetuser)
               .WithMany(i => i.Aspnetuserclaims)
               .HasForeignKey(i => i.UserId)
-              .HasPrincipalKey(i => i.Id);
+              .HasPrincipalKey(i => i.Id)
+              .OnDelete(DeleteBehavior.ClientNoAction);
 
             builder.Entity<CHKS.Models.mydb.Aspnetuserlogin>()
               .HasOne(i => i.Aspnetuser)
               .WithMany(i => i.Aspnetuserlogins)
               .HasForeignKey(i => i.UserId)
-              .HasPrincipalKey(i => i.Id);
+              .HasPrincipalKey(i => i.Id)
+              .OnDelete(DeleteBehavior.ClientNoAction);
 
             builder.Entity<CHKS.Models.mydb.Aspnetuserrole>()
               .HasOne(i => i.Aspnetrole)
               .WithMany(i => i.Aspnetuserroles)
               .HasForeignKey(i => i.RoleId)
-              .HasPrincipalKey(i => i.Id);
+              .HasPrincipalKey(i => i.Id)
+              .OnDelete(DeleteBehavior.ClientNoAction);
 
             builder.Entity<CHKS.Models.mydb.Aspnetuserrole>()
               .HasOne(i => i.Aspnetuser)
               .WithMany(i => i.Aspnetuserroles)
               .HasForeignKey(i => i.UserId)
-              .HasPrincipalKey(i => i.Id);
+              .HasPrincipalKey(i => i.Id)
+              .OnDelete(DeleteBehavior.ClientNoAction);
 
             builder.Entity<CHKS.Models.mydb.Aspnetusertoken>()
               .HasOne(i => i.Aspnetuser)
               .WithMany(i => i.Aspnetusertokens)
               .HasForeignKey(i => i.UserId)
-              .HasPrincipalKey(i => i.Id);
+              .HasPrincipalKey(i => i.Id)
+              .OnDelete(DeleteBehavior.ClientNoAction);
 
             builder.Entity<CHKS.Models.mydb.Cart>()
               .HasOne(i => i.Car)
               .WithMany(i => i.Carts)
               .HasForeignKey(i => i.Plate)
-              .HasPrincipalKey(i => i.Plate);
+              .HasPrincipalKey(i => i.Plate)
+              .OnDelete(DeleteBehavior.ClientNoAction);
 
             builder.Entity<CHKS.Models.mydb.Connector>()
               .HasOne(i => i.Cart)
               .WithMany(i => i.Connectors)
               .HasForeignKey(i => i.CartId)
-              .HasPrincipalKey(i => i.CartId);
+              .HasPrincipalKey(i => i.CartId)
+              .OnDelete(DeleteBehavior.ClientNoAction);
 
             builder.Entity<CHKS.Models.mydb.Connector>()
               .HasOne(i => i.Inventory)
               .WithMany(i => i.Connectors)
               .HasForeignKey(i => i.Product)
-              .HasPrincipalKey(i => i.Name);
+              .HasPrincipalKey(i => i.Name)
+              .OnDelete(DeleteBehavior.ClientNoAction);
 
             builder.Entity<CHKS.Models.mydb.History>()
               .HasOne(i => i.Car)
               .WithMany(i => i.Histories)
               .HasForeignKey(i => i.Plate)
-              .HasPrincipalKey(i => i.Plate);
+              .HasPrincipalKey(i => i.Plate)
+              .OnDelete(DeleteBehavior.ClientNoAction);
 
             builder.Entity<CHKS.Models.mydb.Historyconnector>()
               .HasOne(i => i.History)
               .WithMany(i => i.Historyconnectors)
               .HasForeignKey(i => i.CartId)
-              .HasPrincipalKey(i => i.CashoutDate);
+              .HasPrincipalKey(i => i.CashoutDate)
+              .OnDelete(DeleteBehavior.ClientNoAction);
 
             builder.Entity<CHKS.Models.mydb.Historyconnector>()
               .HasOne(i => i.Inventory)
               .WithMany(i => i.Historyconnectors)
               .HasForeignKey(i => i.Product)
-              .HasPrincipalKey(i => i.Name);
+              .HasPrincipalKey(i => i.Name)
+              .OnDelete(DeleteBehavior.ClientNoAction);
 
             builder.Entity<CHKS.Models.mydb.Aspnetuser>()
               .Property(p => p.LockoutEnd)
@@ -202,6 +214,8 @@ namespace CHKS.Data
 
         public DbSet<CHKS.Models.mydb.Car> Cars { get; set; }
 
+        public DbSet<CHKS.Models.mydb.CarBrand> CarBrands { get; set; }
+
         public DbSet<CHKS.Models.mydb.Cart> Carts { get; set; }
 
         public DbSet<CHKS.Models.mydb.Cashback> Cashbacks { get; set; }
@@ -216,6 +230,12 @@ namespace CHKS.Data
 
         public DbSet<CHKS.Models.mydb.Inventory> Inventories { get; set; }
 
+        public DbSet<CHKS.Models.mydb.InventoryCaroption> InventoryCaroptions { get; set; }
+
+        public DbSet<CHKS.Models.mydb.InventoryOption> InventoryOptions { get; set; }
+
+        public DbSet<CHKS.Models.mydb.InventoryProductgroup> InventoryProductgroups { get; set; }
+
         public DbSet<CHKS.Models.mydb.InventoryTrashcan> InventoryTrashcans { get; set; }
 
         public DbSet<CHKS.Models.mydb.ProductClass> ProductClasses { get; set; }
@@ -223,6 +243,7 @@ namespace CHKS.Data
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
             configurationBuilder.Conventions.Add(_ => new BlankTriggerAddingConvention());
+            configurationBuilder.Conventions.Remove(typeof(Microsoft.EntityFrameworkCore.Metadata.Conventions.CascadeDeleteConvention));
         }
     }
 }

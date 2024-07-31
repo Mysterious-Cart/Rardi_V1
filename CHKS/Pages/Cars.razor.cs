@@ -103,6 +103,7 @@ namespace CHKS.Pages
         {
             try{
                 args.Plate = args.Plate.ToUpper();
+                args.Type = args.Type.ToUpper();
                 await mydbService.CreateCar(args);
                 await grid0.Reload();
                 isEditing = false;

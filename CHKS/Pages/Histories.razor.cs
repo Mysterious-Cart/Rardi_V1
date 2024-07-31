@@ -38,12 +38,11 @@ namespace CHKS.Pages
         protected RadzenDataGrid<CHKS.Models.mydb.History> grid0;
 
         protected bool editMode = false;
-        protected string originalDate;
         protected string date;
 
         protected string search = "";
 
-        protected DateTime ChosenDate;
+        protected string ChosenDate;
 
         [Inject]
         protected SecurityService Security { get; set; }
@@ -95,6 +94,11 @@ namespace CHKS.Pages
 
         protected async Task GridDeleteButtonClick( CHKS.Models.mydb.History history)
         {
+            IEnumerable<Models.mydb.Historyconnector> Hiscon = await mydbService.GetHistoryconnectors();
+            Hiscon = Hiscon.Where(i => i.CartId == history.CashoutDate);
+            foreach(var i in Hiscon.ToList()){
+                await mydbService.DeleteHistoryconnector(i.Id);
+            }
             try
             {
                 if (await DialogService.Confirm("Are you sure?") == true)
@@ -115,7 +119,7 @@ namespace CHKS.Pages
                 {
                     Severity = NotificationSeverity.Error,
                     Summary = $"Error",
-                    Detail = $"Unable to delete Inventory"
+                    Detail = $"Unable to delete History"
                     
                 });
             }
@@ -123,69 +127,28 @@ namespace CHKS.Pages
 
         protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.History data)
         {
-            char[] splitter = {':','('};
-            string[] Cashoutdate = data.CashoutDate.Split(splitter,2);
-            originalDate = data.CashoutDate;
-            ChosenDate = DateTime.Parse(Cashoutdate[0]);
+            ChosenDate = data.CashoutDate;
             await grid0.EditRow(data);
             editMode = true;
         }
 
         protected async Task GridRowUpdate(CHKS.Models.mydb.History args)
         {
-           if(args.CashoutDate != originalDate){
-                Models.mydb.History Checking = await mydbService.GetHistoryByCashoutDate(args.CashoutDate);
-                if(Checking == null){
-                    IEnumerable<Models.mydb.Historyconnector> historyconnectors = await mydbService.GetHistoryconnectors();
-                    historyconnectors = historyconnectors.Where(i => i.CartId == originalDate);
-
-                    args.CashoutDate += "("+ DateTime.Now.ToString() + ")";
-
-                    string tempname = args.CashoutDate;
-                    args.CashoutDate = originalDate;
-                    await GridDeleteButtonClick(args);
-                    Models.mydb.History check = await mydbService.GetHistoryByCashoutDate(args.CashoutDate);
-                    if(check == null){
-                        args.CashoutDate = tempname;
-                        await mydbService.CreateHistory(args);
-
-
-                        foreach(var i in historyconnectors){
-                            i.CartId = args.CashoutDate;
-                            await mydbService.UpdateHistoryconnector(i.Id,i);
-                        }
-
-                        await grid0.Reload();
-                        editMode = false;
-                    }
-
-                }else{
-                    await DialogService.Alert("The name you trying to change to already exist.","Important");
-                    args.CashoutDate = originalDate;
-                    grid0.CancelEditRow(args);
-                    await grid0.Reload();
-                    editMode = false;
-                }
-
-            }else{
-
                 
-                await mydbService.UpdateHistory(args.CashoutDate,args);
-                editMode = false;
-            }
+            await mydbService.UpdateHistory(args.CashoutDate,args);
+            editMode = false;
 
-            ChosenDate = DateTime.MinValue;
         }
 
 
          protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.History data)
         {
             Console.WriteLine(ChosenDate);
-            if(ChosenDate.ToString("dd/MM/yyyy") == "01/01/0001" ){
+            if(ChosenDate == "01/01/0001" ){
                 await DialogService.Alert("No New Date given.","Important");
                 await CancelButtonClick(args,data);
             }else{
-                data.CashoutDate = ChosenDate.ToString("dd/MM/yyyy");
+                data.CashoutDate = ChosenDate;
                 await grid0.UpdateRow(data);
             }
         }

@@ -114,6 +114,7 @@ namespace CHKS.Pages
             ImportTotal = 0;
 
             Historyconnectors = await MydbService.GetHistoryconnectors();
+            Histories = Histories.Where(i => i.Company == 0);
             Total = Histories.Sum(i => i.Total);
             foreach(var history in Histories.ToList()){
                 IEnumerable<Models.mydb.Historyconnector> TempHisCon;

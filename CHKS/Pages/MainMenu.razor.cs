@@ -34,7 +34,7 @@ namespace CHKS.Pages
         protected mydbService MydbService {get; set;}
 
 
-        protected CHKS.Models.mydb.Car CustomerLists;
+        protected Models.mydb.Car CustomerLists;
 
         protected Models.mydb.Cart Customer = new(){Plate=null};    
         protected IEnumerable<CHKS.Models.mydb.Cart> Carts;
@@ -42,19 +42,16 @@ namespace CHKS.Pages
         protected Models.mydb.History HistoryCustomer = new(){};
         protected IEnumerable<Models.mydb.Historyconnector> Historyconnectors;
 
-        protected string CustomerDataExpand = "customerDatalist-expanded-false";
-        protected string icon = "start";
+        protected string today = DateTime.Now.ToString("dd/MM/yy");
 
-        protected static string today = DateTime.Now.ToString("dd/MM/yy");
-
-        protected IEnumerable<CHKS.Models.mydb.Connector> Connectors;
-        protected IEnumerable<CHKS.Models.mydb.Inventory> Inventories;
-        protected IEnumerable<CHKS.Models.mydb.History> RecentHistory;
+        protected IEnumerable<Models.mydb.Connector> Connectors;
+        protected IEnumerable<Models.mydb.Inventory> Inventories;
+        protected IEnumerable<Models.mydb.History> RecentHistory;
 
         protected RadzenDataGrid<CHKS.Models.mydb.Connector> Grid1;
         protected RadzenDataGrid<Models.mydb.Dailyexpense> grid2;
         
-        protected CHKS.Models.mydb.Connector connector = new(){};
+        protected Models.mydb.Connector connector = new(){};
 
         [Inject]
         protected SecurityService Security { get; set; }
@@ -348,8 +345,6 @@ namespace CHKS.Pages
                                     
                                 };
                                 await MydbService.CreateHistory(History);
-                                
-
 
                                 foreach(var i in Connectors.ToList())
                                 {   
@@ -363,6 +358,7 @@ namespace CHKS.Pages
                                     };
 
                                     await MydbService.CreateHistoryconnector(historyconnector);
+                                    await MydbService.DeleteConnector(i.GeneratedKey);
 
                                 };
 
@@ -381,6 +377,7 @@ namespace CHKS.Pages
                                 time = await DialogService.OpenAsync<SingleInputPopUp>("រើសថ្ងៃទី", new Dictionary<string, object>{{"Info", new string[]{"Choosing Date"}}}, new DialogOptions{Width="20%"});
                                 time = time!=null? time + ":" + Customer.CartId + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")": DateTime.Now.ToString("dd/MM/yyyy") + "(" + DateTime.Now.Hour + ":" + DateTime.Now.Minute + ")";
                             }
+
                             Models.mydb.History History = new Models.mydb.History{
                                 CashoutDate = time,
                                 Plate = Customer.Plate,
@@ -409,9 +406,11 @@ namespace CHKS.Pages
                                 };
 
                                 await MydbService.CreateHistoryconnector(historyconnector);
+                                await MydbService.DeleteConnector(i.GeneratedKey);
 
                             };
 
+                            
                             await MydbService.DeleteCart(Customer.CartId);
                             await ResetToDefault();
                             await LoadRecentCashout();
