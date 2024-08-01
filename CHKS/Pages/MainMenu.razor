@@ -165,7 +165,7 @@
         </RadzenRow>-->
 
         <input style="border-radius:15px; margin-top:20px" @onchange="@(args => Search(args))"/>
-        <div Style=" display:flex; flex-wrap:wrap; overflow:scroll; height:85dvh ">                
+        <div Style=" display:inline-flex; flex-wrap:wrap; overflow:scroll; height:85dvh ">                
                         
             @if(Inventories.Any() == true){
                 @foreach(var product in Inventories){

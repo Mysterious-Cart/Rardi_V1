@@ -150,7 +150,10 @@ namespace CHKS.Pages
                     Customer.Company = 0;
 
                     await MydbService.CreateCart(Customer);
-
+                    
+                    Models.mydb.Cart C = await MydbService.GetCartByCartId(Customer.CartId);
+                    Customer = new();
+                    await OpenCart(C);
                 }
             }
             
