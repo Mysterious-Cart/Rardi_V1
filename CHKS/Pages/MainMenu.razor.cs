@@ -217,7 +217,10 @@ namespace CHKS.Pages
                 Connectors = await MydbService.GetConnectors(new Query{Filter=$@"i => i.CartId == (@0)", FilterParameters = new object[] {Customer.CartId}});
                 Customer.Total = Connectors.Sum(i => i.PriceOverwrite * i.Qty );       
                 await Toasting("បើកអតិថជន");
-            }   
+            } else{
+                await ResetToDefault();
+                await OpenCart(Cart);
+            } 
         }
 
         protected async Task OpenCart(Models.mydb.History history){
