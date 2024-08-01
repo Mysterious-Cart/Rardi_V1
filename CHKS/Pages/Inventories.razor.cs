@@ -166,35 +166,8 @@ namespace CHKS.Pages
 
         protected async Task GridRowUpdate(CHKS.Models.mydb.Inventory args)
         {
-            if(args.Name != OriginalName){
-                IEnumerable<Models.mydb.Inventory> Checking = await mydbService.GetInventories();
-                Checking = Checking.Where(i => i.Name == args.Name);
-                if(Checking == null){
-                    string tempname = args.Name;
-                    args.Name = OriginalName;
-                    if(args.Import == null){
-                        args.Import = 0;
-                    }
-                    await GridDeleteButtonClick(args);
-                    try{
-                        args.Name = tempname;
-                        await mydbService.CreateInventory(args);
-                        isEditMode = false;
-                    }catch(Exception exc){
-
-                    }
-                }else{
-                    await DialogService.Alert("The name you trying to change to already exist.","Important");
-                    args.Name = OriginalName;
-                    grid0.CancelEditRow(args);
-                    await grid0.Reload();
-                    isModifying = false;
-                }
-
-            }else{
-                await mydbService.UpdateInventory(args.Name,args);
-                isModifying = false;
-            }
+            await mydbService.UpdateInventory(args.Code,args);
+            isModifying = false;
 
         }
 
@@ -226,7 +199,6 @@ namespace CHKS.Pages
         protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Inventory data)
         {
             isModifying = false;
-            data.Code = await GetKey();
             await grid0.UpdateRow(data);
         }
 

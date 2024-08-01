@@ -115,6 +115,7 @@ namespace CHKS.Pages
             Productgroups = await MydbService.GetInventoryProductgroups();
             ProductOptions = await MydbService.GetInventoryOptions();
             Inventories = await MydbService.GetInventories();
+            Inventories = Inventories.Where(i => i.IsDeleted == 0);
             Carts = await MydbService.GetCarts();
             await LoadRecentCashout();
         }
@@ -128,7 +129,7 @@ namespace CHKS.Pages
             
             search = $"{args.Value}";
 
-            Inventories = await MydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) || i.Barcode.Contains(@0) ", FilterParameters = new object[] { search , "Service Charge"} });
+            Inventories = await MydbService.GetInventories(new Query { Filter = $@"i => (i.Name.Contains(@0) || i.Barcode.Contains(@0)) && i.IsDeleted == 0 ", FilterParameters = new object[] { search , "Service Charge"} });
         }
 
 
@@ -468,7 +469,7 @@ namespace CHKS.Pages
                             Models.mydb.Historyconnector TempCon = new(){
                                 CartId = HistoryCustomer.CashoutDate,
                                 Id = String.Concat(Customer.CartId, Product.Name, DateTime.Now.ToString()),
-                                Product = Product.Name,
+                                Product = Product.Code,
                                 Note = Qty[2],
                                 Qty = decimal.Parse(Qty[0]),// Stock here are not in stock, it the chosen value pass from the user input;
                                 Export = decimal.Parse(Qty[1])
@@ -519,7 +520,7 @@ namespace CHKS.Pages
                             connector = new(){
                                 CartId = Customer.CartId,
                                 GeneratedKey = String.Concat(Customer.CartId, Product.Name),
-                                Product = Product.Name,
+                                Product = Product.Code,
                                 Note = Qty[2],
                                 Qty = decimal.Parse(Qty[0]),// Stock here are not in stock, it the chosen value pass from the user input;
                                 PriceOverwrite = decimal.Parse(Qty[1])
