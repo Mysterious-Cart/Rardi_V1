@@ -111,13 +111,18 @@ namespace CHKS.Pages
         }
         protected async override Task OnInitializedAsync()
         {
+            CarOptions = await MydbService.GetInventoryCaroptions();
+            Productgroups = await MydbService.GetInventoryProductgroups();
+            ProductOptions = await MydbService.GetInventoryOptions();
             Inventories = await MydbService.GetInventories();
             Inventories = Inventories.Where(i => i.IsDeleted == 0);
             Carts = await MydbService.GetCarts();
             await LoadRecentCashout();
         }
 
-        string search = "";
+        
+
+        protected string search = "";
 
         protected async Task Search(ChangeEventArgs args)
         {
@@ -144,15 +149,11 @@ namespace CHKS.Pages
                     Customer.Creator = Security.User?.NormalizedUserName;       
                     Customer.Company = 0;
 
-                    try{
                     await MydbService.CreateCart(Customer);
-                    }catch(Exception exc){
-
-                    }finally{
-                        Models.mydb.Cart C = await MydbService.GetCartByCartId(Customer.CartId);
-                        await ResetToDefault();
-                        await OpenCart(C);
-                    }
+                    
+                    Models.mydb.Cart C = await MydbService.GetCartByCartId(Customer.CartId);
+                    Customer = new();
+                    await OpenCart(C);
                 }
             }
             
@@ -216,10 +217,7 @@ namespace CHKS.Pages
                 Connectors = await MydbService.GetConnectors(new Query{Filter=$@"i => i.CartId == (@0)", FilterParameters = new object[] {Customer.CartId}});
                 Customer.Total = Connectors.Sum(i => i.PriceOverwrite * i.Qty );       
                 await Toasting("បើកអតិថជន");
-            } else{
-                await ResetToDefault();
-                await OpenCart(Cart);
-            } 
+            }   
         }
 
         protected async Task OpenCart(Models.mydb.History history){
@@ -235,7 +233,6 @@ namespace CHKS.Pages
                 Customer.Creator = history.User;
                 Customer.Company = history.Company;
                 HistoryCustomer = history;
-
                 Historyconnectors = await MydbService.GetHistoryconnectors();
                 Historyconnectors = Historyconnectors.Where(i => i.CartId== history.CashoutDate);
                 Customer.Total = Historyconnectors.Sum(i => i.Export * i.Qty );       
@@ -249,12 +246,6 @@ namespace CHKS.Pages
                 Customer.Total = Connectors.Sum(i => i.PriceOverwrite * i.Qty );
                 await MydbService.UpdateCart(Customer.CartId, Customer);
             }
-
-        }
-
-        private bool showRecentCashout = false;
-        protected async Task ToggleRecentCashout(){
-            showRecentCashout = !showRecentCashout;
 
         }
 
@@ -283,7 +274,7 @@ namespace CHKS.Pages
             if(Product.Inventory.Stock > 0 && Product.Qty >= 1 && Changes == 1 || Changes == -1){
                 
                 Product.Inventory.Stock -= Changes;
-                await MydbService.UpdateInventory(Product.Product, Product.Inventory);
+                await MydbService.UpdateInventory(Product.Inventory.Name, Product.Inventory);
                 Product.Qty += Changes;
                 await MydbService.UpdateConnector(Product.GeneratedKey, Product);
                 if(Product.Qty == 0){
@@ -295,7 +286,7 @@ namespace CHKS.Pages
                 await Toasting(Changes > 0?"ដកទំនេញចេញពីស្តុក":"ថែមទំនេញចូលស្តុក");
             }else if(Product.Inventory.Stock >= 0 && Changes > 1 ){
                 Product.Inventory.Stock += Product.Qty;
-                await MydbService.UpdateInventory(Product.Product, Product.Inventory);
+                await MydbService.UpdateInventory(Product.Inventory.Name, Product.Inventory);
                 await MydbService.DeleteConnector(Product.GeneratedKey);
                 await Toasting("ថែមទំនេញចូលស្តុក");
             }else{
@@ -308,12 +299,12 @@ namespace CHKS.Pages
             if(Product.Inventory.Stock > 0 && Product.Qty >= 1 && Changes == 1 || Changes == -1){
                 
                 Product.Inventory.Stock -= Changes;
-                await MydbService.UpdateInventory(Product.Product, Product.Inventory);
+                await MydbService.UpdateInventory(Product.Inventory.Name, Product.Inventory);
                 Product.Qty += Changes;
                 await MydbService.UpdateHistoryconnector(Product.Id, Product);
                 if(Product.Qty == 0){
                     Product.Inventory.Stock += Product.Qty.GetValueOrDefault();
-                    await MydbService.UpdateInventory(Product.Product, Product.Inventory);
+                    await MydbService.UpdateInventory(Product.Inventory.Name, Product.Inventory);
                     await MydbService.DeleteHistoryconnector(Product.Id);
                 }
                 await Toasting(Changes > 0?"ដកទំនេញចេញពីស្តុក":"ថែមទំនេញចូលស្តុក");
@@ -419,7 +410,7 @@ namespace CHKS.Pages
                     
                     await DialogService.OpenAsync<PrintPage>("",new Dictionary<string, object>{{"Id",Customer.CartId}},new DialogOptions{ShowTitle=false, Height = "fit-content"});
                     
-                    await ClearAllProductNoReturn();
+                    await ClearAllProduct();
                     await MydbService.DeleteCart(Customer.CartId);
                     await ResetToDefault();
                     
@@ -427,16 +418,6 @@ namespace CHKS.Pages
                 }else{
                     await DialogService.OpenAsync<PrintPage>("",new Dictionary<string, object>{{"Id",Customer.CartId}},new DialogOptions{ShowTitle=false, Height = "fit-content"});
                 }
-            }
-        }
-
-        protected async Task ClearAllProductNoReturn(){
-            if(Connectors != null){
-                foreach(var i in Connectors.ToList())
-                {   
-                    await MydbService.DeleteConnector(i.GeneratedKey);
-
-                };                
             }
         }
 
