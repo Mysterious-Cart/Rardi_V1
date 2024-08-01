@@ -165,7 +165,7 @@
         </RadzenRow>-->
 
         <input style="border-radius:15px; margin-top:20px" @onchange="@(args => Search(args))"/>
-        <div Style=" display:flex; flex-wrap:wrap; overflow:scroll; height:85dvh ">                
+        <div Style=" display:inline-flex; flex-wrap:wrap; overflow:scroll; height:85dvh ">                
                         
             @if(Inventories.Any() == true){
                 @foreach(var product in Inventories){
@@ -247,7 +247,7 @@
                                         </RadzenStack>
                                         <RadzenStack Style="margin-top: 30px; margin-left:15px; width:100%" >
                                             <RadzenStack style= "height:10px"Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start" >
-                                                <RadzenText Text="@Hiscon.Product" Style="font-family: 'Khmer OS Battambang';  font-size:1vw; color:#28282B; height:8% ;widht:100%;overflow-y:scroll; overflow:visible"/>
+                                                <RadzenText Text="@Hiscon.Inventory.Name" Style="font-family: 'Khmer OS Battambang';  font-size:1vw; color:#28282B; height:8% ;widht:100%;overflow-y:scroll; overflow:visible"/>
                                                 <RadzenButton Icon="delete" Click="@(args => ChangeQty(Hiscon, 2))" style="width:25px; height:25px;border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:red; padding:1.5px;margin-right:20px; margin-left:auto; "/>
                                             </RadzenStack>
                                             <RadzenRow Style="height: 10px; margin-top:5px" AlignItems="AlignItems.Center">
@@ -355,7 +355,7 @@
         transition: margin-left 200ms ease-in-out;
         top:0px;
         background-color:white;
-        margin-left:78%; 
+        margin-left:77%; 
         z-index:1; 
         padding:20px;
         border-radius:15px; 
