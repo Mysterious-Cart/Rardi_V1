@@ -31,7 +31,10 @@ namespace CHKS.Pages
         protected NotificationService NotificationService { get; set; }
 
         [Inject]
-        public mydbService mydbService { get; set; }
+        protected mydbService mydbService { get; set; }
+
+        [Inject]
+        protected PublicCommand PublicCommand {get; set;}
 
         [Parameter]
         public string IsDialog {get; set;}
@@ -87,12 +90,12 @@ namespace CHKS.Pages
 
             await grid0.GoToPage(0);
 
-            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0)|| i.Barcode.Contains(@0) ", FilterParameters = new object[] { search , "Service Charge"} });
+            inventories = await mydbService.GetInventories(new Query { Filter = $@"i =>( i.Name.Contains(@0) || i.Barcode.Contains(@0)) && i.IsDeleted == 0 ", FilterParameters = new object[] { search , "Service Charge"} });
         }
 
         protected override async Task OnInitializedAsync()
         {   
-            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) || i.Barcode.Contains(@0)", FilterParameters = new object[] { search , "Service Charge"} }); 
+            inventories = await mydbService.GetInventories(new Query { Filter = $@"i =>( i.Name.Contains(@0) || i.Barcode.Contains(@0)) && i.IsDeleted == 0", FilterParameters = new object[] { search , "Service Charge"} }); 
         }
 
         RadzenTextBox searchbar;
@@ -102,6 +105,7 @@ namespace CHKS.Pages
             if(isEditMode == false && isModifying == false ){
                 await searchbar.Element.FocusAsync();
             }
+
         }
 
         protected async Task SelectProduct(CHKS.Models.mydb.Inventory Product){
@@ -141,22 +145,10 @@ namespace CHKS.Pages
             {
                 if (await DialogService.Confirm("Are you sure?") == true)
                 {
-                    Models.mydb.InventoryTrashcan trashed = new(){
-                        Date = DateTime.Now.ToString(),
-                        Name = inventory.Name,
-                        Barcode = inventory.Barcode,
-                        Stock = inventory.Stock,
-                        Import = inventory.Import,
-                        Export = inventory.Export,
-                    };
-                    await mydbService.CreateInventoryTrashcan(trashed);
-                    var deleteResult = await mydbService.DeleteInventory(inventory.Name);
+                    inventory.IsDeleted = 1;
+                    inventory.Info = "Deleted By:" + Security.User?.Name + "("+ DateTime.Now.ToString() +")";
+                    await mydbService.UpdateInventory(inventory.Name, inventory);
 
-                    if (deleteResult != null)
-                    {
-                        await grid0.Reload();
-                        isModifying = false;
-                    }
                 }
             }
             catch (Exception ex)
@@ -174,40 +166,16 @@ namespace CHKS.Pages
 
         protected async Task GridRowUpdate(CHKS.Models.mydb.Inventory args)
         {
-            if(args.Name != OriginalName){
-                Models.mydb.Inventory Checking = await mydbService.GetInventoryByName(args.Name);
-                if(Checking == null){
-                    string tempname = args.Name;
-                    args.Name = OriginalName;
-                    if(args.Import == null){
-                        args.Import = 0;
-                    }
-                    await GridDeleteButtonClick(args);
-                    try{
-                        args.Name = tempname;
-                        await mydbService.CreateInventory(args);
-                        isEditMode = false;
-                    }catch(Exception exc){
-
-                    }
-                }else{
-                    await DialogService.Alert("The name you trying to change to already exist.","Important");
-                    args.Name = OriginalName;
-                    grid0.CancelEditRow(args);
-                    await grid0.Reload();
-                    isModifying = false;
-                }
-
-            }else{
-                await mydbService.UpdateInventory(args.Name,args);
-                isModifying = false;
-            }
+            await mydbService.UpdateInventory(args.Code,args);
+            isModifying = false;
 
         }
 
         protected async Task GridRowCreate(CHKS.Models.mydb.Inventory args)
         {
             try{
+                args.NormalizeName = args.Name.Trim().ToLower();
+                args.Code = await GetKey();
                 await mydbService.CreateInventory(args);
                 await grid0.Reload();
             }catch(Exception exc){
@@ -240,6 +208,12 @@ namespace CHKS.Pages
             grid0.CancelEditRow(data);
             await mydbService.CancelInventoryChanges(data);
         }
+
+        protected async Task<string> GetKey(){
+            string GenKey = PublicCommand.GenerateRandomKey();
+            IEnumerable<Models.mydb.Inventory> Temp  = inventories.Where(i => i.Code == GenKey);
+            return Temp.Any() == false?GenKey: await GetKey();
+        }        
         
     }
 }

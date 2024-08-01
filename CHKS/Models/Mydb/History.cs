@@ -31,6 +31,11 @@ namespace CHKS.Models.mydb
 
         public string User { get; set; }
 
+        public string Info { get; set; }
+
+        [Required]
+        public short IsDeleted { get; set; }
+
         public ICollection<Historyconnector> Historyconnectors { get; set; }
     }
 }

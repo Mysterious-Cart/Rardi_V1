@@ -10,7 +10,7 @@ namespace CHKS.Models.mydb
     {
         [Key]
         [Required]
-        public string Name { get; set; }
+        public string Code { get; set; }
 
         [Required]
         public decimal Stock { get; set; }
@@ -23,6 +23,13 @@ namespace CHKS.Models.mydb
 
         [Column("Normalize_Name")]
         public string NormalizeName { get; set; }
+
+        [Required]
+        public string Name { get; set; }
+
+        public string Info { get; set; }
+
+        public short? IsDeleted { get; set; }
 
         public ICollection<Connector> Connectors { get; set; }
 

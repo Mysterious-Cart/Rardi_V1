@@ -8,8 +8,13 @@ namespace CHKS.Models.mydb
     [Table("car_brand")]
     public partial class CarBrand
     {
-        [Key]
         [Required]
         public string Brand { get; set; }
+
+        public string Car { get; set; }
+
+        [Key]
+        [Required]
+        public string Key { get; set; }
     }
 }

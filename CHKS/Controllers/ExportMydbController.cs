@@ -298,33 +298,5 @@ namespace CHKS.Controllers
         {
             return ToExcel(ApplyQuery(await service.GetInventoryProductgroups(), Request.Query, false), fileName);
         }
-
-        [HttpGet("/export/mydb/inventorytrashcans/csv")]
-        [HttpGet("/export/mydb/inventorytrashcans/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportInventoryTrashcansToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetInventoryTrashcans(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/inventorytrashcans/excel")]
-        [HttpGet("/export/mydb/inventorytrashcans/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportInventoryTrashcansToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetInventoryTrashcans(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/productclasses/csv")]
-        [HttpGet("/export/mydb/productclasses/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportProductClassesToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetProductClasses(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/productclasses/excel")]
-        [HttpGet("/export/mydb/productclasses/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportProductClassesToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetProductClasses(), Request.Query, false), fileName);
-        }
     }
 }
