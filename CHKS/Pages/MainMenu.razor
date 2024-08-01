@@ -9,7 +9,7 @@
 <div class="CustomerList">
     <div style="display: inline-flex; width:100%">
         <h1 Style="font-size: x-large; font-family: 'Khmer OS Battambang'; color:#28282B">អតិថជន</h1>
-        <RadzenToggleButton ToggleIcon="check"  style="margin-left:auto; margin-bottom:10px; width:fit-content" Click="@ToggleRecentCashout"/>
+        
     </div>
     <div style="background-color: gray; position:fixed; width:50px; border-radius:15px 0px 0px 15px; ; height:10dvh; margin-left:-70px; margin-top:2% ">
     </div>
@@ -27,6 +27,7 @@
                 <p Style="font-size: 1.2em; font-family: 'Khmer OS Battambang'; margin-left: auto; color: gray">រយះពេល</p>
             </RadzenRow>
         </div>
+        @if(Carts != null){
             @foreach( var customer in Carts){
                 <div Style="min-width: 320px; border-radius:10px; height: 120px; background-color:antiquewhite; padding: 20px;border:solid ;border-width:1px; border-color:burlywood;margin-top:10px" @onclick="@(args => OpenCart(customer))">
                     <RadzenRow JustifyContent="JustifyContent.Center" Style="height: 35px;">
@@ -41,8 +42,9 @@
                         <p Style="font-size: 1.2em; font-family: 'Khmer OS Battambang'; margin-left: auto; color: gray">រយះពេល</p>
                     </RadzenRow>
                 </div>
+            }
         }
-        @if(showRecentCashout == true){
+        @if(RecentHistory != null){
             @foreach( var History in RecentHistory){
                 <div Style="min-width: 320px; border-radius:10px; height: 120px; background-color:#afd69b; padding: 20px;border:solid ;border-width:1px; border-color:#28282B; margin-top:10px" @onclick="@(args => OpenCart(History))">
                     <div style="z-index:1; font-size:4.3em; color:red; height:1px; width:5px;overflow:visible; margin-left:15%"> PAID</div>
@@ -166,6 +168,7 @@
         <input style="border-radius:15px; margin-top:20px" @onchange="@(args => Search(args))"/>
         <div Style=" display:inline-flex; flex-wrap:wrap; overflow:scroll; height:85dvh ">                
                         
+            @if(Inventories.Any() == true){
                 @foreach(var product in Inventories){
                     <div style="width:32%; height:150px; background-color:transparent; border-radius:15px; padding:20px; border:solid; border-color:lightgray; 
                     border-width:2px; margin-left:10px; margin-top:10px; " @onclick= "@(args => AddItemtoCart(product))" >
@@ -195,6 +198,9 @@
                         </RadzenStack>
                     </div>
                 }
+            }else{
+                <p style="font-size:5em; margin-left:auto; margin-right:auto; align-self:center"><b>គ្មានទំនិញ.....</b></p>
+            }
             
         </div>
         
@@ -216,10 +222,10 @@
             </RadzenRow>
             <RadzenRow Style="display:inline-flexbox; width:100%; justify-content:flex-start">
                 <p style="font-family: 'Khmer OS Battambang'; font-size: medium; color:gray; margin-right:auto; height:10px "><b>@(Customer.Car != null?Customer.Car.Phone:0)</b></p>
-                <!--<RadzenRow Style="margin-right: 18%;">
+                <RadzenRow Style="margin-right: 18%;">
                     <p style="font-family: 'Khmer OS Battambang'; font-size: medium; color:gray; margin-right:auto; height:10px;"><b>ឡានក្រុមហ៊ុម</b></p>
                     <RadzenIcon id="ToggleBar" class="@ToggleButtonClass" @onclick="@Togglebutton" Icon="@ToggleIcon" />
-                </RadzenRow>-->
+                </RadzenRow>
             </RadzenRow>
             
 
