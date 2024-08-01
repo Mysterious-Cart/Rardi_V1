@@ -31,7 +31,7 @@
     <RadzenDataGrid @ref="grid0" AllowFiltering="false" Data="@Historyconnector" TItem="CHKS.Models.mydb.Historyconnector" GridLines="Radzen.DataGridGridLines.Horizontal" style="Height:35vh; border-radius:15px;" 
     AllowColumnResize=true AllowPaging=false RowUpdate="@GridRowUpdate">
      <Columns>
-        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Product" Title="Name" Width="350px" TextAlign="TextAlign.Center">
+        <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Inventory.Name" Title="Name" Width="350px" TextAlign="TextAlign.Center">
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Qty" Title="Qty" FormatString="{0:N2}" Width="50px" TextAlign="TextAlign.Center">
             <EditTemplate Context="Historyconnector">
