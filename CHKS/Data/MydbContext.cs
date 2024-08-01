@@ -118,6 +118,14 @@ namespace CHKS.Data
               .HasPrincipalKey(i => i.Name)
               .OnDelete(DeleteBehavior.ClientNoAction);
 
+            builder.Entity<CHKS.Models.mydb.Car>()
+              .Property(p => p.IsDeleted)
+              .HasDefaultValueSql(@"'0'");
+
+            builder.Entity<CHKS.Models.mydb.Inventory>()
+              .Property(p => p.IsDeleted)
+              .HasDefaultValueSql(@"'0'");
+
             builder.Entity<CHKS.Models.mydb.Aspnetuser>()
               .Property(p => p.LockoutEnd)
               .HasColumnType("datetime(6)");
@@ -181,18 +189,6 @@ namespace CHKS.Data
             builder.Entity<CHKS.Models.mydb.Inventory>()
               .Property(p => p.Export)
               .HasPrecision(10,3);
-
-            builder.Entity<CHKS.Models.mydb.InventoryTrashcan>()
-              .Property(p => p.Stock)
-              .HasPrecision(10,2);
-
-            builder.Entity<CHKS.Models.mydb.InventoryTrashcan>()
-              .Property(p => p.Import)
-              .HasPrecision(10,2);
-
-            builder.Entity<CHKS.Models.mydb.InventoryTrashcan>()
-              .Property(p => p.Export)
-              .HasPrecision(10,2);
             this.OnModelBuilding(builder);
         }
 
@@ -235,10 +231,6 @@ namespace CHKS.Data
         public DbSet<CHKS.Models.mydb.InventoryOption> InventoryOptions { get; set; }
 
         public DbSet<CHKS.Models.mydb.InventoryProductgroup> InventoryProductgroups { get; set; }
-
-        public DbSet<CHKS.Models.mydb.InventoryTrashcan> InventoryTrashcans { get; set; }
-
-        public DbSet<CHKS.Models.mydb.ProductClass> ProductClasses { get; set; }
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {

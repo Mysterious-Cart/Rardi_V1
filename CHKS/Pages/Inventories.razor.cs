@@ -31,7 +31,10 @@ namespace CHKS.Pages
         protected NotificationService NotificationService { get; set; }
 
         [Inject]
-        public mydbService mydbService { get; set; }
+        protected mydbService mydbService { get; set; }
+
+        [Inject]
+        protected PublicCommand PublicCommand {get; set;}
 
         [Parameter]
         public string IsDialog {get; set;}
@@ -102,6 +105,7 @@ namespace CHKS.Pages
             if(isEditMode == false && isModifying == false ){
                 await searchbar.Element.FocusAsync();
             }
+
         }
 
         protected async Task SelectProduct(CHKS.Models.mydb.Inventory Product){
@@ -141,22 +145,8 @@ namespace CHKS.Pages
             {
                 if (await DialogService.Confirm("Are you sure?") == true)
                 {
-                    Models.mydb.InventoryTrashcan trashed = new(){
-                        Date = DateTime.Now.ToString(),
-                        Name = inventory.Name,
-                        Barcode = inventory.Barcode,
-                        Stock = inventory.Stock,
-                        Import = inventory.Import,
-                        Export = inventory.Export,
-                    };
-                    await mydbService.CreateInventoryTrashcan(trashed);
-                    var deleteResult = await mydbService.DeleteInventory(inventory.Name);
-
-                    if (deleteResult != null)
-                    {
-                        await grid0.Reload();
-                        isModifying = false;
-                    }
+                    
+                    
                 }
             }
             catch (Exception ex)
@@ -208,6 +198,7 @@ namespace CHKS.Pages
         protected async Task GridRowCreate(CHKS.Models.mydb.Inventory args)
         {
             try{
+                args.Code = await GetKey();
                 await mydbService.CreateInventory(args);
                 await grid0.Reload();
             }catch(Exception exc){
@@ -231,6 +222,7 @@ namespace CHKS.Pages
         protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Inventory data)
         {
             isModifying = false;
+            data.Code = await GetKey();
             await grid0.UpdateRow(data);
         }
 
@@ -240,6 +232,12 @@ namespace CHKS.Pages
             grid0.CancelEditRow(data);
             await mydbService.CancelInventoryChanges(data);
         }
+
+        protected async Task<string> GetKey(){
+            string GenKey = PublicCommand.GenerateRandomKey();
+            IEnumerable<Models.mydb.Inventory> Temp  = inventories.Where(i => i.Code == GenKey);
+            return Temp.Any() == false?GenKey: await GetKey();
+        }        
         
     }
 }

@@ -53,11 +53,12 @@ namespace CHKS.Pages
 
             await grid0.GoToPage(0);
 
-            histories = await mydbService.GetHistories(new Query { Filter = $@"i => i.CashoutDate.Contains(@0) || i.Plate.Contains(@0)", FilterParameters = new object[] { search }, Expand = "Car" });
+            histories = await mydbService.GetHistories(new Query { Filter = $@"i => (i.CashoutDate.Contains(@0) || i.Plate.Contains(@0)) && i.IsDeleted == 0", FilterParameters = new object[] { search }, Expand = "Car" });
         }
+
         protected override async Task OnInitializedAsync()
         {
-            histories = await mydbService.GetHistories(new Query { Filter = $@"i => i.CashoutDate.Contains(@0) || i.Plate.Contains(@0)", FilterParameters = new object[] { search }, Expand = "Car" });
+            histories = await mydbService.GetHistories(new Query { Filter = $@"i => (i.CashoutDate.Contains(@0) || i.Plate.Contains(@0) )&& i.IsDeleted == 0", FilterParameters = new object[] { search }, Expand = "Car" });
         }
 
         protected async Task OpenHistory(Models.mydb.History args){
@@ -94,21 +95,14 @@ namespace CHKS.Pages
 
         protected async Task GridDeleteButtonClick( CHKS.Models.mydb.History history)
         {
-            IEnumerable<Models.mydb.Historyconnector> Hiscon = await mydbService.GetHistoryconnectors();
-            Hiscon = Hiscon.Where(i => i.CartId == history.CashoutDate);
-            foreach(var i in Hiscon.ToList()){
-                await mydbService.DeleteHistoryconnector(i.Id);
-            }
             try
             {
                 if (await DialogService.Confirm("Are you sure?") == true)
                 {
-                    var deleteResult = await mydbService.DeleteHistory(history.CashoutDate);
-
-                    if (deleteResult != null)
-                    {
-                        await grid0.Reload();
-                    }
+                    history.IsDeleted = 1;
+                    history.Info = "Deleted By:" + Security.User?.Name + "("+ DateTime.Now +")";
+                    await mydbService.UpdateHistory(history.CashoutDate, history);
+                    await grid0.Reload();
                 }else{
                     editMode = false;
                 }
