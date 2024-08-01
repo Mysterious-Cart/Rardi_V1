@@ -2705,17 +2705,17 @@ namespace CHKS
         }
 
         partial void OnInventoryGet(CHKS.Models.mydb.Inventory item);
-        partial void OnGetInventoryByName(ref IQueryable<CHKS.Models.mydb.Inventory> items);
+        partial void OnGetInventoryByCode(ref IQueryable<CHKS.Models.mydb.Inventory> items);
 
 
-        public async Task<CHKS.Models.mydb.Inventory> GetInventoryByName(string name)
+        public async Task<CHKS.Models.mydb.Inventory> GetInventoryByCode(string code)
         {
             var items = Context.Inventories
                               .AsNoTracking()
-                              .Where(i => i.Name == name);
+                              .Where(i => i.Code == code);
 
  
-            OnGetInventoryByName(ref items);
+            OnGetInventoryByCode(ref items);
 
             var itemToReturn = items.FirstOrDefault();
 
@@ -2732,7 +2732,7 @@ namespace CHKS
             OnInventoryCreated(inventory);
 
             var existingItem = Context.Inventories
-                              .Where(i => i.Name == inventory.Name)
+                              .Where(i => i.Code == inventory.Code)
                               .FirstOrDefault();
 
             if (existingItem != null)
@@ -2771,12 +2771,12 @@ namespace CHKS
         partial void OnInventoryUpdated(CHKS.Models.mydb.Inventory item);
         partial void OnAfterInventoryUpdated(CHKS.Models.mydb.Inventory item);
 
-        public async Task<CHKS.Models.mydb.Inventory> UpdateInventory(string name, CHKS.Models.mydb.Inventory inventory)
+        public async Task<CHKS.Models.mydb.Inventory> UpdateInventory(string code, CHKS.Models.mydb.Inventory inventory)
         {
             OnInventoryUpdated(inventory);
 
             var itemToUpdate = Context.Inventories
-                              .Where(i => i.Name == inventory.Name)
+                              .Where(i => i.Code == inventory.Code)
                               .FirstOrDefault();
 
             if (itemToUpdate == null)
@@ -2798,10 +2798,10 @@ namespace CHKS
         partial void OnInventoryDeleted(CHKS.Models.mydb.Inventory item);
         partial void OnAfterInventoryDeleted(CHKS.Models.mydb.Inventory item);
 
-        public async Task<CHKS.Models.mydb.Inventory> DeleteInventory(string name)
+        public async Task<CHKS.Models.mydb.Inventory> DeleteInventory(string code)
         {
             var itemToDelete = Context.Inventories
-                              .Where(i => i.Name == name)
+                              .Where(i => i.Code == code)
                               .FirstOrDefault();
 
             if (itemToDelete == null)

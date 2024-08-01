@@ -10,7 +10,7 @@ namespace CHKS.Models.mydb
     {
         [Key]
         [Required]
-        public string Name { get; set; }
+        public string Code { get; set; }
 
         [Required]
         public decimal Stock { get; set; }
@@ -25,7 +25,7 @@ namespace CHKS.Models.mydb
         public string NormalizeName { get; set; }
 
         [Required]
-        public string Code { get; set; }
+        public string Name { get; set; }
 
         public string Info { get; set; }
 

@@ -424,9 +424,10 @@ namespace CHKS.Pages
                 {   
                     if(i.Product != "Service Charge")
                     {
-                        Models.mydb.Inventory product = await MydbService.GetInventoryByName(i.Product);
-                        product.Stock += i.Qty;
-                        await MydbService.UpdateInventory(i.Product, product);
+                        IEnumerable<Models.mydb.Inventory> product = await MydbService.GetInventories();
+                        product.Where(v => v.Name == i.Product);
+                        product.FirstOrDefault().Stock += i.Qty;
+                        await MydbService.UpdateInventory(i.Product, product.FirstOrDefault());
                         await MydbService.DeleteConnector(i.GeneratedKey);
                     }else{
                         await MydbService.DeleteConnector(i.GeneratedKey);

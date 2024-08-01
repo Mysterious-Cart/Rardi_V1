@@ -167,7 +167,7 @@
         <input style="border-radius:15px; margin-top:20px" @onchange="@(args => Search(args))"/>
         <div Style=" display:flex; flex-wrap:wrap; overflow:scroll; height:85dvh ">                
                         
-            @if(Inventories != null){
+            @if(Inventories.Any() == true){
                 @foreach(var product in Inventories){
                     <div style="width:32%; height:150px; background-color:transparent; border-radius:15px; padding:20px; border:solid; border-color:lightgray; 
                     border-width:2px; margin-left:10px; margin-top:10px; " @onclick= "@(args => AddItemtoCart(product))" >
@@ -197,6 +197,8 @@
                         </RadzenStack>
                     </div>
                 }
+            }else{
+                <p style="font-size:5em; margin-left:auto; margin-right:auto; align-self:center"><b>គ្មានទំនិញ.....</b></p>
             }
             
         </div>
