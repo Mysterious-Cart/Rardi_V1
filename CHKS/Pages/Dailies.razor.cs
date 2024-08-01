@@ -39,7 +39,7 @@ namespace CHKS.Pages
         protected IEnumerable<CHKS.Models.mydb.Historyconnector> Historyconnectors;
         protected IEnumerable<Models.mydb.Cashback> Cashbacks;
         protected IEnumerable<Models.mydb.Dailyexpense> Dailyexpenses;
-        protected CHKS.Models.mydb.Inventory Inventories;
+        protected IEnumerable<Models.mydb.Inventory> Inventories;
 
         protected static string dates = DateTime.Now.ToString("dd/MM/yyyy");
         protected bool NoEmptyImport = true;
@@ -118,13 +118,14 @@ namespace CHKS.Pages
         protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.Historyconnector data)
         {
             await grid1.EditRow(data);
-            Inventories = await mydbService.GetInventoryByName(data.Product);
+            Inventories = await mydbService.GetInventories();
+            Inventories.Where(i => i.Name == data.Product);
         }
 
          protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Historyconnector data)
         {
             await grid1.UpdateRow(data);
-            await mydbService.UpdateInventory(data.Product, Inventories);
+            await mydbService.UpdateInventory(data.Product, Inventories.FirstOrDefault());
             if(Historyconnectors.Any()){
                 NoEmptyImport = false;
             }else{
@@ -136,7 +137,7 @@ namespace CHKS.Pages
         protected async Task CancelButtonClick(MouseEventArgs args, CHKS.Models.mydb.Historyconnector data)
         {
             grid1.CancelEditRow(data);
-            await mydbService.CancelInventoryChanges(Inventories);
+            await mydbService.CancelInventoryChanges(Inventories.FirstOrDefault());
         }
 
         protected async Task AddBtnClick(MouseEventArgs args)

@@ -90,12 +90,12 @@ namespace CHKS.Pages
 
             await grid0.GoToPage(0);
 
-            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0)|| i.Barcode.Contains(@0) ", FilterParameters = new object[] { search , "Service Charge"} });
+            inventories = await mydbService.GetInventories(new Query { Filter = $@"i =>( i.Name.Contains(@0) || i.Barcode.Contains(@0)) && i.IsDeleted == 0 ", FilterParameters = new object[] { search , "Service Charge"} });
         }
 
         protected override async Task OnInitializedAsync()
         {   
-            inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) || i.Barcode.Contains(@0)", FilterParameters = new object[] { search , "Service Charge"} }); 
+            inventories = await mydbService.GetInventories(new Query { Filter = $@"i =>( i.Name.Contains(@0) || i.Barcode.Contains(@0)) && i.IsDeleted == 0", FilterParameters = new object[] { search , "Service Charge"} }); 
         }
 
         RadzenTextBox searchbar;
@@ -145,8 +145,10 @@ namespace CHKS.Pages
             {
                 if (await DialogService.Confirm("Are you sure?") == true)
                 {
-                    
-                    
+                    inventory.IsDeleted = 1;
+                    inventory.Info = "Deleted By:" + Security.User?.Name + "("+ DateTime.Now.ToString() +")";
+                    await mydbService.UpdateInventory(inventory.Name, inventory);
+
                 }
             }
             catch (Exception ex)
@@ -164,40 +166,15 @@ namespace CHKS.Pages
 
         protected async Task GridRowUpdate(CHKS.Models.mydb.Inventory args)
         {
-            if(args.Name != OriginalName){
-                Models.mydb.Inventory Checking = await mydbService.GetInventoryByName(args.Name);
-                if(Checking == null){
-                    string tempname = args.Name;
-                    args.Name = OriginalName;
-                    if(args.Import == null){
-                        args.Import = 0;
-                    }
-                    await GridDeleteButtonClick(args);
-                    try{
-                        args.Name = tempname;
-                        await mydbService.CreateInventory(args);
-                        isEditMode = false;
-                    }catch(Exception exc){
-
-                    }
-                }else{
-                    await DialogService.Alert("The name you trying to change to already exist.","Important");
-                    args.Name = OriginalName;
-                    grid0.CancelEditRow(args);
-                    await grid0.Reload();
-                    isModifying = false;
-                }
-
-            }else{
-                await mydbService.UpdateInventory(args.Name,args);
-                isModifying = false;
-            }
+            await mydbService.UpdateInventory(args.Code,args);
+            isModifying = false;
 
         }
 
         protected async Task GridRowCreate(CHKS.Models.mydb.Inventory args)
         {
             try{
+                args.NormalizeName = args.Name.Trim().ToLower();
                 args.Code = await GetKey();
                 await mydbService.CreateInventory(args);
                 await grid0.Reload();
@@ -222,7 +199,6 @@ namespace CHKS.Pages
         protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Inventory data)
         {
             isModifying = false;
-            data.Code = await GetKey();
             await grid0.UpdateRow(data);
         }
 

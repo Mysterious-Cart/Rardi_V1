@@ -34,11 +34,12 @@ namespace CHKS.Pages
         [Inject]
         public mydbService mydbService { get; set; }
 
+        [Inject]
+        public PublicCommand PublicCommand {get; set;}
+
         protected IEnumerable<CHKS.Models.mydb.Car> cars;
-        protected IEnumerable<CHKS.Models.mydb.Cart> Carts;
 
         protected RadzenDataGrid<CHKS.Models.mydb.Car> grid0;
-        protected RadzenDataGrid<CHKS.Models.mydb.Cart> grid1;
 
         protected bool isEditing = false;
 
@@ -52,15 +53,19 @@ namespace CHKS.Pages
             
             search = $"{args.Value}";
 
-            cars = cars.Where(i => i.Plate.Contains(search));
+            cars = cars.Where(i => i.Plate.Contains(search) && i.IsDeleted == 0);
         }
 
         protected override async Task OnInitializedAsync()
         {
-            cars = await mydbService.GetCars();
-
-            Carts = await mydbService.GetCarts();
+            cars = await mydbService.GetCars(new Query{ Filter = $@"i =>i.IsDeleted==0", FilterParameters = new object[] { "1"} });
         }
+
+        protected async Task<string> GetKey(){
+            string GenKey = PublicCommand.GenerateRandomKey();
+            IEnumerable<Models.mydb.Car> Temp = cars.Where(i => i.Key == GenKey);
+            return Temp.Any() == false?GenKey:await GetKey();
+        } 
 
         protected async Task AddButtonClick(MouseEventArgs args)
         {
@@ -71,26 +76,12 @@ namespace CHKS.Pages
 
         protected async Task GridDeleteButtonClick(MouseEventArgs args, CHKS.Models.mydb.Car car)
         {
-            try
+            if (await DialogService.Confirm("តើអ្នកច្បាស់ដែរឫទេ?") == true)
             {
-                if (await DialogService.Confirm("Are you sure you want to delete this record?") == true)
-                {
-                    var deleteResult = await mydbService.DeleteCar(car.Plate);
-
-                    if (deleteResult != null)
-                    {
-                        await grid0.Reload();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                NotificationService.Notify(new NotificationMessage
-                {
-                    Severity = NotificationSeverity.Error,
-                    Summary = $"Error",
-                    Detail = $"Unable to delete Car"
-                });
+                car.IsDeleted = 1;
+                car.Info = "Deleted By:" + Security.User?.Name + "("+DateTime.Now.ToString()+")";
+                await mydbService.UpdateCar(car.Plate, car);
+                await grid0.Reload();
             }
         }
 
@@ -103,6 +94,8 @@ namespace CHKS.Pages
         {
             try{
                 args.Plate = args.Plate.ToUpper();
+                args.Type = args.Type.ToUpper();
+                args.IsDeleted = 0;
                 await mydbService.CreateCar(args);
                 await grid0.Reload();
                 isEditing = false;
@@ -123,6 +116,7 @@ namespace CHKS.Pages
 
         protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Car data)
         {
+            data.Key = await GetKey();
             await grid0.UpdateRow(data);
             
         }

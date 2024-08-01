@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "2Sxh0Sy8IM/ASjaqs+edm8E9pGcS7xAMxJS7kcQ40/n4FcMqHP7XI9HeXBCdEv7MTa+sU616M8ZxeFZS3fuZtg==",
+  "dgSpecHash": "0SuEAlW6LVgNErpNOrX84uU50MFjdPZRBp2Ewq5BXt+78yphYZ1Fk0F6RStdEfe+V5ekkINMKjK3nOWZCV9oJw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\CHKS.csproj",
+  "projectFilePath": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\CHKS.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\soeng\\.nuget\\packages\\dartsassbuilder\\1.0.0\\dartsassbuilder.1.0.0.nupkg.sha512",
     "C:\\Users\\soeng\\.nuget\\packages\\documentformat.openxml\\3.0.2\\documentformat.openxml.3.0.2.nupkg.sha512",
