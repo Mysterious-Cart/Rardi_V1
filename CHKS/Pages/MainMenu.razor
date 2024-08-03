@@ -9,7 +9,7 @@
 <div class="CustomerList">
     <div style="display: inline-flex; width:100%">
         <h1 Style="font-size: x-large; font-family: 'Khmer OS Battambang'; color:#28282B">អតិថជន</h1>
-        
+        <RadzenToggleButton ToggleIcon="check"  style="margin-left:auto; margin-bottom:10px; width:fit-content" Click="@ToggleRecentCashout"/>
     </div>
     <div style="background-color: gray; position:fixed; width:50px; border-radius:15px 0px 0px 15px; ; height:10dvh; margin-left:-70px; margin-top:2% ">
     </div>
@@ -44,7 +44,7 @@
                 </div>
             }
         }
-        @if(RecentHistory != null){
+        @if(RecentHistory != null && showRecentCashout == true){
             @foreach( var History in RecentHistory){
                 <div Style="min-width: 320px; border-radius:10px; height: 120px; background-color:#afd69b; padding: 20px;border:solid ;border-width:1px; border-color:#28282B; margin-top:10px" @onclick="@(args => OpenCart(History))">
                     <div style="z-index:1; font-size:4.3em; color:red; height:1px; width:5px;overflow:visible; margin-left:15%"> PAID</div>
