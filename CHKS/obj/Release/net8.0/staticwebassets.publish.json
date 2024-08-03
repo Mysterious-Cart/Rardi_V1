@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "jBguFCYYgKeNWEkqlcAlqAexIWQOe1Zzh1ggsLlhf0I=",
+  "Hash": "A4HClIVWrlc5Zgi9ezzZt0ebSUhOrrIYu2fRt0Km6x8=",
   "Source": "CHKS",
   "BasePath": "_content/CHKS",
   "Mode": "Default",
@@ -10,7 +10,7 @@
     {
       "Name": "CHKS\\wwwroot",
       "Source": "CHKS",
-      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\",
       "BasePath": "_content/CHKS",
       "Pattern": "**"
     }
@@ -948,10 +948,10 @@
       "OriginalItemSpec": "C:\\Users\\soeng\\.nuget\\packages\\radzen.blazor\\4.34.0\\staticwebassets\\Radzen.Blazor.js"
     },
     {
-      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\css\\bootstrap\\bootstrap.min.css",
+      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\css\\bootstrap\\bootstrap.min.css",
       "SourceId": "CHKS",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\",
       "BasePath": "_content/CHKS",
       "RelativePath": "css/bootstrap/bootstrap.min.css",
       "AssetKind": "All",
@@ -967,10 +967,10 @@
       "OriginalItemSpec": "wwwroot\\css\\bootstrap\\bootstrap.min.css"
     },
     {
-      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\css\\bootstrap\\bootstrap.min.css.map",
+      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\css\\bootstrap\\bootstrap.min.css.map",
       "SourceId": "CHKS",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\",
       "BasePath": "_content/CHKS",
       "RelativePath": "css/bootstrap/bootstrap.min.css.map",
       "AssetKind": "All",
@@ -986,10 +986,10 @@
       "OriginalItemSpec": "wwwroot\\css\\bootstrap\\bootstrap.min.css.map"
     },
     {
-      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\css\\Layout.css",
+      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\css\\Layout.css",
       "SourceId": "CHKS",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\",
       "BasePath": "_content/CHKS",
       "RelativePath": "css/Layout.css",
       "AssetKind": "All",
@@ -1005,10 +1005,10 @@
       "OriginalItemSpec": "wwwroot\\css\\Layout.css"
     },
     {
-      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\css\\Page.css",
+      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\css\\Page.css",
       "SourceId": "CHKS",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\",
       "BasePath": "_content/CHKS",
       "RelativePath": "css/Page.css",
       "AssetKind": "All",
@@ -1024,10 +1024,10 @@
       "OriginalItemSpec": "wwwroot\\css\\Page.css"
     },
     {
-      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\css\\site.css",
+      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\css\\site.css",
       "SourceId": "CHKS",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\",
       "BasePath": "_content/CHKS",
       "RelativePath": "css/site.css",
       "AssetKind": "All",
@@ -1043,10 +1043,10 @@
       "OriginalItemSpec": "wwwroot\\css\\site.css"
     },
     {
-      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\favicon.ico",
+      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\favicon.ico",
       "SourceId": "CHKS",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\",
       "BasePath": "_content/CHKS",
       "RelativePath": "favicon.ico",
       "AssetKind": "All",
@@ -1062,10 +1062,10 @@
       "OriginalItemSpec": "wwwroot\\favicon.ico"
     },
     {
-      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\Font\\KhmerOS_battambang.ttf",
+      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\Font\\KhmerOS_battambang.ttf",
       "SourceId": "CHKS",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\",
       "BasePath": "_content/CHKS",
       "RelativePath": "Font/KhmerOS_battambang.ttf",
       "AssetKind": "All",
@@ -1081,10 +1081,10 @@
       "OriginalItemSpec": "wwwroot\\Font\\KhmerOS_battambang.ttf"
     },
     {
-      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\icon\\angle-small-down.png",
+      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\icon\\angle-small-down.png",
       "SourceId": "CHKS",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\",
       "BasePath": "_content/CHKS",
       "RelativePath": "icon/angle-small-down.png",
       "AssetKind": "All",
@@ -1100,10 +1100,10 @@
       "OriginalItemSpec": "wwwroot\\icon\\angle-small-down.png"
     },
     {
-      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\icon\\angle-small-up.png",
+      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\icon\\angle-small-up.png",
       "SourceId": "CHKS",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\",
       "BasePath": "_content/CHKS",
       "RelativePath": "icon/angle-small-up.png",
       "AssetKind": "All",
@@ -1119,10 +1119,10 @@
       "OriginalItemSpec": "wwwroot\\icon\\angle-small-up.png"
     },
     {
-      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\icon\\check.png",
+      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\icon\\check.png",
       "SourceId": "CHKS",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\",
       "BasePath": "_content/CHKS",
       "RelativePath": "icon/check.png",
       "AssetKind": "All",
@@ -1138,10 +1138,10 @@
       "OriginalItemSpec": "wwwroot\\icon\\check.png"
     },
     {
-      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\images\\Full_logo.png",
+      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\images\\Full_logo.png",
       "SourceId": "CHKS",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\",
       "BasePath": "_content/CHKS",
       "RelativePath": "images/Full_logo.png",
       "AssetKind": "All",
@@ -1157,10 +1157,10 @@
       "OriginalItemSpec": "wwwroot\\images\\Full_logo.png"
     },
     {
-      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\images\\login.jpg",
+      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\images\\login.jpg",
       "SourceId": "CHKS",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\",
       "BasePath": "_content/CHKS",
       "RelativePath": "images/login.jpg",
       "AssetKind": "All",
@@ -1176,10 +1176,10 @@
       "OriginalItemSpec": "wwwroot\\images\\login.jpg"
     },
     {
-      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\images\\logo-login.png",
+      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\images\\logo-login.png",
       "SourceId": "CHKS",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\",
       "BasePath": "_content/CHKS",
       "RelativePath": "images/logo-login.png",
       "AssetKind": "All",
@@ -1195,10 +1195,10 @@
       "OriginalItemSpec": "wwwroot\\images\\logo-login.png"
     },
     {
-      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\images\\logo.png",
+      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\images\\logo.png",
       "SourceId": "CHKS",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\",
       "BasePath": "_content/CHKS",
       "RelativePath": "images/logo.png",
       "AssetKind": "All",
@@ -1214,10 +1214,10 @@
       "OriginalItemSpec": "wwwroot\\images\\logo.png"
     },
     {
-      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\logo.ico",
+      "Identity": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\logo.ico",
       "SourceId": "CHKS",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\chks\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\wwwroot\\",
       "BasePath": "_content/CHKS",
       "RelativePath": "logo.ico",
       "AssetKind": "All",
