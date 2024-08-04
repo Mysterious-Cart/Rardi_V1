@@ -22,7 +22,7 @@
             <RadzenButton Icon="delete" Text="ផុងសំរាម" Variant="Variant.Flat" />
         </RadzenStack>
     </RadzenColumn>
-    <RadzenTextBox Placeholder="Search ..." style="display: block; width: 100%" @oninput="@Search" aria-label="Search by all string columns" @bind-Value="search" @ref="@searchbar" TabIndex=0 />
+    <RadzenTextBox Placeholder="Search ..." style="display: block; width: 100%" @oninput="@Search" aria-label="Search by all string columns" @bind-Value="search" TabIndex=0 />
     <RadzenRow >
         <RadzenDataGrid @ref="grid0" ColumnWidth="200px" AllowFiltering="true" FilterMode="FilterMode.Advanced"  ShowPagingSummary="true" Style="height:80dvh; font-size:x-larger;"
             Data="@inventories" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate" RowSelect="@SelectProduct" TItem="CHKS.Models.mydb.Inventory">

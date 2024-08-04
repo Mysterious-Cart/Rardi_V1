@@ -73,16 +73,6 @@ namespace CHKS.Pages
             CarBrands = await mydbService.GetCarBrands();
         }
 
-        RadzenTextBox searchbar;
-
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            if(isEditMode == false && isModifying == false ){
-                await searchbar.Element.FocusAsync();
-            }
-
-        }
-
         protected bool IsCombiningMode = false;
         protected List<Models.mydb.Inventory> ChosenProduct;
 
@@ -120,16 +110,18 @@ namespace CHKS.Pages
         }
 
         protected async Task SelectProduct(Models.mydb.Inventory product){
-            bool Dupe = false;
-            foreach(var i in ChosenProduct){
-                if(i.Code == product.Code){
-                    Dupe = true;
-                    break;
+            if(IsCombiningMode == true){
+                bool Dupe = false;
+                foreach(var i in ChosenProduct){
+                    if(i.Code == product.Code){ 
+                        Dupe = true;
+                        break;
+                    }
                 }
-            }
-            if(IsCombiningMode && Dupe == false){
-                ChosenProduct.Add(product);
-                await Toasting("បានចាប់យក");
+                if( Dupe == false){
+                    ChosenProduct.Add(product);
+                    await Toasting("បានចាប់យក");
+                }
             }
         }
 
