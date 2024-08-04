@@ -96,8 +96,8 @@ namespace CHKS.Pages
         }
 
         protected void GetProductWithoutImport(){
-            IEnumerable<Models.mydb.Historyconnector> temp = Historyconnectors;
-            NoEmptyImport = temp.Where(i => i.CartId.Contains(dates) && i.Inventory.Import == 0 || i.Inventory.Import == null && i.Inventory.Name != "Service Charge").Any() == true? false:true;
+            Historyconnectors = Historyconnectors.Where(i => i.CartId.Contains(dates) && i.Inventory.Import == 0 || i.Inventory.Import == null && i.Inventory.Name != "Service Charge");
+            NoEmptyImport = Historyconnectors.Any() == true? false:true;
         }
 
         protected async Task OpenHistory(CHKS.Models.mydb.History args)
