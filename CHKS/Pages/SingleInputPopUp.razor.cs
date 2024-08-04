@@ -31,6 +31,9 @@ namespace CHKS.Pages
         [Inject]
         protected NotificationService NotificationService { get; set; }
 
+        [Inject]
+        protected mydbService mydbService {get; set;}
+
         protected int CartID;
         protected string[] Product = {"1", "0", ""};
         protected DateOnly ChosenDate;
@@ -41,6 +44,9 @@ namespace CHKS.Pages
 
         [Inject]
         protected SecurityService Security { get; set; }
+
+        protected IEnumerable<Models.mydb.Inventory> ProductList;
+        protected Models.mydb.Inventory ChosenProduct;
 
         protected async override Task OnInitializedAsync()
         {
@@ -54,6 +60,15 @@ namespace CHKS.Pages
                 Product[0] = Info[2];
                 Product[1] = Info[1]; 
                 Product[2] = Info[3];
+            }else if(Info[0] == "Combine"){
+                List<Models.mydb.Inventory> temp = new List<Models.mydb.Inventory>();
+                foreach(string i in Info){ 
+                    if(i != "Combine"){
+                        Models.mydb.Inventory Product = await mydbService.GetInventoryByCode(i);
+                        temp.Add(Product);
+                    }
+                }
+                ProductList = temp;
             }
         }
 
@@ -64,6 +79,8 @@ namespace CHKS.Pages
                 DialogService.Close(ChosenDate.ToString("dd/MM/yyyy"));
             }else if(Info[0] == "Qty" || Info[0] == "EditItem") {
                 DialogService.Close(Product);
+            }else if(Info[0] == "Combine"){
+                DialogService.Close(ChosenProduct);
             }
 
         }
