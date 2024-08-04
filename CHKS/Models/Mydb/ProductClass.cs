@@ -5,11 +5,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CHKS.Models.mydb
 {
-    [Table("car_brand")]
-    public partial class CarBrand
+    [Table("product_classes")]
+    public partial class ProductClass
     {
         [Key]
+        [Column("ID")]
         [Required]
-        public string Brand { get; set; }
+        public string Id { get; set; }
+
+        public string Name { get; set; }
     }
 }

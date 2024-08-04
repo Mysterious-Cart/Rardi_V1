@@ -24,7 +24,6 @@ namespace CHKS.Models.mydb
         [Column("Normalize_Name")]
         public string NormalizeName { get; set; }
 
-        [Required]
         public string Code { get; set; }
 
         public string Info { get; set; }
