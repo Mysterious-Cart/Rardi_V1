@@ -82,8 +82,8 @@ namespace CHKS.Pages
         }
 
         protected async Task GetAllNumberForToday(){
-            Total = History.Sum(i => i.Total).ToString() + " $";
-            ExpenseTotal = Dailyexpenses.Sum(i => i.Expense).ToString() + " $";
+            Total = decimal.Round(History.Sum(i => i.Total).GetValueOrDefault(),2).ToString() + " $";
+            ExpenseTotal = decimal.Round(Dailyexpenses.Sum(i => i.Expense).GetValueOrDefault(),2).ToString() + " $";
         }
 
 
@@ -96,12 +96,8 @@ namespace CHKS.Pages
         }
 
         protected void GetProductWithoutImport(){
-            Historyconnectors = Historyconnectors.Where(i => i.CartId.Contains(dates) && i.Inventory.Import == 0 || i.Inventory.Import == null && i.Inventory.Name != "Service Charge");
-            if(Historyconnectors.Any()){
-                NoEmptyImport = false;
-            }else{
-                NoEmptyImport = true;
-            }
+            IEnumerable<Models.mydb.Historyconnector> temp = Historyconnectors;
+            NoEmptyImport = temp.Where(i => i.CartId.Contains(dates) && i.Inventory.Import == 0 || i.Inventory.Import == null && i.Inventory.Name != "Service Charge").Any() == true? false:true;
         }
 
         protected async Task OpenHistory(CHKS.Models.mydb.History args)
