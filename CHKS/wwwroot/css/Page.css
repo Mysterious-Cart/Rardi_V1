@@ -279,3 +279,77 @@
     visibility:visible;
 }
 
+#ListTable{
+    border-radius: 15px;
+    padding: 10px;
+}
+
+#ListTable > .TabList{
+    width:100%; 
+    background-color:gray; 
+    height:50px;
+    border-radius:12px 12px 0px 0px; 
+    padding:5px; 
+    padding-left:10px; 
+    display:inline-flex; 
+    gap:10px;
+}
+
+#ListTable > .TabList > .Tab{
+    background-color: lightgray; 
+    width:15%; 
+    height:40px; 
+    border-radius:6px; 
+    font-family:'Khmer OS Battambang'; 
+    font-size: 1.2rem; 
+    text-align:center; 
+    align-content:center
+}
+
+#ListTable > .TabList > .Seperator{
+    font-size:2rem; 
+    height:50px
+}
+
+
+
+#ListTable > .Body{
+    display:list-item;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 100%;
+    background-color: lightgray;
+    height: 90%;
+    border-color:white;
+    align-items: top;
+    row-gap: 10px;
+    border-radius: 0px 0px 24px 24px;
+    padding:5px
+    
+}
+
+#ListTable > .Header{
+
+    margin-top: 10px;
+    margin-right: auto;
+    margin-left: auto;
+    width: 100%;
+    height: 40px;
+    border-radius: 24px 24px 0px 0px;
+    background-color: white;
+    text-align: justify;
+    padding: 12px;
+}
+
+#ListTable > .Body > .ComponentList{
+    width: 99%;
+    border-radius: 15px;
+    height: max-content;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: white;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: justify;
+    
+}

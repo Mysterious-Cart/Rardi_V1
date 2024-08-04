@@ -62,6 +62,13 @@
                 </RadzenStack>
                 <RadzenButton Click="@Close" Icon="add_circle_outline" Text="បញ្ចូល" Style="font-family: 'Khmer OS Battambang' "/>
             </RadzenStack>
+        }else if(Info[0] == "Combine"){
+            <RadzenStack>
+                <RadzenDropDown Data="@ProductList" TextProperty="Name" @bind-Value="@ChosenProduct"/>
+                <RadzenButton Click="@(args => DialogService.Close())" Icon="close" Text="ទៅវិញ" Style="font-family: 'Khmer OS Battambang'; background-color:red"/>
+                <RadzenButton Click="@Close" Icon="add_circle_outline" Text="បញ្ចូល" Style="font-family: 'Khmer OS Battambang' "/>
+                 
+            </RadzenStack>
         }
 
     </RadzenStack>
