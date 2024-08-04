@@ -1,0 +1,37 @@
+@page "/handle-service"
+
+@attribute [Authorize]
+
+<head>
+    <link href="css/Page.css" rel="stylesheet"/>
+</head>
+
+<PageTitle>HandleService</PageTitle>
+
+<div style="height:max-content; margin-top:40px; margin-left:40px; display:inline-flex; overflow:scroll">
+    <RadzenCard class="Daily-Info-Overview-Card" Style="width:20%; height:140px">
+        <RadzenStack class="RadzenStack">
+            <p style="font-size: 1.2em; color:lightgray; position:absolute">សរុបសេវា</p>
+            <p style="font-size: 3.3em; color:white;margin-left:auto; margin-right:auto; margin-top:10%;">@TotalService</p>
+        </RadzenStack>
+    </RadzenCard>
+</div>
+
+<div style="height: 70dvh; width:70%; margin-left:2%">
+    <div class="TabList" id="ListTable"> 
+        <div class="Seperator">|</div>
+        <div class="Tab"><b>សេវា 01</b></div>
+        <div class="Seperator">|</div>
+        <div class="Tab"><b>សេវា 02</b></div>
+        <div class="Seperator">|</div>
+        <div class="Tab"><b>សេវា 03</b></div>
+        <div class="Seperator">|</div>
+        <div class="Tab"><b>សេវា 04</b></div>
+        <div class="Seperator">|</div>
+        <div class="Tab"><b>សេវា 06</b></div>
+        
+    </div>
+    <div style="width:100%; height:100%; background-color:white">
+        <div></div>
+    </div>
+</div>

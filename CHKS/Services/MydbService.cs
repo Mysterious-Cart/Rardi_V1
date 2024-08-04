@@ -3311,5 +3311,166 @@ namespace CHKS
 
             return itemToDelete;
         }
+    
+        public async Task ExportChangesrecordsToExcel(Query query = null, string fileName = null)
+        {
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/changesrecords/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/changesrecords/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+        }
+
+        public async Task ExportChangesrecordsToCSV(Query query = null, string fileName = null)
+        {
+            navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/changesrecords/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/changesrecords/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
+        }
+
+        partial void OnChangesrecordsRead(ref IQueryable<CHKS.Models.mydb.Changesrecord> items);
+
+        public async Task<IQueryable<CHKS.Models.mydb.Changesrecord>> GetChangesrecords(Query query = null)
+        {
+            var items = Context.Changesrecords.AsQueryable();
+
+
+            if (query != null)
+            {
+                if (!string.IsNullOrEmpty(query.Expand))
+                {
+                    var propertiesToExpand = query.Expand.Split(',');
+                    foreach(var p in propertiesToExpand)
+                    {
+                        items = items.Include(p.Trim());
+                    }
+                }
+
+                ApplyQuery(ref items, query);
+            }
+
+            OnChangesrecordsRead(ref items);
+
+            return await Task.FromResult(items);
+        }
+
+        partial void OnChangesrecordGet(CHKS.Models.mydb.Changesrecord item);
+        partial void OnGetChangesrecordByDateOfChange(ref IQueryable<CHKS.Models.mydb.Changesrecord> items);
+
+
+        public async Task<CHKS.Models.mydb.Changesrecord> GetChangesrecordByDateOfChange(string dateofchange)
+        {
+            var items = Context.Changesrecords
+                              .AsNoTracking()
+                              .Where(i => i.DateOfChange == dateofchange);
+
+ 
+            OnGetChangesrecordByDateOfChange(ref items);
+
+            var itemToReturn = items.FirstOrDefault();
+
+            OnChangesrecordGet(itemToReturn);
+
+            return await Task.FromResult(itemToReturn);
+        }
+
+        partial void OnChangesrecordCreated(CHKS.Models.mydb.Changesrecord item);
+        partial void OnAfterChangesrecordCreated(CHKS.Models.mydb.Changesrecord item);
+
+        public async Task<CHKS.Models.mydb.Changesrecord> CreateChangesrecord(CHKS.Models.mydb.Changesrecord changesrecord)
+        {
+            OnChangesrecordCreated(changesrecord);
+
+            var existingItem = Context.Changesrecords
+                              .Where(i => i.DateOfChange == changesrecord.DateOfChange)
+                              .FirstOrDefault();
+
+            if (existingItem != null)
+            {
+               throw new Exception("Item already available");
+            }            
+
+            try
+            {
+                Context.Changesrecords.Add(changesrecord);
+                Context.SaveChanges();
+            }
+            catch
+            {
+                Context.Entry(changesrecord).State = EntityState.Detached;
+                throw;
+            }
+
+            OnAfterChangesrecordCreated(changesrecord);
+
+            return changesrecord;
+        }
+
+        public async Task<CHKS.Models.mydb.Changesrecord> CancelChangesrecordChanges(CHKS.Models.mydb.Changesrecord item)
+        {
+            var entityToCancel = Context.Entry(item);
+            if (entityToCancel.State == EntityState.Modified)
+            {
+              entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
+              entityToCancel.State = EntityState.Unchanged;
+            }
+
+            return item;
+        }
+
+        partial void OnChangesrecordUpdated(CHKS.Models.mydb.Changesrecord item);
+        partial void OnAfterChangesrecordUpdated(CHKS.Models.mydb.Changesrecord item);
+
+        public async Task<CHKS.Models.mydb.Changesrecord> UpdateChangesrecord(string dateofchange, CHKS.Models.mydb.Changesrecord changesrecord)
+        {
+            OnChangesrecordUpdated(changesrecord);
+
+            var itemToUpdate = Context.Changesrecords
+                              .Where(i => i.DateOfChange == changesrecord.DateOfChange)
+                              .FirstOrDefault();
+
+            if (itemToUpdate == null)
+            {
+               throw new Exception("Item no longer available");
+            }
+                
+            var entryToUpdate = Context.Entry(itemToUpdate);
+            entryToUpdate.CurrentValues.SetValues(changesrecord);
+            entryToUpdate.State = EntityState.Modified;
+
+            Context.SaveChanges();
+
+            OnAfterChangesrecordUpdated(changesrecord);
+
+            return changesrecord;
+        }
+
+        partial void OnChangesrecordDeleted(CHKS.Models.mydb.Changesrecord item);
+        partial void OnAfterChangesrecordDeleted(CHKS.Models.mydb.Changesrecord item);
+
+        public async Task<CHKS.Models.mydb.Changesrecord> DeleteChangesrecord(string dateofchange)
+        {
+            var itemToDelete = Context.Changesrecords
+                              .Where(i => i.DateOfChange == dateofchange)
+                              .FirstOrDefault();
+
+            if (itemToDelete == null)
+            {
+               throw new Exception("Item no longer available");
+            }
+
+            OnChangesrecordDeleted(itemToDelete);
+
+
+            Context.Changesrecords.Remove(itemToDelete);
+
+            try
+            {
+                Context.SaveChanges();
+            }
+            catch
+            {
+                Context.Entry(itemToDelete).State = EntityState.Unchanged;
+                throw;
+            }
+
+            OnAfterChangesrecordDeleted(itemToDelete);
+
+            return itemToDelete;
+        }
         }
 }
