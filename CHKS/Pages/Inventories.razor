@@ -9,15 +9,10 @@
 
 <PageTitle>Inventories</PageTitle>
 
-
-
-<div style="">
-<RadzenStack class="AllPage" Style="padding:20px; margin-left:auto" >
+<RadzenStack @onkeydown="@getBar" class="AllPage" Style="padding:20px">
     <RadzenColumn style="margin-left: auto; ">
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End" Gap="0.5rem">
-            <RadzenButton Icon="add_shopping_cart" Text="បញ្ចូលទំនេញ" Visible="@(!IsCombiningMode)"Click="@CombineProduct"/>
-            <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Text="ហើយ" Visible="@IsCombiningMode" Click="@CombiningModeCombine" />
-            <RadzenButton Icon="cancel" ButtonStyle="ButtonStyle.Danger" Text="ប៉ះបង់" Visible="@IsCombiningMode" Click="@CombineProduct" />
+            <RadzenButton Icon="add_shopping_cart" Text="បញ្ចូលទំនេញ"/>
             <RadzenButton Icon="add_circle_outline" Text="បង្កើតថ្មី" Click="@AddButtonClick" Variant="Variant.Flat" />
             <RadzenButton Icon="delete" Text="ផុងសំរាម" Variant="Variant.Flat" />
         </RadzenStack>
@@ -25,7 +20,7 @@
     <RadzenTextBox Placeholder="Search ..." style="display: block; width: 100%" @oninput="@Search" aria-label="Search by all string columns" @bind-Value="search" @ref="@searchbar" TabIndex=0 />
     <RadzenRow >
         <RadzenDataGrid @ref="grid0" ColumnWidth="200px" AllowFiltering="true" FilterMode="FilterMode.Advanced"  ShowPagingSummary="true" Style="height:80dvh; font-size:x-larger;"
-            Data="@inventories" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate" RowSelect="@SelectProduct" TItem="CHKS.Models.mydb.Inventory">
+            Data="@inventories" RowUpdate="@GridRowUpdate" RowSelect="@SelectProduct" RowCreate="@GridRowCreate" TItem="CHKS.Models.mydb.Inventory">
             <Columns>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Code" Title="កូដ" Width="30%" OrderIndex="1">
                 </RadzenDataGridColumn>
@@ -89,30 +84,6 @@
     </RadzenRow>
 
 </RadzenStack>
-<!--
-<div id="ListTable" style="Width:20%; height:40dvh; margin-top:20px; margin-left:20px">
-    <div class="Header">
-        <div style="display:inline-flex; height:30px; width:100%">
-            <p><b>ឡាន</b></p>
-            <div style=" height:20px; width:40px; border-radius:4px; background-color:blue; margin-left:auto;"><RadzenIcon Icon="add" style="color:white; width:100%"/></div>
-        </div>
-    </div>
-    <div class="Body">
-        @foreach (var i in CarBrands)
-        {
-            <div class="ComponentList">
-                <p><b>@i.Car</b></p>
-            </div>
-        }
-        
-    </div>
-</div>-->
-</div>
-
-
-<div id="snackbar" class="@ToastState">
-    @ToastString
-</div>
 
 
 @code{

@@ -232,8 +232,6 @@ namespace CHKS.Data
 
         public DbSet<CHKS.Models.mydb.InventoryProductgroup> InventoryProductgroups { get; set; }
 
-        public DbSet<CHKS.Models.mydb.Changesrecord> Changesrecords { get; set; }
-
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
             configurationBuilder.Conventions.Add(_ => new BlankTriggerAddingConvention());

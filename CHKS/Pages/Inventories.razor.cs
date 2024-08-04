@@ -40,7 +40,7 @@ namespace CHKS.Pages
         public string IsDialog {get; set;}
 
         protected IEnumerable<CHKS.Models.mydb.Inventory> inventories;
-        protected IEnumerable<Models.mydb.CarBrand> CarBrands;
+
         protected RadzenDataGrid<CHKS.Models.mydb.Inventory> grid0;
 
         protected string search = "";
@@ -52,8 +52,34 @@ namespace CHKS.Pages
         [Inject]
         protected SecurityService Security { get; set; }
 
-        protected async Task CreateNewCar(){
-            Models.mydb.CarBrand car = new();
+        private string Barcode;
+        protected async Task getBar(KeyboardEventArgs keyboard){
+            if(IsDialog == "true"){
+                if(keyboard.Key != "Enter" && keyboard.CtrlKey == false && keyboard.ShiftKey == false && keyboard.AltKey == false ){
+                    Barcode += keyboard.Key;
+                }else if(keyboard.CtrlKey == false && keyboard.ShiftKey == false && keyboard.AltKey == false ){
+                    if(keyboard.Key == "Enter" && Barcode != ""){
+                        if(inventories.Any() == true){
+                            await SelectProduct(inventories.FirstOrDefault());
+                            Barcode = "";
+                        }else if( inventories.Any() == false){
+                            await DialogService.Alert("ទំនេញមិនមាន។", "សំខាន់");
+                        }
+                    }
+                }
+            }else{
+                if(keyboard.Key != "Enter" && keyboard.CtrlKey == false && keyboard.ShiftKey == false && keyboard.AltKey == false && keyboard.Key != "Backspace" ){
+                    Barcode += keyboard.Key;
+                }else if(keyboard.Key != "Enter" && keyboard.CtrlKey == false && keyboard.ShiftKey == false && keyboard.AltKey == false && keyboard.Key == "Backspace" && Barcode != "" ){
+                    Barcode.Remove(Barcode.Length - 1);
+                }else if(keyboard.CtrlKey == false && keyboard.ShiftKey == false && keyboard.AltKey == false ){
+                    if(keyboard.Key == "Enter" && Barcode != ""){
+                        inventories = await mydbService.GetInventories(new Query { Filter = $@"i => i.Name.Contains(@0) || i.Barcode.Contains(@0) ", FilterParameters = new object[] { Barcode , "Service Charge"} });
+                        Barcode = "";
+                    }
+                }
+            }
+            
         }
 
 
@@ -70,7 +96,6 @@ namespace CHKS.Pages
         protected override async Task OnInitializedAsync()
         {   
             inventories = await mydbService.GetInventories(new Query { Filter = $@"i =>( i.Name.Contains(@0) || i.Barcode.Contains(@0)) && i.IsDeleted == 0", FilterParameters = new object[] { search , "Service Charge"} }); 
-            CarBrands = await mydbService.GetCarBrands();
         }
 
         RadzenTextBox searchbar;
@@ -83,67 +108,33 @@ namespace CHKS.Pages
 
         }
 
-        protected bool IsCombiningMode = false;
-        protected List<Models.mydb.Inventory> ChosenProduct;
+        protected async Task SelectProduct(CHKS.Models.mydb.Inventory Product){
+            if(Product.Stock!=0 && IsDialog == "true" && isModifying == false){
+                var Qty = await DialogService.OpenAsync<SingleInputPopUp>(Product.Name, new Dictionary<string, object>{{"Info",new string[]{"Qty", Product.Export.ToString(),Product.Stock.ToString()}}}, new DialogOptions{Width="13%"});
 
-        protected async Task CombineProduct(){
-            IsCombiningMode = !IsCombiningMode;
-            ChosenProduct = new();
-            if(IsCombiningMode == false){await Toasting("ប៉ះបង់បានសម្រេច");}
-        }
-
-        protected async Task CombiningModeCombine(){
-            List<string> product = new();
-            product.Add("Combine");
-            foreach(var i in ChosenProduct){
-                product.Add(i.Code);
-            }
-            string[] productArray = product.ToArray();
-            Models.mydb.Inventory ChoseProduct = await DialogService.OpenAsync<SingleInputPopUp>("បញ្ចូល", new Dictionary<string, object>{{"Info",productArray}}, new DialogOptions{Width="fit-content", Height="max-content"});
-            if(ChosenProduct != null){
-                product.Remove("Combine");
-                product.Remove(ChoseProduct.Code);
-                await RewriteHistory(ChoseProduct,product);
-            }
-        } 
-
-        protected async Task RewriteHistory(Models.mydb.Inventory NewProduct, List<string> OldProductCode){
-            foreach(string i in OldProductCode){
-                await PublicCommand.PseudoDeleteInventory(await mydbService.GetInventoryByCode(i));
-                IEnumerable<Models.mydb.Historyconnector> historyconnectors = await mydbService.GetHistoryconnectors();
-                historyconnectors = historyconnectors.Where(b => b.Inventory.Code == i);
-                foreach(var f in historyconnectors){
-                    f.Product = NewProduct.Code;
+                if( Qty != null && decimal.Parse(Qty[0]) && decimal.Parse(Qty[0]) <= Product.Stock){
+                    Models.mydb.Inventory Temp = new(){};
+                    Product.Stock -=  Qty[0];
+                    await mydbService.UpdateInventory(Product.Name, Product);
+                    Temp.Export = Qty[1];
+                    Temp.Import = Qty[2];
+                    Temp.Name = Product.Name;
+                    Temp.Stock = Qty[0];
+                    
+                    DialogService.Close(Temp);
+                }else if(Qty is Array && Qty[0] != null && Qty[0] > Product.Stock){
+                    await DialogService.Alert("Too much! Not available In stock. Have Left: " + Product.Stock + ".","Warning");
+                    await SelectProduct(Product);
                 }
-            }
+            }else if(Product.Stock == 0 && isModifying == false){
+                await DialogService.Alert("Not available In stock");
+            }else if(IsDialog == "false"){}
             
-        }
-
-        protected async Task SelectProduct(Models.mydb.Inventory product){
-            bool Dupe = false;
-            foreach(var i in ChosenProduct){
-                if(i.Code == product.Code){
-                    Dupe = true;
-                    break;
-                }
-            }
-            if(IsCombiningMode && Dupe == false){
-                ChosenProduct.Add(product);
-                await Toasting("បានចាប់យក");
-            }
-        }
-
-        protected string ToastState = "";
-        protected string ToastString = "";
-        protected async Task Toasting(string ToastText){
-            ToastState = "show";
-            ToastString = ToastText;
-            await Task.Delay(300);
-            ToastState = "";
         }
 
         protected async Task AddButtonClick(MouseEventArgs args)
         {
+            isModifying = true;
             await grid0.InsertRow(new CHKS.Models.mydb.Inventory());
             
         }
@@ -173,8 +164,6 @@ namespace CHKS.Pages
             }
         }
 
-        
-
         protected async Task GridRowUpdate(CHKS.Models.mydb.Inventory args)
         {
             await mydbService.UpdateInventory(args.Code,args);
@@ -200,17 +189,22 @@ namespace CHKS.Pages
 
         protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.Inventory data)
         {
+            OriginalName = data.Name;
+            isModifying = true;
             await grid0.EditRow(data);
+            isEditMode = true;
 
         }
 
         protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Inventory data)
         {
+            isModifying = false;
             await grid0.UpdateRow(data);
         }
 
         protected async Task CancelButtonClick(MouseEventArgs args, CHKS.Models.mydb.Inventory data)
         {
+            isModifying = false;
             grid0.CancelEditRow(data);
             await mydbService.CancelInventoryChanges(data);
         }
@@ -219,7 +213,7 @@ namespace CHKS.Pages
             string GenKey = PublicCommand.GenerateRandomKey();
             IEnumerable<Models.mydb.Inventory> Temp  = inventories.Where(i => i.Code == GenKey);
             return Temp.Any() == false?GenKey: await GetKey();
-        }          
+        }        
         
     }
 }

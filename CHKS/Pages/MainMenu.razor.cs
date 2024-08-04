@@ -117,7 +117,9 @@ namespace CHKS.Pages
             await LoadRecentCashout();
         }
 
-        string search = "";
+        
+
+        protected string search = "";
 
         protected async Task Search(ChangeEventArgs args)
         {
@@ -235,7 +237,7 @@ namespace CHKS.Pages
                 Customer.Creator = history.User;
                 Customer.Company = history.Company;
                 HistoryCustomer = history;
-
+                
                 Historyconnectors = await MydbService.GetHistoryconnectors();
                 Historyconnectors = Historyconnectors.Where(i => i.CartId== history.CashoutDate);
                 Customer.Total = Historyconnectors.Sum(i => i.Export * i.Qty );       
