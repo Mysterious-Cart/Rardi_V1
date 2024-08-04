@@ -1566,17 +1566,17 @@ namespace CHKS
         }
 
         partial void OnCarBrandGet(CHKS.Models.mydb.CarBrand item);
-        partial void OnGetCarBrandByKey(ref IQueryable<CHKS.Models.mydb.CarBrand> items);
+        partial void OnGetCarBrandByBrand(ref IQueryable<CHKS.Models.mydb.CarBrand> items);
 
 
-        public async Task<CHKS.Models.mydb.CarBrand> GetCarBrandByKey(string key)
+        public async Task<CHKS.Models.mydb.CarBrand> GetCarBrandByBrand(string brand)
         {
             var items = Context.CarBrands
                               .AsNoTracking()
-                              .Where(i => i.Key == key);
+                              .Where(i => i.Brand == brand);
 
  
-            OnGetCarBrandByKey(ref items);
+            OnGetCarBrandByBrand(ref items);
 
             var itemToReturn = items.FirstOrDefault();
 
@@ -1593,7 +1593,7 @@ namespace CHKS
             OnCarBrandCreated(carbrand);
 
             var existingItem = Context.CarBrands
-                              .Where(i => i.Key == carbrand.Key)
+                              .Where(i => i.Brand == carbrand.Brand)
                               .FirstOrDefault();
 
             if (existingItem != null)
@@ -1632,12 +1632,12 @@ namespace CHKS
         partial void OnCarBrandUpdated(CHKS.Models.mydb.CarBrand item);
         partial void OnAfterCarBrandUpdated(CHKS.Models.mydb.CarBrand item);
 
-        public async Task<CHKS.Models.mydb.CarBrand> UpdateCarBrand(string key, CHKS.Models.mydb.CarBrand carbrand)
+        public async Task<CHKS.Models.mydb.CarBrand> UpdateCarBrand(string brand, CHKS.Models.mydb.CarBrand carbrand)
         {
             OnCarBrandUpdated(carbrand);
 
             var itemToUpdate = Context.CarBrands
-                              .Where(i => i.Key == carbrand.Key)
+                              .Where(i => i.Brand == carbrand.Brand)
                               .FirstOrDefault();
 
             if (itemToUpdate == null)
@@ -1659,10 +1659,10 @@ namespace CHKS
         partial void OnCarBrandDeleted(CHKS.Models.mydb.CarBrand item);
         partial void OnAfterCarBrandDeleted(CHKS.Models.mydb.CarBrand item);
 
-        public async Task<CHKS.Models.mydb.CarBrand> DeleteCarBrand(string key)
+        public async Task<CHKS.Models.mydb.CarBrand> DeleteCarBrand(string brand)
         {
             var itemToDelete = Context.CarBrands
-                              .Where(i => i.Key == key)
+                              .Where(i => i.Brand == brand)
                               .FirstOrDefault();
 
             if (itemToDelete == null)
@@ -2705,17 +2705,17 @@ namespace CHKS
         }
 
         partial void OnInventoryGet(CHKS.Models.mydb.Inventory item);
-        partial void OnGetInventoryByCode(ref IQueryable<CHKS.Models.mydb.Inventory> items);
+        partial void OnGetInventoryByName(ref IQueryable<CHKS.Models.mydb.Inventory> items);
 
 
-        public async Task<CHKS.Models.mydb.Inventory> GetInventoryByCode(string code)
+        public async Task<CHKS.Models.mydb.Inventory> GetInventoryByName(string name)
         {
             var items = Context.Inventories
                               .AsNoTracking()
-                              .Where(i => i.Code == code);
+                              .Where(i => i.Name == name);
 
  
-            OnGetInventoryByCode(ref items);
+            OnGetInventoryByName(ref items);
 
             var itemToReturn = items.FirstOrDefault();
 
@@ -2732,7 +2732,7 @@ namespace CHKS
             OnInventoryCreated(inventory);
 
             var existingItem = Context.Inventories
-                              .Where(i => i.Code == inventory.Code)
+                              .Where(i => i.Name == inventory.Name)
                               .FirstOrDefault();
 
             if (existingItem != null)
@@ -2771,12 +2771,12 @@ namespace CHKS
         partial void OnInventoryUpdated(CHKS.Models.mydb.Inventory item);
         partial void OnAfterInventoryUpdated(CHKS.Models.mydb.Inventory item);
 
-        public async Task<CHKS.Models.mydb.Inventory> UpdateInventory(string code, CHKS.Models.mydb.Inventory inventory)
+        public async Task<CHKS.Models.mydb.Inventory> UpdateInventory(string name, CHKS.Models.mydb.Inventory inventory)
         {
             OnInventoryUpdated(inventory);
 
             var itemToUpdate = Context.Inventories
-                              .Where(i => i.Code == inventory.Code)
+                              .Where(i => i.Name == inventory.Name)
                               .FirstOrDefault();
 
             if (itemToUpdate == null)
@@ -2798,10 +2798,10 @@ namespace CHKS
         partial void OnInventoryDeleted(CHKS.Models.mydb.Inventory item);
         partial void OnAfterInventoryDeleted(CHKS.Models.mydb.Inventory item);
 
-        public async Task<CHKS.Models.mydb.Inventory> DeleteInventory(string code)
+        public async Task<CHKS.Models.mydb.Inventory> DeleteInventory(string name)
         {
             var itemToDelete = Context.Inventories
-                              .Where(i => i.Code == code)
+                              .Where(i => i.Name == name)
                               .FirstOrDefault();
 
             if (itemToDelete == null)

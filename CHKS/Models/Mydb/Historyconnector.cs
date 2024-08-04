@@ -29,5 +29,7 @@ namespace CHKS.Models.mydb
         public History History { get; set; }
 
         public string Note { get; set; }
+
+        public string Code { get; set; }
     }
 }

@@ -94,7 +94,7 @@ namespace CHKS.Data
               .HasOne(i => i.Inventory)
               .WithMany(i => i.Connectors)
               .HasForeignKey(i => i.Product)
-              .HasPrincipalKey(i => i.Code)
+              .HasPrincipalKey(i => i.Name)
               .OnDelete(DeleteBehavior.ClientNoAction);
 
             builder.Entity<CHKS.Models.mydb.History>()
@@ -115,10 +115,14 @@ namespace CHKS.Data
               .HasOne(i => i.Inventory)
               .WithMany(i => i.Historyconnectors)
               .HasForeignKey(i => i.Product)
-              .HasPrincipalKey(i => i.Code)
+              .HasPrincipalKey(i => i.Name)
               .OnDelete(DeleteBehavior.ClientNoAction);
 
             builder.Entity<CHKS.Models.mydb.Car>()
+              .Property(p => p.IsDeleted)
+              .HasDefaultValueSql(@"'0'");
+
+            builder.Entity<CHKS.Models.mydb.History>()
               .Property(p => p.IsDeleted)
               .HasDefaultValueSql(@"'0'");
 

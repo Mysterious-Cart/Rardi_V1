@@ -215,7 +215,9 @@ namespace CHKS.Pages
                 Customer.Creator = Cart.Creator;
                 Customer.Company = Cart.Company;
 
-                Connectors = await MydbService.GetConnectors(new Query{Filter=$@"i => i.CartId == (@0)", FilterParameters = new object[] {Customer.CartId}});
+                Console.WriteLine(Customer.CartId);
+                Connectors = await MydbService.GetConnectors();
+                Connectors = Connectors.Where(i => i.CartId == Customer.CartId);
                 Customer.Total = Connectors.Sum(i => i.PriceOverwrite * i.Qty );       
                 await Toasting("បើកអតិថជន");
             } else{
@@ -493,7 +495,7 @@ namespace CHKS.Pages
                             Models.mydb.Historyconnector TempCon = new(){
                                 CartId = HistoryCustomer.CashoutDate,
                                 Id = String.Concat(Customer.CartId, Product.Name, DateTime.Now.ToString()),
-                                Product = Product.Code,
+                                Product = Product.Name,
                                 Note = Qty[2],
                                 Qty = decimal.Parse(Qty[0]),// Stock here are not in stock, it the chosen value pass from the user input;
                                 Export = decimal.Parse(Qty[1])
@@ -544,11 +546,12 @@ namespace CHKS.Pages
                             connector = new(){
                                 CartId = Customer.CartId,
                                 GeneratedKey = String.Concat(Customer.CartId, Product.Name),
-                                Product = Product.Code,
+                                Product = Product.Name,
                                 Note = Qty[2],
                                 Qty = decimal.Parse(Qty[0]),// Stock here are not in stock, it the chosen value pass from the user input;
                                 PriceOverwrite = decimal.Parse(Qty[1])
                             };
+
                             try {
                                 await MydbService.CreateConnector(connector);
                                 await Grid1.Reload();

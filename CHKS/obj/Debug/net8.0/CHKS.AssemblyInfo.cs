@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CHKS")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cfda973fa19f0b49083c590c6665837e9322d58c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d254fa02d7ccf1f13b3942af3042a94cefef14a2")]
 [assembly: System.Reflection.AssemblyProductAttribute("CHKS")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CHKS")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

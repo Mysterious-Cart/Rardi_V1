@@ -16,11 +16,11 @@ namespace CHKS.Models.mydb
 
         public string Type { get; set; }
 
-        public string Key { get; set; }
+        public string Info { get; set; }
 
         public short? IsDeleted { get; set; }
 
-        public string Info { get; set; }
+        public string Key { get; set; }
 
         public ICollection<Cart> Carts { get; set; }
 
