@@ -114,11 +114,11 @@ namespace CHKS.Pages
             ImportTotal = 0;
 
             Historyconnectors = await MydbService.GetHistoryconnectors();
-            Histories = Histories.Where(i => i.Company == 0);
-            Total = Histories.Sum(i => i.Total);
+            Total = Histories.Sum(i => i.Company==0?i.Total:0);
             foreach(var history in Histories.ToList()){
                 IEnumerable<Models.mydb.Historyconnector> TempHisCon;
                 TempHisCon = Historyconnectors;
+                TempHisCon.Where(i => i.History.Company == 0);
                 TempHisCon = TempHisCon.Where(i => i.CartId == history.CashoutDate);
                 ServiceTotal += TempHisCon.Sum(i => i.Product == "Service Charge"?i.Export:0);
                 ProductTotal += TempHisCon.Sum(i => i.Product != "Service Charge"?i.Export * i.Qty:0 );
@@ -128,10 +128,12 @@ namespace CHKS.Pages
         }
 
         protected async Task GetTypeOfMoneyTotal(){
-            TotalBaht = Histories.Sum(i => i.Baht);
-            TotalDollar = Histories.Sum(i => i.Dollar);
-            TotalRiel =  Histories.Sum(i => i.Riel);
-            TotalBank = Histories.Sum(i => i.Bank);
+            IEnumerable<Models.mydb.History> Temp = Histories;
+            Temp = Temp.Where(i => i.Company == 0);
+            TotalBaht = Temp.Sum(i => i.Baht);
+            TotalDollar = Temp.Sum(i => i.Dollar);
+            TotalRiel =  Temp.Sum(i => i.Riel);
+            TotalBank = Temp.Sum(i => i.Bank);
             
         }
 
