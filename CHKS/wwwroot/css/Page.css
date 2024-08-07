@@ -4,101 +4,6 @@
     margin-right:auto;
 }
 
-
-.customerDatalist-expanded-false{
-    overflow: hidden;
-    width: 220px;
-    display: flex;
-    flex-wrap: nowrap;
-    height: 70px;
-    transition: width 500ms linear 500ms;
-}
-
-.customerDatalist-expanded-false:hover{
-    width: 100%;
-    overflow: hidden;
-    display: flex;
-    flex-wrap: nowrap;
-    height: 70px;
-    transition: width 500ms linear 500ms;
-}
-
-.customerDatalist-expanded-true{
-    width: 100%;
-    overflow: hidden;
-    display: flex;
-    flex-wrap: nowrap;
-    height: 70px;
-    transition: width 500ms linear 500ms;
-}
-
-.DataGridRow{
-    margin-left:20px; 
-    margin-bottom:auto; 
-    margin-top:auto;
-    min-width: 150px;
-}
-
-.MainMenu-CartList-Option-Display{
-    transition:  width 2s, border-radius 1.2s, margin-right 2s ease-out;
-    overflow: hidden;
-    height: 90%; 
-    border-radius: 15px; 
-    background-color:#28282B; 
-    margin-left:auto; 
-    width: 120% ;
-    border-radius:0px 15px 15px 0px;
-    border: none;
-
-}
-
-.MainMenu-CartList-Option-Hide{
-    transition:  width 2s, margin-right 2s, border-radius 1.2s ease-out;
-    height: 90%; 
-    border-radius:15px; 
-    background-color:#28282B;
-    margin-right:40%;
-    border-radius:0px 15px 15px 0px;
-    border: none;
-    width: 0px;
-}
-
-.MainMenu-CartPicker-Display{
-    transition-delay: 50ms;
-    transition: border-radius 500ms, margin-left 2s, width 2s ease-out;
-    height: 90%; 
-    border: none;
-    border-radius:15px 0px 0px 15px; 
-    background-color:#28282B; 
-    margin-right:auto; 
-    margin-left:3%;
-    width:60%;
-
-}
-
-.MainMenu-CartPicker-Hide{
-    transition-delay: 100ms;    
-    transition: border-radius 1s, margin-left 2s, width 2s ease-out;
-    height: 90%; 
-    border: none;
-    border-radius:15px 0px 0px 15px; 
-    background-color:#28282B; 
-    margin-left:65%;
-    width:0%;
-
-}
-
-.loadpage-hidden{
-    overflow:hidden; 
-    width:1px;
-}
-
-.loadpage-load{
-    transition: width 2s ease-in-out;
-    overflow: hidden;
-    width:100%;
-}
-
 .Statistic-Info-Overview-Card{
     background-color: #28282B; 
     border-radius:15px ; 
@@ -135,7 +40,7 @@
     background-color: whitesmoke; 
     border-radius:15px ; 
     height: 110px;
-    width: 20%;
+    width: 15%;
     align-self: center;
     margin-left: -30px;
     z-index: 0;
@@ -205,6 +110,7 @@
     width: 20%;
     min-width: fit-content;
     z-index: 1;
+    align-items: center;
 }
 
 .Daily-Info-Overview-Card .RadzenLabel{
@@ -221,6 +127,8 @@
     color:White;
     margin-top: 5px;
     width: max-content;
+    margin-top:auto;
+    margin-bottom:auto;
 }
 
 .Daily-Info-Overview-Card .RadzenStack{

@@ -59,45 +59,15 @@ namespace CHKS.Pages
         
         protected Models.mydb.Connector connector = new(){};
 
-        protected List<string> SortingType = new(){
-            "All",
-            "Product",
-            "Product Brand",
-            "Car"
-        };
-
         [Inject]
         protected SecurityService Security { get; set; }
 
 
-        private string ToggleIcon = "";
-        private string ToggleButtonClass = "";
-        protected async void Togglebutton(){
-            if(Customer.Plate != null && Customer.CartId != -1){
-                if(ToggleButtonClass == ""  ){
-                    ToggleButtonClass = "Show";
-                    ToggleIcon ="check";
-                    Customer.Company = 1;
-
-                    await UpdateCart(Customer);
-                }else{
-                    ToggleButtonClass =  "";
-                    Customer.Company = 0;
-                    ToggleIcon ="";
-                    await UpdateCart(Customer);
-                }
-            }else if(Customer.CartId == -1){
-                if(ToggleButtonClass == ""  ){
-                    ToggleButtonClass = "Show";
-                    ToggleIcon ="check";
-                    HistoryCustomer.Company = 1;
-                    await MydbService.UpdateHistory(HistoryCustomer.CashoutDate, HistoryCustomer);
-                }else{
-                    ToggleButtonClass =  "";
-                    HistoryCustomer.Company = 0;
-                    ToggleIcon ="";
-                    await MydbService.UpdateHistory(HistoryCustomer.CashoutDate, HistoryCustomer);
-                }
+        private int CurrentMode = 1;
+        protected async Task ToggleCustomerState(){
+            if(Customer.Plate != null){
+            }else{
+                CurrentMode = 1;
             }
         }
 
@@ -203,10 +173,6 @@ namespace CHKS.Pages
 
         protected async Task OpenCart(Models.mydb.Cart Cart){
             if(Customer.Plate == null){
-                if(Cart.Company == 1){
-                    ToggleButtonClass = "Show";
-                    ToggleIcon = "check";
-                }
                 Customer.CartId = Cart.CartId;
                 Customer.Plate = Cart.Plate;
                 Customer.Car = Cart.Car;
@@ -224,11 +190,6 @@ namespace CHKS.Pages
 
         protected async Task OpenCart(Models.mydb.History history){
             if(Customer.Plate == null && await DialogService.Confirm("តើអ្នកទេ?","សំខាន់", new ConfirmOptions{OkButtonText="ច្បាស់", CancelButtonText="ទៅវិញ"})==true){
-                
-                if(history.Company == 1){
-                    ToggleButtonClass = "Show";
-                    ToggleIcon = "check";
-                }
                 Customer.CartId = -1;
                 Customer.Plate = history.Plate;
                 Customer.Car = history.Car;
@@ -435,7 +396,6 @@ namespace CHKS.Pages
                 foreach(var i in Connectors.ToList())
                 {   
                     await MydbService.DeleteConnector(i.GeneratedKey);
-
                 };                
             }
         }
@@ -466,11 +426,10 @@ namespace CHKS.Pages
             if(Customer.Plate != null){
                 
                 Customer = new Models.mydb.Cart();
-                ToggleButtonClass = "";
-                ToggleIcon = "";
                 Historyconnectors = Enumerable.Empty<Models.mydb.Historyconnector>();
                 HistoryCustomer = new();
                 Connectors = Enumerable.Empty<CHKS.Models.mydb.Connector>();
+                CurrentMode = 1;
                           
             }
         }

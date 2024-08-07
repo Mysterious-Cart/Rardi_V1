@@ -20,6 +20,7 @@
                     <RadzenText Text = "((សរុបទំនេញ - សរុបតម្លៃដើម) - ចំណាយ)) + សេវាសរុប" style="font-size: small; color:gray; "/>
                 </RadzenStack>
             </RadzenCard>
+
             <RadzenCard class="Statistic-Info-Overview-Card" >
                 <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Wrap="FlexWrap.NoWrap" class="RadzenStack">
                     <RadzenRow JustifyContent="JustifyContent.Center" style="width:100%; height:25px;">
@@ -109,7 +110,7 @@
                 AllowColumnResize=true RowUpdate="@GridRowUpdate">
 
                     <Columns>
-                        <RadzenDataGridColumn title="ឈ្មោះ" TItem ="Models.mydb.Historyconnector" Property="Product"/>
+                        <RadzenDataGridColumn title="ឈ្មោះ" TItem ="Models.mydb.Historyconnector" Property="Inventory.Name"/>
                         <RadzenDataGridColumn title="តម្លៃដើម" TItem ="Models.mydb.Historyconnector" Property="Inventory.Import">
                             <EditTemplate Context="Historyconnector">
                                 <RadzenNumeric @bind-Value="@Historyconnector.Inventory.Import" Min=0/>
