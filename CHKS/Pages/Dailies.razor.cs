@@ -48,6 +48,11 @@ namespace CHKS.Pages
         protected string Total = "0";
         protected string ExpenseTotal = "0";
 
+        protected string TotalBaht = "0";
+        protected string TotalDollar="0";
+        protected string TotalRiel= "0";
+        protected string TotalAba = "0";
+
         protected RadzenDataGrid<CHKS.Models.mydb.Historyconnector> grid1;
         protected RadzenDataGrid<CHKS.Models.mydb.History> grid0;
         protected RadzenDataGrid<Models.mydb.Dailyexpense> grid2;
@@ -81,9 +86,27 @@ namespace CHKS.Pages
             await GetAllNumberForToday();
         }
 
+        protected string TotalMinusExpense;
         protected async Task GetAllNumberForToday(){
             Total = decimal.Round(History.Sum(i => i.Total).GetValueOrDefault(),2).ToString() + " $";
             ExpenseTotal = decimal.Round(Dailyexpenses.Sum(i => i.Expense).GetValueOrDefault(),2).ToString() + " $";
+            TotalAba = decimal.Round(History.Sum(i => i.Bank.GetValueOrDefault()),2).ToString() + "$";
+            TotalBaht = decimal.Round(History.Sum(i => i.Baht.GetValueOrDefault()),2).ToString();
+            TotalRiel = decimal.Round(History.Sum(i => i.Riel.GetValueOrDefault()),2).ToString("#,##0");
+            TotalMinusExpense = (decimal.Round(History.Sum(i => i.Total).GetValueOrDefault(),2) - decimal.Round(Dailyexpenses.Sum(i => i.Expense).GetValueOrDefault(),2)).ToString() +  " $";
+            
+        }
+
+        private string SubCardClass = "Statistic-Info-Overview-SubCard-Hide";
+        private bool showCashInfo = false;
+        private async Task ShowHideCashInfo(){
+            if(showCashInfo == true){
+                showCashInfo = false;
+                SubCardClass = "Statistic-Info-Overview-SubCard-Hide";
+            }else{
+                showCashInfo=true;
+                SubCardClass = "Statistic-Info-Overview-SubCard-Show";
+            }
         }
 
 
@@ -148,6 +171,8 @@ namespace CHKS.Pages
                 }
             }catch(Exception exc){
                 
+            }finally{
+                await GetAllNumberForToday();
             }
         }
 
@@ -161,6 +186,7 @@ namespace CHKS.Pages
         {
             await grid2.UpdateRow(data);
 
+
         }
 
         protected async Task CancelButtonClick(MouseEventArgs args, CHKS.Models.mydb.Dailyexpense data)
@@ -173,6 +199,7 @@ namespace CHKS.Pages
             try{
                 data.Key = DateTime.Now.ToString("dd/MM/yyyy") + ":" + data.Note;
                 await mydbService.CreateDailyexpense(data);
+                await GetAllNumberForToday();
                 await grid2.Reload();
             }catch(Exception exc){
                 if(exc.Message =="Item already available"){
@@ -190,6 +217,7 @@ namespace CHKS.Pages
         protected async Task GridRowUpdate(CHKS.Models.mydb.Dailyexpense args)
         {
             await mydbService.UpdateDailyexpense(args.Key, args);
+            await GetAllNumberForToday();
         }
 
 
@@ -197,10 +225,14 @@ namespace CHKS.Pages
             try{
                 if(await DialogService.Confirm("Are you sure?", "Important!", new ConfirmOptions{OkButtonText="Yes", CancelButtonText="No"})== true){
                     await mydbService.DeleteCashback(data.Key);
+                    
                     await grid3.Reload();
+                    
                 }
             }catch(Exception exc){
                 
+            }finally{
+                await GetAllNumberForToday();
             }
         }
 
@@ -227,11 +259,13 @@ namespace CHKS.Pages
         protected async Task GridRowUpdate(CHKS.Models.mydb.Cashback args)
         {
             await mydbService.UpdateCashback(args.Key, args);
+            await GetAllNumberForToday();
         }
 
         protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Cashback data)
         {
             await grid3.UpdateRow(data);
+            
 
         }
 

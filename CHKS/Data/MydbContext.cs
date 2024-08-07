@@ -216,6 +216,8 @@ namespace CHKS.Data
 
         public DbSet<CHKS.Models.mydb.Cashback> Cashbacks { get; set; }
 
+        public DbSet<CHKS.Models.mydb.Changesrecord> Changesrecords { get; set; }
+
         public DbSet<CHKS.Models.mydb.Connector> Connectors { get; set; }
 
         public DbSet<CHKS.Models.mydb.Dailyexpense> Dailyexpenses { get; set; }
@@ -231,8 +233,6 @@ namespace CHKS.Data
         public DbSet<CHKS.Models.mydb.InventoryOption> InventoryOptions { get; set; }
 
         public DbSet<CHKS.Models.mydb.InventoryProductgroup> InventoryProductgroups { get; set; }
-
-        public DbSet<CHKS.Models.mydb.Changesrecord> Changesrecords { get; set; }
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {

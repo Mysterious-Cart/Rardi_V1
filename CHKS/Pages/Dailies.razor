@@ -10,16 +10,45 @@
 <RadzenStack Orientation="Orientation.Horizontal" Style="margin-top: 30px; margin-left:30px">
     <RadzenStack Style="width: 80%;">
         <RadzenStack AlignItems="AlignItems.Center" Orientation="Orientation.Horizontal" >
-            <RadzenCard class="Daily-Info-Overview-Card">
-                <RadzenStack class="RadzenStack">
-                        <RadzenLabel Text="សរុប:"  class="RadzenLabel"/>
-                        <RadzenText Text=@Total  class="RadzenText" />
+            <RadzenCard class="Daily-Info-Overview-Card" Style="width: 250px;height:140px">
+                <RadzenStack class="RadzenStack" >
+                    <RadzenRow Style="height: 20px;">
+                            <RadzenLabel Text="សរុប:"  class="RadzenLabel"/>
+                            <RadzenButton Icon="info_outline" IconColor="White" Click="@ShowHideCashInfo" Style="background-color: transparent; border-radius:10px;height:10px;width:10px; margin-left:auto; margin-bottom:auto"/>
+                    </RadzenRow>
+                    <RadzenText Text=@Total  class="RadzenText" />
                 </RadzenStack>
+            </RadzenCard>
+             <RadzenCard class="@SubCardClass" >
+                <RadzenStack Orientation="Orientation.Vertical" Style="width:80%" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Left" class="RadzenStack" Gap="1px">
+                    <RadzenRow style="width:100%">
+                        <RadzenLabel Text="Bank: "/>  
+                        <RadzenText Text=@TotalAba  class="RadzenText" />
+                    </RadzenRow>
+                    <RadzenRow style="width:100%">
+                        <RadzenLabel Text="Dollar: "/>  
+                        <RadzenText Text="@TotalDollar" class="RadzenText"/>
+                    </RadzenRow>
+                    <RadzenRow style="width:100%">
+                        <RadzenLabel Text="Baht: "/>  
+                        <RadzenText Text="@TotalBaht" class="RadzenText" />
+                    </RadzenRow>
+                    <RadzenRow style="width:100%">
+                        <RadzenLabel Text="Riel: "/>  
+                        <RadzenText Text="@TotalRiel" class="RadzenText" />
+                    </RadzenRow>
+                </RadzenStack>  
             </RadzenCard>
             <RadzenCard class="Daily-Info-Overview-Card">
                 <RadzenStack class="RadzenStack">
                     <RadzenLabel Text="ចំណាយសរុប:"  class="RadzenLabel"/>
                     <RadzenText Text="@ExpenseTotal"  class="RadzenText"/>
+                </RadzenStack>
+            </RadzenCard>
+            <RadzenCard class="Daily-Info-Overview-Card">
+                <RadzenStack class="RadzenStack">
+                    <RadzenLabel Text="សរុបដកចំណាយ:"  class="RadzenLabel"/>
+                    <RadzenText Text="@TotalMinusExpense"  class="RadzenText"/>
                 </RadzenStack>
             </RadzenCard>
         </RadzenStack>
@@ -36,14 +65,6 @@
                             </RadzenDataGridColumn>
                             <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Total" Title="សរុប">
                             </RadzenDataGridColumn> 
-                            <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Bank" Title="សរុប(ធានាគា)">
-                            </RadzenDataGridColumn> 
-                            <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Dollar" Title="សរុប(ដុលា)">
-                            </RadzenDataGridColumn> 
-                            <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Baht" Title="សរុប(បាទ)">
-                            </RadzenDataGridColumn> 
-                            <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Riel" Title="សរុប(រៀល)">
-                            </RadzenDataGridColumn> 
                             
                         </Columns>
                     </RadzenDataGrid>
@@ -52,7 +73,7 @@
                     <RadzenDataGrid @ref="grid1" AllowFiltering="false" AllowPaging="false" AllowColumnResize=true
                         Data="@Historyconnectors" TItem="CHKS.Models.mydb.Historyconnector" GridLines="Radzen.DataGridGridLines.None" >
                         <Columns>
-                            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Product" Title="ឈ្មេាះទំនេញ" Width="100px">
+                            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Inventory.Name" Title="ឈ្មេាះទំនេញ" Width="100px">
                             </RadzenDataGridColumn>
                             <RadzenDataGridColumn TItem="CHKS.Models.mydb.Historyconnector" Property="Qty" Title="ចំនួន">
                             </RadzenDataGridColumn>
