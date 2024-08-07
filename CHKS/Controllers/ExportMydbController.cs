@@ -187,6 +187,20 @@ namespace CHKS.Controllers
             return ToExcel(ApplyQuery(await service.GetCashbacks(), Request.Query, false), fileName);
         }
 
+        [HttpGet("/export/mydb/changesrecords/csv")]
+        [HttpGet("/export/mydb/changesrecords/csv(fileName='{fileName}')")]
+        public async Task<FileStreamResult> ExportChangesrecordsToCSV(string fileName = null)
+        {
+            return ToCSV(ApplyQuery(await service.GetChangesrecords(), Request.Query, false), fileName);
+        }
+
+        [HttpGet("/export/mydb/changesrecords/excel")]
+        [HttpGet("/export/mydb/changesrecords/excel(fileName='{fileName}')")]
+        public async Task<FileStreamResult> ExportChangesrecordsToExcel(string fileName = null)
+        {
+            return ToExcel(ApplyQuery(await service.GetChangesrecords(), Request.Query, false), fileName);
+        }
+
         [HttpGet("/export/mydb/connectors/csv")]
         [HttpGet("/export/mydb/connectors/csv(fileName='{fileName}')")]
         public async Task<FileStreamResult> ExportConnectorsToCSV(string fileName = null)
@@ -297,20 +311,6 @@ namespace CHKS.Controllers
         public async Task<FileStreamResult> ExportInventoryProductgroupsToExcel(string fileName = null)
         {
             return ToExcel(ApplyQuery(await service.GetInventoryProductgroups(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/changesrecords/csv")]
-        [HttpGet("/export/mydb/changesrecords/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportChangesrecordsToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetChangesrecords(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/changesrecords/excel")]
-        [HttpGet("/export/mydb/changesrecords/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportChangesrecordsToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetChangesrecords(), Request.Query, false), fileName);
         }
     }
 }

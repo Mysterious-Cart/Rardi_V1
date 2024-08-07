@@ -31,7 +31,7 @@
                 <div Style="min-width: 320px; border-radius:10px; height: 120px; background-color:antiquewhite; padding: 20px;border:solid ;border-width:1px; border-color:burlywood;margin-top:10px" @onclick="@(args => OpenCart(customer))">
                     <RadzenRow JustifyContent="JustifyContent.Center" Style="height: 35px;">
                         <p Style="font-size: 1.6em; font-family: 'Khmer OS Battambang'; margin-right:auto; color:#28282B"><b>@(customer.Plate + "#" + customer.CartId)</b></p>
-                        <div Style="width:max-content; height: 25px; margin-left:auto; background-color:chocolate; border-radius:15px; border:solid; border-width:2px; border-color:chocolate; color:white; text-align:center; vertical-align:middle; padding-left:5px; padding-right:5px; font-family:'Khmer OS Battambang'">ជួសជុល</div>
+                        <div Style="width:max-content; height: 25px; margin-left:auto; background-color:chocolate; border-radius:15px; border:solid; border-width:2px; border-color:chocolate; color:white; text-align:center; vertical-align:middle; padding-left:5px; padding-right:5px; font-family:'Khmer OS Battambang'">@PublicCommand.GetCustomerStateFromKey((int)customer.Company)</div>
                     </RadzenRow>
                     <RadzenRow JustifyContent="JustifyContent.Center" Style="height: 25px; ">
                         <p Style="font-size: 1.2em; font-family: 'Khmer OS Battambang'; margin-right:auto; color: gray;">@customer.Creator</p>
@@ -216,10 +216,10 @@
             </RadzenRow>
             <RadzenRow Style="display:inline-flexbox; width:100%; justify-content:flex-start">
                 <p style="font-family: 'Khmer OS Battambang'; font-size: medium; color:gray; margin-right:auto; height:10px "><b>@(Customer.Car != null?Customer.Car.Phone:0)</b></p>
-                <!--<RadzenRow Style="margin-right: 18%;">
-                    <p style="font-family: 'Khmer OS Battambang'; font-size: medium; color:gray; margin-right:auto; height:10px;"><b>ឡានក្រុមហ៊ុម</b></p>
-                    <RadzenIcon id="ToggleBar" class="@ToggleButtonClass" @onclick="@Togglebutton" Icon="@ToggleIcon" />
-                </RadzenRow>-->
+                <RadzenRow Style="margin-right: 18%;">
+                    <p style="font-family: 'Khmer OS Battambang'; font-size: medium; color:gray; margin-right:auto; height:10px;"><b>@PublicCommand.GetCustomerStateFromKey(CurrentMode)</b></p>
+                    <RadzenIcon id="ToggleBar" @onclick="@ToggleCustomerState" Icon="loop" />
+                </RadzenRow>
             </RadzenRow>
             
 

@@ -93,7 +93,7 @@ namespace CHKS.Pages
             if(ChosenProduct != null){
                 product.Remove("Combine");
                 product.Remove(ChoseProduct.Code);
-                await RewriteHistory(ChoseProduct,product);
+                await RewriteHistory(ChoseProduct, product);
             }
         } 
 
@@ -104,6 +104,7 @@ namespace CHKS.Pages
                 historyconnectors = historyconnectors.Where(b => b.Inventory.Code == i);
                 foreach(var f in historyconnectors){
                     f.Product = NewProduct.Code;
+                    await mydbService.UpdateHistoryconnector(f.Id, f);
                 }
             }
             
