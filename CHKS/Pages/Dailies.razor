@@ -134,7 +134,7 @@
             <RadzenStack style="height:100%">
                 <RadzenText Text="ចំណាយ:" TextStyle="TextStyle.Overline" TextAlign="TextAlign.Center" style="font-size:x-large; margin-bottom:10px; width:300px"/>
                 <RadzenButton Icon="add" Text="Add Expense" Click="@AddBtnClick" style="width:300px" />
-                <RadzenDataGrid @ref="grid2" Data="@Dailyexpenses" TItem="Models.mydb.Dailyexpense" RowCreate="@GridCreate" RowUpdate="@GridRowUpdate" style="width:300px ; height:100%" AllowPaging=true >
+                <RadzenDataGrid @ref="grid2" Data="@Dailyexpenses" TItem="Models.mydb.Dailyexpense" RowCreate="@GridCreate" RowUpdate="@GridRowUpdate" style="width:300px ; height:50dvh" AllowPaging=false >
                     <Columns>
                         <RadzenDataGridColumn TItem="Models.mydb.Dailyexpense" Property="Note" Title="ចំណាំ" Width="90px">
                             <EditTemplate Context="expense">
