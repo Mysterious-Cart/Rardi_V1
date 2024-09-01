@@ -87,6 +87,18 @@
             "Radzen.Blazor": {
               "target": "Package",
               "version": "[4.34.0, )"
+            },
+            "Z.Blazor.Diagrams": {
+              "target": "Package",
+              "version": "[3.0.2, )"
+            },
+            "Z.Blazor.Diagrams.Algorithms": {
+              "target": "Package",
+              "version": "[3.0.2, )"
+            },
+            "Z.Blazor.Diagrams.Core": {
+              "target": "Package",
+              "version": "[3.0.2, )"
             }
           },
           "imports": [

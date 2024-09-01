@@ -578,3 +578,7 @@ C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\obj\Debug\net8.0\refint\CHKS.dll
 C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\obj\Debug\net8.0\CHKS.pdb
 C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\obj\Debug\net8.0\CHKS.genruntimeconfig.cache
 C:\Users\Kim hong\Documents\GitHub\Pos\CHKS\obj\Debug\net8.0\ref\CHKS.dll
+C:\Users\soeng\OneDrive\Documents\GitRepoForPos\Pos\CHKS\bin\Debug\net8.0\SvgPathProperties.dll
+C:\Users\soeng\OneDrive\Documents\GitRepoForPos\Pos\CHKS\bin\Debug\net8.0\Blazor.Diagrams.Core.dll
+C:\Users\soeng\OneDrive\Documents\GitRepoForPos\Pos\CHKS\bin\Debug\net8.0\Blazor.Diagrams.dll
+C:\Users\soeng\OneDrive\Documents\GitRepoForPos\Pos\CHKS\bin\Debug\net8.0\Blazor.Diagrams.Algorithms.dll
