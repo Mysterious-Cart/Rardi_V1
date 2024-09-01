@@ -75,6 +75,7 @@ namespace CHKS.Pages
             await GetMonthlyExpense();  
             await GetProductWithoutImport();
             await GetTypeOfMoneyTotal();
+            await GetAllHistoryConnector();
 
         }
 
@@ -114,17 +115,11 @@ namespace CHKS.Pages
             ImportTotal = 0;
 
             Historyconnectors = await MydbService.GetHistoryconnectors();
-            Histories = Histories.Where(i => i.Company == 0);
-            Total = Histories.Sum(i => i.Total);
-            foreach(var history in Histories.ToList()){
-                IEnumerable<Models.mydb.Historyconnector> TempHisCon;
-                TempHisCon = Historyconnectors;
-                TempHisCon = TempHisCon.Where(i => i.CartId == history.CashoutDate);
-                ServiceTotal += TempHisCon.Sum(i => i.Product == "Service Charge"?i.Export:0);
-                ProductTotal += TempHisCon.Sum(i => i.Product != "Service Charge"?i.Export * i.Qty:0 );
-                ImportTotal += TempHisCon.Sum(i => i.Inventory.Import * i.Qty);
-            }
-            
+            Total = Historyconnectors.Sum(i => i.Export * i.Qty);
+            IEnumerable<Models.mydb.Historyconnector> TempHisCon = Historyconnectors;
+            ServiceTotal = TempHisCon.Sum(i => i.Inventory.Name.Contains("សេវា")==true && i.History.IsDeleted == 0?i.Export:0);
+            ProductTotal = TempHisCon.Sum(i => i.Inventory.Name.Contains("សេវា")==false && i.History.IsDeleted == 0?i.Export * i.Qty:0 );
+            ImportTotal = TempHisCon.Sum(i => i.Inventory.Import * i.Qty);
         }
 
         protected async Task GetTypeOfMoneyTotal(){
@@ -134,6 +129,35 @@ namespace CHKS.Pages
             TotalBank = Histories.Sum(i => i.Bank);
             
         }
+        
+        protected IEnumerable<Models.mydb.Historyconnector> Hisconall;
+        protected async Task GetAllHistoryConnector(){
+            Hisconall = await MydbService.GetHistoryconnectors();
+            Hisconall = Hisconall.Where(i => i.Inventory.Name.Contains("សេវា") && i.History.IsDeleted == 0);
+            List<Models.mydb.Historyconnector> Temp = new();
+            foreach(var i in Hisconall.ToList()){
+                 char[] seperator = {':','('};
+                string[] Temptext = i.CartId.Split(seperator,2);
+                if(TimeStart <= DateTime.ParseExact(Temptext[0],"dd/MM/yyyy",null) && DateTime.ParseExact(Temptext[0],"dd/MM/yyyy",null) <= TimeEnd)
+                {
+                    Temp.Add(i);
+                }
+
+            }
+
+            Hisconall = Temp;
+        }
+
+        protected async Task Export(){
+            await MydbService.ExportHistoryconnectorsToExcel(new Query
+            {
+                Filter = $@"{(string.IsNullOrEmpty(grid3.Query.Filter)? "true" : grid3.Query.Filter)}",
+                OrderBy = $"{grid3.Query.OrderBy}",
+                Expand = "Inventory",
+                Select = string.Join(",", grid3.ColumnsCollection.Where(c => c.GetVisible() && !string.IsNullOrEmpty(c.Property)).Select(c => c.Property.Contains(".") ? c.Property + " as " + c.Property.Replace(".", "") : c.Property))
+            }, "Historyconnectors");
+        }
+
 
         protected async Task GetProductWithoutImport(){
             TimeStart = DateTime.ParseExact(TimeStart.GetValueOrDefault().ToString("dd/MM/yyyy"),"dd/MM/yyyy", null);
@@ -174,6 +198,8 @@ namespace CHKS.Pages
             await GetAllNumber();
             await GetProductWithoutImport();
             await GetTypeOfMoneyTotal();
+            await GetAllHistoryConnector();
+            await GetAllNumber();
         }
 
         protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.Historyconnector data)

@@ -31,12 +31,65 @@ namespace CHKS
         }
 
         static readonly char[] GENERATORKEY = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
-        public static string GenerateRandomKey() => string.Join("",GENERATORKEY.OrderBy(x => Guid.NewGuid()).Take(10));
-        public static string GenerateRandomKey(string Extenstion) => string.Concat(string.Join("",GENERATORKEY.OrderBy(x => Guid.NewGuid()).Take(10)),":", Extenstion);
+        public static string GenerateRandomText(int Length = 10) => string.Join("",GENERATORKEY.OrderBy(x => Guid.NewGuid()).Take(Length));
+        public static string GenerateRandomText(string Extenstion,int Length = 10) => string.Concat(string.Join("",GENERATORKEY.OrderBy(x => Guid.NewGuid()).Take(Length)),":", Extenstion);
 
         static readonly int[] Key = {1,2,3,4,5,6,7,8,9};
-        public static int GenerateRandomKey(int Length) => int.Parse(string.Join("",Key.OrderBy(x => Guid.NewGuid()).Take(Length)));
-        public static int GenerateRandomKey(int Length, int Extenstion) => Extenstion + int.Parse(string.Join("",Key.OrderBy(x => Guid.NewGuid()).Take(Length)));
+        public static int GenerateRandomNumber(int Length) => int.Parse(string.Join("",Key.OrderBy(x => Guid.NewGuid()).Take(Length)));
+        public static int GenerateRandomNumber(int Extenstion, int Length) => Extenstion + int.Parse(string.Join("",Key.OrderBy(x => Guid.NewGuid()).Take(Length)));
+        
+        //From Here are database Retrieval API, Change here whenever database format Changes
+        public async Task<IEnumerable<Models.mydb.History>> RetreiveCustomerHistory(bool GetDeleted = false){
+            try{
+                if(GetDeleted == false){
+                    return await mydbService.GetHistories(new Query{Filter=$@"i => i.IsDeleted == 0"});
+                }else{
+                    return await mydbService.GetHistories(new Query{Filter=$@"i => i.IsDeleted == 1"});
+
+                }
+            }catch(Exception exc){
+                throw new Exception(exc.Message);
+            }
+        }
+
+
+        public async Task<IEnumerable<Models.mydb.Car>> RetreiveCustomer(bool GetDeleted = false){
+            try{
+                if(GetDeleted == false){
+                    return await mydbService.GetCars(new Query{Filter=$@"i => i.IsDeleted == 0"});
+                }else{
+                    return await mydbService.GetCars(new Query{Filter=$@"i => i.IsDeleted == 1"});
+
+                }
+            }catch(Exception exc){
+                throw new Exception(exc.Message);
+            }
+        }
+
+
+        public async Task<IEnumerable<Models.mydb.Cart>> RetreiveCart(){
+            try{
+                return await mydbService.GetCarts();
+            }catch(Exception exc){
+                throw new Exception(exc.Message);
+            }
+        }
+
+
+        public async Task<IEnumerable<Models.mydb.Inventory>> RetreiveProduct(bool GetDeleted = false){
+            try{
+                if(GetDeleted == false){
+                    return await mydbService.GetInventories(new Query{Filter=$@"i => i.IsDeleted == 0"});
+                }else{
+                    return await mydbService.GetInventories(new Query{Filter=$@"i => i.IsDeleted == 1"});
+                }
+                
+            }catch(Exception exc){
+                throw new Exception(exc.Message);
+            }
+        }
+
+        //End Database Retrieval API
 
         static readonly Dictionary<int, string> ModeCoordinator = new Dictionary<int, string>(){{0,"ជួសជុល"},{1,"រងចាំប្រាក់"},{2, "ជំពាក់"}};
         public static string GetCustomerStateFromKey(int Key) => ModeCoordinator[Key];
@@ -56,6 +109,7 @@ namespace CHKS
                 Info = Note,
                 User = User,
             };
+            
             var result = await mydbService.CreateChangesrecord(Record);
             bool WriteOffResult = false;
             if(result != null){
@@ -94,7 +148,7 @@ namespace CHKS
         /// </summary>
         /// <param name="Customer"> The Customer to simulate delete </param>
         /// <returns> The result payment summed up </returns>
-        public async Task<(string, string, string, string)> GetAllPaymentFormFromHistory(bool ShowSign){
+        public async Task<(string, string, string, string)> GetAllPaymentFormFromHistory(){
 
             string Bank;
             string Dollar;

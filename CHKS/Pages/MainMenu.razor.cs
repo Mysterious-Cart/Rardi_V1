@@ -81,9 +81,8 @@ namespace CHKS.Pages
         }
         protected async override Task OnInitializedAsync()
         {
-            Inventories = await MydbService.GetInventories();
-            Inventories = Inventories.Where(i => i.IsDeleted == 0);
-            Carts = await MydbService.GetCarts();
+            Inventories = await PublicCommand.RetreiveProduct();
+            Carts = await PublicCommand.RetreiveCart();
             await LoadRecentCashout();
         }
 
@@ -104,7 +103,7 @@ namespace CHKS.Pages
                 if(result != null){
                     
                     async Task<int> GetKey(){
-                        int GenKey = PublicCommand.GenerateRandomKey(2);
+                        int GenKey = PublicCommand.GenerateRandomNumber(2);
                         Models.mydb.Cart C = await MydbService.GetCartByCartId(GenKey);
                         return C==null?GenKey:await GetKey();
                     }

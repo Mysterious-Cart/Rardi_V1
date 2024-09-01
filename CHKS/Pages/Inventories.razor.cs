@@ -209,7 +209,7 @@ namespace CHKS.Pages
         }
 
         protected async Task<string> GetKey(){
-            string GenKey = PublicCommand.GenerateRandomKey();
+            string GenKey = PublicCommand.GenerateRandomText();
             IEnumerable<Models.mydb.Inventory> Temp  = inventories.Where(i => i.Code == GenKey);
             return Temp.Any() == false?GenKey: await GetKey();
         }          
