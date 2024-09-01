@@ -1,5 +1,5 @@
 @page "/statistic"
-
+@attribute [StreamRendering(true)]
 @attribute [Authorize(Roles="Admin,Dev")]
 
 <head>
@@ -10,7 +10,7 @@
 
 <RadzenStack Orientation="Orientation.Horizontal" Style="margin-top: 30px; margin-left:30px">
 
-    <RadzenStack Style="width: 80%">
+    <RadzenStack Style="width: 70%">
 
         <RadzenStack Orientation="Orientation.Horizontal" Style="overflow-x:scroll; overflow-y:hidden" AlignItems="AlignItems.Center">
             <RadzenCard class="Statistic-Info-Overview-Card" Style="height: 150px;" >
@@ -78,20 +78,21 @@
         </RadzenStack>
 
         <RadzenCard class="Statistic-Setting-Card">
-            <RadzenStack>
+            <RadzenStack Orientation="Orientation.Horizontal">
                 <RadzenStack Orientation="Orientation.Horizontal" Gap="10px" AlignItems="AlignItems.Center">
                     <RadzenLabel Text="ពីថ្ងៃទី" Component="From" class="RadzenLabel"/>
                     <RadzenDatePicker @bind-Value="@TimeStart" Name="From" DateFormat="dd/MM/yyyy" Max="@DateTime.Now" Change="@GetHistoryBaseOfChoosenDate" />
                     <RadzenLabel Text="ដល់" Component="To" class="RadzenLabel"/>
                     <RadzenDatePicker @bind-Value="@TimeEnd" InitialViewDate="@DateTime.Now" Name="To" DateFormat="dd/MM/yyyy" Max="@DateTime.Now" Change="@GetHistoryBaseOfChoosenDate"/>
                 </RadzenStack>
+
+                <RadzenButton Click="@Export"/>
             </RadzenStack>
         </RadzenCard>
 
         <RadzenStack Orientation="Orientation.Horizontal" style="height: 64dvh;">
 
-            <RadzenCard style="Width:50%;">
-                <RadzenDataGrid AllowFiltering="true" FilterMode="FilterMode.Advanced" GridLines="Radzen.DataGridGridLines.Horizontal" AllowVirtualization=true AllowSorting="true" @ref="@grid1" TItem ="Models.mydb.History" Data ="@Histories" Style="height: 100%; min-width:600px; width:100%; border-radius:25px;"
+                <RadzenDataGrid AllowFiltering="true" FilterMode="FilterMode.Advanced" GridLines="Radzen.DataGridGridLines.Horizontal" AllowVirtualization=true AllowSorting="true" @ref="@grid1" TItem ="Models.mydb.History" Data ="@Histories" Style="height: 100%; min-width:600px;border-radius:25px;"
                 RowSelect="@OpenHistory" AllowColumnResize=true AllowPaging=false>
                     <Columns>
                         <RadzenDataGridColumn title="ថ្ងៃទី" TItem ="Models.mydb.History" Property="CashoutDate"></RadzenDataGridColumn>
@@ -102,20 +103,24 @@
 
                     </Columns>
                 </RadzenDataGrid>
-            </RadzenCard>
 
-            <RadzenCard style="Width:50%;">
-
-                <RadzenDataGrid AllowFiltering="true" FilterMode="FilterMode.Advanced" GridLines="Radzen.DataGridGridLines.Horizontal" AllowVirtualization=true AllowSorting="true" @ref="@grid3" TItem ="Models.mydb.Historyconnector" Data ="@ProductWithoutImport" Style="height: 100%; min-width:600px; width:100%; border-radius:25px;"
-                AllowColumnResize=true RowUpdate="@GridRowUpdate">
+                <RadzenDataGrid AllowFiltering="true" FilterMode="FilterMode.Advanced" GridLines="Radzen.DataGridGridLines.Horizontal" AllowVirtualization=true AllowSorting="true" @ref="@grid3" TItem ="Models.mydb.Historyconnector" Data ="@Hisconall" Style="height: 100%; min-width:300px; border-radius:25px;"
+                AllowColumnResize=true RowUpdate="@GridRowUpdate" >
 
                     <Columns>
                         <RadzenDataGridColumn title="ឈ្មោះ" TItem ="Models.mydb.Historyconnector" Property="Inventory.Name"/>
-                        <RadzenDataGridColumn title="តម្លៃដើម" TItem ="Models.mydb.Historyconnector" Property="Inventory.Import">
+                        <RadzenDataGridColumn title="តម្លៃដើម" TItem ="Models.mydb.Historyconnector" Property="Export">
+                            <Template Context="Product">
+                                <p>@(Math.Round(Product.Export.GetValueOrDefault(),2))</p>
+                            </Template>
                             <EditTemplate Context="Historyconnector">
-                                <RadzenNumeric @bind-Value="@Historyconnector.Inventory.Import" Min=0/>
+                                <RadzenNumeric @bind-Value="@Historyconnector.Export" Min=0/>
                             </EditTemplate>
+                            <FooterTemplate>
+                                <p>@grid3.View.Sum(i => i.Export)</p>
+                            </FooterTemplate>
                         </RadzenDataGridColumn>
+                        <RadzenDataGridColumn title="តម្លៃដើម" TItem ="Models.mydb.Historyconnector" Property="CartId"></RadzenDataGridColumn>
                         <RadzenDataGridColumn >
                             <EditTemplate Context = "Historyconnector">
                                 <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium"
@@ -133,8 +138,6 @@
                     </Columns>
 
                 </RadzenDataGrid>
-
-            </RadzenCard>
 
         </RadzenStack>
         
