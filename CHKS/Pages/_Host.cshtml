@@ -13,11 +13,17 @@
     <link href="_content/Radzen.Blazor/css/standard-base.css" rel="stylesheet" />
     <link rel="icon" href="logo.ico" />
     <link href="css/site.css" rel="stylesheet" />
+
+    <link href="_content/Z.Blazor.Diagrams/style.min.css" rel="stylesheet" />
+    <link href="_content/Z.Blazor.Diagrams/default.styles.min.css" rel="stylesheet" />
+
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
 </head>
 <body>
+    <script src="_content/Z.Blazor.Diagrams/script.min.js"></script>
+    
     <component type="typeof(App)" render-mode="ServerPrerendered" />
-
+    
     <div id="blazor-error-ui">
         <environment include="Staging,Production">
             An error has occurred. This application may no longer respond until reloaded.
@@ -28,8 +34,11 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
-
+    
+    
     <script src="_framework/blazor.server.js"></script>
     <script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>
+    
+
 </body>
 </html>
