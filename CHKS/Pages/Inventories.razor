@@ -2,7 +2,6 @@
 
 @attribute [Authorize]
 @using System.Globalization
-@using Blazor.Diagrams.Components
 
 <head>
     <link href="css/Page.css" rel="stylesheet"/>
@@ -10,19 +9,112 @@
 
 <PageTitle>Inventories</PageTitle>
 
-<div class="diagram-container">
-    <CascadingValue Value="Diagram" IsFixed="true">
-        <DiagramCanvas></DiagramCanvas>
-    </CascadingValue>
+
+
+<div style="">
+<RadzenStack class="AllPage" Style="padding:20px; margin-left:auto" >
+    <RadzenColumn style="margin-left: auto; ">
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End" Gap="0.5rem">
+            <RadzenButton Icon="add_shopping_cart" Text="បញ្ចូលទំនេញ" Visible="@(!IsCombiningMode)"Click="@CombineProduct"/>
+            <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Text="ហើយ" Visible="@IsCombiningMode" Click="@CombiningModeCombine" />
+            <RadzenButton Icon="cancel" ButtonStyle="ButtonStyle.Danger" Text="ប៉ះបង់" Visible="@IsCombiningMode" Click="@CombineProduct" />
+            <RadzenButton Icon="add_circle_outline" Text="បង្កើតថ្មី" Click="@AddButtonClick" Variant="Variant.Flat" />
+            <RadzenButton Icon="delete" Text="ផុងសំរាម" Variant="Variant.Flat" />
+        </RadzenStack>
+    </RadzenColumn>
+    <RadzenTextBox Placeholder="Search ..." style="display: block; width: 100%" @oninput="@Search" aria-label="Search by all string columns" @bind-Value="search" TabIndex=0 />
+    <RadzenRow >
+        <RadzenDataGrid @ref="grid0" ColumnWidth="200px" AllowFiltering="true" FilterMode="FilterMode.Advanced"  ShowPagingSummary="true" Style="height:80dvh; font-size:x-larger;"
+            Data="@inventories" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate" RowSelect="@SelectProduct" TItem="CHKS.Models.mydb.Inventory">
+            <Columns>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Code" Title="កូដ" Width="30%" OrderIndex="1">
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Barcode" Title="កូដ" Width="30%" OrderIndex="1">
+                    <EditTemplate Context="inventory">
+                        <RadzenTextBox style=" width: 100%" @bind-Value="@inventory.Barcode" Name="Barcode"/>
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Name" Title="ឈ្មោះ" Width="30%" OrderIndex="1">
+                    <EditTemplate Context="inventory">
+                        <RadzenTextBox style="width: 100%" @bind-Value="@inventory.Name" Name="Name" />
+                        <RadzenRequiredValidator Component="Name" Text="Name is required" style="position: absolute;" />
+                    </EditTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Stock" Title="ក្នុងស្តុក" Width="20%" FormatString="{0:N2}">
+                  <EditTemplate Context="inventory">
+                      <RadzenNumeric style="width: 100%" @bind-Value="@inventory.Stock" Name="Stock" Format="N2" ShowUpDown = "false"/>
+                  </EditTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Import" Title="តម្លៃទិញចូល" Width="20%" FormatString="${0:N2}">
+                  <EditTemplate Context="inventory">
+                      <RadzenNumeric style="width: 100%" @bind-Value="@inventory.Import" Name="Import" Format="N2" ShowUpDown = "false" />
+                  </EditTemplate>
+                  <FooterTemplate>
+                        <RadzenText TextStyle="TextStyle.DisplayH6">សរុបមុខទំនេញ:</RadzenText>
+                  </FooterTemplate>
+                </RadzenDataGridColumn>
+                
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Export" Title="តម្លៃលក់" Width="20%" FormatString="${0:N2}">
+                  <EditTemplate Context="inventory">
+                      <RadzenNumeric style="width: 100%" @bind-Value="@inventory.Export" Name="Export"  Format="N2"  ShowUpDown = "false"/>
+                  </EditTemplate>
+                  <FooterTemplate>
+                        <RadzenText TextStyle="TextStyle.DisplayH6"> @(inventories.Count() + " មុខ")</RadzenText>
+                  </FooterTemplate>
+                </RadzenDataGridColumn>
+                <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Filterable="false" Sortable="false" Width="156px" TextAlign="TextAlign.Center">
+                    <EditTemplate Context="inventory">
+                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                            style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
+                            Click=@(args => SaveButtonClick(args, inventory)) @onclick:stopPropagation="true" />
+                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                            Click=@(args => CancelButtonClick(args, inventory)) @onclick:stopPropagation="true" />
+                    </EditTemplate>
+                    <Template Context="inventory">
+
+                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                            style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
+                            Click=@(args => EditButtonClick(args, inventory)) @onclick:stopPropagation="true" />
+
+                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Medium"
+                            Shade="Shade.Lighter" Variant="Variant.Flat"
+                            Click=@(args => GridDeleteButtonClick( inventory)) @onclick:stopPropagation="true" />
+                    </Template>
+                </RadzenDataGridColumn>
+
+            </Columns>
+
+        </RadzenDataGrid>
+
+    </RadzenRow>
+
+</RadzenStack>
+<!--
+<div id="ListTable" style="Width:20%; height:40dvh; margin-top:20px; margin-left:20px">
+    <div class="Header">
+        <div style="display:inline-flex; height:30px; width:100%">
+            <p><b>ឡាន</b></p>
+            <div style=" height:20px; width:40px; border-radius:4px; background-color:blue; margin-left:auto;"><RadzenIcon Icon="add" style="color:white; width:100%"/></div>
+        </div>
+    </div>
+    <div class="Body">
+        @foreach (var i in CarBrands)
+        {
+            <div class="ComponentList">
+                <p><b>@i.Car</b></p>
+            </div>
+        }
+        
+    </div>
+</div>-->
 </div>
 
-<style>
-.diagram-container {
-    margin-left: auto;
-    margin-right:auto;
-    margin-top:10px;
-	width: 99%;
-    height: 400px;
-    border: 1px solid black; /* Just visual */
+
+<div id="snackbar" class="@ToastState">
+    @ToastString
+</div>
+
+
+@code{
+    private CultureInfo Currency = new CultureInfo("en-US");
 }
-</style>

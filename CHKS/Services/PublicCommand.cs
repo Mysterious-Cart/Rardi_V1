@@ -89,14 +89,6 @@ namespace CHKS
             }
         }
 
-        public async Task<Models.mydb.Inventory> RetreiveProduct(string id){
-            try{
-               return await mydbService.GetInventoryByCode(id);
-            }catch(Exception exc){
-                throw new Exception(exc.Message);
-            }
-        }
-
         //End Database Retrieval API
 
         static readonly Dictionary<int, string> ModeCoordinator = new Dictionary<int, string>(){{0,"ជួសជុល"},{1,"រងចាំប្រាក់"},{2, "ជំពាក់"}};
