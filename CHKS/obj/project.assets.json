@@ -1860,15 +1860,6 @@
           "buildMultiTargeting/Radzen.Blazor.props": {}
         }
       },
-      "SvgPathProperties/1.1.2": {
-        "type": "package",
-        "compile": {
-          "lib/netstandard2.0/SvgPathProperties.dll": {}
-        },
-        "runtime": {
-          "lib/netstandard2.0/SvgPathProperties.dll": {}
-        }
-      },
       "System.Buffers/4.5.0": {
         "type": "package",
         "compile": {
@@ -2269,50 +2260,6 @@
         },
         "runtime": {
           "lib/netcoreapp2.1/_._": {}
-        }
-      },
-      "Z.Blazor.Diagrams/3.0.2": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.AspNetCore.Components": "[8.0.0, 9.0.0)",
-          "Microsoft.AspNetCore.Components.Web": "[8.0.0, 9.0.0)",
-          "Z.Blazor.Diagrams.Core": "3.0.2"
-        },
-        "compile": {
-          "lib/net8.0/Blazor.Diagrams.dll": {}
-        },
-        "runtime": {
-          "lib/net8.0/Blazor.Diagrams.dll": {}
-        },
-        "build": {
-          "buildTransitive/Z.Blazor.Diagrams.props": {}
-        },
-        "buildMultiTargeting": {
-          "buildMultiTargeting/Z.Blazor.Diagrams.props": {}
-        }
-      },
-      "Z.Blazor.Diagrams.Algorithms/3.0.2": {
-        "type": "package",
-        "dependencies": {
-          "Z.Blazor.Diagrams.Core": "3.0.2"
-        },
-        "compile": {
-          "lib/net8.0/Blazor.Diagrams.Algorithms.dll": {}
-        },
-        "runtime": {
-          "lib/net8.0/Blazor.Diagrams.Algorithms.dll": {}
-        }
-      },
-      "Z.Blazor.Diagrams.Core/3.0.2": {
-        "type": "package",
-        "dependencies": {
-          "SvgPathProperties": "1.1.2"
-        },
-        "compile": {
-          "lib/net8.0/Blazor.Diagrams.Core.dll": {}
-        },
-        "runtime": {
-          "lib/net8.0/Blazor.Diagrams.Core.dll": {}
         }
       }
     }
@@ -4529,19 +4476,6 @@
         "staticwebassets/fonts/roboto-v30-latin-regular.woff"
       ]
     },
-    "SvgPathProperties/1.1.2": {
-      "sha512": "oqCX5+CxcLfC1lC6gfzOSM+WOmfwn4V7yzMHQfofi+QmYoY+Hq5oye6BgnqhHC+3BSsiadLSOnfYxpcv/enkcw==",
-      "type": "package",
-      "path": "svgpathproperties/1.1.2",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "README.md",
-        "lib/netstandard2.0/SvgPathProperties.dll",
-        "svgpathproperties.1.1.2.nupkg.sha512",
-        "svgpathproperties.nuspec"
-      ]
-    },
     "System.Buffers/4.5.0": {
       "sha512": "pL2ChpaRRWI/p4LXyy4RgeWlYF2sgfj/pnVMvBqwNFr5cXg7CXNnWZWxrOONLg8VGdFB8oB+EG2Qw4MLgTOe+A==",
       "type": "package",
@@ -5420,66 +5354,6 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
-    },
-    "Z.Blazor.Diagrams/3.0.2": {
-      "sha512": "8FRMg43r9OuwW624IGTuNNGNyZZ3MF+WP01uUTww9uqNFvAzO4rPd2E/UuzQphwm5eP9x1+bLGZOKgYjEx6SGg==",
-      "type": "package",
-      "path": "z.blazor.diagrams/3.0.2",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "README.md",
-        "ZBD.png",
-        "build/Microsoft.AspNetCore.StaticWebAssets.props",
-        "build/Z.Blazor.Diagrams.props",
-        "buildMultiTargeting/Z.Blazor.Diagrams.props",
-        "buildTransitive/Z.Blazor.Diagrams.props",
-        "lib/net6.0/Blazor.Diagrams.dll",
-        "lib/net7.0/Blazor.Diagrams.dll",
-        "lib/net8.0/Blazor.Diagrams.dll",
-        "staticwebassets/Z.Blazor.Diagrams.bundle.scp.css",
-        "staticwebassets/default.styles.css",
-        "staticwebassets/default.styles.min.css",
-        "staticwebassets/default.styles.min.css.gz",
-        "staticwebassets/script.js",
-        "staticwebassets/script.min.js",
-        "staticwebassets/script.min.js.gz",
-        "staticwebassets/style.css",
-        "staticwebassets/style.min.css",
-        "staticwebassets/style.min.css.gz",
-        "z.blazor.diagrams.3.0.2.nupkg.sha512",
-        "z.blazor.diagrams.nuspec"
-      ]
-    },
-    "Z.Blazor.Diagrams.Algorithms/3.0.2": {
-      "sha512": "It1ZczCx1tTgeQyXfK3MuR3U5j+BkFkZrtDOLN4xjqLoAGx8EXikUbHc+usRVRxILfpXfExpL8RAb9FMXcj7og==",
-      "type": "package",
-      "path": "z.blazor.diagrams.algorithms/3.0.2",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "lib/net6.0/Blazor.Diagrams.Algorithms.dll",
-        "lib/net7.0/Blazor.Diagrams.Algorithms.dll",
-        "lib/net8.0/Blazor.Diagrams.Algorithms.dll",
-        "z.blazor.diagrams.algorithms.3.0.2.nupkg.sha512",
-        "z.blazor.diagrams.algorithms.nuspec"
-      ]
-    },
-    "Z.Blazor.Diagrams.Core/3.0.2": {
-      "sha512": "81uZP5vvzjaExYgr8Eq6RoVG4IS+g6tSseK7U7DQQk1tpTdt/wvSTG3TdL3O6zQKbBcDs2t+sxgLRxBknnzoeA==",
-      "type": "package",
-      "path": "z.blazor.diagrams.core/3.0.2",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "README.md",
-        "ZBD.png",
-        "lib/net6.0/Blazor.Diagrams.Core.dll",
-        "lib/net7.0/Blazor.Diagrams.Core.dll",
-        "lib/net8.0/Blazor.Diagrams.Core.dll",
-        "z.blazor.diagrams.core.3.0.2.nupkg.sha512",
-        "z.blazor.diagrams.core.nuspec"
-      ]
     }
   },
   "projectFileDependencyGroups": {
@@ -5492,10 +5366,7 @@
       "Microsoft.EntityFrameworkCore >= 8.0.7",
       "Microsoft.EntityFrameworkCore.Design >= 8.0.7",
       "Pomelo.EntityFrameworkCore.MySql >= 8.0.2",
-      "Radzen.Blazor >= 4.34.0",
-      "Z.Blazor.Diagrams >= 3.0.2",
-      "Z.Blazor.Diagrams.Algorithms >= 3.0.2",
-      "Z.Blazor.Diagrams.Core >= 3.0.2"
+      "Radzen.Blazor >= 4.34.0"
     ]
   },
   "packageFolders": {
@@ -5585,18 +5456,6 @@
           "Radzen.Blazor": {
             "target": "Package",
             "version": "[4.34.0, )"
-          },
-          "Z.Blazor.Diagrams": {
-            "target": "Package",
-            "version": "[3.0.2, )"
-          },
-          "Z.Blazor.Diagrams.Algorithms": {
-            "target": "Package",
-            "version": "[3.0.2, )"
-          },
-          "Z.Blazor.Diagrams.Core": {
-            "target": "Package",
-            "version": "[3.0.2, )"
           }
         },
         "imports": [
@@ -5621,5 +5480,13 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
       }
     }
-  }
+  },
+  "logs": [
+    {
+      "code": "NU1900",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json."
+    }
+  ]
 }
