@@ -22,64 +22,10 @@ namespace CHKS.Data
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<CHKS.Models.mydb.Aspnetuserlogin>().HasKey(table => new {
-                table.LoginProvider, table.ProviderKey
-            });
-
-            builder.Entity<CHKS.Models.mydb.Aspnetuserrole>().HasKey(table => new {
-                table.UserId, table.RoleId
-            });
-
-            builder.Entity<CHKS.Models.mydb.Aspnetusertoken>().HasKey(table => new {
-                table.UserId, table.LoginProvider, table.Name
-            });
-
-            builder.Entity<CHKS.Models.mydb.Aspnetroleclaim>()
-              .HasOne(i => i.Aspnetrole)
-              .WithMany(i => i.Aspnetroleclaims)
-              .HasForeignKey(i => i.RoleId)
-              .HasPrincipalKey(i => i.Id)
-              .OnDelete(DeleteBehavior.ClientNoAction);
-
-            builder.Entity<CHKS.Models.mydb.Aspnetuserclaim>()
-              .HasOne(i => i.Aspnetuser)
-              .WithMany(i => i.Aspnetuserclaims)
-              .HasForeignKey(i => i.UserId)
-              .HasPrincipalKey(i => i.Id)
-              .OnDelete(DeleteBehavior.ClientNoAction);
-
-            builder.Entity<CHKS.Models.mydb.Aspnetuserlogin>()
-              .HasOne(i => i.Aspnetuser)
-              .WithMany(i => i.Aspnetuserlogins)
-              .HasForeignKey(i => i.UserId)
-              .HasPrincipalKey(i => i.Id)
-              .OnDelete(DeleteBehavior.ClientNoAction);
-
-            builder.Entity<CHKS.Models.mydb.Aspnetuserrole>()
-              .HasOne(i => i.Aspnetrole)
-              .WithMany(i => i.Aspnetuserroles)
-              .HasForeignKey(i => i.RoleId)
-              .HasPrincipalKey(i => i.Id)
-              .OnDelete(DeleteBehavior.ClientNoAction);
-
-            builder.Entity<CHKS.Models.mydb.Aspnetuserrole>()
-              .HasOne(i => i.Aspnetuser)
-              .WithMany(i => i.Aspnetuserroles)
-              .HasForeignKey(i => i.UserId)
-              .HasPrincipalKey(i => i.Id)
-              .OnDelete(DeleteBehavior.ClientNoAction);
-
-            builder.Entity<CHKS.Models.mydb.Aspnetusertoken>()
-              .HasOne(i => i.Aspnetuser)
-              .WithMany(i => i.Aspnetusertokens)
-              .HasForeignKey(i => i.UserId)
-              .HasPrincipalKey(i => i.Id)
-              .OnDelete(DeleteBehavior.ClientNoAction);
-
             builder.Entity<CHKS.Models.mydb.Cart>()
               .HasOne(i => i.Car)
               .WithMany(i => i.Carts)
-              .HasForeignKey(i => i.Plate)
+              .HasForeignKey(i => i.Car_Id)
               .HasPrincipalKey(i => i.Plate)
               .OnDelete(DeleteBehavior.ClientNoAction);
 
@@ -91,11 +37,15 @@ namespace CHKS.Data
               .OnDelete(DeleteBehavior.ClientNoAction);
 
             builder.Entity<CHKS.Models.mydb.Connector>()
-              .HasOne(i => i.Inventory)
-              .WithMany(i => i.Connectors)
-              .HasForeignKey(i => i.Product)
-              .HasPrincipalKey(i => i.Code)
-              .OnDelete(DeleteBehavior.ClientNoAction);
+            .HasOne(i => i.Inventory)
+            .WithMany(i => i.Connectors)
+            .HasForeignKey(i => i.ProductId)
+            .HasPrincipalKey(i => i.Id)
+            .OnDelete(DeleteBehavior.ClientNoAction);
+
+            builder.Entity<CHKS.Models.mydb.Tags>()
+            .HasMany(i => i.Product)
+            .WithMany(i => i.Tags);
 
             builder.Entity<CHKS.Models.mydb.History>()
               .HasOne(i => i.Car)
@@ -108,34 +58,38 @@ namespace CHKS.Data
               .HasOne(i => i.History)
               .WithMany(i => i.Historyconnectors)
               .HasForeignKey(i => i.CartId)
-              .HasPrincipalKey(i => i.CashoutDate)
+              .HasPrincipalKey(i => i.Id)
               .OnDelete(DeleteBehavior.ClientNoAction);
 
             builder.Entity<CHKS.Models.mydb.Historyconnector>()
               .HasOne(i => i.Inventory)
-              .WithMany(i => i.Historyconnectors)
-              .HasForeignKey(i => i.Product)
-              .HasPrincipalKey(i => i.Code)
+              .WithMany(i => i.HistoryConnectors)
+              .HasForeignKey(i => i.ProductId)
+              .HasPrincipalKey(i => i.Id)
               .OnDelete(DeleteBehavior.ClientNoAction);
 
             builder.Entity<CHKS.Models.mydb.Car>()
               .Property(p => p.IsDeleted)
               .HasDefaultValueSql(@"'0'");
 
+            builder.Entity<CHKS.Models.mydb.History>()
+              .Property(p => p.Id)
+              .HasDefaultValueSql(@"'00000000-0000-0000-0000-000000000000'").ValueGeneratedOnAdd();
+
+            builder.Entity<CHKS.Models.mydb.Historyconnector>()
+              .Property(p => p.Id)
+              .HasDefaultValueSql(@"'00000000-0000-0000-0000-000000000000'").ValueGeneratedOnAdd();
+
             builder.Entity<CHKS.Models.mydb.Inventory>()
               .Property(p => p.IsDeleted)
               .HasDefaultValueSql(@"'0'");
 
-            builder.Entity<CHKS.Models.mydb.Aspnetuser>()
-              .Property(p => p.LockoutEnd)
-              .HasColumnType("datetime(6)");
+            builder.Entity<CHKS.Models.mydb.Inventory>()
+              .Property(p => p.Id)
+              .HasDefaultValueSql(@"'00000000-0000-0000-0000-000000000000'").ValueGeneratedOnAdd();
 
             builder.Entity<CHKS.Models.mydb.Cart>()
               .Property(p => p.Total)
-              .HasPrecision(10,2);
-
-            builder.Entity<CHKS.Models.mydb.Cashback>()
-              .Property(p => p.Amount)
               .HasPrecision(10,2);
 
             builder.Entity<CHKS.Models.mydb.Connector>()
@@ -192,31 +146,11 @@ namespace CHKS.Data
             this.OnModelBuilding(builder);
         }
 
-        public DbSet<CHKS.Models.mydb.Efmigrationshistory> Efmigrationshistories { get; set; }
-
-        public DbSet<CHKS.Models.mydb.Aspnetroleclaim> Aspnetroleclaims { get; set; }
-
-        public DbSet<CHKS.Models.mydb.Aspnetrole> Aspnetroles { get; set; }
-
-        public DbSet<CHKS.Models.mydb.Aspnetuserclaim> Aspnetuserclaims { get; set; }
-
-        public DbSet<CHKS.Models.mydb.Aspnetuserlogin> Aspnetuserlogins { get; set; }
-
-        public DbSet<CHKS.Models.mydb.Aspnetuserrole> Aspnetuserroles { get; set; }
-
-        public DbSet<CHKS.Models.mydb.Aspnetuser> Aspnetusers { get; set; }
-
-        public DbSet<CHKS.Models.mydb.Aspnetusertoken> Aspnetusertokens { get; set; }
-
         public DbSet<CHKS.Models.mydb.Car> Cars { get; set; }
 
         public DbSet<CHKS.Models.mydb.CarBrand> CarBrands { get; set; }
 
         public DbSet<CHKS.Models.mydb.Cart> Carts { get; set; }
-
-        public DbSet<CHKS.Models.mydb.Cashback> Cashbacks { get; set; }
-
-        public DbSet<CHKS.Models.mydb.Changesrecord> Changesrecords { get; set; }
 
         public DbSet<CHKS.Models.mydb.Connector> Connectors { get; set; }
 
@@ -227,12 +161,6 @@ namespace CHKS.Data
         public DbSet<CHKS.Models.mydb.Historyconnector> Historyconnectors { get; set; }
 
         public DbSet<CHKS.Models.mydb.Inventory> Inventories { get; set; }
-
-        public DbSet<CHKS.Models.mydb.InventoryCaroption> InventoryCaroptions { get; set; }
-
-        public DbSet<CHKS.Models.mydb.InventoryOption> InventoryOptions { get; set; }
-
-        public DbSet<CHKS.Models.mydb.InventoryProductgroup> InventoryProductgroups { get; set; }
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {

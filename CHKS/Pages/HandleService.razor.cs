@@ -49,13 +49,12 @@ namespace CHKS.Pages
 
         protected  async Task GetServiceOnly(){
             HistoryProduct = await MydbService.GetHistoryconnectors();
-            HistoryProduct = HistoryProduct.Where(i => i.Product.Contains(':'));
-            HistoryProduct = HistoryProduct.Where(i => i.CartId.Contains(DateTime.Now.ToString("MM/yyyy")));
+            HistoryProduct = HistoryProduct.Where(i => i.History.CashoutDate.Contains(DateTime.Now.ToString("MM/yyyy")));
         }
 
         protected async Task GetServiceTotal(){
             if(HistoryProduct != null || HistoryProduct != Enumerable.Empty<Models.mydb.Historyconnector>()){
-                TotalService = Math.Round(HistoryProduct.Sum(i => i.Export * i.Qty).GetValueOrDefault(),2).ToString() + " $";
+                TotalService = Math.Round(HistoryProduct.Sum(i => i.Export * i.Qty),2).ToString() + " $";
             }
         }
     }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Radzen;
 using Radzen.Blazor;
+using CHKS.Models.mydb;
 
 namespace CHKS.Pages
 {
@@ -64,12 +65,12 @@ namespace CHKS.Pages
 
             await grid0.GoToPage(0);
 
-            inventories = await mydbService.GetInventories(new Query { Filter = $@"i =>( i.Name.Contains(@0) || i.Barcode.Contains(@0)) && i.IsDeleted == 0 ", FilterParameters = new object[] { search , "Service Charge"} });
+            inventories = await mydbService.GetInventories(new Query { Filter = $@"i =>( i.Name.Contains(@0) || i.Barcode.Contains(@0)) && i.IsDeleted == 0 ", FilterParameters = new object[] { search} });
         }
 
         protected override async Task OnInitializedAsync()
         {   
-            inventories = await mydbService.GetInventories(new Query { Filter = $@"i =>( i.Name.Contains(@0) || i.Barcode.Contains(@0)) && i.IsDeleted == 0", FilterParameters = new object[] { search , "Service Charge"} }); 
+            inventories = await mydbService.GetInventories(new Query { Filter = $@"i =>( i.Name.Contains(@0) || i.Barcode.Contains(@0)) && i.IsDeleted == 0", FilterParameters = new object[] { search} }); 
             CarBrands = await mydbService.GetCarBrands();
         }
 
@@ -79,31 +80,30 @@ namespace CHKS.Pages
         protected async Task CombineProduct(){
             IsCombiningMode = !IsCombiningMode;
             ChosenProduct = new();
-            if(IsCombiningMode == false){await Toasting("ប៉ះបង់បានសម្រេច");}
+            if(IsCombiningMode == false){
+                await Toasting("ប៉ះបង់បានសម្រេច");
+            }
         }
 
         protected async Task CombiningModeCombine(){
-            List<string> product = new();
-            product.Add("Combine");
+            List<Guid> product = new();
             foreach(var i in ChosenProduct){
-                product.Add(i.Code);
+                product.Add(i.Id);
             }
-            string[] productArray = product.ToArray();
+            Guid[] productArray = product.ToArray();
             Models.mydb.Inventory ChoseProduct = await DialogService.OpenAsync<SingleInputPopUp>("បញ្ចូល", new Dictionary<string, object>{{"Info",productArray}}, new DialogOptions{Width="fit-content", Height="max-content"});
             if(ChosenProduct != null){
-                product.Remove("Combine");
-                product.Remove(ChoseProduct.Code);
+                product.Remove(ChoseProduct.Id);
                 await RewriteHistory(ChoseProduct, product);
             }
         } 
 
-        protected async Task RewriteHistory(Models.mydb.Inventory NewProduct, List<string> OldProductCode){
-            foreach(string i in OldProductCode){
-                await PublicCommand.PseudoDeleteInventory(await mydbService.GetInventoryByCode(i));
+        protected async Task RewriteHistory(Models.mydb.Inventory NewProduct, List<Guid> OldProductCode){
+            foreach(Guid i in OldProductCode){
                 IEnumerable<Models.mydb.Historyconnector> historyconnectors = await mydbService.GetHistoryconnectors();
-                historyconnectors = historyconnectors.Where(b => b.Inventory.Code == i);
+                historyconnectors = historyconnectors.Where(b => b.Inventory.Id == i);
                 foreach(var f in historyconnectors){
-                    f.Product = NewProduct.Code;
+                    f.ProductId = NewProduct.Id;
                     await mydbService.UpdateHistoryconnector(f.Id, f);
                 }
             }
@@ -114,7 +114,7 @@ namespace CHKS.Pages
             if(IsCombiningMode == true){
                 bool Dupe = false;
                 foreach(var i in ChosenProduct){
-                    if(i.Code == product.Code){ 
+                    if(i.Id == product.Id){ 
                         Dupe = true;
                         break;
                     }
@@ -137,7 +137,7 @@ namespace CHKS.Pages
 
         protected async Task AddButtonClick(MouseEventArgs args)
         {
-            await grid0.InsertRow(new CHKS.Models.mydb.Inventory());
+            await grid0.InsertRow(new Inventory(){Name = ""});
             
         }
 
@@ -149,7 +149,7 @@ namespace CHKS.Pages
                 {
                     inventory.IsDeleted = 1;
                     inventory.Info = "Deleted By:" + Security.User?.Name + "("+ DateTime.Now.ToString() +")";
-                    await mydbService.UpdateInventory(inventory.Name, inventory);
+                    await mydbService.UpdateInventory(inventory);
 
                 }
             }
@@ -170,7 +170,7 @@ namespace CHKS.Pages
 
         protected async Task GridRowUpdate(CHKS.Models.mydb.Inventory args)
         {
-            await mydbService.UpdateInventory(args.Code,args);
+            await mydbService.UpdateInventory(args);
             isModifying = false;
 
         }
@@ -178,13 +178,11 @@ namespace CHKS.Pages
         protected async Task GridRowCreate(CHKS.Models.mydb.Inventory args)
         {
             try{
-                args.NormalizeName = args.Name.Trim().ToLower();
-                args.Code = await GetKey();
                 await mydbService.CreateInventory(args);
                 await grid0.Reload();
             }catch(Exception exc){
                 if(exc.Message =="Item already available"){
-                    await DialogService.Alert("Apology, This product already exist. Please choose a different name or update the already existed product.","Important");
+                    await DialogService.Alert("This product already exist.","Important");
                     await grid0.Reload();
                 }
             }
@@ -206,13 +204,7 @@ namespace CHKS.Pages
         {
             grid0.CancelEditRow(data);
             await mydbService.CancelInventoryChanges(data);
-        }
-
-        protected async Task<string> GetKey(){
-            string GenKey = PublicCommand.GenerateRandomText();
-            IEnumerable<Models.mydb.Inventory> Temp  = inventories.Where(i => i.Code == GenKey);
-            return Temp.Any() == false?GenKey: await GetKey();
-        }          
+        }    
         
     }
 }

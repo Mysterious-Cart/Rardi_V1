@@ -86,3 +86,7 @@ a:focus {
 .loading-progress-text:after {
     content: var(--blazor-load-percentage-text, "Loading");
 }
+
+.p{
+    font-family: 'Khmer OS Battambang';
+}

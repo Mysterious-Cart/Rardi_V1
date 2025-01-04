@@ -9,12 +9,15 @@ namespace CHKS.Models.mydb
     public partial class Dailyexpense
     {
         [Required]
-        public string Note { get; set; }
+        public string Note { get; set; } = "";
 
-        public decimal? Expense { get; set; }
+        public decimal Expense { get; set; } = 0;
 
         [Key]
         [Required]
-        public string Key { get; set; }
+        public Guid Key { get; set; } = Guid.NewGuid();
+
+        public string Date {get; set;}
+
     }
 }
