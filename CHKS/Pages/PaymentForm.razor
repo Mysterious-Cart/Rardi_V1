@@ -11,7 +11,7 @@
                     <RadzenLabel Component="Dollar" Text="ដុលា: "/>
             </RadzenStack>
             <RadzenStack>
-                    <RadzenTextBox title="Total" ReadOnly ="true" Value="@Total.ToString()" Style="margin-left:1%"/>
+                    <RadzenTextBox title="Total" ReadOnly ="true" Value=@Total.ToString($"{0:N2}") Style="margin-left:1%"/>
                     <RadzenNumeric title="Baht" @bind-Value="Baht" Style="margin-left:1%"/>
                     <RadzenNumericRangeValidator Min="0" Component="Baht"/>
                     <RadzenNumeric title="Dollar" @bind-Value="Dollar" Style="margin-left:1%"/>

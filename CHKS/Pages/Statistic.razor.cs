@@ -38,7 +38,7 @@ namespace CHKS.Pages
         protected IEnumerable<Models.mydb.History> TestHistories;
         protected IEnumerable<Models.mydb.Historyconnector> Historyconnectors;
         protected IEnumerable<Models.mydb.Historyconnector> ProductWithoutImport;
-        protected IEnumerable<Models.mydb.Dailyexpense> MonthlyExpense;
+        protected IQueryable<Models.mydb.Dailyexpense> MonthlyExpense;
 
         protected RadzenDataGrid<Models.mydb.History> grid1;
         protected RadzenDataGrid<Models.mydb.Dailyexpense> grid2;
@@ -72,29 +72,23 @@ namespace CHKS.Pages
         protected override async Task OnInitializedAsync()
         {    
             await GetHistoryBaseOfChoosenDate();
-            await GetMonthlyExpense();  
+            MonthlyExpense = await GetMonthlyExpense();  
             await GetProductWithoutImport();
             await GetTypeOfMoneyTotal();
             await GetAllHistoryConnector();
 
         }
 
-        protected async Task GetMonthlyExpense(){
-            MonthlyExpense = await MydbService.GetDailyexpenses();
-            List<Models.mydb.Dailyexpense> TempList = new();
-            foreach(var Expense in MonthlyExpense.ToList()){
-                string[] temp = Expense.Key.Split(":");
-                if(TimeStart < DateTime.ParseExact(temp[0],"dd/MM/yyyy",null) && DateTime.ParseExact(temp[0],"dd/MM/yyyy",null) <= TimeEnd){
-                    TempList.Add(Expense);
-                }
-            }
-
-            MonthlyExpense = TempList;
-
+        protected async Task<IQueryable<Models.mydb.Dailyexpense>> GetMonthlyExpense(){
+            var Expenses = await MydbService.GetDailyexpenses();
+            Expenses.Where(Expense => 
+                TimeStart < DateTime.ParseExact(Expense.Date,"dd/MM/yyyy",null) && 
+                DateTime.ParseExact(Expense.Date,"dd/MM/yyyy",null) <= TimeEnd
+            );
+            return Expenses;
         }
 
         protected async Task OpenHistory(Models.mydb.History args){
-            await DialogService.OpenAsync<ReciptView>("", new Dictionary<string, object>{{"ID",args.CashoutDate}}, new DialogOptions{Width="50%", Height="70%"});
             await RefreshPage();
         }  
 
@@ -117,8 +111,8 @@ namespace CHKS.Pages
             Historyconnectors = await MydbService.GetHistoryconnectors();
             Total = Historyconnectors.Sum(i => i.Export * i.Qty);
             IEnumerable<Models.mydb.Historyconnector> TempHisCon = Historyconnectors;
-            ServiceTotal = TempHisCon.Sum(i => i.Inventory.Name.Contains("សេវា")==true && i.History.IsDeleted == 0?i.Export:0);
-            ProductTotal = TempHisCon.Sum(i => i.Inventory.Name.Contains("សេវា")==false && i.History.IsDeleted == 0?i.Export * i.Qty:0 );
+            ServiceTotal = TempHisCon.Sum(i => i.Inventory.Name.Contains("សេវា")==true?i.Export:0);
+            ProductTotal = TempHisCon.Sum(i => i.Inventory.Name.Contains("សេវា")==false?i.Export * i.Qty:0 );
             ImportTotal = TempHisCon.Sum(i => i.Inventory.Import * i.Qty);
         }
 
@@ -133,17 +127,9 @@ namespace CHKS.Pages
         protected IEnumerable<Models.mydb.Historyconnector> Hisconall;
         protected async Task GetAllHistoryConnector(){
             Hisconall = await MydbService.GetHistoryconnectors();
-            Hisconall = Hisconall.Where(i => i.Inventory.Name.Contains("សេវា") && i.History.IsDeleted == 0);
+            Hisconall = Hisconall.Where(i => i.Inventory.Name.Contains("សេវា"));
             List<Models.mydb.Historyconnector> Temp = new();
-            foreach(var i in Hisconall.ToList()){
-                 char[] seperator = {':','('};
-                string[] Temptext = i.CartId.Split(seperator,2);
-                if(TimeStart <= DateTime.ParseExact(Temptext[0],"dd/MM/yyyy",null) && DateTime.ParseExact(Temptext[0],"dd/MM/yyyy",null) <= TimeEnd)
-                {
-                    Temp.Add(i);
-                }
-
-            }
+           
 
             Hisconall = Temp;
         }
@@ -164,15 +150,7 @@ namespace CHKS.Pages
             TimeEnd = DateTime.ParseExact(TimeEnd.ToString("dd/MM/yyyy"),"dd/MM/yyyy", null);
             IEnumerable<Models.mydb.Historyconnector> TempHis = Historyconnectors;
             List<Models.mydb.Historyconnector> TempList = new(); 
-            foreach(var item in TempHis){
-                char[] seperator = {':','('};
-                string[] Temp = item.CartId.Split(seperator,2);
-                
-                if(TimeStart <= DateTime.ParseExact(Temp[0],"dd/MM/yyyy",null) && DateTime.ParseExact(Temp[0],"dd/MM/yyyy",null) <= TimeEnd && item.Product != "Service Charge" && (item.Inventory.Import == 0 || item.Inventory.Import == null) ){
-                    TempList.Add(item);
-                }
-                
-            }
+           
             ProductWithoutImport = TempList;
         }
 

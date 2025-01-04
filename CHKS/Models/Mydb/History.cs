@@ -8,7 +8,6 @@ namespace CHKS.Models.mydb
     [Table("history")]
     public partial class History
     {
-        [Key]
         [Required]
         public string CashoutDate { get; set; }
 
@@ -33,8 +32,8 @@ namespace CHKS.Models.mydb
 
         public string Info { get; set; }
 
-        [Required]
-        public short IsDeleted { get; set; }
+        [Key]
+        public Guid Id { get; set; }
 
         public ICollection<Historyconnector> Historyconnectors { get; set; }
     }

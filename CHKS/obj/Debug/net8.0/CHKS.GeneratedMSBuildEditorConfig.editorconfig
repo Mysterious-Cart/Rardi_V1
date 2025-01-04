@@ -46,6 +46,18 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcGFueS5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/Component/CartItemList.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50XENhcnRJdGVtTGlzdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/Component/Popup/NewCart.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50XFBvcHVwXE5ld0NhcnQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/Component/Skeleton.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29tcG9uZW50XFNrZWxldG9uLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/Dailies.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFpbGllcy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -86,16 +98,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGF5bWVudEZvcm0ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/PrintPage.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJpbnRQYWdlLnJhem9y
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/Profile.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJvZmlsZS5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/ReciptView.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVjaXB0Vmlldy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/soeng/OneDrive/Documents/GitRepoForPos/Pos/CHKS/Pages/SecurityCode.razor]

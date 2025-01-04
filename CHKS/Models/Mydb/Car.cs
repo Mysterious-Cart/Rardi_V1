@@ -12,18 +12,21 @@ namespace CHKS.Models.mydb
         [Required]
         public string Plate { get; set; }
 
-        public string Phone { get; set; }
+        public string Phone { get; set; } = "";
 
-        public string Type { get; set; }
+        public string Type { get; set; } = "";
 
-        public string Key { get; set; }
+        public short IsDeleted { get; set; } = 0;
 
-        public short? IsDeleted { get; set; }
-
-        public string Info { get; set; }
+        public string Info { get; set; } = "";
 
         public ICollection<Cart> Carts { get; set; }
 
         public ICollection<History> Histories { get; set; }
+
+        public Car()
+        {
+            Plate = Plate?.Trim().ToUpper();
+        }
     }
 }

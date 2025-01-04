@@ -1,0 +1,45 @@
+@attribute [Authorize]
+@using CHKS.Models.mydb;
+@using CHKS.Models;
+@namespace CHKS.Pages
+
+<RadzenStack Orientation="Orientation.Vertical" Gap="10px" Style="overflow-x: hidden; overflow-y:scroll; height:92%">
+@if(CartItem is not null && CartItem.Count() > 0){
+    @foreach (var Item in CartItem)
+    {
+        <div style="height:130px; border-radius:15px; background-color:whitesmoke; padding:2px; padding-right:10px; padding-left:10px">
+            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start" Gap="10px">
+                <RadzenStack Style="width:30px;" Orientation="Orientation.Vertical" Gap="0px" JustifyContent="JustifyContent.SpaceEvenly" AlignItems="AlignItems.Center">
+                    <RadzenButton Icon="add" style="width: 12px; height:2px; background-color:transparent; border-width:0px;color:#28282B" />
+                    <p Style="border-radius: 30px; width:35px; height:40px; background-color:white; text-align:center; padding-top:10px"> @(((int)Item.Qty).ToString())</p>
+                    <RadzenButton Icon="remove"  Style="background-color:transparent; border-width:0px;color:#28282B"/>
+                </RadzenStack>
+                <RadzenStack style="height:100%; width:210px" Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start" >
+                    <RadzenText Text="@Item.Inventory.Name" Style="font-size:.9zvw; height:2lh; width:100%;overflow-y:scroll; overflow:hidden; line-height:1.5rem"/>
+                </RadzenStack>
+                <RadzenStack Style="width:40px" Orientation="Orientation.Vertical" >
+                    <RadzenButton Icon="delete" Click="@(() => RemoveCartItem(Item))"  ButtonStyle="ButtonStyle.Danger" Variant="Variant.Outlined" style=" border-radius:13px;padding:1.5px "/>
+                    <RadzenButton Icon="edit" IconColor="Blue" Size="ButtonSize.Medium" ButtonStyle="ButtonStyle.Info" Variant="Variant.Outlined" style="border-radius:13px; padding:1.5px;" />
+                </RadzenStack>
+            </RadzenStack>
+        </div>
+    }
+}
+</RadzenStack>
+
+@code {
+    [Parameter]
+    public IEnumerable<Connector> CartItem {get; set;}
+
+    [Parameter]
+    public EventCallback OnItemRemove {get; set;}
+
+    [Inject]
+    public CartControlService CartControl {get; set;}
+
+    private async Task RemoveCartItem(Connector Item){
+        await CartControl.RemoveCartItem(Item);
+        await OnItemRemove.InvokeAsync();
+    }
+
+ }

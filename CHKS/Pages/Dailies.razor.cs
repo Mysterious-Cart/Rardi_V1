@@ -37,11 +37,10 @@ namespace CHKS.Pages
 
         protected IEnumerable<CHKS.Models.mydb.History> History;
         protected IEnumerable<CHKS.Models.mydb.Historyconnector> Historyconnectors;
-        protected IEnumerable<Models.mydb.Cashback> Cashbacks;
         protected IEnumerable<Models.mydb.Dailyexpense> Dailyexpenses;
         protected IEnumerable<Models.mydb.Inventory> Inventories;
 
-        protected static string dates = DateTime.Now.ToString("dd/MM/yyyy");
+        protected string dates = DateTime.Now.ToString("dd/MM/yyyy");
         protected bool NoEmptyImport = true;
         protected bool changeDataMode = false;
 
@@ -56,44 +55,83 @@ namespace CHKS.Pages
         protected RadzenDataGrid<CHKS.Models.mydb.Historyconnector> grid1;
         protected RadzenDataGrid<CHKS.Models.mydb.History> grid0;
         protected RadzenDataGrid<Models.mydb.Dailyexpense> grid2;
-        protected RadzenDataGrid<Models.mydb.Cashback> grid3;
+
+        List<DailyRevenue> Dailyrevenues = [];
 
         protected override async Task OnInitializedAsync()
         {
-            Cashbacks = await mydbService.GetCashbacks();
-            Cashbacks = Cashbacks.Where(i => i.Key.Contains(DateTime.Now.ToString("dd/MM/yyyy")));
-            Dailyexpenses = await mydbService.GetDailyexpenses();
-            Dailyexpenses = Dailyexpenses.Where(i => i.Key.Contains(DateTime.Now.ToString("dd/MM/yyyy")));
             History = await mydbService.GetHistories();
-            Historyconnectors = await mydbService.GetHistoryconnectors();
+            Dailyexpenses = await mydbService.GetDailyexpenses();
+            await GetGraphData();
             changeDataMode = false;
-            GetProductWithoutImport();
-
-            await GetHistory();
         }
 
+        protected async Task GetGraphData(){
+            char[] seperator = {':','('};
+            History = History.Take(10);
+            foreach(var Record in History){
+                string[] cashoutdate = Record.CashoutDate.Split(seperator);
+                var inList = Dailyrevenues.Where(i => i.Date == cashoutdate[0]);
+                if(inList.Any()){
+                    inList.First().Total += Record.Total.GetValueOrDefault();
+                }else{
+                    DailyRevenue revenue = new(){
+                        Date = cashoutdate[0],
+                        Total = Record.Total.GetValueOrDefault()
+                    };
+
+                    Dailyrevenues.Add(revenue);
+                }
+                
+            }
+        }
+
+        /*
+
+        private async Task RegenerateKey(){
+            foreach(var expense in Dailyexpenses.ToList()){
+                var key = expense.Key;
+                await mydbService.DeleteDailyexpense(key);
+                Models.mydb.Dailyexpense NewExpense = new(){
+                    Key = Guid.NewGuid(),
+                    Note = expense.Note,
+                    Date = expense.Date,
+                    Expense=  expense.Expense,
+                };
+                await mydbService.CreateDailyexpense(NewExpense);
+            }
+        }
+        
+        private async Task GenerateDate(){
+            foreach(var expense in Dailyexpenses.ToList()){
+                expense.Date = expense.Key.Split(':',2)[0];
+                await mydbService.UpdateDailyexpense(expense.Key, expense);
+            }
+        }*/
+
         protected async Task GetHistory(){
-            List<Models.mydb.History> tempHis = new();
-            foreach(var i in History.ToList()){
-                char[] seperator = {':','('};
-                string[] Temp = i.CashoutDate.Split(seperator,2);
-                if( DateTime.ParseExact(Temp[0],"dd/MM/yyyy",null) == DateTime.Today){
-                    tempHis.Add(i);
+            char[] seperator = {':','('};
+            List<Models.mydb.History> tempHis = [];
+            var historylist = await mydbService.GetHistories();
+            foreach(var i in historylist){
+                string[] Temp = i.CashoutDate.Split(seperator);
+                if(DateTime.ParseExact(Temp[0],"dd/MM/yyyy",null) == DateTime.Today){
+                    if(tempHis.Any(i => i.Id == i.Id) == false){ // Temporay fix, Erro: Loop being called more then once
+                        tempHis.Add(i);
+                    }
                 }
             }
-            History = Enumerable.Empty<Models.mydb.History>();
             History = tempHis;
-            await GetAllNumberForToday();
         }
 
         protected string TotalMinusExpense;
         protected async Task GetAllNumberForToday(){
             Total = decimal.Round(History.Sum(i => i.Total).GetValueOrDefault(),2).ToString() + " $";
-            ExpenseTotal = decimal.Round(Dailyexpenses.Sum(i => i.Expense).GetValueOrDefault(),2).ToString() + " $";
+            ExpenseTotal = decimal.Round(Dailyexpenses.Sum(i => i.Expense),2).ToString() + " $";
             TotalAba = decimal.Round(History.Sum(i => i.Bank.GetValueOrDefault()),2).ToString() + "$";
             TotalBaht = decimal.Round(History.Sum(i => i.Baht.GetValueOrDefault()),2).ToString();
             TotalRiel = decimal.Round(History.Sum(i => i.Riel.GetValueOrDefault()),2).ToString("#,##0");
-            TotalMinusExpense = (decimal.Round(History.Sum(i => i.Total).GetValueOrDefault(),2) - decimal.Round(Dailyexpenses.Sum(i => i.Expense).GetValueOrDefault(),2)).ToString() +  " $";
+            TotalMinusExpense = (decimal.Round(History.Sum(i => i.Total).GetValueOrDefault(),2) - decimal.Round(Dailyexpenses.Sum(i => i.Expense),2)).ToString() +  " $";
             
         }
 
@@ -119,13 +157,11 @@ namespace CHKS.Pages
         }
 
         protected void GetProductWithoutImport(){
-            Historyconnectors = Historyconnectors.Where(i => i.CartId.Contains(dates) && i.Inventory.Import == 0 || i.Inventory.Import == null && i.Inventory.Name != "Service Charge");
-            NoEmptyImport = Historyconnectors.Any() == true? false:true;
+            
         }
 
         protected async Task OpenHistory(CHKS.Models.mydb.History args)
         {
-            await DialogService.OpenAsync<ReciptView>("Customer", new Dictionary<string, object>{{"ID",args.CashoutDate}}, new DialogOptions{Width="60%",Height="80%"});
         }
 
         protected bool errorVisible;
@@ -136,20 +172,11 @@ namespace CHKS.Pages
         protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.Historyconnector data)
         {
             await grid1.EditRow(data);
-            Inventories = await mydbService.GetInventories();
-            Inventories.Where(i => i.Name == data.Product);
         }
 
          protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Historyconnector data)
         {
-            await grid1.UpdateRow(data);
-            await mydbService.UpdateInventory(data.Product, Inventories.FirstOrDefault());
-            if(Historyconnectors.Any()){
-                NoEmptyImport = false;
-            }else{
-                NoEmptyImport = true;
-                changeDataMode = false;
-            }
+            
         }
 
         protected async Task CancelButtonClick(MouseEventArgs args, CHKS.Models.mydb.Historyconnector data)
@@ -197,7 +224,6 @@ namespace CHKS.Pages
 
         protected async Task GridCreate(Models.mydb.Dailyexpense data){
             try{
-                data.Key = DateTime.Now.ToString("dd/MM/yyyy") + ":" + data.Note;
                 await mydbService.CreateDailyexpense(data);
                 await GetAllNumberForToday();
                 await grid2.Reload();
@@ -209,71 +235,16 @@ namespace CHKS.Pages
             }
         }
 
-        protected async Task AddBtnClickCashback(MouseEventArgs args)
-        {
-            await grid3.InsertRow(new Models.mydb.Cashback());
-        }
-
         protected async Task GridRowUpdate(CHKS.Models.mydb.Dailyexpense args)
         {
             await mydbService.UpdateDailyexpense(args.Key, args);
             await GetAllNumberForToday();
         }
 
-
-        protected async Task GridDeleteButtonClick(MouseEventArgs args, CHKS.Models.mydb.Cashback data){
-            try{
-                if(await DialogService.Confirm("Are you sure?", "Important!", new ConfirmOptions{OkButtonText="Yes", CancelButtonText="No"})== true){
-                    await mydbService.DeleteCashback(data.Key);
-                    
-                    await grid3.Reload();
-                    
-                }
-            }catch(Exception exc){
-                
-            }finally{
-                await GetAllNumberForToday();
-            }
-        }
-
-        protected async Task EditButtonClick(MouseEventArgs args, CHKS.Models.mydb.Cashback data)
-        {
-            await grid3.EditRow(data);
-
-        }
-
-
-        protected async Task GridCreate(Models.mydb.Cashback data){
-            try{
-                data.Key = DateTime.Now.ToString("dd/MM/yyyy") + ":" + data.Name;
-                await mydbService.CreateCashback(data);
-                await grid3.Reload();
-            }catch(Exception exc){
-                if(exc.Message =="Item already available"){
-                    await DialogService.Alert("Apology, This expense already listed. Please choose a different name or update the already listed expense.","Important");
-                    await grid3.Reload();
-                }
-            }
-        }
-
-        protected async Task GridRowUpdate(CHKS.Models.mydb.Cashback args)
-        {
-            await mydbService.UpdateCashback(args.Key, args);
-            await GetAllNumberForToday();
-        }
-
-        protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Cashback data)
-        {
-            await grid3.UpdateRow(data);
-            
-
-        }
-
-        protected async Task CancelButtonClick(MouseEventArgs args, CHKS.Models.mydb.Cashback data)
-        {
-            grid3.CancelEditRow(data);
-            await mydbService.CancelCashbackChanges(data);
-        }
-
     }
+}
+
+public class DailyRevenue{
+    public string Date {get; set;}
+    public decimal Total {get; set;}
 }

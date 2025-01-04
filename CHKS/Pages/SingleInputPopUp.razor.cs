@@ -61,14 +61,7 @@ namespace CHKS.Pages
                 Product[1] = Info[1]; 
                 Product[2] = Info[3];
             }else if(Info[0] == "Combine"){
-                List<Models.mydb.Inventory> temp = new List<Models.mydb.Inventory>();
-                foreach(string i in Info){ 
-                    if(i != "Combine"){
-                        Models.mydb.Inventory Product = await mydbService.GetInventoryByCode(i);
-                        temp.Add(Product);
-                    }
-                }
-                ProductList = temp;
+                
             }
         }
 

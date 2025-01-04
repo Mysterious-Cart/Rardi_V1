@@ -1,6 +1,6 @@
 @page "/statistic"
 @attribute [StreamRendering(true)]
-@attribute [Authorize(Roles="Admin,Dev")]
+
 
 <head>
     <link href="css/Page.css" rel="stylesheet"/>
@@ -16,7 +16,7 @@
             <RadzenCard class="Statistic-Info-Overview-Card" Style="height: 150px;" >
                 <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Wrap="FlexWrap.NoWrap" class="RadzenStack" Style="height:300px">
                     <RadzenLabel Text="ប្រាក់ចំណេញ:" class="RadzenLabel" />
-                    <RadzenText Text="@(Math.Round((((ProductTotal-ImportTotal) + ServiceTotal)-(MonthlyExpense.Sum(i => i.Expense).GetValueOrDefault())).GetValueOrDefault(),2).ToString() + ' ' +'$')" class="RadzenText"/>
+                    <RadzenText Text="@(Math.Round((((ProductTotal-ImportTotal) + ServiceTotal)-(MonthlyExpense.Sum(i => i.Expense))).GetValueOrDefault(),2).ToString() + ' ' +'$')" class="RadzenText"/>
                     <RadzenText Text = "((សរុបទំនេញ - សរុបតម្លៃដើម) - ចំណាយ)) + សេវាសរុប" style="font-size: small; color:gray; "/>
                 </RadzenStack>
             </RadzenCard>
@@ -72,7 +72,7 @@
             <RadzenCard class="Statistic-Info-Overview-Card">
                 <RadzenStack Orientation = "Orientation.Vertical" AlignItems = "AlignItems.End" Wrap="FlexWrap.NoWrap" class="RadzenStack">
                     <RadzenLabel Text="ចំណាយ:" class="RadzenLabel"/>
-                    <RadzenText Text="@(Math.Round(MonthlyExpense.Sum(i => i.Expense).GetValueOrDefault()).ToString() + ' ' +'$')" class="RadzenText"/>                
+                    <RadzenText Text="@(Math.Round(MonthlyExpense.Sum(i => i.Expense)).ToString() + ' ' +'$')" class="RadzenText"/>                
                 </RadzenStack>
             </RadzenCard>
         </RadzenStack>
@@ -111,7 +111,7 @@
                         <RadzenDataGridColumn title="ឈ្មោះ" TItem ="Models.mydb.Historyconnector" Property="Inventory.Name"/>
                         <RadzenDataGridColumn title="តម្លៃដើម" TItem ="Models.mydb.Historyconnector" Property="Export">
                             <Template Context="Product">
-                                <p>@(Math.Round(Product.Export.GetValueOrDefault(),2))</p>
+                                <p>@(Math.Round(Product.Export,2))</p>
                             </Template>
                             <EditTemplate Context="Historyconnector">
                                 <RadzenNumeric @bind-Value="@Historyconnector.Export" Min=0/>

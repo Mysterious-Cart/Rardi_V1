@@ -63,8 +63,7 @@ namespace CHKS.Pages
 
         protected async Task<string> GetKey(){
             string GenKey = PublicCommand.GenerateRandomText();
-            IEnumerable<Models.mydb.Car> Temp = cars.Where(i => i.Key == GenKey);
-            return Temp.Any() == false?GenKey:await GetKey();
+            return GenKey;
         } 
 
         protected async Task AddButtonClick(MouseEventArgs args)
@@ -116,8 +115,6 @@ namespace CHKS.Pages
 
         protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Car data)
         {
-            data.Key = await GetKey();
-            await grid0.UpdateRow(data);
             
         }
 
