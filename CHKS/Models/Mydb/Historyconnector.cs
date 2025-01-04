@@ -8,26 +8,26 @@ namespace CHKS.Models.mydb
     [Table("historyconnector")]
     public partial class Historyconnector
     {
-        [Key]
-        [Column("ID")]
-        [Required]
-        public string Id { get; set; }
+        public decimal Qty { get; set; }
 
-        [Required]
-        public string Product { get; set; }
-
-        public Inventory Inventory { get; set; }
-
-        public decimal? Qty { get; set; }
-
-        public decimal? Export { get; set; }
+        public decimal Export { get; set; }
 
         [Column("CartID")]
         [Required]
-        public string CartId { get; set; }
+        public Guid CartId { get; set; }
 
         public History History { get; set; }
 
         public string Note { get; set; }
+
+        [Key]
+        [Column("ID")]
+        public Guid Id { get; set; }
+
+        [Column("ProductId")]
+        [Required]
+        public Guid ProductId { get; set; }
+
+        public Inventory Inventory {get; set;}
     }
 }

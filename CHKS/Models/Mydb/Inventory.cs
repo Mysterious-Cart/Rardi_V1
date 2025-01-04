@@ -8,31 +8,39 @@ namespace CHKS.Models.mydb
     [Table("inventory")]
     public partial class Inventory
     {
-        [Key]
+        
         [Required]
-        public string Code { get; set; }
+        public decimal Stock { get; set; } = 0;
 
         [Required]
-        public decimal Stock { get; set; }
+        public decimal Import { get; set; } = 0;
 
-        public decimal? Import { get; set; }
+        [Required]
+        public decimal Export { get; set; } = 0;
 
-        public decimal? Export { get; set; }
-
-        public string Barcode { get; set; }
+        public string Barcode { get; set; } = "";
 
         [Column("Normalize_Name")]
-        public string NormalizeName { get; set; }
+        public string NormalizeName { get; set; } = "";
 
         [Required]
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
-        public string Info { get; set; }
+        [Required]
+        public string Info { get; set; } = "";
 
-        public short? IsDeleted { get; set; }
+        public short? IsDeleted { get; set; } = 0;
 
-        public ICollection<Connector> Connectors { get; set; }
+        [Key]
+        [Required]
+        public Guid Id { get; set; } = Guid.NewGuid();
 
-        public ICollection<Historyconnector> Historyconnectors { get; set; }
+        public ICollection<Connector> Connectors {get; set;}
+
+        public ICollection<Historyconnector> HistoryConnectors {get; set;}
+
+        public ICollection<Tags> Tags{get; set;}
+
+        
     }
 }

@@ -2,30 +2,32 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace CHKS.Models.mydb
 {
     [Table("connector")]
-    public partial class Connector
+    [PrimaryKey("Id")]
+    public partial class Connector : ICartItem
     {
         [Required]
         public int CartId { get; set; }
 
-        public Cart Cart { get; set; }
+        public Cart Cart { get; }
 
         [Required]
-        public string Product { get; set; }
+        public Guid ProductId { get; set; }
 
-        public Inventory Inventory { get; set; }
+        public Inventory Inventory {get;}
 
         [Required]
         public decimal Qty { get; set; }
 
-        public string Note { get; set; }
+        public string Note { get; set; } = "";
 
         [Key]
         [Required]
-        public string GeneratedKey { get; set; }
+        public Guid Id { get; } = Guid.NewGuid();
 
         public decimal? PriceOverwrite { get; set; }
     }

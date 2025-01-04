@@ -95,53 +95,6 @@ namespace CHKS
         public static string GetCustomerStateFromKey(int Key) => ModeCoordinator[Key];
         
         static string InfoReportString(string User)=> "Deleted By:" + User + "("+ DateTime.Now.ToString() +")";
-        
-        /// <summary>
-        ///     Write a record to Record Table.
-        /// </summary>
-        /// <param name="Note"> Note to write off </param>
-        /// <param name="user"> User to write off as </param>
-        /// <returns> Return true if succeed; otherwise false </returns>
-        public async Task<bool> RecordWriteOff(string Note, string User){
-            
-            Models.mydb.Changesrecord Record = new(){
-                DateOfChange = DateTime.Now.ToString(),
-                Info = Note,
-                User = User,
-            };
-            
-            var result = await mydbService.CreateChangesrecord(Record);
-            bool WriteOffResult = false;
-            if(result != null){
-                WriteOffResult = true;
-            }
-            return WriteOffResult;
-        }
-        
-
-
-        /// <summary>
-        ///     Write a product as delete
-        /// </summary>
-        /// <param name="Product"> The Product to simulate delete </param>
-        /// <returns> Return true if succeed; otherwise false </returns>
-        public async Task<bool> PseudoDeleteInventory(Models.mydb.Inventory Product){
-            Product.IsDeleted = 1;
-            Product.Info = InfoReportString(security.User?.Name);
-            var result = await mydbService.UpdateInventory(Product.Code, Product);
-            return result!=null?true:false;
-        }
-
-        /// <summary>
-        ///     Write a Customer as delete
-        /// </summary>
-        /// <param name="Customer"> The Customer to simulate delete </param>
-        /// <returns> Return true if succeed; otherwise false </returns>
-        public async Task PseudoDeleteCustomer(Models.mydb.Car Customer){
-            Customer.IsDeleted = 1;
-            Customer.Info = InfoReportString(security.User?.Name);
-            await mydbService.UpdateCar(Customer.Key, Customer);
-        }
 
         /// <summary>
         ///     Sum all payment type paid by customer

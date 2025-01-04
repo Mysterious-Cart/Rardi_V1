@@ -11,6 +11,9 @@ using CHKS.Models;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
+
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -25,19 +28,39 @@ builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();
 builder.Services.AddScoped<ContextMenuService>();
 builder.Services.AddScoped<CHKS.mydbService>();
-builder.Services.AddDbContext<CHKS.Data.mydbContext>(options =>
-{
-    options.UseMySql(builder.Configuration.GetConnectionString("mydbConnection"), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("mydbConnection")));
-});
-builder.Services.AddHttpClient("CHKS").ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { UseCookies = false }).AddHeaderPropagation(o => o.Headers.Add("Cookie"));
+builder.Services.AddScoped<CHKS.StockControlService>();
+builder.Services.AddScoped<CHKS.CartControlService>();
+
+    builder.Services.AddDbContext<mydbContext>(options =>
+    {
+        try{
+            options.UseMySql(builder.Configuration.GetConnectionString("mydbConnection"), 
+            ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("mydbConnection")));
+        }catch(Exception exc){
+            Console.WriteLine("Database connection unsuccessfull.");
+        }
+    });
+
+    builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
+    {
+        try{
+            options.UseMySql(builder.Configuration.GetConnectionString("mydbConnection"), 
+            ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("mydbConnection")));
+        }catch(Exception exc){
+            Console.WriteLine("Database connection unsuccessfull.");
+        }
+    });
+
+
+builder.Services.AddHttpClient("CHKS").ConfigurePrimaryHttpMessageHandler(
+    () => new HttpClientHandler { UseCookies = false }).AddHeaderPropagation(o => o.Headers.Add("Cookie")
+);
+
 builder.Services.AddHeaderPropagation(o => o.Headers.Add("Cookie"));
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<CHKS.SecurityService>();
-builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
-{
-    options.UseMySql(builder.Configuration.GetConnectionString("mydbConnection"), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("mydbConnection")));
-});
+
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>().AddEntityFrameworkStores<ApplicationIdentityDbContext>().AddDefaultTokenProviders();
 builder.Services.AddControllers().AddOData(o =>
 {
@@ -51,6 +74,23 @@ builder.Services.AddControllers().AddOData(o =>
 });
 builder.Services.AddScoped<AuthenticationStateProvider, CHKS.ApplicationAuthenticationStateProvider>();
 var app = builder.Build();
+using (var scope = app.Services.CreateScope()){
+    try{
+        var context = scope.ServiceProvider.GetRequiredService<mydbContext>();
+        context.Database.Migrate();
+        RelationalDatabaseCreator databaseCreator = context.Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
+        await databaseCreator!.CreateAsync();
+    }catch{
+        Console.WriteLine("Failed to create database");
+    }
+
+    try{
+        scope.ServiceProvider.GetRequiredService<ApplicationIdentityDbContext>().Database.Migrate();
+    }catch{
+        Console.WriteLine("Failed to create security table.");
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -68,5 +108,5 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
-app.Services.CreateScope().ServiceProvider.GetRequiredService<ApplicationIdentityDbContext>().Database.Migrate();
+
 app.Run();

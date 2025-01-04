@@ -8,21 +8,22 @@ namespace CHKS.Models.mydb
     [Table("cart")]
     public partial class Cart
     {
+        [Column("CarID")]
         [Required]
-        public string Plate { get; set; }
+        public string Car_Id { get; set; }
 
         public Car Car { get; set; }
 
         [Key]
         [Column("CartID")]
         [Required]
-        public int CartId { get; set; }
+        public int CartId { get; set; } = new Random().Next(0, 1000);
 
-        public decimal? Total { get; set; }
+        [Required]
+        public decimal Total { get; set; } = 0;
 
-        public string Creator { get; set; }
-
-        public short? Company { get; set; }
+        [Required]
+        public short Status {get; set;} = 0;
 
         public ICollection<Connector> Connectors { get; set; }
     }

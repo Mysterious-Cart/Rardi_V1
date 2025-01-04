@@ -1,0 +1,94 @@
+@page "/new-cart"
+
+@attribute [Authorize]
+@inject mydbService DbService;
+@inject DialogService DialogService;
+@using Models.mydb
+
+<RadzenStack AlignItems="AlignItems.End" Orientation="@Orientation.Horizontal" Style="margin-bottom: 10px;" JustifyContent="JustifyContent.SpaceBetween">
+    <RadzenTextBox Placeholder="Type to search" Style="width: 100%;" @oninput=@((args) => GetCarsAsync(args))/>
+    <RadzenButton Text="Add" Icon="add" Variant="Variant.Outlined" Style="width:90px" Click="@CreateCar"/>
+</RadzenStack>
+<RadzenRow>
+    <RadzenDataGrid 
+        @ref="@carGrid"
+        Data="@Cars" 
+        Style="max-height: 50dvh; border-radius:10px" 
+        AllowVirtualization="true"
+        RowUpdate=@((Car args) => UpdateRow(args))
+        RowCreate=@((Car args) => GridRowCreate(args))
+        RowSelect=@((Car car) => Select_Car(car))
+        RowDoubleClick=@((DataGridRowMouseEventArgs<Car> args) => Confirm_Selection())
+        >
+        <Columns>
+            <RadzenDataGridColumn Property="Plate" Title="Plate"> 
+                <EditTemplate Context="car">
+                    <RadzenTextBox Placeholder="Plate" @bind-Value="car.Plate"/>
+                </EditTemplate>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Property="Type" Title="Type" >
+                <EditTemplate Context="car">
+                    <RadzenTextBox Placeholder="Type"  @bind-Value="car.Type"/>
+                </EditTemplate>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Property="Phone" Title="Number">
+                <EditTemplate Context="car">
+                    <RadzenTextBox Placeholder="Number"  @bind-Value="car.Phone"/>
+                </EditTemplate>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Width="90px">
+                <Template Context="car">
+                    <RadzenButton Icon="edit" Click="@(() => carGrid.EditRow(car))"/>
+                    <RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger"/>
+                </Template>
+                <EditTemplate Context="car">
+                    <RadzenButton Icon="save" ButtonStyle="ButtonStyle.Success" Click="@(() => carGrid.UpdateRow(car))"/>
+                    <RadzenButton Icon="cancel" ButtonStyle="ButtonStyle.Danger" Click="@(() => carGrid.CancelEditRow(car))"/>
+                </EditTemplate>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+</RadzenRow>
+@code {
+private RadzenDataGrid<Car> carGrid;
+IQueryable<Car> Cars = Enumerable.Empty<Car>().AsQueryable();
+string FilterText = "";
+
+
+protected async override Task OnInitializedAsync(){
+    await GetCarsAsync(new ChangeEventArgs{Value=""}).ConfigureAwait(false);
+}
+
+private async Task GetCarsAsync(ChangeEventArgs args){
+    Cars = await DbService.GetCars();
+    var searchText = args.Value.ToString();
+    Cars = Cars.Where(i => i.Plate.Contains(searchText) ||i.Type.Contains(searchText) || i.Phone.Contains(searchText) );
+}
+
+private async Task GridRowCreate(Car args)
+        {
+            try{
+                await DbService.CreateCar(args);
+                await carGrid.Reload();
+            }catch(Exception exc){
+                if(exc.Message =="Item already available"){
+                    await DialogService.Alert("This product already exist.","Important");
+                    await carGrid.Reload();
+                }
+            }
+
+        }
+
+private async Task CreateCar(){
+    await carGrid.InsertRow(new Car());
+}
+
+private async Task UpdateRow(Car car){
+    await DbService.UpdateCar(car.Plate,car);
+}
+
+Car select_Car = null;
+private void Select_Car(Car car) => select_Car = car;
+private void Confirm_Selection() => DialogService.Close(select_Car);
+
+}

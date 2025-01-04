@@ -19,118 +19,6 @@ namespace CHKS.Controllers
             this.context = context;
         }
 
-        [HttpGet("/export/mydb/efmigrationshistories/csv")]
-        [HttpGet("/export/mydb/efmigrationshistories/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportEfmigrationshistoriesToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetEfmigrationshistories(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/efmigrationshistories/excel")]
-        [HttpGet("/export/mydb/efmigrationshistories/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportEfmigrationshistoriesToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetEfmigrationshistories(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/aspnetroleclaims/csv")]
-        [HttpGet("/export/mydb/aspnetroleclaims/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportAspnetroleclaimsToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetAspnetroleclaims(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/aspnetroleclaims/excel")]
-        [HttpGet("/export/mydb/aspnetroleclaims/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportAspnetroleclaimsToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetAspnetroleclaims(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/aspnetroles/csv")]
-        [HttpGet("/export/mydb/aspnetroles/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportAspnetrolesToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetAspnetroles(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/aspnetroles/excel")]
-        [HttpGet("/export/mydb/aspnetroles/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportAspnetrolesToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetAspnetroles(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/aspnetuserclaims/csv")]
-        [HttpGet("/export/mydb/aspnetuserclaims/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportAspnetuserclaimsToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetAspnetuserclaims(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/aspnetuserclaims/excel")]
-        [HttpGet("/export/mydb/aspnetuserclaims/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportAspnetuserclaimsToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetAspnetuserclaims(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/aspnetuserlogins/csv")]
-        [HttpGet("/export/mydb/aspnetuserlogins/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportAspnetuserloginsToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetAspnetuserlogins(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/aspnetuserlogins/excel")]
-        [HttpGet("/export/mydb/aspnetuserlogins/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportAspnetuserloginsToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetAspnetuserlogins(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/aspnetuserroles/csv")]
-        [HttpGet("/export/mydb/aspnetuserroles/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportAspnetuserrolesToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetAspnetuserroles(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/aspnetuserroles/excel")]
-        [HttpGet("/export/mydb/aspnetuserroles/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportAspnetuserrolesToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetAspnetuserroles(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/aspnetusers/csv")]
-        [HttpGet("/export/mydb/aspnetusers/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportAspnetusersToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetAspnetusers(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/aspnetusers/excel")]
-        [HttpGet("/export/mydb/aspnetusers/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportAspnetusersToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetAspnetusers(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/aspnetusertokens/csv")]
-        [HttpGet("/export/mydb/aspnetusertokens/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportAspnetusertokensToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetAspnetusertokens(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/aspnetusertokens/excel")]
-        [HttpGet("/export/mydb/aspnetusertokens/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportAspnetusertokensToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetAspnetusertokens(), Request.Query, false), fileName);
-        }
-
         [HttpGet("/export/mydb/cars/csv")]
         [HttpGet("/export/mydb/cars/csv(fileName='{fileName}')")]
         public async Task<FileStreamResult> ExportCarsToCSV(string fileName = null)
@@ -171,34 +59,6 @@ namespace CHKS.Controllers
         public async Task<FileStreamResult> ExportCartsToExcel(string fileName = null)
         {
             return ToExcel(ApplyQuery(await service.GetCarts(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/cashbacks/csv")]
-        [HttpGet("/export/mydb/cashbacks/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportCashbacksToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetCashbacks(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/cashbacks/excel")]
-        [HttpGet("/export/mydb/cashbacks/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportCashbacksToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetCashbacks(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/changesrecords/csv")]
-        [HttpGet("/export/mydb/changesrecords/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportChangesrecordsToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetChangesrecords(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/changesrecords/excel")]
-        [HttpGet("/export/mydb/changesrecords/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportChangesrecordsToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetChangesrecords(), Request.Query, false), fileName);
         }
 
         [HttpGet("/export/mydb/connectors/csv")]
@@ -269,48 +129,6 @@ namespace CHKS.Controllers
         public async Task<FileStreamResult> ExportInventoriesToExcel(string fileName = null)
         {
             return ToExcel(ApplyQuery(await service.GetInventories(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/inventorycaroptions/csv")]
-        [HttpGet("/export/mydb/inventorycaroptions/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportInventoryCaroptionsToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetInventoryCaroptions(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/inventorycaroptions/excel")]
-        [HttpGet("/export/mydb/inventorycaroptions/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportInventoryCaroptionsToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetInventoryCaroptions(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/inventoryoptions/csv")]
-        [HttpGet("/export/mydb/inventoryoptions/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportInventoryOptionsToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetInventoryOptions(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/inventoryoptions/excel")]
-        [HttpGet("/export/mydb/inventoryoptions/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportInventoryOptionsToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetInventoryOptions(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/inventoryproductgroups/csv")]
-        [HttpGet("/export/mydb/inventoryproductgroups/csv(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportInventoryProductgroupsToCSV(string fileName = null)
-        {
-            return ToCSV(ApplyQuery(await service.GetInventoryProductgroups(), Request.Query, false), fileName);
-        }
-
-        [HttpGet("/export/mydb/inventoryproductgroups/excel")]
-        [HttpGet("/export/mydb/inventoryproductgroups/excel(fileName='{fileName}')")]
-        public async Task<FileStreamResult> ExportInventoryProductgroupsToExcel(string fileName = null)
-        {
-            return ToExcel(ApplyQuery(await service.GetInventoryProductgroups(), Request.Query, false), fileName);
         }
     }
 }
