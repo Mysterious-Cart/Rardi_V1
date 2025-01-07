@@ -41,6 +41,5 @@ namespace CHKS.Models.mydb
 
         public ICollection<Tags> Tags{get; set;}
 
-        
     }
 }

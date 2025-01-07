@@ -139,20 +139,6 @@ namespace CHKS.Pages
 
         }
 
-        protected async Task EditProduct(Models.mydb.Connector Product){
-            var UpdatedItems = await DialogService.OpenAsync<SingleInputPopUp>(Product.ProductId.ToString(), new Dictionary<string, object>{{"Info",new string[]{"EditItem", Product.PriceOverwrite.ToString(), Product.Qty.ToString(), Product.Note}}}, new DialogOptions{Width="250px"});
-            if(UpdatedItems != null){
-                Product.Qty = decimal.Parse(UpdatedItems[0]);
-                Product.PriceOverwrite = decimal.Parse(UpdatedItems[1]);
-                Product.Note = UpdatedItems[2];
-                try{
-                    await MydbService.UpdateConnector(Product.Id, Product);
-                }catch(Exception exc){
-
-                }
-            }
-        }
-
         protected async Task EditProduct(Models.mydb.Historyconnector Product){
             var UpdatedItems = await DialogService.OpenAsync<SingleInputPopUp>(Product.ProductId.ToString(), new Dictionary<string, object>{{"Info",new string[]{"EditItem", Product.Export.ToString(), Product.Qty.ToString(), Product.Note}}}, new DialogOptions{Width="250px"});
             if(UpdatedItems != null){
@@ -221,23 +207,18 @@ namespace CHKS.Pages
             if(Current_Cart is not null ){
                 if(CartItem.Any()){
                     if(await DialogService.Confirm("តើអ្នកច្បាស់ដែរឫទេ?","សំខាន់!") == true){
-                        List<decimal?> payment = await DialogService.OpenAsync<PaymentForm>("គិតលុយ",new Dictionary<string, object>{{"Total",CartItem.Sum(i => i.Qty * i.PriceOverwrite??i.Inventory.Export)}}, new DialogOptions{Width="35%"});
+                        Current_Cart.Total = CartItem.Sum(i => i.Qty * i.PriceOverwrite??i.Inventory.Export);
+                        List<decimal?> payment = await DialogService.OpenAsync<PaymentForm>("គិតលុយ",new Dictionary<string, object>{{"Total", Current_Cart.Total}}, new DialogOptions{Width="35%"});
 
                         if(payment != null){    
-
-                            string time = DateTime.Now.ToString("dd/MM/yyyy");
-                            Guid Id = Guid.NewGuid();
                             
                             History History = new(){
-                                Id = Id,
-                                CashoutDate = time,
-                                Plate = Current_Cart.Car.Plate,
+                                Plate = Current_Cart.Car_Id,
                                 Total = Current_Cart.Total,
                                 Bank = payment[0],
                                 Dollar = payment[1],
                                 Baht = payment[2],
                                 Riel = payment[3],
-                                Company = 0,
                                 User = Security.User?.Name,
                                 
                             };
@@ -247,11 +228,10 @@ namespace CHKS.Pages
                             foreach(var i in CartItem.ToList())
                             {   
                                 Historyconnector historyconnector = new(){
-                                    Id = Guid.NewGuid(),    
                                     ProductId = i.ProductId,
                                     Export = i.PriceOverwrite??i.Inventory.Export,
                                     Qty = i.Qty,
-                                    CartId = Id,
+                                    CartId = History.Id,
                                     Note = i.Note
                                 };
 
@@ -262,7 +242,6 @@ namespace CHKS.Pages
 
                             await MydbService.DeleteCart(Current_Cart.CartId);
                             await ResetToDefault();
-                            await Toasting("គិតលុយបានសម្រេច់");
                         }                            
                     }
                 }else{await DialogService.Alert("បញ្ចាក់អ្នកគ្មានទំនេញនៅក្នុងអត្ថជននេះទេ.","បញ្ចាក់!");}
@@ -271,15 +250,6 @@ namespace CHKS.Pages
 
         protected async Task PrintReceipt(){
             
-        }
-
-        protected async Task ClearAllProductNoReturn(){
-            if(CartItem != null){
-                foreach(var i in CartItem.ToList())
-                {   
-                    await MydbService.DeleteConnector(i.Id);
-                };                
-            }
         }
 
         protected async Task ClearAllProduct(){
@@ -312,6 +282,13 @@ namespace CHKS.Pages
                 CartItem = [];                          
             }
         }
+       
+        readonly Dictionary<short, string> CartModeTranslate =  new(){
+            {0,"កំពុងធ្វើ"},
+            {1,"មិនទានគិតលុយ"},
+            {2,"គិតលុយរួច"},
+            {3,"ជំពាក់"}
+       };
        
     }
 }

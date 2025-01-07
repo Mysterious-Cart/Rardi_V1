@@ -40,7 +40,7 @@
                 <RadzenButton Click="@Close" Icon="add_circle_outline" Text="បញ្ចូល" Style="font-family: 'Khmer OS Battambang' "/>
             </RadzenStack>
         }else if(Info[0] == "EditItem"){
-            <RadzenStack>
+            <RadzenStack Style="width: 450px;">
                 <RadzenStack Gap="1px">
                     <RadzenText Text="តម្លៃលក់ដើម" Style="font-family: 'Khmer OS Battambang' " />
                     <RadzenTextBox @bind-Value="@Info[1]" ReadOnly=true/>

@@ -23,7 +23,12 @@ public class CartControlService
             if(CartItems.Any()){
                 var CartItem = CartItems.First();
                 CartItem.Qty += Qty;
-                await mydbService.UpdateConnector(CartItem.Id,CartItem);
+                
+                if(CartItem.Qty <= 0){
+                    await mydbService.DeleteConnector(CartItem.Id);
+                }else{
+                    await mydbService.UpdateConnector(CartItem.Id,CartItem);
+                }
             }else{
                 Connector newCartItem = new(){
                     CartId = CartId,

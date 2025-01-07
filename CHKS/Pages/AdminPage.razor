@@ -1,0 +1,479 @@
+@page "/admin-page"
+@using CHKS.Models.mydb;
+@using System;
+@using System.IO;
+@using System.Text;
+@using System.Reflection;
+@using System.Dynamic;
+@using Microsoft.VisualBasic.FileIO;
+@using System.Data;
+@using System.Text.RegularExpressions;
+
+@attribute [Authorize]
+
+<PageTitle>AdminPage</PageTitle>
+<RadzenRow style="padding:10px;">
+    <RadzenColumn Size="3" >
+        <RadzenCard>
+            <RadzenStack Orientation="Orientation.Vertical"> 
+                
+                <RadzenRow>
+                    <RadzenColumn Size="10">
+                        <RadzenText Text="Upload File"/>
+                    </RadzenColumn>
+                    <RadzenColumn>
+                        <RadzenButton Icon="refresh" Click="@Reset"/>
+                    </RadzenColumn>
+                </RadzenRow>
+                <RadzenFileInput Accept="CSV" @bind-Value="@File" TValue="string" Style="width:100%"/>
+                <RadzenNumeric @bind-Value=@InputValue Min="1" Placeholder="Number of Column"/>
+                <RadzenText Text=@("Total Record: " + TotalRecordFound.ToString())/>
+                <RadzenButton Text="Read" Click="@(() => GenerateTable())"/>
+            </RadzenStack>
+        </RadzenCard>
+        <RadzenCard Style="max-height: 100px;">
+            <RadzenDataList TItem="string" Data="@ErrorLog">
+                
+            </RadzenDataList>
+        </RadzenCard>
+    </RadzenColumn>
+    <RadzenColumn Size="5">
+        <RadzenCard>
+            <RadzenRow>
+                <RadzenColumn>
+                    <RadzenText Text="Database Mapping"/>
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenRow Style="margin-top:10px">
+                <RadzenColumn>
+                    <RadzenDropDown Data="@AllClassType" TValue="Type" Style="width: 100%;" TextProperty="Name" ValueChanged="@((Type i) => MapTo(i))"/>
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenRow Style="margin-top:10px">
+                <RadzenColumn>
+                    <RadzenDataList Style="height: 150px; overflow:scroll;" TItem="string" Data="@csvData.Take(Column)" AllowVirtualization="true" AllowPaging="false" Density="Density.Compact">
+                        <Template Context="Data">
+                            <RadzenRow>
+                                <RadzenColumn Size="3">
+                                    <RadzenText Text=@Data/>
+                                </RadzenColumn>
+                                <RadzenColumn Size="3">
+                                    <RadzenDropDown Data="@TableProperty" TValue="string" TextProperty="Name" 
+                                    ValueProperty="Name" Style="width: 100%;"
+                                      
+                                    Value=@(ColumnsWithPropertyListing.Where(i => i.Key == Data).Any()?
+                                            ColumnsWithPropertyListing.Where(i => i.Key == Data).First().Value:null)
+                                    ValueChanged="@((args) => MapToColumn(Data,args))"
+                                    />
+                                </RadzenColumn>
+                                <RadzenColumn Size="3">
+                                    <RadzenTextBox Placeholder="Seperator" Style="width: 100%;" @bind-Value="@splitter[Data]"/>
+                                </RadzenColumn>
+                                <RadzenColumn Size="2">
+                                    <RadzenNumeric Placeholder="Index" TValue="int" @bind-Value="@takeIndex" Min=0 Style="width: 100%;"/>
+                                </RadzenColumn>
+                            </RadzenRow>
+                        </Template>
+                    </RadzenDataList>
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenRow>
+                <RadzenColumn>
+                    <RadzenButton Style="width:100%" Text="Convert" Click="@CallGenerateRecordAndStore"/>
+                </RadzenColumn>
+            </RadzenRow>
+        </RadzenCard>
+        <RadzenCard Style="margin-top: 10px;">
+            <RadzenStack>
+                <RadzenText Text="Result"/>
+                <RadzenRow>
+                    <RadzenColumn>
+                        <RadzenRow>
+                            <RadzenLabel Text="Failed: "/>
+                            <RadzenText Text="@TotalFailedRecord.ToString()"/>
+                        </RadzenRow>
+                    </RadzenColumn>
+                    <RadzenColumn>
+                        <RadzenRow>
+                            <RadzenLabel Text="Total: "/>
+                            <RadzenText Text="@(TotalRecordFound.ToString())"/>
+                        </RadzenRow>
+                    </RadzenColumn>
+                </RadzenRow>
+                
+                <RadzenProgressBar Min=0 Max=@TotalRecordFound @bind-Value=@progressValue Unit="" />
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+
+    <RadzenColumn Size="4">
+        <RadzenCard>
+            <RadzenStack>
+                <RadzenText Text="Relation Mapping"/>
+                <RadzenFileInput Text="Import" Accept="CSV" @bind-Value="@File2" TValue="string"/>
+                <RadzenNumeric @bind-Value="@Input_Column2" TValue="int"/>
+                <RadzenButton Text="Read" Click="@GenerateRelationTable"/>
+                <RadzenDropDown TValue="Type" Data="@AllClassType" @bind-Value="@Selected_Class2" TextProperty="Name"/>
+                <RadzenRow>
+                    <RadzenColumn Size="6">
+                        <RadzenDropDown TValue="string" Data="@csvData.Take(Column)" @bind-Value="@MiddleMan_Column2" />
+                    </RadzenColumn>
+                    <RadzenColumn Size="6">
+                        <RadzenDropDown TValue="string" Data="@RelationColumn" @bind-Value="@MiddleMan_Column" />
+                    </RadzenColumn>
+                </RadzenRow>
+                <RadzenRow>
+                    <RadzenColumn Size="6">
+                        <RadzenDropDown TValue="string" Data="@csvData.Take(Column)" @bind-Value="@OriginalColumn"/>
+                    </RadzenColumn>
+                    <RadzenColumn Size="6">
+                        <RadzenDropDown TValue="PropertyInfo" TextProperty="Name" Data="@Selected_Class2?.GetProperties()" @bind-Value="@MappedToColumn2"/>
+                    </RadzenColumn>
+                </RadzenRow>
+                <RadzenText @bind-Text="RecordBeingRead"/>
+                <RadzenButton Text="Apply" Click="@(() => RelationMapping())"/>
+                <RadzenProgressBar Min=0 Max="@TotalRecordFound" @bind-Value="@Progress2"/>
+            </RadzenStack>
+        </RadzenCard>
+    </RadzenColumn>
+
+</RadzenRow>
+
+<RadzenRow Style="padding:10px">
+    <RadzenColumn>
+        <RadzenDataGrid @ref="@datagridTable" AllowSorting="true" AllowVirtualization="true" Style="height:80dvh" Data="@ImportTables" TValue="Dictionary<string, string>">
+            <Columns>
+                @foreach(string i in csvData.Take(Column)){
+                    <RadzenDataGridColumn Title="@i">
+                        <Template Context="data">
+                            <p>@(data.Where(v => v.Key == i).First().Value.ToString())</p>
+                        </Template>
+                    </RadzenDataGridColumn>
+                }
+                
+            </Columns>
+        </RadzenDataGrid>
+    </RadzenColumn>
+</RadzenRow>
+
+@code{
+
+    string File = "";
+    int InputValue = 0;
+    int Column = 0;
+    int TotalRecordFound = 0;
+    double progressValue = 0;
+    int TotalFailedRecord = 0;
+    Dictionary<string, string> splitter = [];
+    int takeIndex = 0;
+    RadzenDataGrid<Dictionary<string, string>> datagridTable = null;
+    List<string> csvData = [];
+    List<Dictionary<string, string>> ImportTables = [];
+    IDictionary<string, string> ColumnsWithPropertyListing = new Dictionary<string, string>();
+    PropertyInfo[] TableProperty = [];
+    List<Type> AllClassType = [];
+    Type SelectedType = null;
+
+    List<string> ErrorLog = [];
+
+
+    string File2 = "";
+    int Input_Column2 = 0;
+    int Column2 = 0;
+    Type Selected_Class2 = null;
+    List<string> RelationColumn = [];
+    List<string> RelationData = [];
+    List<Dictionary<string, string>> ImportTables2 = [];
+    string MiddleMan_Column = "";
+    string MiddleMan_Column2 = "";
+    string OriginalColumn = "";
+    double Progress2 = 0;
+    PropertyInfo MappedToColumn2 = null;
+
+    string RecordBeingRead = "";
+
+    [Inject]
+    protected mydbService mydbService {get; set;}
+
+    private async void CallGenerateRecordAndStore(){
+        TotalFailedRecord = 0;
+        progressValue = 0;
+        var progress = new Progress<int>(value => progressValue += value);
+        progress.ProgressChanged += (i , v) => StateHasChanged();
+        await Task.Run(() => GenerateRecordAndStore(progress));
+    }
+
+    private void Reset(){
+        csvData = [];
+        ImportTables = [];
+        TotalFailedRecord = 0;
+        progressValue = 0;
+        TotalRecordFound = 0;
+        Column = InputValue;
+        splitter = [];
+        ImportTables = [];
+        File2 = "";
+        Selected_Class2 = null;
+        RelationColumn = [];
+        RelationData = [];
+        ImportTables2 = [];
+        MiddleMan_Column = "";
+        MiddleMan_Column2 = "";
+        OriginalColumn = "";
+        Progress2 = 0;
+        MappedToColumn2 = null;
+    }
+
+    private async Task GenerateRelationTable(){
+        var decodedFile = await DecodeFile(File2);
+        Column2 = Input_Column2;
+        RelationData = decodedFile;
+        RelationColumn = decodedFile.Take(Column2).ToList();
+    }
+
+    private async Task RelationMapping(){
+        var progress2 = new Progress<int>(value => Progress2 += value);
+        progress2.ProgressChanged += (i , v) => StateHasChanged();
+        await Task.Run(async () => {
+            ImportTables2 = await GenerateDictionary(RelationData,Column2);
+
+            if(MiddleMan_Column != "" && Selected_Class2 != null && MappedToColumn2 != null){
+                // Looping through each row of the imported table
+                foreach(var row in ImportTables){
+                    await InDataBaseComparation(row,progress2);
+                    
+                }
+            }
+
+        });
+
+        async Task InDataBaseComparation(Dictionary<string, string> Record, IProgress<int> progress){
+            if(Selected_Class2 == typeof(Inventory)){
+                var inven = await mydbService.GetInventories();
+                foreach(var row in ImportTables2){
+                    if(row[MiddleMan_Column] == Record[MiddleMan_Column2]){
+                        foreach(var item in inven){
+                            var ColumnValue = MappedToColumn2.GetValue(item);
+                            if(item.Name == row["Name"]){
+                                RecordBeingRead = ColumnValue.ToString();
+                                Record[OriginalColumn] = ColumnValue.ToString();
+                            }
+                        }
+                    }
+                    
+                }
+                
+            }else if(Selected_Class2 == typeof(History)){
+                var inven = await mydbService.GetHistories();
+                foreach(var row in ImportTables2){
+                    if(row[MiddleMan_Column] == Record[MiddleMan_Column2]){
+                        foreach(var item in inven){
+                            var ColumnValue = MappedToColumn2.GetValue(item);
+                            if(item.CashoutDate == row["CashoutDate"]){
+                                RecordBeingRead = ColumnValue.ToString();
+                                Record[OriginalColumn] = ColumnValue.ToString();
+                            }
+                        }
+                    }
+                    
+                }
+                
+            }
+        }
+    }
+
+    private async Task GenerateRecordAndStore(IProgress<int> progress){
+        //Looping Through each record
+        foreach(var i in ImportTables){
+            var Item = Activator.CreateInstance(SelectedType);
+            //Looping through the list of data in each record
+            foreach(var data in i){
+                //data = dictionary<(key)column_name, value>
+                var Mapping = ColumnsWithPropertyListing.Where(v => v.Key == data.Key);
+                if(Mapping.Any() == true){
+                    //Checking if the Column is Mapped or chosen
+                    var col = Item.GetType().GetProperty(Mapping.First().Value);
+                    //if the column is choosen/Mapped, then get the column that the Column is mapped to;
+                    Type colType = col.PropertyType;
+                    dynamic Value = data.Value;
+                    if(data.Value == "NULL"){
+                        Value = null;
+                    }
+
+                    if(splitter[data.Key] != ""){
+                        Value = Value.Split(splitter[data.Key].ToCharArray().First(), 100)[takeIndex];
+                    }
+
+                    try{
+                        if(colType == typeof(Guid)){
+                            Value = Guid.Parse(Value);
+                        }else if(colType == typeof(decimal) || colType == typeof(Decimal?)){
+                            Value = decimal.Parse(Value);
+                        }else if(colType == typeof(Int32) || colType ==  typeof(Int32?)){
+                            Value = Int32.Parse(Value);
+                        }else if(colType == typeof(Int16) || colType ==  typeof(Int16?)){
+                            Value = Int16.Parse(Value);
+                        }else if(colType ==  typeof(SByte) || colType ==  typeof(SByte?)){
+                            Value = sbyte.Parse(Value);
+                        }else if(colType ==  typeof(short) || colType ==  typeof(short?)){
+                            Value = short.Parse(Value);
+                        }else if(Value == null && colType == typeof(string)){
+                            Value="";
+                        }
+                    }catch(Exception exc){
+                        ErrorLog.Add(Value.ToString());
+                    }
+                    try{
+                        col.SetValue(Item, Value);
+                    }catch(Exception exc){
+                        ErrorLog.Add(Value.ToString());
+                    }
+                    
+                }
+            }
+
+            try{
+                if(SelectedType == typeof(History)){
+                await mydbService.CreateHistory(Item as History);
+                }else if(SelectedType == typeof(Inventory)){
+                    await mydbService.CreateInventory(Item as Inventory);
+                }else if(SelectedType == typeof(Cart)){
+                    await mydbService.CreateCart(Item as Cart);
+                }else if(SelectedType == typeof(Connector)){
+                    await mydbService.CreateConnector(Item as Connector);
+                }else if(SelectedType == typeof(Dailyexpense)){
+                    await mydbService.CreateDailyexpense(Item as Dailyexpense);
+                }else if(SelectedType == typeof(Historyconnector)){
+                    await mydbService.CreateHistoryconnector(Item as Historyconnector);
+                }else if(SelectedType == typeof(Car)){
+                    await mydbService.CreateCar(Item as Car);
+                };
+            }catch(Exception exc){
+                TotalFailedRecord += 1;
+            }finally{
+                progress.Report(1);
+            }
+
+        }
+
+    }
+
+    private async Task MapTo(Type Type){
+        TableProperty = [];
+        ColumnsWithPropertyListing = new Dictionary<string, string>();
+        Type TFormat = Type;
+        TableProperty = TFormat.GetProperties();
+        
+        await AutoMapping();
+
+        async Task AutoMapping(){
+            foreach(var i in csvData.Take(Column)){
+                
+                var CommonName = TableProperty.Where(v => v.Name == i);
+                if(CommonName.Any()){
+                    await MapToColumn(i, CommonName.First().Name);
+                }
+            }
+        }
+        SelectedType = TFormat;
+    }
+
+    private async Task MapToColumn(string Column, string NewColumn){
+        if(ColumnsWithPropertyListing.Any(i => i.Key == Column)){
+            ColumnsWithPropertyListing.Remove(Column);
+        }
+        ColumnsWithPropertyListing.Add(Column, NewColumn);
+    }
+
+    private async Task GetAllClassType(){
+        Assembly assembly = Assembly.GetExecutingAssembly();
+        var types = assembly.GetTypes().Where(t => t.IsClass && t.Namespace == "CHKS.Models.mydb");
+        AllClassType = types.ToList();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+        await Task.Run(async () => {
+            await GetAllClassType();
+        });
+    }
+
+    private async void GenerateTable(){
+        Reset();
+
+        await Task.Run( async () => {
+            csvData = await DecodeFile(File);
+            foreach(var i in csvData.Take(Column)){
+                splitter.Add(i, "");
+            }
+            ImportTables = await GenerateDictionary(csvData, Column);
+        }).ContinueWith(async (i) => {
+
+        });
+        await datagridTable.Reload();
+        StateHasChanged();
+    }
+    
+    private async Task<List<string>> DecodeFile(string File){
+        if(File != "" && File is not null){
+            var data = File.Split(',',2)[1];
+            byte[] csvBytes = Convert.FromBase64String(data); 
+            var resultCSV = Encoding.UTF8.GetString(csvBytes);
+            return await FormatCSVData(resultCSV);
+        }else{
+            return null;
+        }
+        
+    }
+
+    private async Task<List<string>> FormatCSVData(string CsvData){
+        var result = new List<string>();
+
+        // Regular expression to match CSV values
+        var regex = new Regex(
+            @"(?<=^|,)(?:""(?<value>[^""]*)""|(?<value>[^,""]*))(?:,|$)",
+            RegexOptions.Compiled);
+
+        // Split the input into lines
+        var lines = CsvData.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        foreach (var line in lines)
+        {
+            var matches = regex.Matches(line);
+            foreach (Match match in matches)
+            {
+                result.Add(match.Groups["value"].Value);
+            }
+        }
+
+        return result;
+    }
+    
+    private async Task<List<Dictionary<string, string>>> GenerateDictionary(List<string> Data, int HeaderIndex){
+        var csvDataFiltered = Data.Skip(HeaderIndex);
+        int NumRow = 0;
+        
+
+        if(csvDataFiltered.Count()/HeaderIndex is int result){
+            NumRow = result;
+            TotalRecordFound = result;
+        }else{
+            await Task.FromException(new Exception("Indivisible"));
+        }
+        List<Dictionary<string, string>> table = new List<Dictionary<string, string>>();
+        for(int i = 0; i < NumRow; i++){
+            table.Add(AddToRow(i));
+        }
+        
+        Dictionary<string ,string> AddToRow(int rowNum){
+            Dictionary<string ,string> dataList = [];
+            for(int i = 0; i < HeaderIndex; i++){
+                Console.WriteLine(Data.ElementAt(i) +  csvDataFiltered.ElementAt(i + (rowNum * HeaderIndex) ));
+                dataList.Add(Data.ElementAt(i), csvDataFiltered.ElementAt(i + (rowNum * HeaderIndex ) ));
+            }
+            return dataList;
+            
+        }
+        return table;
+    }
+}

@@ -26,7 +26,11 @@
                 <RadzenText Text="Total" TextStyle="TextStyle.Overline" Style="height: 10px; font-size:small"/>
             </RadzenRow>
             <RadzenRow Style="margin-top: 10px;">
-                <RadzenText Text=@("200,00") Style="text-overflow:ellipsis; overflow:hidden" TextAlign="TextAlign.Left" TextStyle="TextStyle.DisplayH6"/>
+                <RadzenText 
+                    Text=@("$" + Total.ToString()) 
+                    Style="text-overflow:ellipsis; overflow:hidden" 
+                    TextAlign="TextAlign.Left" 
+                    TextStyle="TextStyle.DisplayH6"/>
             </RadzenRow>
             <RadzenRow>
                 <div style="height: 20px; width:60px; background-color:lightgreen; border-radius:5px; padding-left:10px">
@@ -41,7 +45,7 @@
                 <RadzenText Text="Import" TextStyle="TextStyle.Overline" Style="height: 10px; font-size:small"/>
             </RadzenRow>
             <RadzenRow Style="margin-top: 10px;">
-                <RadzenText Text=@("200,00") Style="text-overflow:ellipsis; overflow:hidden" TextAlign="TextAlign.Left" TextStyle="TextStyle.DisplayH6"/>
+                <RadzenText Text=@("$" + ImportTotal.ToString()) Style="text-overflow:ellipsis; overflow:hidden" TextAlign="TextAlign.Left" TextStyle="TextStyle.DisplayH6"/>
             </RadzenRow>
             <RadzenRow>
                 <div style="height: 20px; width:60px; background-color:lightgreen; border-radius:5px; padding-left:10px">
