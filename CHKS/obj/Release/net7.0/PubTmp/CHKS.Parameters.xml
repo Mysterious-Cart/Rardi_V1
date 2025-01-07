@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<parameters>
-  <parameter name="IIS Web Application Name" description="" value="Default Web Site/CHKS" tags="IisApp">
-    <parameterEntry kind="ProviderPath" scope="IisApp" match="^C:\\Users\\Kim\ hong\\Documents\\GitHub\\Pos\\CHKS\\bin\\Release\\net7\.0\\publish\\$" />
-  </parameter>
-</parameters>
