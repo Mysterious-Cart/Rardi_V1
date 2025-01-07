@@ -1,3 +1,5 @@
 
 CHKS/bin/Debug/net7.0/runtimes/win-x86/native/libcef.dll
 CHKS/bin/Debug/net7.0/runtimes/win-x64/native/libcef.dll
+CHKS/obj
+CHKS/bin
