@@ -10,16 +10,17 @@
         <div style="height:130px; border-radius:15px; background-color:whitesmoke; padding:2px; padding-right:10px; padding-left:10px">
             <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start" Gap="10px">
                 <RadzenStack Style="width:30px;" Orientation="Orientation.Vertical" Gap="0px" JustifyContent="JustifyContent.SpaceEvenly" AlignItems="AlignItems.Center">
-                    <RadzenButton Icon="add" style="width: 12px; height:2px; background-color:transparent; border-width:0px;color:#28282B" />
+                    <RadzenButton Click="@(() => ChangeItemQty(Item))" Icon="add" style="background-color:transparent" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat"/>
                     <p Style="border-radius: 30px; width:35px; height:40px; background-color:white; text-align:center; padding-top:10px"> @(((int)Item.Qty).ToString())</p>
-                    <RadzenButton Icon="remove"  Style="background-color:transparent; border-width:0px;color:#28282B"/>
+                    <RadzenButton Click="@(() => ChangeItemQty(Item, -1))" Icon="remove"  Style="background-color:transparent; border-width:0px;color:#28282B"/>
                 </RadzenStack>
-                <RadzenStack style="height:100%; width:210px" Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start" >
-                    <RadzenText Text="@Item.Inventory.Name" Style="font-size:.9zvw; height:2lh; width:100%;overflow-y:scroll; overflow:hidden; line-height:1.5rem"/>
+                <RadzenStack style="height:100%; width:210px" Gap="2px" Orientation="Orientation.Vertical" AlignItems="AlignItems.Start" JustifyContent="JustifyContent.Start" >
+                    <RadzenText Text="@Item.Inventory.Name" Style="font-size:.9zvw; height:2lh; width:100%;text-overflow:ellipsis; overflow:hidden; line-height:1.5rem"/>
+                    <RadzenText Text=@((Item.PriceOverwrite??Item.Inventory.Export).ToString($"${0:N2}")) Style="overflow:hidden; line-height:.8rem" TextStyle="TextStyle.Caption"/>
                 </RadzenStack>
                 <RadzenStack Style="width:40px" Orientation="Orientation.Vertical" >
                     <RadzenButton Icon="delete" Click="@(() => RemoveCartItem(Item))"  ButtonStyle="ButtonStyle.Danger" Variant="Variant.Outlined" style=" border-radius:13px;padding:1.5px "/>
-                    <RadzenButton Icon="edit" IconColor="Blue" Size="ButtonSize.Medium" ButtonStyle="ButtonStyle.Info" Variant="Variant.Outlined" style="border-radius:13px; padding:1.5px;" />
+                    <RadzenButton Icon="edit" Click="@(() => EditProduct(Item))" IconColor="Blue" Size="ButtonSize.Medium" ButtonStyle="ButtonStyle.Info" Variant="Variant.Outlined" style="border-radius:13px; padding:1.5px;" />
                 </RadzenStack>
             </RadzenStack>
         </div>
@@ -35,11 +36,36 @@
     public EventCallback OnItemRemove {get; set;}
 
     [Inject]
+    public DialogService DialogService {get; set;}
+
+    [Inject]
+    public mydbService mydbService {get; set;}
+
+    [Inject]
     public CartControlService CartControl {get; set;}
+
+    private async Task ChangeItemQty(Connector Item , int Qty = 1){
+        await CartControl.AddItemToCart(Item.CartId,Item.Inventory, Qty);
+        await OnItemRemove.InvokeAsync();
+    }
 
     private async Task RemoveCartItem(Connector Item){
         await CartControl.RemoveCartItem(Item);
         await OnItemRemove.InvokeAsync();
+    }
+
+    protected async Task EditProduct(Models.mydb.Connector Product){
+        var UpdatedItems = await DialogService.OpenAsync<SingleInputPopUp>(Product.Inventory.Name, new Dictionary<string, object>{{"Info",new string[]{"EditItem", Product.PriceOverwrite.ToString(), Product.Qty.ToString(), Product.Note}}}, new DialogOptions{Width="500px"});
+        if(UpdatedItems != null){
+            Product.Qty = decimal.Parse(UpdatedItems[0]);
+            Product.PriceOverwrite = decimal.Parse(UpdatedItems[1]);
+            Product.Note = UpdatedItems[2];
+            try{
+                await mydbService.UpdateConnector(Product.Id, Product);
+            }catch(Exception exc){
+
+            }
+        }
     }
 
  }

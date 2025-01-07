@@ -18,11 +18,11 @@ namespace CHKS.Models.mydb
 
         public History History { get; set; }
 
-        public string Note { get; set; }
+        public string Note { get; set; } = "";
 
         [Key]
         [Column("ID")]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         [Column("ProductId")]
         [Required]

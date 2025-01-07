@@ -31,6 +31,7 @@ builder.Services.AddScoped<CHKS.mydbService>();
 builder.Services.AddScoped<CHKS.StockControlService>();
 builder.Services.AddScoped<CHKS.CartControlService>();
 
+
     builder.Services.AddDbContext<mydbContext>(options =>
     {
         try{

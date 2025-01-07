@@ -35,17 +35,19 @@ namespace CHKS.Pages
         [Inject]
         public mydbService mydbService { get; set; }
 
-        protected IEnumerable<CHKS.Models.mydb.History> History;
-        protected IEnumerable<CHKS.Models.mydb.Historyconnector> Historyconnectors;
-        protected IEnumerable<Models.mydb.Dailyexpense> Dailyexpenses;
-        protected IEnumerable<Models.mydb.Inventory> Inventories;
+        protected IEnumerable<CHKS.Models.mydb.History> History = [];
+        protected IEnumerable<CHKS.Models.mydb.Historyconnector> Historyconnectors = [];
+        protected IEnumerable<Models.mydb.Dailyexpense> Dailyexpenses = [];
+        protected IEnumerable<Models.mydb.Inventory> Inventories = [] ;
 
-        protected string dates = DateTime.Now.ToString("dd/MM/yyyy");
+        protected DateOnly dates = DateOnly.FromDateTime(DateTime.Today);
         protected bool NoEmptyImport = true;
         protected bool changeDataMode = false;
 
-        protected string Total = "0";
-        protected string ExpenseTotal = "0";
+        protected decimal Revenue = 0;
+        protected decimal Total = 0;
+        protected decimal ImportTotal = 0;
+        protected decimal ExpenseTotal = 0;
 
         protected string TotalBaht = "0";
         protected string TotalDollar="0";
@@ -60,9 +62,13 @@ namespace CHKS.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            History = await mydbService.GetHistories();
-            Dailyexpenses = await mydbService.GetDailyexpenses();
-            await GetGraphData();
+            await Task.Run(async () => {
+                History = await mydbService.GetHistories();
+            }).ContinueWith(async (i) => {
+                Dailyexpenses = await mydbService.GetDailyexpenses();
+                await GetGraphData();
+            });
+            Revenue = Total - (ImportTotal + ExpenseTotal);
             changeDataMode = false;
         }
 
@@ -126,8 +132,8 @@ namespace CHKS.Pages
 
         protected string TotalMinusExpense;
         protected async Task GetAllNumberForToday(){
-            Total = decimal.Round(History.Sum(i => i.Total).GetValueOrDefault(),2).ToString() + " $";
-            ExpenseTotal = decimal.Round(Dailyexpenses.Sum(i => i.Expense),2).ToString() + " $";
+            Total = decimal.Round(History.Sum(i => i.Total).GetValueOrDefault(),2);
+            ExpenseTotal = decimal.Round(Dailyexpenses.Sum(i => i.Expense),2);
             TotalAba = decimal.Round(History.Sum(i => i.Bank.GetValueOrDefault()),2).ToString() + "$";
             TotalBaht = decimal.Round(History.Sum(i => i.Baht.GetValueOrDefault()),2).ToString();
             TotalRiel = decimal.Round(History.Sum(i => i.Riel.GetValueOrDefault()),2).ToString("#,##0");

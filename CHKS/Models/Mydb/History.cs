@@ -9,31 +9,31 @@ namespace CHKS.Models.mydb
     public partial class History
     {
         [Required]
-        public string CashoutDate { get; set; }
+        public string CashoutDate { get; set; } = DateTime.Now.ToString("dd/MM/yyyy");
 
         [Required]
         public string Plate { get; set; }
 
         public Car Car { get; set; }
 
-        public decimal? Total { get; set; }
+        public decimal? Total { get; set; } = 0;
 
-        public decimal? Bank { get; set; }
+        public decimal? Bank { get; set; } = 0;
 
-        public decimal? Dollar { get; set; }
+        public decimal? Dollar { get; set; } = 0;
 
-        public decimal? Baht { get; set; }
+        public decimal? Baht { get; set; } = 0;
 
-        public decimal? Riel { get; set; }
+        public decimal? Riel { get; set; } = 0;
 
-        public sbyte? Company { get; set; }
+        public sbyte? Company { get; set; } = 0;
 
-        public string User { get; set; }
+        public string User { get; set; } = "";
 
-        public string Info { get; set; }
+        public string Info { get; set; } = "";
 
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public ICollection<Historyconnector> Historyconnectors { get; set; }
     }
