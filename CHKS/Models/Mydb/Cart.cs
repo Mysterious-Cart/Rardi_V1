@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CHKS.Models.mydb
 {
     [Table("cart")]
-    public partial class Cart
+    public class Cart : IContainer<Connector>
     {
         [Column("CarID")]
         [Required]
@@ -26,5 +26,17 @@ namespace CHKS.Models.mydb
         public short Status {get; set;} = 0;
 
         public ICollection<Connector> Connectors { get; set; }
+
+        public async Task<Connector> Add(mydbService service, Connector Item){
+            Item.CartId = this.CartId;
+            await service.CreateConnector(Item);
+            return Item;
+        }
+
+        public async Task<Connector> Remove(mydbService service, Guid ItemId){
+            var Item = await service.GetConnectorById(ItemId);
+            await service.DeleteConnector(ItemId);
+            return Item;
+        }
     }
 }

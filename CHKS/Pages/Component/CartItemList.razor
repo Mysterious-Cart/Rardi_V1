@@ -7,23 +7,27 @@
 @if(CartItem is not null && CartItem.Count() > 0){
     @foreach (var Item in CartItem)
     {
-        <div style="height:130px; border-radius:15px; background-color:whitesmoke; padding:2px; padding-right:10px; padding-left:10px">
-            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start" Gap="10px">
-                <RadzenStack Style="width:30px;" Orientation="Orientation.Vertical" Gap="0px" JustifyContent="JustifyContent.SpaceEvenly" AlignItems="AlignItems.Center">
-                    <RadzenButton Click="@(() => ChangeItemQty(Item))" Icon="add" style="background-color:transparent" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat"/>
+        <RadzenRow style="border-radius:15px; background-color:whitesmoke; padding:10px; max-height:120px">
+            <RadzenColumn Size="2" Style="max-height: 100%; align-items:center; display:flexbox">
+                    <RadzenButton Click="@(() => ChangeItemQty(Item))" Icon="add" Size="ButtonSize.Small" style="background-color:transparent;" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat"/>
                     <p Style="border-radius: 30px; width:35px; height:40px; background-color:white; text-align:center; padding-top:10px"> @(((int)Item.Qty).ToString())</p>
-                    <RadzenButton Click="@(() => ChangeItemQty(Item, -1))" Icon="remove"  Style="background-color:transparent; border-width:0px;color:#28282B"/>
-                </RadzenStack>
-                <RadzenStack style="height:100%; width:210px" Gap="2px" Orientation="Orientation.Vertical" AlignItems="AlignItems.Start" JustifyContent="JustifyContent.Start" >
-                    <RadzenText Text="@Item.Inventory.Name" Style="font-size:.9zvw; height:2lh; width:100%;text-overflow:ellipsis; overflow:hidden; line-height:1.5rem"/>
+                    <RadzenButton Click="@(() => ChangeItemQty(Item, -1))" Icon="remove" Size="ButtonSize.Small"  Style="background-color:transparent; border-width:0px;" Variant="Variant.Flat" ButtonStyle="ButtonStyle.Light" />
+            </RadzenColumn>
+            <RadzenColumn Size="8">
+                <RadzenStack style="height:100%; width:100%" Gap="2px" Orientation="Orientation.Vertical" AlignItems="AlignItems.Start" JustifyContent="JustifyContent.Center" >
+                    <RadzenText Text="@Item.Inventory.Name" Style="font-size:.9zvw; max-height:2lh; height:auto; width:100%; text-overflow:ellipsis; overflow:hidden; line-height:1.5rem"/>
                     <RadzenText Text=@((Item.PriceOverwrite??Item.Inventory.Export).ToString($"${0:N2}")) Style="overflow:hidden; line-height:.8rem" TextStyle="TextStyle.Caption"/>
+                    <RadzenText Text="@Item.Note" Style="font-size:.8vw; max-height:1lh; height:auto; width:100%; text-overflow:ellipsis; overflow:hidden; line-height:1rem; color:gray"/>
                 </RadzenStack>
-                <RadzenStack Style="width:40px" Orientation="Orientation.Vertical" >
+            </RadzenColumn>
+            <RadzenColumn Size="2">
+                <RadzenStack style="height:100%;" Orientation="Orientation.Vertical" JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center">
                     <RadzenButton Icon="delete" Click="@(() => RemoveCartItem(Item))"  ButtonStyle="ButtonStyle.Danger" Variant="Variant.Outlined" style=" border-radius:13px;padding:1.5px "/>
                     <RadzenButton Icon="edit" Click="@(() => EditProduct(Item))" IconColor="Blue" Size="ButtonSize.Medium" ButtonStyle="ButtonStyle.Info" Variant="Variant.Outlined" style="border-radius:13px; padding:1.5px;" />
                 </RadzenStack>
-            </RadzenStack>
-        </div>
+            </RadzenColumn>
+            
+        </RadzenRow>
     }
 }
 </RadzenStack>

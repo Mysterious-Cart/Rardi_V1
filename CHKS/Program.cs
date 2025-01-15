@@ -74,6 +74,17 @@ builder.Services.AddControllers().AddOData(o =>
     o.AddRouteComponents("odata/Identity", oDataBuilder.GetEdmModel()).Count().Filter().OrderBy().Expand().Select().SetMaxTop(null).TimeZone = TimeZoneInfo.Utc;
 });
 builder.Services.AddScoped<AuthenticationStateProvider, CHKS.ApplicationAuthenticationStateProvider>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
 var app = builder.Build();
 using (var scope = app.Services.CreateScope()){
     try{

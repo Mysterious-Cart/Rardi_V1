@@ -7,7 +7,7 @@
 <head>
     <link href="css/Page.css" rel="stylesheet"/>
 </head>
-<div style="padding:20px; padding-top:20px">
+<div style="">
 <RadzenRow>
     
 </RadzenRow>
@@ -17,7 +17,7 @@
             <RadzenText Text="Revenue" TextStyle="TextStyle.Overline"/>
         </RadzenRow>
         <RadzenRow>
-            <RadzenText Text="$20000" TextStyle="TextStyle.DisplayH4" />
+            <RadzenText Text=@Revenue.ToString("$0.00") TextStyle="TextStyle.DisplayH4" />
         </RadzenRow>
     </RadzenColumn>
     <RadzenColumn Size="2" Style="">
@@ -27,7 +27,7 @@
             </RadzenRow>
             <RadzenRow Style="margin-top: 10px;">
                 <RadzenText 
-                    Text=@("$" + Total.ToString()) 
+                    Text=@Total.ToString("$0.00")
                     Style="text-overflow:ellipsis; overflow:hidden" 
                     TextAlign="TextAlign.Left" 
                     TextStyle="TextStyle.DisplayH6"/>
@@ -45,7 +45,10 @@
                 <RadzenText Text="Import" TextStyle="TextStyle.Overline" Style="height: 10px; font-size:small"/>
             </RadzenRow>
             <RadzenRow Style="margin-top: 10px;">
-                <RadzenText Text=@("$" + ImportTotal.ToString()) Style="text-overflow:ellipsis; overflow:hidden" TextAlign="TextAlign.Left" TextStyle="TextStyle.DisplayH6"/>
+                <RadzenText Text=@ImportTotal.ToString("$0.00") 
+                            Style="text-overflow:ellipsis; overflow:hidden" 
+                            TextAlign="TextAlign.Left" 
+                            TextStyle="TextStyle.DisplayH6"/>
             </RadzenRow>
             <RadzenRow>
                 <div style="height: 20px; width:60px; background-color:lightgreen; border-radius:5px; padding-left:10px">
@@ -60,7 +63,10 @@
                 <RadzenText Text="ចំណាយ" TextStyle="TextStyle.Overline" Style="height: 10px; font-size:small"/>
             </RadzenRow>
             <RadzenRow Style="margin-top: 10px;">
-                <RadzenText Text=@("200,00") Style="text-overflow:ellipsis; overflow:hidden" TextAlign="TextAlign.Left" TextStyle="TextStyle.DisplayH6"/>
+                <RadzenText Text=@ExpenseTotal.ToString("$0.00") 
+                            Style="text-overflow:ellipsis; overflow:hidden" 
+                            TextAlign="TextAlign.Left" 
+                            TextStyle="TextStyle.DisplayH6"/>
             </RadzenRow>
             <RadzenRow>
                 <div style="height: 20px; width:60px; background-color:lightgreen; border-radius:5px; padding-left:10px">
@@ -75,7 +81,7 @@
                 <RadzenText Text="Item Sold" TextStyle="TextStyle.Overline" Style="height: 10px; font-size:small"/>
             </RadzenRow>
             <RadzenRow Style="margin-top: 10px;">
-                <RadzenText Text=@("200,00") Style="text-overflow:ellipsis; overflow:hidden" TextAlign="TextAlign.Left" TextStyle="TextStyle.DisplayH6"/>
+                <RadzenText Text=@SoldTotal.ToString("0") Style="text-overflow:ellipsis; overflow:hidden" TextAlign="TextAlign.Left" TextStyle="TextStyle.DisplayH6"/>
             </RadzenRow>
             <RadzenRow>
                 <div style="height: 20px; width:60px; background-color:lightgreen; border-radius:5px; padding-left:10px">
@@ -86,29 +92,38 @@
     </RadzenColumn>
 </RadzenRow>
 
+
 <RadzenRow Style="margin-top:10px">
     <RadzenColumn>
         <RadzenCard Style="box-shadow: none; background-color: lightgray; padding:5px; padding-left:15px; border-radius:20px">
             <RadzenRow>
-                <RadzenDatePicker TValue="DateOnly" Placeholder="Start Date"/>
-                <RadzenDatePicker TValue="DateOnly" Placeholder="End Date"/>  
+                <RadzenDatePicker TValue="DateOnly" Placeholder="Start Date" @bind-Value="@StartingDate" Change="@FilterData"/>
+                <RadzenDatePicker TValue="DateOnly" Placeholder="End Date" @bind-Value="@EndDate" Change="@FilterData"/>  
             </RadzenRow>
         </RadzenCard>
     </RadzenColumn>
 </RadzenRow>
+<RadzenRow>
+<RadzenColumn Size="7">
 
 <RadzenRow Style="margin-top:10px">
-    <RadzenColumn Size="6">
+    <RadzenColumn>
         <RadzenCard style="box-shadow: none; border-radius:20px">
-            <RadzenChart>
-                <RadzenValueAxis Max="1000" Min="0" Step="250" Formatter=@(args => "$" + args)>
+            <RadzenChart style="width: 100%;">
+                
+                <RadzenValueAxis Formatter=@(args => "$" + args) >
                     <RadzenGridLines Visible="true" LineType="LineType.Dashed" />
                 </RadzenValueAxis>
                 
-                <RadzenLineSeries Data="@Dailyrevenues" ValueProperty="Total" CategoryProperty="Date" 
-                    TItem="@DailyRevenue" Smooth="true" Title="Revenue" Context="ThisDay">
-                </RadzenLineSeries>
-                <RadzenCategoryAxis TickDistance="200" Padding="10"/>
+                <RadzenAreaSeries Data="@Dailyrevenues.OrderBy(i => i.Date)" ValueProperty="Total" CategoryProperty="Date" LineType="LineType.Dashed"
+                    TItem="@DailyRevenue" Smooth="true" Title="លក់បាន" Context="ThisDay" >
+                </RadzenAreaSeries>
+                <RadzenAreaSeries Data="@DailyExpenses.OrderBy(i => i.Date)" ValueProperty="Total" CategoryProperty="Date" 
+                    TItem="@DailyRevenue" Smooth="true" Title="ចំណាយ" Context="ThisDay" Fill="#fd5c63" Stroke="#E52B50">
+                </RadzenAreaSeries>
+                
+                <RadzenCategoryAxis  Formatter="@(args => args?.ToString().Split('/',3)[0])" LineType="LineType.Dashed">
+                </RadzenCategoryAxis>
             </RadzenChart>
         </RadzenCard>
     </RadzenColumn>
@@ -123,13 +138,13 @@
                     padding:15px;
                     background-color:rgba(128, 128, 128, 0.1);
                     border-radius: 20px;
-                    box-shadow:none;"
+                    box-shadow:none;
+                    height:100%"
                 >
                     <RadzenRow>
-                        <RadzenStack Orientation="Orientation.Horizontal" Gap="100%">
-                            <RadzenText Text="Expenses" TextStyle="TextStyle.Subtitle1" TextAlign="TextAlign.Center"/>
-                            <RadzenButton Text="Filter" Icon="sort" Size="ButtonSize.Small" Variant="Variant.Flat" ButtonStyle="ButtonStyle.Light" />
-                        </RadzenStack>
+                        <RadzenText Text="Expenses" TextStyle="TextStyle.Subtitle1" TextAlign="TextAlign.Center"/>
+                        <RadzenButton Text="Add" Icon="add" Size="ButtonSize.Small" Click="@AddExpense"
+                                        Variant="Variant.Flat" ButtonStyle="ButtonStyle.Light" style="margin-left:auto"/>
                     </RadzenRow>
                     <RadzenRow>
                         <RadzenStack Style="width: 100%; overflow:scroll; max-height:30dvh; scroll-snap-type:mandatory" Gap="5px">
@@ -137,7 +152,21 @@
                                         Context="Expense" 
                                         Items="@Dailyexpenses.ToList()" 
                                         ItemSize="50" 
-                                        ItemContent="@ExpenseCard"/>
+                                        >
+                                <RadzenCard Style="box-shadow:none; width:100%; height:50px; border-radius:10px; padding:10px" ContextMenu="@(args => ExpenseOpenContextMenu(args, Expense))">
+                                    <RadzenRow >
+                                        <RadzenColumn Size="4">
+                                            <RadzenText Text=@(Expense.Date) TextStyle="TextStyle.Subtitle2"/>
+                                        </RadzenColumn>
+                                        <RadzenColumn >
+                                            <RadzenText Text=@(Expense.Note) Style="overflow: hidden; text-overflow:ellipsis;" />
+                                        </RadzenColumn>
+                                        <RadzenColumn Size="3">
+                                            <RadzenText Text=@Expense.Expense.ToString("- $0.0") Style="color:red"/>
+                                        </RadzenColumn>
+                                    </RadzenRow>
+                                </RadzenCard>
+                            </Virtualize>
                         </RadzenStack>
                     </RadzenRow>
                 </RadzenCard>
@@ -146,122 +175,77 @@
                 <RadzenCard style="
                     background-color:rgba(128, 128, 128, 0.1);
                     border-radius: 20px;
-                    box-shadow:none;"
+                    box-shadow:none;
+                    height:100%"
                 >
-                    
+                    <RadzenRow>
+                        <RadzenText Text="Recent" TextStyle="TextStyle.Subtitle1" TextAlign="TextAlign.Center"/>
+                        <RadzenButton Text="Filter" Icon="sort" Size="ButtonSize.Small" Variant="Variant.Flat" ButtonStyle="ButtonStyle.Light" style="margin-left:auto"/>
+                    </RadzenRow>
+                    <RadzenRow>
+                        <RadzenStack Style="width: 100%; overflow:scroll; max-height:30dvh; scroll-snap-type:mandatory" Gap="5px">
+                            <Virtualize Items="@History.ToList()" 
+                                        TItem="@History" 
+                                        Context="cart" 
+                                        ItemSize="100" 
+                                        ItemContent="@HistoryCard"/>
+                        </RadzenStack>
+                    </RadzenRow>
                 </RadzenCard>
             </RadzenColumn>
         </RadzenRow>
     </RadzenColumn>
-    <RadzenColumn>
+</RadzenRow>
+</RadzenColumn>
+    <RadzenColumn Style="padding:10px; max-height:100%">
+        <RadzenCard style="
+            box-shadow:none; 
+            border-radius:10px; 
+            height:100%;
+            max-height:100%;
+            ">
+            <RadzenStack style="max-height:200px; overflow:scroll">
+                
+            </RadzenStack>
+        </RadzenCard>
     </RadzenColumn>
 </RadzenRow>
 
-<RadzenStack Orientation="Orientation.Horizontal" Style="margin-top: 30px; margin-left:30px; width:100%; padding:10px">
-    
-    
-    <RadzenStack Orientation="Orientation.Vertical">
-        <!--<RadzenCard Style=" width:20%; min-width:fit-content; height:50%; padding:10px;" >
-            <RadzenStack Style="height:100%">
-                <RadzenText Text="លុយអាប់:" TextStyle="TextStyle.Overline" TextAlign="TextAlign.Center" style="font-size:x-large; margin-bottom:10px; width:300px"/>
-                <RadzenButton Icon="add" Text="Add Cashback" Click="@AddBtnClickCashback" style="width:300px" />
-                <RadzenDataGrid @ref="grid3" Data="@Cashbacks" TItem="Models.mydb.Cashback" RowCreate="@GridCreate" RowUpdate="@GridRowUpdate" style="width:300px; height:70%;" AllowPaging=false>
-                    <Columns>
-                        <RadzenDataGridColumn TItem="Models.mydb.Cashback" Property="Name" Title="ចំណាំ" Width="90px">
-                            <EditTemplate Context="Cashback">
-                                <RadzenTextBox @bind-Value="@Cashback.Name" />
-                            </EditTemplate>
-                        </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="Models.mydb.Cashback" Property="Amount" Title="ចំណាយ">
-                            <EditTemplate Context="Cashback">
-                                <RadzenNumeric @bind-Value="@Cashback.Amount" />
-                            </EditTemplate>
-                        </RadzenDataGridColumn>
-                        <RadzenDataGridColumn>
-                            <EditTemplate Context="Cashback">
-                                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium"
-                                    style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
-                                    Click=@(args => SaveButtonClick(args, Cashback)) @onclick:stopPropagation="true" />
-                                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
-                                    Click=@(args => CancelButtonClick(args, Cashback)) @onclick:stopPropagation="true" />
-                            </EditTemplate>
-                            <Template Context="Cashback">
-
-                            <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
-                                style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
-                                Click=@(args => EditButtonClick(args, Cashback)) @onclick:stopPropagation="true" />
-
-                            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Medium"
-                                Shade="Shade.Lighter" Variant="Variant.Flat"
-                                Click=@(args => GridDeleteButtonClick(args, Cashback)) @onclick:stopPropagation="true" />
-                        </Template>
-                        </RadzenDataGridColumn>
-                    </Columns>
-                </RadzenDataGrid>
-            </RadzenStack>
-        </RadzenCard>-->
-        <!--<RadzenCard Style=" width:20%; min-width:fit-content;height:100%; padding:10px;" >
-            <RadzenStack style="height:100%">
-                <RadzenText Text="ចំណាយ:" TextStyle="TextStyle.Overline" TextAlign="TextAlign.Center" style="font-size:x-large; margin-bottom:10px; width:300px"/>
-                <RadzenButton Icon="add" Text="Add Expense" Click="@AddBtnClick" style="width:300px" />
-                <RadzenDataGrid @ref="grid2" Data="@Dailyexpenses" TItem="Models.mydb.Dailyexpense" RowCreate="@GridCreate" RowUpdate="@GridRowUpdate" style="width:300px ; height:100%" AllowPaging=true >
-                    <Columns>
-                        <RadzenDataGridColumn TItem="Models.mydb.Dailyexpense" Property="Note" Title="ចំណាំ" Width="90px">
-                            <EditTemplate Context="expense">
-                                <RadzenTextBox @bind-Value="@expense.Note" />
-                            </EditTemplate>
-                        </RadzenDataGridColumn>
-                        <RadzenDataGridColumn TItem="Models.mydb.Dailyexpense" Property="Expense" Title="ចំណាយ">
-                            <EditTemplate Context="expense">
-                                <RadzenNumeric @bind-Value="@expense.Expense" />
-                            </EditTemplate>
-                        </RadzenDataGridColumn>
-                        <RadzenDataGridColumn>
-                            <EditTemplate Context="expense">
-                                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium"
-                                    style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
-                                    Click=@(args => SaveButtonClick(args, expense)) @onclick:stopPropagation="true" />
-                                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
-                                    Click=@(args => CancelButtonClick(args, expense)) @onclick:stopPropagation="true" />
-                            </EditTemplate>
-                            <Template Context="expense">
-
-                            <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
-                                style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
-                                Click=@(args => EditButtonClick(args, expense)) @onclick:stopPropagation="true" />
-
-                            <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Medium"
-                                Shade="Shade.Lighter" Variant="Variant.Flat"
-                                Click=@(args => GridDeleteButtonClick(args, expense)) @onclick:stopPropagation="true" />
-                        </Template>
-                        </RadzenDataGridColumn>
-                    </Columns>
-                </RadzenDataGrid>
-            </RadzenStack>
-        </RadzenCard>-->
-    </RadzenStack>
-</RadzenStack>
-
 </div>
-
-<style>
-
-</style>
-
 @code{
-    RenderFragment<Dailyexpense> ExpenseCard = (Expense) => 
 
+    Virtualize<Dailyexpense> ExpenseTable = null;
+
+    RenderFragment<History> HistoryCard = (History) => 
         @<RadzenCard Style="box-shadow:none; width:100%; height:50px; border-radius:10px; padding:10px">
-            <RadzenRow>
+            <RadzenRow > 
                 <RadzenColumn Size="4">
-                    <RadzenText Text=@(Expense.Date) TextStyle="TextStyle.Subtitle2"/>
+                    <RadzenText Text="@History.CashoutDate" TextStyle="TextStyle.Subtitle2"/>
                 </RadzenColumn>
                 <RadzenColumn>
-                    <RadzenText Text=@(Expense.Note) Style="overflow: hidden; text-overflow:ellipsis;" />
+                    <RadzenText Text="@History.Plate" Style="overflow: hidden; text-overflow:ellipsis;"/>
                 </RadzenColumn>
                 <RadzenColumn Size="3">
-                    <RadzenText Text=@(Expense.Expense.ToString("$0.0"))/>
+                    <RadzenText Text=@History.Total.GetValueOrDefault().ToString("+ $0.0") Style="color:green"/>
                 </RadzenColumn>
+
             </RadzenRow>
         </RadzenCard>;
+    private void ExpenseOpenContextMenu(MouseEventArgs args, Dailyexpense expense){
+        ContextMenuService.Open(args,
+            new List<ContextMenuItem> {
+            new ContextMenuItem(){ Text = "Delete", Value = 1, Icon = "delete", IconColor="red" },
+        }, (value) => ContextItemClick(value, expense.Key));
+    }
+
+    private async void ContextItemClick(MenuItemEventArgs args, Guid key){
+        if(args.Value.Equals(1) && await DialogService.Confirm("ច្បាស់នឹងលុបមែនឬ?", "ច្បាស់ទេ?") == true){
+            var Delete = Task.Run(() => mydbService.DeleteDailyexpense(key));
+            
+            if(Delete.Result != null){
+                ContextMenuService.Close();
+                StateHasChanged();
+            }
+        }
+    }
 }

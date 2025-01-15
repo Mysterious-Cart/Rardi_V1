@@ -10,7 +10,7 @@ namespace CHKS.Models.mydb
     {
         [Key]
         [Required]
-        public string DateOfChange { get; set; }
+        public string Date { get; set; }
 
         public string Info { get; set; }
 

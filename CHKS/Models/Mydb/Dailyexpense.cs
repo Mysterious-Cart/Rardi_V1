@@ -17,7 +17,8 @@ namespace CHKS.Models.mydb
         [Required]
         public Guid Key { get; set; } = Guid.NewGuid();
 
-        public string Date {get; set;}
+        [Required]
+        public string Date {get; set;} = DateTime.Now.ToString("dd/MM/yyyy");
 
     }
 }

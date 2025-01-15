@@ -1,0 +1,106 @@
+@page "/new-tag"
+
+@attribute [Authorize]
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject DialogService DialogService
+@inject ContextMenuService ContextMenuService
+@inject mydbService Mydbservice;
+@using CHKS.Models.mydb;
+
+
+<RadzenRow>
+    <RadzenPickList Style="width:100%; height:200px" @bind-Source="@TagsList" Multiple="true" 
+    @bind-Target="@ChoosenTags" TItem="Tags" AllowFiltering="true" TextProperty="Tag">
+        <SourceHeader>
+            Tags:
+        </SourceHeader>
+        <TargetHeader>
+            Selected Tags:
+        </TargetHeader>
+    </RadzenPickList>
+</RadzenRow>
+<RadzenRow Style="margin-top:10px; ">
+    <RadzenButton Text="Confirm" ButtonStyle="ButtonStyle.Success" Click="@(() => AddTag())"/>
+    <RadzenButton Text="Create" Click="@InsertRow" Style="margin-left:auto;"/>
+</RadzenRow>
+<RadzenRow Style="margin-top:10px">
+    <RadzenDataGrid Style="height:200px; " @ref="@TagsTable" AllowVirtualization="true" Data="TagsList" TItem="Tags" 
+    RowCreate="@CreateTag" RowUpdate="@GridRowUpdate" AllowPaging=false>
+        <Columns>
+            <RadzenDataGridColumn TItem="Tags" Property="Tag" Title="Tag">
+                <EditTemplate Context="tag">
+                    <RadzenTextBox @bind-Value="@tag.Tag"/>
+                </EditTemplate>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Tags" Property="Color" Title="Color">
+                <EditTemplate Context="tag">
+                    <RadzenTextBox @bind-Value="@tag.Color"/>
+                </EditTemplate>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn Width="100px" >
+                <EditTemplate Context="tag">
+                    <RadzenButton Click="@(args => SaveButtonClick(args,tag))" ButtonStyle="ButtonStyle.Success" Icon="check"/>
+                    <RadzenButton Click="@(args => TagsTable.CancelEditRow(tag))"ButtonStyle="ButtonStyle.Danger" Icon="cancel"/>
+                </EditTemplate>
+                <Template Context="tag">
+                    <RadzenButton Click="@(args => DeleteTag(tag))"ButtonStyle="ButtonStyle.Danger" Icon="cancel"/>
+                </Template>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+</RadzenRow>
+
+@code {
+
+    [Parameter]
+    public Inventory product {get; set;}
+
+    private RadzenDataGrid<Tags> TagsTable = null;
+    private IEnumerable<Tags> TagsList = [];
+    private IEnumerable<Tags> ChoosenTags = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+       var result = await Mydbservice.GetTags();
+       TagsList = result.ToList();
+    }
+
+    private async Task AddTag(){
+        Console.WriteLine("hi");
+        foreach(var i in ChoosenTags.ToList()){
+            Console.WriteLine(product.Name);
+            await Mydbservice.InventoryAddTag(product.Id, i);
+        }
+    }
+
+    private async Task DeleteTag(Tags tag){
+        await Mydbservice.DeleteTags(tag.Id);
+        await TagsTable.Reload();
+    }
+
+    private async Task InsertRow(){
+        await TagsTable.InsertRow(new Tags());
+    }
+
+
+    private async Task CreateTag(Tags args){
+        var tag = new Tags() {
+            Tag = args.Tag,
+            Color = args.Color,
+        };
+        await Mydbservice.CreateTag(tag);
+        await TagsTable.Reload();
+    }
+
+    protected async Task GridRowUpdate(Tags args)
+        {
+            await Mydbservice.UpdateTags(args);
+
+        }
+
+    private async Task SaveButtonClick(MouseEventArgs args, Tags data)
+    {
+        await TagsTable.UpdateRow(data);
+    }
+}

@@ -19,10 +19,13 @@ namespace CHKS.Pages
         protected IJSRuntime JSRuntime { get; set; }
 
         [Inject]
-        protected NavigationManager NavigationManager { get; set; }
+        protected ContextMenuService ContextMenuService { get; set; }
 
         [Inject]
         protected DialogService DialogService { get; set; }
+
+        [Inject]
+        protected NavigationManager NavigationManager {get; set;}
 
         [Inject]
         protected mydbService MydbService {get; set;}
@@ -44,7 +47,8 @@ namespace CHKS.Pages
         protected string today = DateTime.Now.ToString("dd/MM/yy");
 
         protected IEnumerable<Connector> CartItem = [];
-        protected IEnumerable<Models.mydb.Inventory> Inventories = [];
+        protected List<Models.mydb.Inventory> _Inventories = [];
+        protected List<Inventory> Inventories = [];
         protected IEnumerable<Models.mydb.History> RecentHistory = [];
 
         protected RadzenDataGrid<Inventory> Grid1;
@@ -80,14 +84,21 @@ namespace CHKS.Pages
         }
         protected async override Task OnInitializedAsync()
         {
-            Inventories = await MydbService.GetInventories();
-            Carts = await MydbService.GetCarts();
-            await LoadRecentCashout();
+            Console.WriteLine("StateChanged");
+            await Task.Run(async () => {
+                _Inventories = (await MydbService.GetInventories()).ToList();
+                Inventories = _Inventories.ToList();
+                
+            }).ContinueWith(async (i) => {
+                Carts = await MydbService.GetCarts();
+
+            });
         }
         
         private async Task Search(ChangeEventArgs args)
         {
-            Inventories = await MydbService.GetInventories(new Query{Filter=$@"i => i.Name.Contains(@0)", FilterParameters=new object[]{args.Value.ToString()}});
+            var result = _Inventories.Where(i => i.Name.Contains(args.Value.ToString())).ToList();
+            Inventories = result;
             await Grid1.Reload();
         }
 
@@ -118,6 +129,7 @@ namespace CHKS.Pages
             await LoadCartItem(CartId);
             OnCartOpen();
             StateHasChanged();
+            
         }
 
         protected async Task LoadCartItem(int CartId){
@@ -208,7 +220,9 @@ namespace CHKS.Pages
                 if(CartItem.Any()){
                     if(await DialogService.Confirm("តើអ្នកច្បាស់ដែរឫទេ?","សំខាន់!") == true){
                         Current_Cart.Total = CartItem.Sum(i => i.Qty * i.PriceOverwrite??i.Inventory.Export);
-                        List<decimal?> payment = await DialogService.OpenAsync<PaymentForm>("គិតលុយ",new Dictionary<string, object>{{"Total", Current_Cart.Total}}, new DialogOptions{Width="35%"});
+                        List<decimal?> payment = await DialogService.OpenAsync<PaymentForm>("គិតលុយ",
+                        new Dictionary<string, object>{{"Total", Current_Cart.Total}}, 
+                        new DialogOptions{Width="35%"});
 
                         if(payment != null){    
                             

@@ -14,7 +14,7 @@ using CHKS.Models;
 
 namespace CHKS.Controllers
 {
-    [Route("Account/[action]")]
+    [Route("/Account/[action]")]
     public partial class AccountController : Controller
     {
         private readonly SignInManager<ApplicationUser> signInManager;

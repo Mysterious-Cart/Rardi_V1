@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using CHKS.Pages.Component;
+using CHKS.Models.mydb;
 using Microsoft.VisualBasic.CompilerServices;
 using Radzen;
 using Radzen.Blazor;
@@ -35,58 +37,110 @@ namespace CHKS.Pages
         [Inject]
         public mydbService mydbService { get; set; }
 
-        protected IEnumerable<CHKS.Models.mydb.History> History = [];
-        protected IEnumerable<CHKS.Models.mydb.Historyconnector> Historyconnectors = [];
-        protected IEnumerable<Models.mydb.Dailyexpense> Dailyexpenses = [];
-        protected IEnumerable<Models.mydb.Inventory> Inventories = [] ;
+        private IEnumerable<CHKS.Models.mydb.History> History = [];
+        private IEnumerable<CHKS.Models.mydb.Historyconnector> Historyconnectors = [];
+        private IEnumerable<Models.mydb.Dailyexpense> Dailyexpenses = [];
+        private IEnumerable<Models.mydb.Inventory> Inventories = [] ;
 
-        protected DateOnly dates = DateOnly.FromDateTime(DateTime.Today);
-        protected bool NoEmptyImport = true;
-        protected bool changeDataMode = false;
+        private DateOnly StartingDate = new(DateTime.Now.Year, DateTime.Now.Month, 1);
+        private DateOnly EndDate = DateOnly.FromDateTime(DateTime.Today);
+        private bool changeDataMode = false;
 
-        protected decimal Revenue = 0;
-        protected decimal Total = 0;
-        protected decimal ImportTotal = 0;
-        protected decimal ExpenseTotal = 0;
+        private decimal Revenue = 0;
+        private decimal Total = 0;
+        private decimal ImportTotal = 0;
+        private decimal ExpenseTotal = 0;
+        private int SoldTotal = 0;
 
-        protected string TotalBaht = "0";
-        protected string TotalDollar="0";
-        protected string TotalRiel= "0";
-        protected string TotalAba = "0";
+        private string TotalBaht = "0";
+        private string TotalDollar="0";
+        private string TotalRiel= "0";
+        private string TotalAba = "0";
 
-        protected RadzenDataGrid<CHKS.Models.mydb.Historyconnector> grid1;
-        protected RadzenDataGrid<CHKS.Models.mydb.History> grid0;
-        protected RadzenDataGrid<Models.mydb.Dailyexpense> grid2;
+        private RadzenDataGrid<CHKS.Models.mydb.Historyconnector> grid1;
+        private RadzenDataGrid<Models.mydb.Dailyexpense> grid2;
 
         List<DailyRevenue> Dailyrevenues = [];
+        List<DailyRevenue> DailyExpenses = [];
 
         protected override async Task OnInitializedAsync()
         {
-            await Task.Run(async () => {
-                History = await mydbService.GetHistories();
-            }).ContinueWith(async (i) => {
-                Dailyexpenses = await mydbService.GetDailyexpenses();
-                await GetGraphData();
-            });
-            Revenue = Total - (ImportTotal + ExpenseTotal);
-            changeDataMode = false;
+            await ToLoad();
         }
 
-        protected async Task GetGraphData(){
-            char[] seperator = {':','('};
-            History = History.Take(10);
+        protected async Task ToLoad(){
+            await Task.Run(async () =>{
+                History = await mydbService.GetHistories(new Query{Expand="Historyconnectors"});
+            }).ContinueWith(async (i) => {
+                Dailyexpenses = await mydbService.GetDailyexpenses();
+            });
+        
+            await FilterData();
+            
+        }
+
+        private async Task FilterData(){
+            History = History.Where(i => 
+                DateOnly.ParseExact(i.CashoutDate.Split('(',2)[0], "dd/MM/yyyy") <= EndDate &&
+                DateOnly.ParseExact(i.CashoutDate.Split('(',2)[0],"dd/MM/yyyy") >= StartingDate
+            );
+            History = History.OrderByDescending(i => i.CashoutDate);
+            Dailyexpenses = Dailyexpenses.Where(i => 
+                DateOnly.ParseExact(i.Date, "dd/MM/yyyy") <= EndDate && 
+                DateOnly.ParseExact(i.Date, "dd/MM/yyyy") >= StartingDate
+            );
+
+            Dailyexpenses = Dailyexpenses.OrderByDescending(i => i.Date);
+            await GetGraphData();
+            await GenerateStatisticReport();
+        }
+
+        private async Task GenerateStatisticReport(){
+            Total = Dailyrevenues.Sum(i => i.Total);
+            ImportTotal = History.SelectMany(i => i.Historyconnectors).Sum(i => i.Export * i.Qty);
+            ExpenseTotal = DailyExpenses.Sum(i => i.Total);
+            Revenue = Total - ImportTotal;
+            SoldTotal = (int)History.Sum(i => i.Historyconnectors.Sum(i => i.Qty));
+        }
+
+        private async Task AddExpense(){
+            Dictionary<string, string> Expense = await DialogService.OpenAsync<NewExpense>("Expense");
+            if(Expense is not null){
+                await mydbService.CreateDailyexpense(
+                    new Dailyexpense(){
+                        Note=Expense.First(i => i.Key.Equals("Info")).Value, 
+                        Expense = decimal.Parse(Expense.First(i => i.Key.Equals("Cost")).Value)
+                });
+            }
+        }
+
+        private async Task GetGraphData(){
+            Dailyrevenues = [];
+            DailyExpenses = [];
             foreach(var Record in History){
-                string[] cashoutdate = Record.CashoutDate.Split(seperator);
-                var inList = Dailyrevenues.Where(i => i.Date == cashoutdate[0]);
+                var inList = Dailyrevenues.Where(i => i.Date == Record.CashoutDate);
                 if(inList.Any()){
                     inList.First().Total += Record.Total.GetValueOrDefault();
                 }else{
                     DailyRevenue revenue = new(){
-                        Date = cashoutdate[0],
-                        Total = Record.Total.GetValueOrDefault()
+                        Date = Record.CashoutDate,
+                        Total = Record.Total.GetValueOrDefault(),
+                    };
+                    Dailyrevenues.Add(revenue);
+                }
+            }
+
+            foreach(var Expense in Dailyexpenses){
+                var inList = DailyExpenses.Where(i => i.Date == Expense.Date);
+                if(inList.Any()){
+                    inList.First().Total += Expense.Expense;
+                }else{
+                    DailyRevenue revenue = new(){
+                        Date = Expense.Date,
+                        Total = Expense.Expense
                     };
 
-                    Dailyrevenues.Add(revenue);
+                    DailyExpenses.Add(revenue);
                 }
                 
             }
@@ -159,6 +213,13 @@ namespace CHKS.Pages
                 changeDataMode = true;
             }else{
                 changeDataMode = false;
+            }
+        }
+
+        protected async Task CleanData(){
+            foreach(var hist in History.ToList()){
+                hist.CashoutDate = hist.CashoutDate.Split('(',2)[0];
+                await mydbService.UpdateHistory(hist.Id, hist);
             }
         }
 

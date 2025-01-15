@@ -10,166 +10,166 @@
 
 <PageTitle >Cashier</PageTitle>
 
-<RadzenStack Orientation="Orientation.Horizontal" Style=" margin-left:30px; width:100%">
-    <RadzenStack Orientation="Orientation.Vertical" Style="width: 70%; margin-top:30px;">
+<RadzenStack Orientation="Orientation.Vertical" Style="width: calc(100% - 400px)">
 
-        <RadzenTextBox Placeholder="Type to search" style="border-radius:10px; margin-top:20px" @oninput=@(args => Search(args))/>
-        
-        <RadzenDataGrid data="@Inventories" 
-            @ref="Grid1"
-            TItem="Inventory" 
-            AllowRowSelectOnRowClick="true" 
-            AllowColumnResize="true" 
-            AllowVirtualization="true" 
-            AllowSorting="true"
-            GridLines="@DataGridGridLines.None"
-            RowSelect="@(args => SelectedProduct = args)"
-            RowDoubleClick="@RowDbl"
-            style="height:85dvh; z-index:0; border-radius:10px; font-size:40pt;"
-        >
-            <Columns>
-                <RadzenDataGridColumn TItem="Inventory" Title="ឈ្មោះ" MinWidth="200px" Width="400px"  >
-                    <Template Context="Product">
-                        <div style="height:30px"><span style="vertical-align:middle; height:100%">@Product.Name</span></div>
-                    </Template>
-                </RadzenDataGridColumn> 
-                <RadzenDataGridColumn TItem="Inventory" Title="ស្តុក" Property="Stock" FormatString="{0:0}">
-                    <Template Context="Product">
-                        <RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Info"
-                            Max="100" Min="0" 
-                            Value="(double)Product.Stock"
-                            Unit=""
-                        />
-                        
-                    </Template>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="Inventory" Title="តម្លៃលក់" Property="Export" FormatString="${0:0}" />
-            </Columns>
-        </RadzenDataGrid>
-        
-    </RadzenStack>
-
-    <div Style="
-        margin-left:auto; 
-        width:30%; 
-        height:100dvh; 
-        background-color: white;"
-        >
-        @if(Current_Cart is null){
-            <RadzenStack Orientation="Orientation.Vertical" AlignItems="@AlignItems.Start" Gap="0px" 
-            Style="padding: 20px; padding-top:30px;max-height: 95dvh; overflow-y:scroll; width:95%">
-
-                <RadzenRow JustifyContent="JustifyContent.SpaceEvenly" Style="width: 100%; margin-bottom:10px">
-                    <RadzenColumn>
-                        <RadzenText Text="Cart" TagName="TagName.H2" TextStyle="TextStyle.DisplayH5"/>
-                    </RadzenColumn>
-                    <RadzenColumn Style="align-content:flex-end; display:flex; padding-right:10px">
-                        <RadzenButton 
-                            Icon="add" 
-                            Text="Add" 
-                            Variant="Variant.Outlined"
-                            Style="margin-left:auto; border-radius:15px"
-                            Click=@CreateCart
-                            />
-                    </RadzenColumn>
-                </RadzenRow>    
-                <RadzenRow>
-                    <RadzenSelectBar TValue="int" Size="ButtonSize.Small" TabIndex="0" ValueChanged="@(args => CartMode = args)">
-                        <Items>
-                            <RadzenSelectBarItem Text="កំពុងធ្វើ" Value="0"/>
-                            <RadzenSelectBarItem Text="ជំពាក់" Value="3"/>
-                            <RadzenSelectBarItem Text="គិតលុយរួច" Value="2"/>
-                            <RadzenSelectBarItem Text="មិនទានគិតលុយ" Value="1"/>
-                        </Items>
-                    </RadzenSelectBar>
-                </RadzenRow>
-                <RadzenStack Style="max-height: 100%; overflow:scroll; width:100%; margin-top:20px">
-                    @foreach (var Cart in Carts.Where(i => i.Status==CartMode))
-                    {
-                        <RadzenCard 
-                            Style="width:100%; box-shadow:none; border-radius:0px;border:solid; border-color:lightgray; border-width:0px 0px 1px 0px"
-                            @onclick="@(() => OpenCart(Cart.CartId))"
-                        >
-                        <RadzenRow>
-                            <RadzenColumn>
-                                <RadzenText Text="@Cart.Car_Id"/>
-                            </RadzenColumn>
-                            <RadzenColumn>
-                                <RadzenText Text="@Cart.Car.Type" Style="text-overflow:ellipsis; overflow:hidden; max-width:100%"/>
-                            </RadzenColumn>
-                            <RadzenColumn>
-                                <RadzenText Text="@Cart.Car.Phone" Style="text-overflow:ellipsis; overflow:hidden; max-width:100%"/>
-                            </RadzenColumn>
-                        </RadzenRow>
-                            
-                            
-                        </RadzenCard>
-                    }
-                </RadzenStack>
-            </RadzenStack>
-        }else{
-
-        <div Style="padding:40px; padding-right:50px; min-width:425px">
-            <RadzenRow Style="width:100%" AlignItems="AlignItems.Start" Gap=2px>
-                <p style="font-size: 1.3vw; margin-right:auto; overflow:hidden; width:190px"><b>@(Current_Cart.Car_Id != null?Current_Cart.Car_Id + "#" + Current_Cart.CartId:"********")</b></p>
-                <RadzenButton Icon="save" Click="@CloseCart" style="width:25px; height:25px;border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:green; padding:1.5px;"/>
-                @if(Current_Cart.CartId != -1){
-                    <RadzenButton Icon="delete" Click="@DeleteCustomer"style="width:25px; height:25px;border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:red; padding:1.5px"/>
-                }
-            </RadzenRow>
-            
-            <RadzenRow AlignItems="AlignItems.Center">
-                <p style="font-size: medium; color:gray; margin-right:auto; height:20px"><b>@(Current_Cart is not null?Current_Cart.Car.Type:"Unknown")</b></p>
-                <p style="font-size: medium; color:gray; margin-right:20%; "><b></b></p>
-            </RadzenRow>
-            <RadzenRow Style="display:inline-flexbox; width:100%; justify-content:flex-start">
-                <p style="font-size: medium; color:gray; margin-right:auto; height:10px "><b>@(Current_Cart is not null?Current_Cart.Car.Phone:0)</b></p>
-                <RadzenRow Style="">
-                    <RadzenText Text="@(CartModeTranslate[Current_Cart.Status])" style=" font-size: medium; color:gray; margin-right:auto; height:10px;"/>
-                    <RadzenButton ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Small" Click="@ToggleCartMode" Icon="loop" />
-                </RadzenRow>
-            </RadzenRow>
-            
-
-            <div style="color:lightgray; overflow:hidden; height:20px; width:100%">
-                ---------------------------------------------------------------------------------------
-            </div>
-
-            <div style="width:100%; height:61dvh;">
-                <CartItemList CartItem="@CartItem" OnItemRemove=@(() => Grid1.Reload())/>
-            </div>
-            
-
-            <div style="color:lightgray; overflow:hidden; height:20px; width:100%;">
-                ---------------------------------------------------------------------------------------
-            </div>
-            <div style="color:lightgray; overflow:hidden; height:30px; width:100%; margin-top:auto; display:inline-flex">
-                <p style="font-size: x-large; font-family:'Khmer OS Battambang'; color: #28282B; margin-right:auto"><b>Total</b></p>
-                <p style="font-size: x-large; font-family:'Khmer OS Battambang'; color: #28282B; margin-left:auto">
-                    <b>@("$" + CartItem.Sum(i => (i.PriceOverwrite??i.Inventory.Export * i.Qty)).ToString($"{0:N2}"))
-                </b></p>
-            </div>
-            <div style="color:lightgray; overflow:hidden; height:20px; width:100%">
-                ---------------------------------------------------------------------------------------
-            </div>
-            
-
-            <div style="color:lightgray; overflow:hidden; height:120px; width:100%">
-                @if(Current_Cart.CartId != -1){
-                    <RadzenButton Icon="attach_money"
-                        ButtonType="ButtonType.Submit"
-                        ButtonStyle="ButtonStyle.Success"
-                        style="width:100%; border-radius:15px;" 
-                        Text="គិតលុយ" 
-                        Click="@CashOut"
+    <RadzenTextBox Placeholder="Type to search" style="border-radius:10px; margin-top:20px" @oninput=@(args => Search(args))/>
+    
+    <RadzenDataGrid data="@Inventories.AsEnumerable()" 
+        @ref="Grid1"
+        TItem="Inventory" 
+        AllowRowSelectOnRowClick="true" 
+        AllowColumnResize="true" 
+        AllowVirtualization="true" 
+        AllowSorting="true"
+        GridLines="@DataGridGridLines.None"
+        RowSelect="@(args => SelectedProduct = args)"
+        RowDoubleClick="@RowDbl"
+        style="height:85dvh; border-radius:10px; font-size:40pt;"
+        ContextMenu=@(args => OpenContextMenu(args))
+    >
+        <Columns>
+            <RadzenDataGridColumn TItem="Inventory" Title="ឈ្មោះ" MinWidth="200px" Width="400px" >
+                <Template Context="Product">
+                    <div style="height:30px"><span style="vertical-align:middle; height:100%">@Product.Name</span></div>
+                </Template>
+            </RadzenDataGridColumn> 
+            <RadzenDataGridColumn TItem="Inventory" Title="ស្តុក" Property="Stock" FormatString="{0:0}">
+                <Template Context="Product">
+                    <RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Info"
+                        Max="100" Min="0" 
+                        Value="(double)Product.Stock"
+                        Unit=""
                     />
-                }
-            </div>
-        </div>
-        }
-    </div>
-
+                    
+                </Template>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="Inventory" Title="តម្លៃលក់" Property="Export" FormatString="${0:0}" />
+        </Columns>
+    </RadzenDataGrid>
+    
 </RadzenStack>
+
+<div Style="
+    position:absolute;
+    top:0px;
+    right:0px;
+    width:400px; 
+    height:100dvh; 
+    background-color: white;"
+    >
+    @if(Current_Cart is null){
+        <RadzenStack Orientation="Orientation.Vertical" AlignItems="@AlignItems.Start" Gap="0px" 
+        Style="padding: 20px; padding-top:30px; max-height: 95dvh; overflow-y:scroll; width:100%">
+
+            <RadzenRow JustifyContent="JustifyContent.SpaceEvenly" Style="width: 100%; margin-bottom:10px">
+                <RadzenColumn>
+                    <RadzenText Text="Cart" TagName="TagName.H2" TextStyle="TextStyle.DisplayH5"/>
+                </RadzenColumn>
+                <RadzenColumn Style="align-content:flex-end; display:flex; padding-right:10px">
+                    <RadzenButton 
+                        Icon="add" 
+                        Text="Add" 
+                        Variant="Variant.Outlined"
+                        Style="margin-left:auto; border-radius:15px"
+                        Click=@CreateCart
+                        />
+                </RadzenColumn>
+            </RadzenRow>    
+            <RadzenRow>
+                <RadzenSelectBar TValue="int" Size="ButtonSize.Small" TabIndex="0" ValueChanged="@(args => CartMode = args)">
+                    <Items>
+                        <RadzenSelectBarItem Text="កំពុងធ្វើ" Value="0"/>
+                        <RadzenSelectBarItem Text="ជំពាក់" Value="3"/>
+                        <RadzenSelectBarItem Text="គិតលុយរួច" Value="2"/>
+                        <RadzenSelectBarItem Text="មិនទានគិតលុយ" Value="1"/>
+                    </Items>
+                </RadzenSelectBar>
+            </RadzenRow>
+            <RadzenStack Style="max-height: 100%; overflow:scroll; width:100%; margin-top:20px">
+                @foreach (var Cart in Carts.Where(i => i.Status==CartMode))
+                {
+                    <RadzenCard 
+                        Style="width:100%; box-shadow:none; border-radius:0px;border:solid; border-color:lightgray; border-width:0px 0px 1px 0px"
+                        @onclick="@(() => OpenCart(Cart.CartId))"
+                    >
+                    <RadzenRow>
+                        <RadzenColumn>
+                            <RadzenText Text="@Cart.Car_Id"/>
+                        </RadzenColumn>
+                        <RadzenColumn>
+                            <RadzenText Text="@Cart.Car.Type" Style="text-overflow:ellipsis; overflow:hidden; max-width:100%"/>
+                        </RadzenColumn>
+                        <RadzenColumn>
+                            <RadzenText Text="@Cart.Car.Phone" Style="text-overflow:ellipsis; overflow:hidden; max-width:100%"/>
+                        </RadzenColumn>
+                    </RadzenRow>
+                        
+                        
+                    </RadzenCard>
+                }
+            </RadzenStack>
+        </RadzenStack>
+    }else{
+
+    <div Style="padding:40px; padding-right:50px; min-width:425px">
+        <RadzenRow Style="width:100%" AlignItems="AlignItems.Start" Gap=2px>
+            <p style="font-size: 1.3vw; margin-right:auto; overflow:hidden; width:190px"><b>@(Current_Cart.Car_Id != null?Current_Cart.Car_Id + "#" + Current_Cart.CartId:"********")</b></p>
+            <RadzenButton Icon="save" Click="@CloseCart" style="width:25px; height:25px;border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:green; padding:1.5px;"/>
+            @if(Current_Cart.CartId != -1){
+                <RadzenButton Icon="delete" Click="@DeleteCustomer"style="width:25px; height:25px;border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:red; padding:1.5px"/>
+            }
+        </RadzenRow>
+        
+        <RadzenRow AlignItems="AlignItems.Center">
+            <p style="font-size: medium; color:gray; margin-right:auto; height:20px"><b>@(Current_Cart is not null?Current_Cart.Car.Type:"Unknown")</b></p>
+            <p style="font-size: medium; color:gray; margin-right:20%; "><b></b></p>
+        </RadzenRow>
+        <RadzenRow Style="display:inline-flexbox; width:100%; justify-content:flex-start">
+            <p style="font-size: medium; color:gray; margin-right:auto; height:10px "><b>@(Current_Cart is not null?Current_Cart.Car.Phone:0)</b></p>
+            <RadzenRow Style="">
+                <RadzenText Text="@(CartModeTranslate[Current_Cart.Status])" style=" font-size: medium; color:gray; margin-right:auto; height:10px;"/>
+                <RadzenButton ButtonStyle="ButtonStyle.Info" Size="ButtonSize.Small" Click="@ToggleCartMode" Icon="loop" />
+            </RadzenRow>
+        </RadzenRow>
+        
+
+        <div style="color:lightgray; overflow:hidden; height:20px; width:100%">
+            ---------------------------------------------------------------------------------------
+        </div>
+
+        <div style="width:100%; height:61dvh;">
+            <CartItemList CartItem="@CartItem" OnItemRemove=@(() => Grid1.Reload())/>
+        </div>
+        
+
+        <div style="color:lightgray; overflow:hidden; height:20px; width:100%;">
+            ---------------------------------------------------------------------------------------
+        </div>
+        <div style="color:lightgray; overflow:hidden; height:30px; width:100%; margin-top:auto; display:inline-flex">
+            <p style="font-size: x-large; font-family:'Khmer OS Battambang'; color: #28282B; margin-right:auto"><b>Total</b></p>
+            <p style="font-size: x-large; font-family:'Khmer OS Battambang'; color: #28282B; margin-left:auto">
+                <b>@("$" + CartItem.Sum(i => (i.PriceOverwrite??i.Inventory.Export * i.Qty)).ToString($"{0:N2}"))
+            </b></p>
+        </div>
+        <div style="color:lightgray; overflow:hidden; height:20px; width:100%">
+            ---------------------------------------------------------------------------------------
+        </div>
+        
+
+        <div style="color:lightgray; overflow:hidden; height:120px; width:100%">
+            @if(Current_Cart.CartId != -1){
+                <RadzenButton Icon="attach_money"
+                    ButtonType="ButtonType.Submit"
+                    ButtonStyle="ButtonStyle.Success"
+                    style="width:100%; border-radius:15px;" 
+                    Text="គិតលុយ" 
+                    Click="@CashOut"
+                />
+            }
+        </div>
+    </div>
+    }
+</div>
 
 <div id="snackbar" class="@ToastState">
     @ToastString
@@ -179,11 +179,25 @@
     int CartMode = 0;
     Inventory SelectedProduct = null;
 
-    protected async void RowDbl(){
+    private async void RowDbl(){
         if(Current_Cart is not null) {
             await CartControl.AddItemToCart(Current_Cart.CartId, SelectedProduct);
             StateHasChanged();
         }
+    }
+
+    private void OpenContextMenu(MouseEventArgs args){
+        if(SelectedProduct is not null){
+            ContextMenuService.Open(args,
+                new List<ContextMenuItem> {
+                new ContextMenuItem(){ Text = "Open in inventory", Value = 1, Icon = "search" },
+            },OnContextOptionClick);
+        }
+    }
+
+    private void OnContextOptionClick(MenuItemEventArgs args){
+        ContextMenuService.Close();
+        NavigationManager.NavigateTo($"/inventories?ProductIdParam={SelectedProduct.Id}", false);
     }
 
 }

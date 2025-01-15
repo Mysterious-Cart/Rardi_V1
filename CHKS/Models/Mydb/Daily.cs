@@ -12,10 +12,15 @@ namespace CHKS.Models.mydb
         [Required]
         public int Date { get; set; }
 
-        public float? Total { get; set; }
+        public decimal Total { get; set; }
 
-        public float? Expense { get; set; }
+        public decimal Expense { get; set; }
 
-        public float? ProductExpense { get; set; }
+        public decimal Import_Total { get; set; }
+
+        public int Total_Product_Sold {get; set;}
+
+        public int Total_Cart {get; set;}
+        
     }
 }

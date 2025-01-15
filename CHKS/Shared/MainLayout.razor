@@ -4,10 +4,10 @@
 </head>
 <RadzenComponents />
 
-<RadzenLayout style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body'; background-color:whitesmoke ">
-        @Body
-    <RadzenSidebar Expanded="true" >
-        <RadzenProfileMenu Visible="@Security.IsAuthenticated()" Click="@ProfileMenuClick" Style="background-color: #28282B;  border-color:#28282B; margin-left:10px; width: 200px;">
+<RadzenLayout style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body'; ">
+        
+    <RadzenSidebar Expanded="true" style="width:220px" >
+        <RadzenProfileMenu Visible="@Security.IsAuthenticated()" Click="@ProfileMenuClick" Style="background-color:transparent;  border-color:#28282B; margin-left:10px; width: 200px;">
             <ChildContent >
                 <RadzenProfileMenuItem Text="Logout" Value="Logout" Icon="power_settings_new" />
             </ChildContent>
@@ -17,12 +17,16 @@
             </Template>
         </RadzenProfileMenu>
 
-        <RadzenPanelMenu  Style="margin-top: 20dvh;" >
+        <RadzenPanelMenu  Style="margin-top: 20dvh; overflow:hidden" >
             <RadzenPanelMenuItem Text="ទំព័រគិតលុយ" Path="" Icon="home" class="panelmenuitem" />
             <RadzenPanelMenuItem Text="គ្រប់គ្រងទំនេញ" Path="inventories" Icon="inventory" class="panelmenuitem" />
-            <!--<RadzenPanelMenuItem Text="ថ្ងៃនេះ" Path="Dailies" Icon="assignment" class="panelmenuitem"/>
-            <RadzenPanelMenuItem Text="ទិន្នន័យ" Path="statistic"  Icon="bar_chart" class="panelmenuitem"/>-->
+            <RadzenPanelMenuItem Text="ថ្ងៃនេះ" Path="Dailies" Icon="assignment" class="panelmenuitem"/>
+            <!--<RadzenPanelMenuItem Text="ទិន្នន័យ" Path="statistic"  Icon="bar_chart" class="panelmenuitem"/>-->
             <RadzenPanelMenuItem Text="ប្រវ័ត្តិ" Path="histories" Icon="history" class="panelmenuitem"/>
         </RadzenPanelMenu>
     </RadzenSidebar>
+
+    <RadzenBody Style=" height:100dvh; overflow:hidden">
+        @Body
+    </RadzenBody>
 </RadzenLayout>

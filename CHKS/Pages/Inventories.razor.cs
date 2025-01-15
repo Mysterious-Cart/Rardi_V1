@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Radzen;
 using Radzen.Blazor;
 using CHKS.Models.mydb;
+using CHKS.Pages.Component.Popup;
 
 namespace CHKS.Pages
 {
@@ -34,49 +35,62 @@ namespace CHKS.Pages
         [Inject]
         protected mydbService mydbService { get; set; }
 
-        [Inject]
-        protected PublicCommand PublicCommand {get; set;}
-
         [Parameter]
-        public string IsDialog {get; set;}
+        public string ProductIdParam {get; set;} = "";
 
-        protected IEnumerable<CHKS.Models.mydb.Inventory> inventories;
-        protected IEnumerable<Models.mydb.CarBrand> CarBrands;
-        protected RadzenDataGrid<CHKS.Models.mydb.Inventory> grid0;
+        private List<Inventory> _inventories = [];
+        private IEnumerable<Inventory> inventories = [];
+        private IEnumerable<Tags> Tags = [];
+        private RadzenDataGrid<CHKS.Models.mydb.Inventory> grid0;
 
-        protected string search = "";
-        protected bool isModifying = false;
-        protected bool isEditMode = false;
+        private bool isModifying = false;
 
-        protected string OriginalName;
+        private Inventory Product;
+        private int TotalSale = 0;
+        private decimal Revenue = 0;
+        private decimal Acquisition = 0;
+
 
         [Inject]
         protected SecurityService Security { get; set; }
 
-        protected async Task CreateNewCar(){
-            Models.mydb.CarBrand car = new();
-        }
-
-
-        protected async Task Search(ChangeEventArgs args)
-        {
-            
-            search = $"{args.Value}";
-
-            await grid0.GoToPage(0);
-
-            inventories = await mydbService.GetInventories(new Query { Filter = $@"i =>( i.Name.Contains(@0) || i.Barcode.Contains(@0)) && i.IsDeleted == 0 ", FilterParameters = new object[] { search} });
-        }
-
         protected override async Task OnInitializedAsync()
         {   
-            inventories = await mydbService.GetInventories(new Query { Filter = $@"i =>( i.Name.Contains(@0) || i.Barcode.Contains(@0)) && i.IsDeleted == 0", FilterParameters = new object[] { search} }); 
-            CarBrands = await mydbService.GetCarBrands();
+            await GetProductFromInventory();
+            GetUriQuery();
+            if(!string.IsNullOrEmpty(ProductIdParam)){
+                Select_Product(inventories.Where(i => i.Id == Guid.Parse(ProductIdParam)).First());
+            }
+        }
+
+        private async Task GetProductFromInventory(){
+            var query_product = await mydbService.GetInventories(new Query(){Expand="HistoryConnectors"});
+            _inventories = query_product.OrderByDescending(i => i.Sold_Total).AsEnumerable().ToList();
+            inventories = _inventories;
+            
+        }
+
+        private async Task Search(ChangeEventArgs args){
+            inventories = _inventories.AsParallel().Where(i => i.Name.Contains(args.Value.ToString()));
+            
+        }
+
+        private void GetUriQuery(){
+            var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+            var queryParam = System.Web.HttpUtility.ParseQueryString(uri.Query);
+            ProductIdParam = queryParam["ProductIdParam"];
+        }
+        
+        private void Select_Product(Inventory ChoosenProduct){
+            Product = ChoosenProduct;
+            TotalSale = ChoosenProduct.GetSoldTotal();
+            Revenue = ChoosenProduct.HistoryConnectors?.Sum(i => i.Export * i.Qty)??0;
+            Acquisition = ChoosenProduct.Stock * ChoosenProduct.Import;
         }
 
         protected bool IsCombiningMode = false;
-        protected List<Models.mydb.Inventory> ChosenProduct;
-
+        protected List<Inventory> ChosenProduct;
+        
         protected async Task CombineProduct(){
             IsCombiningMode = !IsCombiningMode;
             ChosenProduct = new();
@@ -139,6 +153,10 @@ namespace CHKS.Pages
         {
             await grid0.InsertRow(new Inventory(){Name = ""});
             
+        }
+
+        private async Task EditTags(){
+            DialogService.Open<NewTag>("Tags", new Dictionary<string, object>{{"product", Product}}, new DialogOptions{Height="600px",});
         }
 
         protected async Task GridDeleteButtonClick( CHKS.Models.mydb.Inventory inventory)

@@ -1,0 +1,31 @@
+@page "/new-expense"
+
+@attribute [Authorize]
+
+@namespace CHKS.Pages.Component
+<RadzenRow RowGap="10px">
+    <RadzenRow>
+        <RadzenLabel Text="សម្រាប់"/>
+        <RadzenTextBox @bind-Value="@Info" Name="Infobox"/>
+    </RadzenRow>
+
+    <RadzenRow>
+        <RadzenLabel Text="អស់"/>
+        <RadzenNumeric Format="$0.0" @bind-Value="@Cost"/>
+    </RadzenRow>
+
+    <RadzenRow Style="margin-left:auto;margin-right:auto">
+        <RadzenButton Text="រួចរាល់" Click="@Close"/>
+    </RadzenRow>    
+</RadzenRow>
+
+ @code{
+
+    [Inject]
+    protected DialogService dialogService {get;set;}
+
+    private string Info = "";
+    private decimal Cost = 0;
+    
+    private async Task Close() => dialogService.Close(new Dictionary<string, string>(){{"Info", Info}, {"Cost", Cost.ToString()}});
+ }

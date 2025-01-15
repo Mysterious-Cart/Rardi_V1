@@ -162,6 +162,12 @@ namespace CHKS.Data
 
         public DbSet<CHKS.Models.mydb.Inventory> Inventories { get; set; }
 
+        public DbSet<Records> Records {get; set;}
+
+        public DbSet<Daily> Daily {get; set;}
+
+        public DbSet<Tags> Tags {get; set;}
+
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
             configurationBuilder.Conventions.Add(_ => new BlankTriggerAddingConvention());

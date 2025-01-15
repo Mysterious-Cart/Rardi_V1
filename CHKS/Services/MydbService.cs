@@ -104,6 +104,81 @@ namespace CHKS
             return await Task.FromResult(items);
         }
 
+        public async Task<IQueryable<Models.mydb.Tags>> GetTags(Query query = null){
+            var items = Context.Tags.AsQueryable();
+
+            if (query != null)
+            {
+                if (!string.IsNullOrEmpty(query.Expand))
+                {
+                    var propertiesToExpand = query.Expand.Split(',');
+                    foreach(var p in propertiesToExpand)
+                    {
+                        items = items.Include(p.Trim());
+                    }
+                }
+
+                ApplyQuery(ref items, query);
+            }
+
+            return await Task.FromResult(items);
+        }
+
+        public async Task<Models.mydb.Tags> CreateTag(CHKS.Models.mydb.Tags Tags)
+        {         
+
+            try
+            {
+                Context.Tags.Add(Tags);
+                Context.SaveChanges();
+            }
+            catch
+            {
+                Context.Entry(Tags).State = EntityState.Detached;
+                throw;
+            }
+
+            return Tags;
+        }
+
+         public async Task<CHKS.Models.mydb.Tags> UpdateTags(Models.mydb.Tags Tags)
+        {
+
+            var entryToUpdate = Context.Entry(Tags);
+            entryToUpdate.CurrentValues.SetValues(Tags);
+            entryToUpdate.State = EntityState.Modified;
+
+            Context.SaveChanges();
+
+            return Tags;
+        }
+
+        public async Task<CHKS.Models.mydb.Tags> DeleteTags(Guid Id)
+        {
+            var itemToDelete = Context.Tags
+                              .Where(i => i.Id == Id)
+                              .FirstOrDefault();
+
+            if (itemToDelete == null)
+            {
+               throw new Exception("Item no longer available");
+            }
+
+            Context.Tags.Remove(itemToDelete);
+
+            try
+            {
+                Context.SaveChanges();
+            }
+            catch
+            {
+                Context.Entry(itemToDelete).State = EntityState.Unchanged;
+                throw;
+            }
+
+            return itemToDelete;
+        }
+
         partial void OnCarGet(CHKS.Models.mydb.Car item);
         partial void OnGetCarByPlate(ref IQueryable<CHKS.Models.mydb.Car> items);
 
@@ -594,7 +669,7 @@ namespace CHKS
         partial void OnGetConnectorByGeneratedKey(ref IQueryable<CHKS.Models.mydb.Connector> items);
 
 
-        public async Task<CHKS.Models.mydb.Connector> GetConnectorByGeneratedKey(Guid Id)
+        public async Task<CHKS.Models.mydb.Connector> GetConnectorById(Guid Id)
         {
             var items = Context.Connectors
                               .AsNoTracking()
@@ -1256,6 +1331,18 @@ namespace CHKS
             OnInventoryGet(itemToReturn);
 
             return await Task.FromResult(itemToReturn);
+        }
+
+        public async Task<IEnumerable<Models.mydb.Tags>> InventoryAddTag(Guid Id, Models.mydb.Tags Tags)
+        {
+            var item = Context.Inventories
+                              .Where(i => i.Id == Id).FirstOrDefault();
+            item.Tags ??= [];   
+            item.Tags.Add(Tags);
+
+            Context.SaveChanges();
+
+            return await Task.FromResult(item.Tags);
         }
 
         partial void OnInventoryCreated(CHKS.Models.mydb.Inventory item);
