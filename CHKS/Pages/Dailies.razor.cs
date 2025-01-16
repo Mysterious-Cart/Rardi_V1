@@ -90,7 +90,7 @@ namespace CHKS.Pages
                 DateOnly.ParseExact(i.Date, "dd/MM/yyyy") >= StartingDate
             );
 
-            Dailyexpenses = Dailyexpenses.OrderByDescending(i => i.Date);
+            Dailyexpenses = Dailyexpenses.OrderByDescending(i => DateOnly.ParseExact(i.Date.Split('(',2)[0], "dd/MM/yyyy"));
             await GetGraphData();
             await GenerateStatisticReport();
         }
@@ -118,12 +118,12 @@ namespace CHKS.Pages
             Dailyrevenues = [];
             DailyExpenses = [];
             foreach(var Record in History){
-                var inList = Dailyrevenues.Where(i => i.Date == Record.CashoutDate);
+                var inList = Dailyrevenues.Where(i => i.Date == Record.CashoutDate.Split('(',2)[0]);
                 if(inList.Any()){
                     inList.First().Total += Record.Total.GetValueOrDefault();
                 }else{
                     DailyRevenue revenue = new(){
-                        Date = Record.CashoutDate,
+                        Date = Record.CashoutDate.Split('(',2)[0],
                         Total = Record.Total.GetValueOrDefault(),
                     };
                     Dailyrevenues.Add(revenue);
@@ -144,6 +144,7 @@ namespace CHKS.Pages
                 }
                 
             }
+            Dailyrevenues = Dailyrevenues.OrderByDescending(i => i.Date).ToList();
         }
 
         /*

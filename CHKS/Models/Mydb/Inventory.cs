@@ -25,7 +25,7 @@ namespace CHKS.Models.mydb
         public string NormalizeName { get; set; } = "";
 
         [Required]
-        public required string Name { get; set; }
+        public string Name { get; set; } = "";
 
         [Required]
         public string Info { get; set; } = "";

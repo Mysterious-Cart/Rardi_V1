@@ -109,7 +109,7 @@
 <RadzenRow Style="margin-top:10px">
     <RadzenColumn>
         <RadzenCard style="box-shadow: none; border-radius:20px">
-            <RadzenChart style="width: 100%;">
+            <RadzenChart style="width: 100%;" >
                 
                 <RadzenValueAxis Formatter=@(args => "$" + args) >
                     <RadzenGridLines Visible="true" LineType="LineType.Dashed" />
@@ -119,10 +119,10 @@
                     TItem="@DailyRevenue" Smooth="true" Title="លក់បាន" Context="ThisDay" >
                 </RadzenAreaSeries>
                 <RadzenAreaSeries Data="@DailyExpenses.OrderBy(i => i.Date)" ValueProperty="Total" CategoryProperty="Date" 
-                    TItem="@DailyRevenue" Smooth="true" Title="ចំណាយ" Context="ThisDay" Fill="#fd5c63" Stroke="#E52B50">
+                    TItem="@DailyRevenue" Smooth="true" Title="ចំណាយ" Context="ThisDay" Fill="#fd5c63" Stroke="#E52B50" >
                 </RadzenAreaSeries>
                 
-                <RadzenCategoryAxis  Formatter="@(args => args?.ToString().Split('/',3)[0])" LineType="LineType.Dashed">
+                <RadzenCategoryAxis  Formatter=@(args => String.Join("", args?.ToString().ToCharArray(0,5)??[])) LineType="LineType.Dashed" >
                 </RadzenCategoryAxis>
             </RadzenChart>
         </RadzenCard>
@@ -220,7 +220,7 @@
         @<RadzenCard Style="box-shadow:none; width:100%; height:50px; border-radius:10px; padding:10px">
             <RadzenRow > 
                 <RadzenColumn Size="4">
-                    <RadzenText Text="@History.CashoutDate" TextStyle="TextStyle.Subtitle2"/>
+                    <RadzenText Text="@History.CashoutDate" TextStyle="TextStyle.Subtitle2" Style="overflow:hidden; text-overflow:ellipsis; width:80%"/>
                 </RadzenColumn>
                 <RadzenColumn>
                     <RadzenText Text="@History.Plate" Style="overflow: hidden; text-overflow:ellipsis;"/>

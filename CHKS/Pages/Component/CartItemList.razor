@@ -59,7 +59,16 @@
     }
 
     protected async Task EditProduct(Models.mydb.Connector Product){
-        var UpdatedItems = await DialogService.OpenAsync<SingleInputPopUp>(Product.Inventory.Name, new Dictionary<string, object>{{"Info",new string[]{"EditItem", Product.PriceOverwrite.ToString(), Product.Qty.ToString(), Product.Note}}}, new DialogOptions{Width="500px"});
+        var UpdatedItems = await DialogService.OpenAsync<SingleInputPopUp>(
+                Product.Inventory.Name, 
+                new Dictionary<string, object>{
+                    {"Info",new string[]{"EditItem",
+                        Product.PriceOverwrite?.ToString()??Product.Inventory.Export.ToString(), 
+                        Product.Qty.ToString(), 
+                        Product.Note,
+                        Product.Inventory.Stock.ToString()}}}, 
+                new DialogOptions{Width="500px"});
+
         if(UpdatedItems != null){
             Product.Qty = decimal.Parse(UpdatedItems[0]);
             Product.PriceOverwrite = decimal.Parse(UpdatedItems[1]);

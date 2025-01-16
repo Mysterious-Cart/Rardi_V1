@@ -114,7 +114,8 @@
     <div Style="padding:40px; padding-right:50px; min-width:425px">
         <RadzenRow Style="width:100%" AlignItems="AlignItems.Start" Gap=2px>
             <p style="font-size: 1.3vw; margin-right:auto; overflow:hidden; width:190px"><b>@(Current_Cart.Car_Id != null?Current_Cart.Car_Id + "#" + Current_Cart.CartId:"********")</b></p>
-            <RadzenButton Icon="save" Click="@CloseCart" style="width:25px; height:25px;border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:green; padding:1.5px;"/>
+            <RadzenButton Icon="save" Click="@CloseCart" style="width:25px; height:25px; border-radius:13px; background-color:transparent; border:solid;border-width:2px; 
+                border-color:lightgray; color:green; padding:1.5px;"/>
             @if(Current_Cart.CartId != -1){
                 <RadzenButton Icon="delete" Click="@DeleteCustomer"style="width:25px; height:25px;border-radius:13px; background-color:transparent; border:solid;border-width:2px; border-color:lightgray; color:red; padding:1.5px"/>
             }

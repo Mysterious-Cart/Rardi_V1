@@ -25,14 +25,27 @@
             <RadzenText Text="Product" TextStyle="TextStyle.DisplayH6" />
             <RadzenStack Gap="10px" Style="margin-top: 20px;">
                 <RadzenText Text="Detail" TextStyle="TextStyle.H6"/>
+                <RadzenRow AlignItems="AlignItems.Center">
+                    <RadzenColumn Size="2">
+                        <RadzenText Text="Name:"/>
+                    </RadzenColumn>
+                    <RadzenColumn Size="10">
+                        <RadzenText Text="@Product?.Name" Style="overflow:hidden; text-overflow:ellipsis; line-height:30px; height:1lh;"/>
+                    </RadzenColumn>
+                </RadzenRow>
                 <RadzenRow>
                     <RadzenText Text="Tags:"/>
+                    <RadzenStack Orientation="Orientation.Horizontal" Wrap="FlexWrap.Wrap">
+                        @foreach(var i in Product?.Tags??[]){
+                            <RadzenBadge Text="@i.Tag" style=@($"background-color: {i.Color}")/>
+                        }
+                    </RadzenStack>
                     <RadzenButton  Icon="add" Click=@EditTags Size="ButtonSize.ExtraSmall" Variant="Variant.Outlined" Style="margin-left:auto"/>
                 </RadzenRow>
                 <RadzenRow>
                     <RadzenText Text="Qty: " />
                     <RadzenText Text=@(Product?.Stock.ToString("0")??"--")/>
-                    <RadzenButton  Icon="add" Size="ButtonSize.ExtraSmall" Variant="Variant.Outlined" Style="margin-left:auto"/>
+                    <RadzenButton Icon="add" Size="ButtonSize.ExtraSmall" Variant="Variant.Outlined" Style="margin-left:auto"/>
                 </RadzenRow>
                 <RadzenRow>
                     <RadzenText Text="Acquisition:"/>
@@ -60,26 +73,26 @@
 
     <RadzenColumn>
         
-    <RadzenDataGrid @ref="grid0" AllowVirtualization="true" ColumnWidth="200px" AllowFiltering="true" FilterMode="FilterMode.Advanced"  ShowPagingSummary="true" Style="height:94dvh;  "
+    <RadzenDataGrid @ref="grid0" AllowVirtualization="true" Style="height:94dvh;"
         Data="@inventories" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate" RowSelect="@(args => Select_Product(args))" TItem="CHKS.Models.mydb.Inventory">
         <Columns>
-            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Barcode" Title="កូដ" Width="30%" OrderIndex="1">
+            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Barcode" Title="កូដ" OrderIndex=1>
                 <EditTemplate Context="inventory">
                     <RadzenTextBox style=" width: 100%" @bind-Value="@inventory.Barcode" Name="Barcode"/>
                 </EditTemplate>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Name" Title="ឈ្មោះ" Width="30%" OrderIndex="1">
+            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Name" Title="ឈ្មោះ" MinWidth="30%" Width="40%" Resizable="true"  OrderIndex="2">
                 <EditTemplate Context="inventory">
                     <RadzenTextBox style="width: 100%" @bind-Value="@inventory.Name" Name="Name" />
                     <RadzenRequiredValidator Component="Name" Text="Name is required" style="position: absolute;" />
                 </EditTemplate>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Stock" Title="ក្នុងស្តុក" Width="20%" FormatString="{0:0}">
+            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Stock" Title="ក្នុងស្តុក" FormatString="{0:0}">
                 <EditTemplate Context="inventory">
                     <RadzenNumeric style="width: 100%" @bind-Value="@inventory.Stock" Name="Stock" Format="N2" ShowUpDown = "false"/>
                 </EditTemplate>
             </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Import" Title="តម្លៃទិញចូល" Width="20%" FormatString="${0:N2}">
+            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Import" Title="តម្លៃទិញចូល" FormatString="${0:N2}">
                 <EditTemplate Context="inventory">
                     <RadzenNumeric style="width: 100%" @bind-Value="@inventory.Import" Name="Import" Format="N2" ShowUpDown = "false" />
                 </EditTemplate>
@@ -88,7 +101,7 @@
                 </FooterTemplate>
             </RadzenDataGridColumn>
             
-            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Export" Title="តម្លៃលក់" Width="20%" FormatString="${0:N2}">
+            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Export" Title="តម្លៃលក់" MinWidth="10%" FormatString="${0:N2}">
                 <EditTemplate Context="inventory">
                     <RadzenNumeric style="width: 100%" @bind-Value="@inventory.Export" Name="Export"  Format="N2"  ShowUpDown = "false"/>
                 </EditTemplate>

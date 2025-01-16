@@ -35,7 +35,7 @@ namespace CHKS.Pages
         protected mydbService mydbService {get; set;}
 
         protected int CartID;
-        protected string[] Product = {"1", "0", ""};
+        protected string[] Product = {"1", "0", "", "0"};
         protected DateOnly ChosenDate;
         protected string GivenMoney;
 
@@ -57,6 +57,7 @@ namespace CHKS.Pages
             }else if(Info[0] == "EditItem"){
                 Info[1] = Math.Round(decimal.Parse(Info[1]),2).ToString();
                 Info[2] = Math.Round(decimal.Parse(Info[2]),2).ToString();
+                Info[4] = Math.Round(decimal.Parse(Info[4]),2).ToString();
                 Product[0] = Info[2];
                 Product[1] = Info[1]; 
                 Product[2] = Info[3];

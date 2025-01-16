@@ -28,9 +28,9 @@
                 </RadzenStack>
                 <RadzenStack Gap="1px">
                     <RadzenText Text="ចំនួន" Style="font-family: 'Khmer OS Battambang' " />
-                    <RadzenNumeric @bind-Value="Product[0]" title="Qty" Placeholder="Required" Min=0 Max="@decimal.Parse(@Info[2])"/>
+                    <RadzenNumeric @bind-Value="Product[0]" title="Qty" Placeholder="Required" Min=0 Max="@decimal.Parse(Info[2])"/>
                     <RadzenNumericRangeValidator Component="Qty" Min="0" Max="@Decimal.Parse(@Info[2])"/>
-                    <RadzenText>ក្នុងស្តុកសល់: @Info[2]</RadzenText>
+                    <RadzenText>ក្នុងស្តុកសល់: @Info[4]</RadzenText>
                 </RadzenStack>
                 <RadzenStack Gap="1px">
                     <RadzenText Text="តម្លៃថ្មី" Style="font-family: 'Khmer OS Battambang' " />
@@ -49,7 +49,7 @@
                     <RadzenText Text="ចំនួន" Style="font-family: 'Khmer OS Battambang' " />
                     <RadzenNumeric @bind-Value="Product[0]" title="Qty" Placeholder="Required" Min=0 Max="@decimal.Parse(@Info[2])"/>
                     <RadzenNumericRangeValidator Component="Qty" Min="0" Max="@Decimal.Parse(@Info[2])"/>
-                    <RadzenText>ក្នុងស្តុកសល់: @Info[2]</RadzenText>
+                    <RadzenText>ក្នុងស្តុកសល់: @Info[4]</RadzenText>
                 </RadzenStack>
                 <RadzenStack Gap="1px">
                     <RadzenText Text="តម្លៃថ្មី" Style="font-family: 'Khmer OS Battambang' " />

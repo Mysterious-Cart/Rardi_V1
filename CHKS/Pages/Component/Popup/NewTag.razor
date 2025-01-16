@@ -9,24 +9,14 @@
 @using CHKS.Models.mydb;
 
 
-<RadzenRow>
-    <RadzenPickList Style="width:100%; height:200px" @bind-Source="@TagsList" Multiple="true" 
-    @bind-Target="@ChoosenTags" TItem="Tags" AllowFiltering="true" TextProperty="Tag">
-        <SourceHeader>
-            Tags:
-        </SourceHeader>
-        <TargetHeader>
-            Selected Tags:
-        </TargetHeader>
-    </RadzenPickList>
-</RadzenRow>
+
 <RadzenRow Style="margin-top:10px; ">
     <RadzenButton Text="Confirm" ButtonStyle="ButtonStyle.Success" Click="@(() => AddTag())"/>
     <RadzenButton Text="Create" Click="@InsertRow" Style="margin-left:auto;"/>
 </RadzenRow>
 <RadzenRow Style="margin-top:10px">
-    <RadzenDataGrid Style="height:200px; " @ref="@TagsTable" AllowVirtualization="true" Data="TagsList" TItem="Tags" 
-    RowCreate="@CreateTag" RowUpdate="@GridRowUpdate" AllowPaging=false>
+    <RadzenDataGrid Style="height:100% " @ref="@TagsTable" AllowVirtualization="true" Data="TagsTableData" TItem="Tags"
+    RowCreate="@CreateTag" RowUpdate="@GridRowUpdate" AllowPaging=false SelectionMode="DataGridSelectionMode.Multiple" @bind-Value="@ChoosenTags">
         <Columns>
             <RadzenDataGridColumn TItem="Tags" Property="Tag" Title="Tag">
                 <EditTemplate Context="tag">
@@ -44,7 +34,8 @@
                     <RadzenButton Click="@(args => TagsTable.CancelEditRow(tag))"ButtonStyle="ButtonStyle.Danger" Icon="cancel"/>
                 </EditTemplate>
                 <Template Context="tag">
-                    <RadzenButton Click="@(args => DeleteTag(tag))"ButtonStyle="ButtonStyle.Danger" Icon="cancel"/>
+                    <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="edit" Disabled="true"/>
+                    <RadzenButton Click="@(args => DeleteTag(tag))"ButtonStyle="ButtonStyle.Danger" Icon="delete"/>
                 </Template>
             </RadzenDataGridColumn>
         </Columns>
@@ -57,34 +48,43 @@
     public Inventory product {get; set;}
 
     private RadzenDataGrid<Tags> TagsTable = null;
-    private IEnumerable<Tags> TagsList = [];
-    private IEnumerable<Tags> ChoosenTags = [];
+    private IEnumerable<Tags> TagsTableData = [];
+    private IList<Tags> ChoosenTags = [];
 
     protected override async Task OnInitializedAsync()
     {
        var result = await Mydbservice.GetTags();
-       TagsList = result.ToList();
+       TagsTableData = result;
+       ChoosenTags = product?.Tags.ToList();
+        
     }
 
     private async Task AddTag(){
-        Console.WriteLine("hi");
-        foreach(var i in ChoosenTags.ToList()){
-            Console.WriteLine(product.Name);
-            await Mydbservice.InventoryAddTag(product.Id, i);
+        foreach(var i in product.Tags){
+            if(!ChoosenTags.Any(v => v.Id.Equals(i.Id))){
+                await Mydbservice.InventoryRemoveTag(product.Id, i);
+            }
         }
+        foreach(var i in ChoosenTags){
+            if(!product.Tags.Any(v => v.Id.Equals(i.Id))){
+                await Mydbservice.InventoryAddTag(product.Id, i);
+            }
+        }
+
+        DialogService.Close();
     }
 
-    private async Task DeleteTag(Tags tag){
+    private async void DeleteTag(Tags tag){
         await Mydbservice.DeleteTags(tag.Id);
         await TagsTable.Reload();
     }
 
-    private async Task InsertRow(){
+    private async void InsertRow(){
         await TagsTable.InsertRow(new Tags());
     }
 
 
-    private async Task CreateTag(Tags args){
+    private async void CreateTag(Tags args){
         var tag = new Tags() {
             Tag = args.Tag,
             Color = args.Color,
@@ -93,13 +93,13 @@
         await TagsTable.Reload();
     }
 
-    protected async Task GridRowUpdate(Tags args)
-        {
-            await Mydbservice.UpdateTags(args);
+    private async void GridRowUpdate(Tags args)
+    {
+        await Mydbservice.UpdateTags(args);
 
-        }
+    }
 
-    private async Task SaveButtonClick(MouseEventArgs args, Tags data)
+    private async void SaveButtonClick(MouseEventArgs args, Tags data)
     {
         await TagsTable.UpdateRow(data);
     }

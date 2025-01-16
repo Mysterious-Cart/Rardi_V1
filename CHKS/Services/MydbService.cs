@@ -1345,6 +1345,17 @@ namespace CHKS
             return await Task.FromResult(item.Tags);
         }
 
+        public async Task<IEnumerable<Models.mydb.Tags>> InventoryRemoveTag(Guid Id, Models.mydb.Tags Tags)
+        {
+            var item = Context.Inventories
+                              .Where(i => i.Id == Id).FirstOrDefault();
+            item?.Tags?.Remove(Tags);
+
+            Context.SaveChanges();
+
+            return await Task.FromResult(item.Tags);
+        }
+
         partial void OnInventoryCreated(CHKS.Models.mydb.Inventory item);
         partial void OnAfterInventoryCreated(CHKS.Models.mydb.Inventory item);
 

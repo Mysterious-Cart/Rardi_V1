@@ -40,10 +40,7 @@ namespace CHKS.Pages
 
         private List<Inventory> _inventories = [];
         private IEnumerable<Inventory> inventories = [];
-        private IEnumerable<Tags> Tags = [];
-        private RadzenDataGrid<CHKS.Models.mydb.Inventory> grid0;
-
-        private bool isModifying = false;
+        private RadzenDataGrid<Inventory> grid0;
 
         private Inventory Product;
         private int TotalSale = 0;
@@ -64,7 +61,7 @@ namespace CHKS.Pages
         }
 
         private async Task GetProductFromInventory(){
-            var query_product = await mydbService.GetInventories(new Query(){Expand="HistoryConnectors"});
+            var query_product = await mydbService.GetInventories(new Query(){Expand="HistoryConnectors, Tags"});
             _inventories = query_product.OrderByDescending(i => i.Sold_Total).AsEnumerable().ToList();
             inventories = _inventories;
             
@@ -111,7 +108,7 @@ namespace CHKS.Pages
                 await RewriteHistory(ChoseProduct, product);
             }
         } 
-
+        [Obsolete]
         protected async Task RewriteHistory(Models.mydb.Inventory NewProduct, List<Guid> OldProductCode){
             foreach(Guid i in OldProductCode){
                 IEnumerable<Models.mydb.Historyconnector> historyconnectors = await mydbService.GetHistoryconnectors();
@@ -122,22 +119,6 @@ namespace CHKS.Pages
                 }
             }
             
-        }
-
-        protected async Task SelectProduct(Models.mydb.Inventory product){
-            if(IsCombiningMode == true){
-                bool Dupe = false;
-                foreach(var i in ChosenProduct){
-                    if(i.Id == product.Id){ 
-                        Dupe = true;
-                        break;
-                    }
-                }
-                if( Dupe == false){
-                    ChosenProduct.Add(product);
-                    await Toasting("បានចាប់យក");
-                }
-            }
         }
 
         protected string ToastState = "";
@@ -151,12 +132,15 @@ namespace CHKS.Pages
 
         protected async Task AddButtonClick(MouseEventArgs args)
         {
-            await grid0.InsertRow(new Inventory(){Name = ""});
+            await grid0.InsertRow(new Inventory());
             
         }
 
         private async Task EditTags(){
-            DialogService.Open<NewTag>("Tags", new Dictionary<string, object>{{"product", Product}}, new DialogOptions{Height="600px",});
+            if(Product is not null){
+                await DialogService.OpenAsync<NewTag>("Tags", new Dictionary<string, object>{{"product", Product}}, new DialogOptions{Height="600px",});
+                StateHasChanged();
+            }
         }
 
         protected async Task GridDeleteButtonClick( CHKS.Models.mydb.Inventory inventory)
@@ -180,7 +164,6 @@ namespace CHKS.Pages
                     Detail = $"Unable to delete Inventory"
                     
                 });
-                isModifying = false;   
             }
         }
 
@@ -189,8 +172,6 @@ namespace CHKS.Pages
         protected async Task GridRowUpdate(CHKS.Models.mydb.Inventory args)
         {
             await mydbService.UpdateInventory(args);
-            isModifying = false;
-
         }
 
         protected async Task GridRowCreate(CHKS.Models.mydb.Inventory args)
