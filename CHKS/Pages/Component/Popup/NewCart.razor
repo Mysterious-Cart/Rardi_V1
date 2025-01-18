@@ -2,12 +2,12 @@
 
 @attribute [Authorize]
 @inject mydbService DbService;
-@inject DialogService DialogService;
+@inject Radzen.DialogService DialogService;
 @using Models.mydb
 
-<RadzenStack AlignItems="AlignItems.End" Orientation="@Orientation.Horizontal" Style="margin-bottom: 10px;" JustifyContent="JustifyContent.SpaceBetween">
+<RadzenStack AlignItems="Radzen.AlignItems.End" Orientation="@Radzen.Orientation.Horizontal" Style="margin-bottom: 10px;" JustifyContent="JustifyContent.SpaceBetween">
     <RadzenTextBox Placeholder="Type to search" Style="width: 100%;" @oninput=@((args) => GetCarsAsync(args))/>
-    <RadzenButton Text="Add" Icon="add" Variant="Variant.Outlined" Style="width:90px" Click="@CreateCar"/>
+    <RadzenButton Text="Add" Icon="add" Variant="Radzen.Variant.Outlined" Style="width:90px" Click="@CreateCar"/>
 </RadzenStack>
 <RadzenRow>
     <RadzenDataGrid 

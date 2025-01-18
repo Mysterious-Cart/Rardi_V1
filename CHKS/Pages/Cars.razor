@@ -3,7 +3,7 @@
 <PageTitle>Cars</PageTitle>
 <RadzenStack>
     <RadzenRow>
-        <RadzenButton Icon="add_circle_outline" Text="Add" Click="@AddButtonClick" Variant="Variant.Flat"  Style="margin-left:auto"/>
+        <RadzenButton Icon="add_circle_outline" Text="Add" Click="@AddButtonClick" Variant="Radzen.Variant.Flat"  Style="margin-left:auto"/>
     </RadzenRow>
     <RadzenRow>
       <RadzenColumn SizeMD=12>
@@ -28,20 +28,20 @@
                 </RadzenDataGridColumn>
                 <RadzenDataGridColumn TItem="CHKS.Models.mydb.Car" Filterable="false" Sortable="false" Width="156px" TextAlign="TextAlign.Center">
                     <EditTemplate Context="car">
-                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Radzen.Variant.Flat" Size="ButtonSize.Medium"
                             style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
                             Click=@(args => SaveButtonClick(args, car)) @onclick:stopPropagation="true" />
-                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Radzen.Variant.Flat" Size="ButtonSize.Medium"
                             Click=@(args => CancelButtonClick(args, car)) @onclick:stopPropagation="true" />
                     </EditTemplate>
                     <Template Context="car">
 
-                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                        <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Radzen.Variant.Flat" Size="ButtonSize.Medium"
                             style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
                             Click=@(args => EditButtonClick(args, car)) @onclick:stopPropagation="true" />
 
                         <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Medium"
-                            Shade="Shade.Lighter" Variant="Variant.Flat"
+                            Shade="Shade.Lighter" Variant="Radzen.Variant.Flat"
                             Click=@(args => GridDeleteButtonClick(args, car)) @onclick:stopPropagation="true" />
                     </Template>
                 </RadzenDataGridColumn>

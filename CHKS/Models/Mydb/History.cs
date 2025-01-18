@@ -9,14 +9,14 @@ namespace CHKS.Models.mydb
     public partial class History
     {
         [Required]
-        public string CashoutDate { get; set; } = DateTime.Now.ToString("dd/MM/yyyy");
+        public string CashoutDate { get; set;} = DateTime.Now.ToString("dd/MM/yyyy");
 
         [Required]
         public string Plate { get; set; }
 
         public Car Car { get; set; }
 
-        public decimal? Total { get; set; } = 0;
+        public decimal? Total { get; set;} = 0;
 
         public decimal? Bank { get; set; } = 0;
 
@@ -32,9 +32,11 @@ namespace CHKS.Models.mydb
 
         public string Info { get; set; } = "";
 
+        public short Status {get; set;} = 0;
+
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public ICollection<Historyconnector> Historyconnectors { get; set; }
+        public IEnumerable<Historyconnector> Historyconnectors { get; set; }
     }
 }

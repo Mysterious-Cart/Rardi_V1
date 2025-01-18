@@ -13,6 +13,7 @@ using Microsoft.OData.ModelBuilder;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
+using MudBlazor.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,7 @@ builder.Services.AddServerSideBlazor().AddHubOptions(o =>
 {
     o.MaximumReceiveMessageSize = 10 * 1024 * 1024;
 });
+builder.Services.AddMudServices();
 builder.Services.AddScoped<DialogService>();
 builder.Services.AddScoped<CHKS.PublicCommand>();
 builder.Services.AddScoped<NotificationService>();

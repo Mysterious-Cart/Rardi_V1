@@ -8,13 +8,13 @@
 
 <PageTitle>Statistic</PageTitle>
 
-<RadzenStack Orientation="Orientation.Horizontal" Style="margin-top: 30px; margin-left:30px">
+<RadzenStack Orientation="Radzen.Orientation.Horizontal" Style="margin-top: 30px; margin-left:30px">
 
     <RadzenStack Style="width: 70%">
 
-        <RadzenStack Orientation="Orientation.Horizontal" Style="overflow-x:scroll; overflow-y:hidden" AlignItems="AlignItems.Center">
+        <RadzenStack Orientation="Radzen.Orientation.Horizontal" Style="overflow-x:scroll; overflow-y:hidden" AlignItems="Radzen.AlignItems.Center">
             <RadzenCard class="Statistic-Info-Overview-Card" Style="height: 150px;" >
-                <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Wrap="FlexWrap.NoWrap" class="RadzenStack" Style="height:300px">
+                <RadzenStack Orientation="Radzen.Orientation.Vertical" AlignItems="Radzen.AlignItems.Center" Wrap="FlexWrap.NoWrap" class="RadzenStack" Style="height:300px">
                     <RadzenLabel Text="ប្រាក់ចំណេញ:" class="RadzenLabel" />
                     <RadzenText Text="@(Math.Round((((ProductTotal-ImportTotal) + ServiceTotal)-(MonthlyExpense.Sum(i => i.Expense))).GetValueOrDefault(),2).ToString() + ' ' +'$')" class="RadzenText"/>
                     <RadzenText Text = "((សរុបទំនេញ - សរុបតម្លៃដើម) - ចំណាយ)) + សេវាសរុប" style="font-size: small; color:gray; "/>
@@ -22,7 +22,7 @@
             </RadzenCard>
 
             <RadzenCard class="Statistic-Info-Overview-Card" >
-                <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Wrap="FlexWrap.NoWrap" class="RadzenStack">
+                <RadzenStack Orientation="Radzen.Orientation.Vertical" AlignItems="Radzen.AlignItems.Center" Wrap="FlexWrap.NoWrap" class="RadzenStack">
                     <RadzenRow JustifyContent="JustifyContent.Center" style="width:100%; height:25px;">
                         <RadzenLabel Text="សរុប:" class="RadzenLabel" />
                         <RadzenButton Icon="info_outline" IconColor="White" Click="@ShowHideCashInfo" Style="background-color: transparent; border-radius:10px; margin-left:auto; margin-bottom:auto"/>
@@ -32,7 +32,7 @@
             </RadzenCard>
 
             <RadzenCard class="@SubCardClass" >
-                <RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Left" class="RadzenStack" Gap="1px">
+                <RadzenStack Orientation="Radzen.Orientation.Vertical" AlignItems="Radzen.AlignItems.Center" JustifyContent="JustifyContent.Left" class="RadzenStack" Gap="1px">
                     <RadzenRow style="width:100%">
                         <RadzenLabel Text="Bank: "/>  
                         <RadzenText Text=@TotalBank.ToString() class="RadzenText" />
@@ -52,25 +52,25 @@
                 </RadzenStack>  
             </RadzenCard>
             <RadzenCard class="Statistic-Info-Overview-Card" >
-                <RadzenStack Orientation = "Orientation.Vertical" AlignItems = "AlignItems.End" Wrap="FlexWrap.NoWrap" class="RadzenStack">
+                <RadzenStack Orientation = "Radzen.Orientation.Vertical" AlignItems = "Radzen.AlignItems.End" Wrap="FlexWrap.NoWrap" class="RadzenStack">
                     <RadzenLabel Text="សរុបតម្លៃដើម:" class="RadzenLabel" />
                     <RadzenText Text="@(Math.Round(ImportTotal.GetValueOrDefault(),2).ToString() + ' '+ '$')" class="RadzenText"/>
                 </RadzenStack>
             </RadzenCard>
             <RadzenCard class="Statistic-Info-Overview-Card" >
-                <RadzenStack Orientation = "Orientation.Vertical" AlignItems = "AlignItems.End" Wrap="FlexWrap.NoWrap" class="RadzenStack">
+                <RadzenStack Orientation = "Radzen.Orientation.Vertical" AlignItems = "Radzen.AlignItems.End" Wrap="FlexWrap.NoWrap" class="RadzenStack">
                     <RadzenLabel Text="សរុបទំនេញ:" class="RadzenLabel"/>
                     <RadzenText Text="@(Math.Round(ProductTotal.GetValueOrDefault(),2).ToString() + ' '+ '$')" class="RadzenText"/>
                 </RadzenStack>
             </RadzenCard>
             <RadzenCard class="Statistic-Info-Overview-Card" >
-                <RadzenStack Orientation = "Orientation.Vertical" AlignItems = "AlignItems.End" Wrap="FlexWrap.NoWrap" class="RadzenStack" >
+                <RadzenStack Orientation = "Radzen.Orientation.Vertical" AlignItems = "Radzen.AlignItems.End" Wrap="FlexWrap.NoWrap" class="RadzenStack" >
                     <RadzenLabel Text="សរុបសេវា:" class="RadzenLabel"/>
                     <RadzenText Text="@(Math.Round(ServiceTotal.GetValueOrDefault(),2).ToString() + ' '+ '$' )"   class="RadzenText"/>        
                 </RadzenStack>
             </RadzenCard>
             <RadzenCard class="Statistic-Info-Overview-Card">
-                <RadzenStack Orientation = "Orientation.Vertical" AlignItems = "AlignItems.End" Wrap="FlexWrap.NoWrap" class="RadzenStack">
+                <RadzenStack Orientation = "Radzen.Orientation.Vertical" AlignItems = "Radzen.AlignItems.End" Wrap="FlexWrap.NoWrap" class="RadzenStack">
                     <RadzenLabel Text="ចំណាយ:" class="RadzenLabel"/>
                     <RadzenText Text="@(Math.Round(MonthlyExpense.Sum(i => i.Expense)).ToString() + ' ' +'$')" class="RadzenText"/>                
                 </RadzenStack>
@@ -78,8 +78,8 @@
         </RadzenStack>
 
         <RadzenCard class="Statistic-Setting-Card">
-            <RadzenStack Orientation="Orientation.Horizontal">
-                <RadzenStack Orientation="Orientation.Horizontal" Gap="10px" AlignItems="AlignItems.Center">
+            <RadzenStack Orientation="Radzen.Orientation.Horizontal">
+                <RadzenStack Orientation="Radzen.Orientation.Horizontal" Gap="10px" AlignItems="Radzen.AlignItems.Center">
                     <RadzenLabel Text="ពីថ្ងៃទី" Component="From" class="RadzenLabel"/>
                     <RadzenDatePicker @bind-Value="@TimeStart" Name="From" DateFormat="dd/MM/yyyy" Max="@DateTime.Now" Change="@GetHistoryBaseOfChoosenDate" />
                     <RadzenLabel Text="ដល់" Component="To" class="RadzenLabel"/>
@@ -90,7 +90,7 @@
             </RadzenStack>
         </RadzenCard>
 
-        <RadzenStack Orientation="Orientation.Horizontal" style="height: 64dvh;">
+        <RadzenStack Orientation="Radzen.Orientation.Horizontal" style="height: 64dvh;">
 
                 <RadzenDataGrid AllowFiltering="true" FilterMode="FilterMode.Advanced" GridLines="Radzen.DataGridGridLines.Horizontal" AllowVirtualization=true AllowSorting="true" @ref="@grid1" TItem ="Models.mydb.History" Data ="@Histories" Style="height: 100%; min-width:600px;border-radius:25px;"
                 RowSelect="@OpenHistory" AllowColumnResize=true AllowPaging=false>
@@ -123,14 +123,14 @@
                         <RadzenDataGridColumn title="តម្លៃដើម" TItem ="Models.mydb.Historyconnector" Property="CartId"></RadzenDataGridColumn>
                         <RadzenDataGridColumn >
                             <EditTemplate Context = "Historyconnector">
-                                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Radzen.Variant.Flat" Size="ButtonSize.Medium"
                                     style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
                                     Click=@(args => SaveButtonClick(args, Historyconnector)) @onclick:stopPropagation="true" />
-                                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Radzen.Variant.Flat" Size="ButtonSize.Medium"
                                     Click=@(args => CancelButtonClick(args, Historyconnector)) @onclick:stopPropagation="true" />
                             </EditTemplate>
                             <Template Context="Historyconnector">
-                                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
+                                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Radzen.Variant.Flat" Size="ButtonSize.Medium"
                                     style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
                                     Click=@(args => EditButtonClick(args, Historyconnector)) @onclick:stopPropagation="true" />
                             </Template>

@@ -10,7 +10,7 @@
 
 <PageTitle >Cashier</PageTitle>
 
-<RadzenStack Orientation="Orientation.Vertical" Style="width: calc(100% - 400px)">
+<RadzenStack Orientation="Radzen.Orientation.Vertical" Style="width: calc(100% - 400px)">
 
     <RadzenTextBox Placeholder="Type to search" style="border-radius:10px; margin-top:20px" @oninput=@(args => Search(args))/>
     
@@ -58,7 +58,7 @@
     background-color: white;"
     >
     @if(Current_Cart is null){
-        <RadzenStack Orientation="Orientation.Vertical" AlignItems="@AlignItems.Start" Gap="0px" 
+        <RadzenStack Orientation="Radzen.Orientation.Vertical" AlignItems="Radzen.AlignItems.Start" Gap="0px" 
         Style="padding: 20px; padding-top:30px; max-height: 95dvh; overflow-y:scroll; width:100%">
 
             <RadzenRow JustifyContent="JustifyContent.SpaceEvenly" Style="width: 100%; margin-bottom:10px">
@@ -69,7 +69,7 @@
                     <RadzenButton 
                         Icon="add" 
                         Text="Add" 
-                        Variant="Variant.Outlined"
+                        Variant="Radzen.Variant.Outlined"
                         Style="margin-left:auto; border-radius:15px"
                         Click=@CreateCart
                         />
@@ -112,7 +112,7 @@
     }else{
 
     <div Style="padding:40px; padding-right:50px; min-width:425px">
-        <RadzenRow Style="width:100%" AlignItems="AlignItems.Start" Gap=2px>
+        <RadzenRow Style="width:100%" AlignItems="Radzen.AlignItems.Start" Gap=2px>
             <p style="font-size: 1.3vw; margin-right:auto; overflow:hidden; width:190px"><b>@(Current_Cart.Car_Id != null?Current_Cart.Car_Id + "#" + Current_Cart.CartId:"********")</b></p>
             <RadzenButton Icon="save" Click="@CloseCart" style="width:25px; height:25px; border-radius:13px; background-color:transparent; border:solid;border-width:2px; 
                 border-color:lightgray; color:green; padding:1.5px;"/>
@@ -121,7 +121,7 @@
             }
         </RadzenRow>
         
-        <RadzenRow AlignItems="AlignItems.Center">
+        <RadzenRow AlignItems="Radzen.AlignItems.Center">
             <p style="font-size: medium; color:gray; margin-right:auto; height:20px"><b>@(Current_Cart is not null?Current_Cart.Car.Type:"Unknown")</b></p>
             <p style="font-size: medium; color:gray; margin-right:20%; "><b></b></p>
         </RadzenRow>
@@ -160,7 +160,7 @@
         <div style="color:lightgray; overflow:hidden; height:120px; width:100%">
             @if(Current_Cart.CartId != -1){
                 <RadzenButton Icon="attach_money"
-                    ButtonType="ButtonType.Submit"
+                    ButtonType="Radzen.ButtonType.Submit"
                     ButtonStyle="ButtonStyle.Success"
                     style="width:100%; border-radius:15px;" 
                     Text="គិតលុយ" 

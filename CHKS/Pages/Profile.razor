@@ -3,7 +3,7 @@
 
 <PageTitle>Profile</PageTitle>
 <RadzenStack>
-    <RadzenRow AlignItems="AlignItems.Center">
+    <RadzenRow AlignItems="Radzen.AlignItems.Center">
         <RadzenColumn Size="12">
             <RadzenText Text="Profile" TextStyle="TextStyle.H3" TagName="TagName.H1" style="margin: 0" />
         </RadzenColumn>
@@ -12,8 +12,8 @@
         <RadzenColumn SizeMD="12">
             <RadzenTemplateForm Method="post" Submit="@FormSubmit" TItem="CHKS.Models.ApplicationUser" Data="@user"
                 Visible="@(user != null)">
-                <RadzenAlert Size="AlertSize.Large" Shade="Shade.Light" AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" Title="Cannot change password" Visible="@errorVisible">@error</RadzenAlert>
-                <RadzenAlert Size="AlertSize.Large" Shade="Shade.Light" AlertStyle="AlertStyle.Success" Variant="Variant.Flat" Visible="@successVisible">
+                <RadzenAlert Size="AlertSize.Large" Shade="Shade.Light" AlertStyle="AlertStyle.Danger" Variant="Radzen.Variant.Flat" Title="Cannot change password" Visible="@errorVisible">@error</RadzenAlert>
+                <RadzenAlert Size="AlertSize.Large" Shade="Shade.Light" AlertStyle="AlertStyle.Success" Variant="Radzen.Variant.Flat" Visible="@successVisible">
                     Your password has been changed.
                 </RadzenAlert>
 
@@ -48,8 +48,8 @@
                         <RadzenCompareValidator Component="ConfirmPassword" Text="Passwords should be the same" Value="@newPassword" />
                     </RadzenColumn>
                 </RadzenRow>
-                <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End">
-                        <RadzenButton ButtonType="ButtonType.Submit" Text="Change password" Variant="Variant.Flat" />
+                <RadzenStack Orientation="Radzen.Orientation.Horizontal" AlignItems="Radzen.AlignItems.Center" JustifyContent="JustifyContent.End">
+                        <RadzenButton ButtonType="Radzen.ButtonType.Submit" Text="Change password" Variant="Radzen.Variant.Flat" />
                 </RadzenStack>
             </RadzenTemplateForm>
         </RadzenColumn>

@@ -216,14 +216,7 @@ namespace CHKS.Pages
                 changeDataMode = false;
             }
         }
-
-        protected async Task CleanData(){
-            foreach(var hist in History.ToList()){
-                hist.CashoutDate = hist.CashoutDate.Split('(',2)[0];
-                await mydbService.UpdateHistory(hist.Id, hist);
-            }
-        }
-
+        
         protected void GetProductWithoutImport(){
             
         }

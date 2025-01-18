@@ -1,9 +1,10 @@
-@page "/expense-menu"
+@page "/expense-menu"
+
 @attribute [Authorize]
 
 <PageTitle>ExpenseMenu</PageTitle>
 <RadzenCard >
-    <RadzenStack Orientation="Orientation.Vertical" Gap="10px" AlignItems="AlignItems.Stretch" > 
+    <RadzenStack Orientation="Radzen.Orientation.Vertical" Gap="10px" AlignItems="Radzen.AlignItems.Stretch" > 
         <RadzenRow Gap="160px">
             <RadzenLabel Text="Notes:" Component="Note"/>
             <RadzenLabel Text="Expense Amount: " Component="ExpenseInput"/>

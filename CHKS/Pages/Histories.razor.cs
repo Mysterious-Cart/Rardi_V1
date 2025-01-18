@@ -6,6 +6,7 @@ using Microsoft.JSInterop;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Radzen;
+using CHKS.Models.mydb;
 using Radzen.Blazor;
 
 namespace CHKS.Pages
@@ -33,9 +34,8 @@ namespace CHKS.Pages
         [Inject]
         public mydbService mydbService { get; set; }
 
-        protected IEnumerable<CHKS.Models.mydb.History> histories;
-
-        protected RadzenDataGrid<CHKS.Models.mydb.History> grid0;
+        protected IEnumerable<History> histories = [];
+        protected RadzenDataGrid<History> grid0;
 
         protected bool editMode = false;
         protected string date;
@@ -58,8 +58,10 @@ namespace CHKS.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            histories = await mydbService.GetHistories(new Query { Filter = $@"i => (i.CashoutDate.Contains(@0) || i.Plate.Contains(@0) )", FilterParameters = new object[] { search }, Expand = "Car" });
+            var result = await mydbService.GetHistories();
+            histories = result;
         }
+
 
         protected async Task OpenHistory(Models.mydb.History args){
             if(editMode == false){
@@ -135,12 +137,10 @@ namespace CHKS.Pages
 
          protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.History data)
         {
-            Console.WriteLine(ChosenDate);
             if(ChosenDate == "01/01/0001" ){
                 await DialogService.Alert("No New Date given.","Important");
                 await CancelButtonClick(args,data);
             }else{
-                data.CashoutDate = ChosenDate;
                 await grid0.UpdateRow(data);
             }
         }

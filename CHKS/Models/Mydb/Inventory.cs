@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CHKS.Models.mydb
 {
     [Table("inventory")]
-    public partial class Inventory : ITableFormat<Inventory>, IItem
+    public partial class Inventory : ITableFormat<Inventory>
     {
         
         [Required]

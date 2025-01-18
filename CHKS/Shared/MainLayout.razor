@@ -3,6 +3,10 @@
     <link href="css/Layout.css" rel="stylesheet"/>
 </head>
 <RadzenComponents />
+<MudThemeProvider Theme="@MyCustomTheme" />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
 <RadzenLayout style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body'; ">
         
@@ -30,3 +34,17 @@
         @Body
     </RadzenBody>
 </RadzenLayout>
+
+@code {
+    MudTheme MyCustomTheme = new MudTheme()
+    {
+        Typography = new Typography()
+        {
+            Body1 = new Body1()
+            {
+                FontFamily = new[] { "Khmer OS Battambang", "Helvetica", "Arial", "sans-serif" },
+
+            }
+        }
+    };
+}

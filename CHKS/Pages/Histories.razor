@@ -1,78 +1,16 @@
 @page "/histories"
-<head>
-    <link href="css/Page.css" rel="stylesheet"/>
-</head>
+@using CHKS.Models;
 
 <PageTitle>Histories</PageTitle>
-<RadzenStack Style="padding:10px">
-    <RadzenRow AlignItems="AlignItems.Center">
-        <RadzenColumn Size="12" SizeMD="6">
-            <RadzenText Text="Histories" TextStyle="TextStyle.H3" TagName="TagName.H1" style="margin: 0" />
-        </RadzenColumn>
-        <RadzenColumn Size="12" SizeMD="6">
-            <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End" Gap="0.5rem">
-                <RadzenSplitButton Icon="get_app" Text="Export" Click="@ExportClick" Variant="Variant.Flat" Shade="Shade.Lighter">
-                    <RadzenSplitButtonItem Text="Excel" Value="xlsx" />
-                    <RadzenSplitButtonItem Text="CSV" Value="csv" />
-                </RadzenSplitButton>
-            </RadzenStack>
-        </RadzenColumn>
-    </RadzenRow>
-    <RadzenTextBox Placeholder="Search ..." style="display: block; width: 100%" @oninput="@Search" aria-label="Search by all string columns" />
-    <RadzenRow>
-      <RadzenColumn SizeMD=12>
-        <RadzenDataGrid @ref="grid0" ColumnWidth="90px" AllowVirtualization="true" AllowSorting="true" Style="height: 75vh;"
-            Data="@histories" TItem="CHKS.Models.mydb.History" RowSelect="@OpenHistory" RowUpdate="@GridRowUpdate">
-            <Columns>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="CashoutDate" Title="Cashout Date">
-                    <EditTemplate Context="history">
-                        <RadzenDatePicker style="display: block; width: 100%" @bind-Value="@ChosenDate" Name="Date" DateFormat="dd/MM/yyyy"/>
-                    </EditTemplate>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Car.Plate" Title="Car">
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Total" Title="Total" FormatString="${0:N2}">
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Bank" Title="Paid(Bank)" FormatString="${0:N2}">
-                    <EditTemplate Context="history">
-                        <RadzenNumeric @bind-Value="history.Bank" Min=0/>
-                    </EditTemplate>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Baht" Title="Paid(Baht)">
-                    <EditTemplate Context="history">
-                        <RadzenNumeric @bind-Value="history.Baht" Min=0/>
-                    </EditTemplate>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Dollar" Title="Paid(Dollar)" FormatString="${0:N2}">
-                    <EditTemplate Context="history">
-                        <RadzenNumeric @bind-Value="history.Dollar" Min=0/>
-                    </EditTemplate>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CHKS.Models.mydb.History" Property="Riel" Title="Paid(Riel)">
-                    <EditTemplate Context="history">
-                        <RadzenNumeric @bind-Value="history.Riel" Min=0/>
-                    </EditTemplate>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn Width="60px">
-                    <EditTemplate Context="history">
-                        <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Variant.Flat" Size="ButtonSize.Medium"
-                            style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
-                            Click=@(args => SaveButtonClick(args, history)) @onclick:stopPropagation="true" />
-                        <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Variant.Flat" Size="ButtonSize.Medium"
-                            Click=@(args => CancelButtonClick(args, history)) @onclick:stopPropagation="true" />
-                    </EditTemplate>
-                    <Template Context="history">
-                        <RadzenButton ButtonStyle="ButtonStyle.Primary" Icon="edit" Size="ButtonSize.Medium"
-                            Shade="Shade.Lighter" Variant="Variant.Flat"
-                            Click=@(args => EditButtonClick(args, history)) @onclick:stopPropagation="true" />
-                        <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Medium"
-                            Shade="Shade.Lighter" Variant="Variant.Flat"
-                            Click=@(args => GridDeleteButtonClick(history)) @onclick:stopPropagation="true" />
-                    </Template>
-                </RadzenDataGridColumn>
-            </Columns>
-        </RadzenDataGrid>
 
-    </RadzenColumn>
-  </RadzenRow>
-</RadzenStack>
+<MudPaper Square="true" Width="420px" Height="100dvh" style="position:absolute; left:0px; top:0px">
+    <CustomerList Height="85dvh" OnRowClick="@(i => SelectedCar = i)"/>
+</MudPaper>
+
+<MudPaper Style="margin-left: 430px;">
+    <CustomerOverview Customer="@SelectedCar"/>
+</MudPaper>
+
+@code{
+    private CustomerDTO SelectedCar = null;
+}

@@ -5,7 +5,7 @@
 <PageTitle>SingleInputPopUp</PageTitle>
 
 <RadzenRow>
-    <RadzenStack Orientation="Orientation.Horizontal">
+    <RadzenStack Orientation="Radzen.Orientation.Horizontal">
         @if(Info[0] == "Cart ID"){
             <RadzenRow style="width:fit-content;">
                 <RadzenNumeric @bind-Value="CartID" title="CartID" Placeholder="Required" Min=1/>
