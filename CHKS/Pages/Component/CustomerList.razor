@@ -1,0 +1,155 @@
+@page "/customer-list"
+
+@attribute [Authorize]
+@using System.Diagnostics;
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@namespace CHKS.Component
+@using CHKS.Models;
+
+<MudContainer Fixed="true" Gutters="true" Style="padding-top:30px;">
+    <MudStack Row=true Justify="MudBlazor.Justify.SpaceBetween">
+        <MudText Typo="Typo.h5">Customer</MudText>
+        <MudButton StartIcon="@Icons.Material.Filled.Refresh" 
+            OnClick="@(() => FetchData_Operation())"
+            Size="MudBlazor.Size.Small" 
+            Variant="MudBlazor.Variant.Text"/>
+    </MudStack>
+    <MudDivider Light=true Style="margin-top: 10px; margin-bottom:10px;" />
+    <MudTextField InputType="InputType.Search" Placeholder="Type to Search" T="string" 
+        TextChanged="@(i => FilterCustomerData(i))"
+        AutoFocus=true Variant="MudBlazor.Variant.Outlined" 
+        Margin="Margin.Dense" />
+
+    <MudDataGrid Items="@Display_Customer" 
+        Virtualize=true 
+        Groupable="true" 
+        Filterable="false" 
+        Hover=true
+        T="CustomerDTO"
+        Height="@Height" 
+        Style="margin-top: 10px; box-shadow:none; max-width:100%;"  
+        ReadOnly="true"
+        Loading="@_Customer.IsNullOrEmpty()" 
+        SelectedItem="@SelectedItem"
+        RowClick="@(i => RowClick(i.Item))" >
+        
+        <Columns>
+            <PropertyColumn Context="Product" Property="h => h.Plate">
+                <CellTemplate>
+                    <MudHighlighter Text="@Product.Item.Plate" HighlightedText="@FilterText"/>
+                </CellTemplate>
+            </PropertyColumn>
+            <PropertyColumn Context="Product" Property="h => h.Phone">
+                <CellTemplate>
+                    <MudHighlighter Text="@Product.Item.Phone" HighlightedText="@FilterText"/>
+                </CellTemplate>
+            </PropertyColumn>
+            <TemplateColumn >
+                <CellTemplate>
+                    <MudChip Color="Color.Success"  Size="Size.Small" Text="Valid" 
+                        Variant="MudBlazor.Variant.Text"/>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        <LoadingContent>
+            <MudStack StretchItems="StretchItems.All" Spacing="0">
+                @{
+                    for(int i = 0; i < 10; i++){
+                        <MudSkeleton Style=" height:60px;" />
+                    }
+                }
+            </MudStack>
+        </LoadingContent> 
+    </MudDataGrid>
+</MudContainer>
+@code{  
+    [Inject] private mydbService mydbService {get; set;}
+    [Parameter] public string Height {get; set;} = "100%";
+    [Parameter] public EventCallback<CustomerDTO> OnRowClick{get; set;}
+
+    private List<CustomerDTO> _Customer = [];
+    private List<CustomerDTO> Display_Customer = [];
+    
+
+    protected async override Task OnInitializedAsync()
+    {
+        FetchData_Operation();
+        
+    }
+
+    private async void FetchData_Operation(){
+        _Customer = [];
+        Display_Customer = [];
+        Stopwatch stopwatch = new();
+        try{
+            Task Fetching = FetchCustomerData();
+            
+
+            if(Fetching.Status != TaskStatus.Running){
+                stopwatch.Start();
+                await Fetching;
+                stopwatch.Stop();
+            }
+        }catch(Exception exc){
+            
+        }finally{
+            StateHasChanged();
+            Console.WriteLine("Load Time: " + stopwatch.ElapsedMilliseconds);
+            stopwatch.Reset();
+            
+        }
+    }
+
+    private async Task FetchCustomerData(){
+        //The content to first load
+        const int DisplayChunk_ElementCount = 20;
+
+        var result = await mydbService.GetCars();
+        //Selecting only necessary Field and format it to DTO
+        var result_Selected = 
+            result.OrderBy(i => i.Plate).Select(
+                result => 
+                    new CustomerDTO(result.Plate, result.Phone)
+            );
+
+
+        //To display faster then the rest can load later(run on dif thread)
+        await Task.Run(() => Display_Chunk());;
+        SetToDisplay();
+
+        //Getting the rest of data(run on dif thread)
+        await Task.Run(() => TheRest_Chunk());
+        SetToDisplay();        
+        
+        async Task Display_Chunk(){
+            _Customer = result_Selected.Take(DisplayChunk_ElementCount).ToList();
+        }
+
+        async Task TheRest_Chunk(){
+            var NextChunk = result_Selected.Skip(DisplayChunk_ElementCount).ToList();
+            _Customer = _Customer.Union(NextChunk).ToList();
+        }
+
+        void SetToDisplay(){
+            Display_Customer = _Customer;
+            StateHasChanged();
+        }
+
+    }
+
+    private string FilterText="";
+    private async Task FilterCustomerData(string Filter){
+        FilterText = Filter;
+        Display_Customer = _Customer.AsParallel()
+                                    .Where(i => i.Plate.Contains(Filter) || i.Phone.Contains(Filter))
+                                    .ToList();
+    }
+
+    private CustomerDTO SelectedItem;
+    private void RowClick(CustomerDTO SelectedCar){
+        if(SelectedCar is null){return;}
+        OnRowClick.InvokeAsync(SelectedCar);
+    }
+}
+

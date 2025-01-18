@@ -1,0 +1,95 @@
+@page "/customer-overview"
+
+@attribute [Authorize]
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@namespace CHKS.Component
+@using CHKS.Models;
+
+<MudPaper Elevation="0" style="max-height:95dvh; overflow:scroll">
+
+    <MudContainer Gutters="true" Style="padding:20px" >
+        <MudText Typo="Typo.h5" >Customer Detail</MudText> 
+        <MudDivider Light="true" Style="margin-top:20px; margin-bottom:10px;"/>
+        <MudText Style="margin-bottom: 10px;" Typo="Typo.h6">Detail</MudText>
+        <MudStack Row="false" Wrap="Wrap.Wrap" Style="max-height: 100px;" >
+            <MudText>Plate</MudText>
+            <MudText>Phone Number</MudText>
+            <MudText>:</MudText>
+            <MudText>:</MudText>
+
+            <MudText>
+                @if(Customer is null){
+                    {<MudSkeleton Width="100px"/>}
+                }else{
+                    {<MudText>@Customer.Plate</MudText>}
+                }
+            </MudText>
+
+            <MudText>
+                @if(Customer is null){
+                    {<MudSkeleton Width="100px"/>}
+                }else{
+                    {<MudText Typo="Typo.body1">@(Customer.Phone.IsNullOrEmpty()?"គ្មានលេខទូរសព្ទ":Customer.Phone)</MudText>}
+                }
+            </MudText>
+            <MudText>Status</MudText>
+            <MudText>Car Info</MudText>
+            <MudText>:</MudText>
+            <MudText>:</MudText>
+            <MudText><MudSkeleton Width="100px"/></MudText>
+            <MudText><MudSkeleton Width="100px"/></MudText>
+        </MudStack>
+        <MudDivider Light="true" Style="margin-top:20px; margin-bottom:20px;"/>
+        <MudText Style="margin-bottom: 10px;" Typo="Typo.h6">Record</MudText>
+        <MudList T="History">
+        @if(!CustomerRecord.IsNullOrEmpty()){
+            @foreach (var Record in CustomerRecord)
+            {
+                <MudListItem T="string" Text="@Record.Plate" SecondaryText="@Record.CashoutDate" Icon="@Icons.Material.Filled.Receipt" IconColor="Color.Info">
+                    <NestedList>
+                    @if(!Record.Historyconnectors.IsNullOrEmpty()){
+                        foreach (var RecordItem in Record.Historyconnectors)
+                        {
+                            <MudListItem SecondaryText="@RecordItem.Note" Icon="@Icons.Material.Outlined.Inventory2" IconSize="@Size.Small">
+                                <ChildContent>
+                                    <MudStack Row=true Justify="MudBlazor.Justify.SpaceBetween">
+                                        <MudText style="width:40%">@RecordItem.Inventory.Name</MudText>
+                                        <MudText Align="Align.Center"> @RecordItem.Qty.ToString("0")</MudText>
+                                        <MudText Style="width: 10%;"> @RecordItem.Export.ToString("$0.00")</MudText>
+                                        <MudText > @((RecordItem.Qty * RecordItem.Export).ToString("$0.00"))</MudText>
+                                    </MudStack>
+                                </ChildContent>
+                            </MudListItem>
+                        }
+                        <MudListItem Text=@("សរុប: " + Record.Total?.ToString("$0.00"))  Icon="@Icons.Material.Filled.Numbers" IconColor="@Color.Tertiary"/>
+                    }else{
+                        <MudListItem Text="No Item." Inset=true />
+                    }
+                       
+                    </NestedList>
+                </MudListItem>
+            }
+        }else{
+            <MudListItem Text="No record."/>
+        }
+            
+            
+        </MudList>
+    </MudContainer>
+</MudPaper>
+
+@code {
+    [Inject] protected mydbService mydbService {get; set;}
+    [Parameter] public CustomerDTO Customer {get; set;} = null;
+
+    private IList<History> CustomerRecord = [];
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(Customer is not null){
+            var result = await mydbService.GetHistories(new Query{Expand="Historyconnectors, Historyconnectors.Inventory"});
+            CustomerRecord = result?.Where(i => i.Plate == Customer.Plate).ToList()??[];
+        }
+    }
+}
