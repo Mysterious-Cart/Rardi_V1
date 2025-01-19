@@ -1,0 +1,63 @@
+@namespace Pages.Component
+@using Pages.Component;
+
+<RadzenCard Style="box-shadow: none; height: 93dvh">
+    <RadzenText Text="Product" TextStyle="TextStyle.DisplayH6" />
+    <RadzenStack Gap="10px" Style="margin-top: 20px;">
+        <RadzenText Text="Detail" TextStyle="TextStyle.H6"/>
+        <RadzenRow AlignItems="Radzen.AlignItems.Center">
+            <RadzenColumn Size="2">
+                <RadzenText Text="Name:"/>
+            </RadzenColumn>
+            <RadzenColumn Size="10">
+                <RadzenText Text="@Product?.Name" Style="overflow:hidden; text-overflow:ellipsis; line-height:30px; height:1lh;"/>
+            </RadzenColumn>
+        </RadzenRow>
+        <RadzenRow>
+            <RadzenText Text="Tags:"/>
+            <RadzenStack Orientation="Radzen.Orientation.Horizontal" Wrap="FlexWrap.Wrap">
+                @foreach(var i in Product?.Tags??[]){
+                    <RadzenBadge Text="@i.Tag" style=@($"background-color: {i.Color}")/>
+                }
+            </RadzenStack>
+            <RadzenButton  Icon="add" Click=@EditTags Size="ButtonSize.ExtraSmall" Variant="Radzen.Variant.Outlined" Style="margin-left:auto"/>
+        </RadzenRow>
+        <RadzenRow>
+            <RadzenText Text="Qty: " />
+            <RadzenText Text=@(Product?.Stock.ToString("0")??"--")/>
+            <RadzenButton Icon="add" Size="ButtonSize.ExtraSmall" Variant="Radzen.Variant.Outlined" Style="margin-left:auto"/>
+        </RadzenRow>
+        <RadzenRow>
+            <RadzenText Text="Acquisition:"/>
+            <RadzenText Text=@(Acquisition != 0?Acquisition.ToString("$0.0"): "--") />
+        </RadzenRow>
+        <RadzenText Text="Traffic" TextStyle="TextStyle.H6"/>
+        <RadzenRow>
+            <RadzenColumn>
+                <RadzenStack Orientation="Radzen.Orientation.Vertical" AlignItems="Radzen.AlignItems.Center">
+                    <RadzenText Text="Total Sale:"/>
+                    <RadzenText Text=@(TotalSale != 0?TotalSale.ToString(): "--") />
+                </RadzenStack>
+            </RadzenColumn>
+            <RadzenColumn>
+                <RadzenStack Orientation="Radzen.Orientation.Vertical" AlignItems="Radzen.AlignItems.Center">
+                    <RadzenText Text="Revenue:"/>
+                    <RadzenText Text=@(Revenue != 0?Revenue.ToString("$0.0"): "--")  />
+                </RadzenStack>
+            </RadzenColumn>
+            
+        </RadzenRow>
+    </RadzenStack>
+</RadzenCard> 
+
+@code{
+    [Parameter] public Inventory Product {get; set;}
+    [Inject] protected MudBlazor.IDialogService dialogService{get; set;}
+    private int TotalSale = 0;
+    private decimal Revenue = 0;
+    private decimal Acquisition = 0;
+
+    private async Task EditTags(){
+            dialogService.Show<Popup.NewTag>("Tag",new MudBlazor.DialogOptions{ });
+    }
+}

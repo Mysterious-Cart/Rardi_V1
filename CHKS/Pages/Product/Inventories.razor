@@ -2,77 +2,53 @@
 
 @attribute [Authorize]
 @using System.Globalization
-@using CHKS.Pages.Component.Popup;
-
-<head>
-    <link href="css/Page.css" rel="stylesheet"/>
-</head>
+@using Pages.Component;
+@namespace CHKS.Pages
 
 <PageTitle>Inventories</PageTitle>
-<RadzenRow>
-    <RadzenColumn> 
-        <RadzenTextBox Placeholder="Type to search" Style="width:100%" @oninput="@(args => Search(args))"/>
-    </RadzenColumn>
-    <RadzenColumn Size="3"> 
-        <RadzenTextBox Placeholder="Filter Tag" Style="width:100%"/>
-    </RadzenColumn>
-    
-</RadzenRow>
+<MudToolBar Style="width:100%" Gutters=false>
+        <RadzenTextBox Placeholder="Type to search" Style="width:100%"  @oninput="@(args => Search(args))"/>
+        <MudSpacer />
+        <RadzenTextBox Placeholder="Filter Tag" Style="width:25%"/>
+</MudToolBar>
 
 <RadzenRow style="margin-top:10px">
-    <RadzenColumn Size="3" >
-        <RadzenCard Style="box-shadow: none; height: 93dvh">
-            <RadzenText Text="Product" TextStyle="TextStyle.DisplayH6" />
-            <RadzenStack Gap="10px" Style="margin-top: 20px;">
-                <RadzenText Text="Detail" TextStyle="TextStyle.H6"/>
-                <RadzenRow AlignItems="Radzen.AlignItems.Center">
-                    <RadzenColumn Size="2">
-                        <RadzenText Text="Name:"/>
-                    </RadzenColumn>
-                    <RadzenColumn Size="10">
-                        <RadzenText Text="@Product?.Name" Style="overflow:hidden; text-overflow:ellipsis; line-height:30px; height:1lh;"/>
-                    </RadzenColumn>
-                </RadzenRow>
-                <RadzenRow>
-                    <RadzenText Text="Tags:"/>
-                    <RadzenStack Orientation="Radzen.Orientation.Horizontal" Wrap="FlexWrap.Wrap">
-                        @foreach(var i in Product?.Tags??[]){
-                            <RadzenBadge Text="@i.Tag" style=@($"background-color: {i.Color}")/>
-                        }
-                    </RadzenStack>
-                    <RadzenButton  Icon="add" Click=@EditTags Size="ButtonSize.ExtraSmall" Variant="Radzen.Variant.Outlined" Style="margin-left:auto"/>
-                </RadzenRow>
-                <RadzenRow>
-                    <RadzenText Text="Qty: " />
-                    <RadzenText Text=@(Product?.Stock.ToString("0")??"--")/>
-                    <RadzenButton Icon="add" Size="ButtonSize.ExtraSmall" Variant="Radzen.Variant.Outlined" Style="margin-left:auto"/>
-                </RadzenRow>
-                <RadzenRow>
-                    <RadzenText Text="Acquisition:"/>
-                    <RadzenText Text=@(Acquisition != 0?Acquisition.ToString("$0.0"): "--") />
-                </RadzenRow>
-                <RadzenText Text="Traffic" TextStyle="TextStyle.H6"/>
-                <RadzenRow>
-                    <RadzenColumn>
-                        <RadzenStack Orientation="Radzen.Orientation.Vertical" AlignItems="Radzen.AlignItems.Center">
-                            <RadzenText Text="Total Sale:"/>
-                            <RadzenText Text=@(TotalSale != 0?TotalSale.ToString(): "--") />
-                        </RadzenStack>
-                    </RadzenColumn>
-                    <RadzenColumn>
-                        <RadzenStack Orientation="Radzen.Orientation.Vertical" AlignItems="Radzen.AlignItems.Center">
-                            <RadzenText Text="Revenue:"/>
-                            <RadzenText Text=@(Revenue != 0?Revenue.ToString("$0.0"): "--")  />
-                        </RadzenStack>
-                    </RadzenColumn>
-                    
-                </RadzenRow>
-            </RadzenStack>
-        </RadzenCard> 
-    </RadzenColumn>
+    
 
     <RadzenColumn>
-        
+
+        <MudDataGrid 
+            T="Inventory" 
+            Items="@inventories" 
+            Elevation="0"
+            Virtualize=true
+            Height="93dvh"
+            EditMode="@MudBlazor.DataGridEditMode.Form"
+            EditTrigger="@DataGridEditTrigger.OnRowClick"
+             
+            >
+
+            <Columns>
+                <PropertyColumn Property="i => i.Name" CellStyle="width:40%" />
+                <PropertyColumn Property=@(i => i.Stock.ToString("0")) CellStyle="width:10%"/>
+                <TemplateColumn title="Demand">
+                    <CellTemplate>
+                        <MudChip Text="Decend" Icon="@Icons.Material.Filled.ArrowUpward" Color="Color.Primary" Variant="MudBlazor.Variant.Text" Size="MudBlazor.Size.Small"/>
+                    </CellTemplate>
+                </TemplateColumn>
+                <PropertyColumn Property=@(i => i.Import.ToString("$0.00")) CellStyle="width: 10%;"/>
+                <PropertyColumn Property=@(i => i.Export.ToString("$0.00")) CellStyle="width: 20%;"/>
+                <TemplateColumn title="State" Context="CurrentProduct">
+                    <CellTemplate>
+                        @if((ProductStatus)CurrentProduct.Item.Status == ProductStatus.Active){
+                            <MudChip Text="Active" Icon="@Icons.Material.Filled.Check" Color="Color.Success" Variant="MudBlazor.Variant.Filled" Size="MudBlazor.Size.Small"/>
+                        }
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+        </MudDataGrid>
+
+    <!--
     <RadzenDataGrid @ref="grid0" AllowVirtualization="true" Style="height:94dvh;"
         Data="@inventories" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate" RowSelect="@(args => Select_Product(args))" TItem="CHKS.Models.mydb.Inventory">
         <Columns>
@@ -114,13 +90,7 @@
                     <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Radzen.Variant.Flat" Size="ButtonSize.Medium"
                         style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
                         Click=@(args => SaveButtonClick(args, inventory)) @onclick:stopPropagation="true" />
-                    <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Variant="Radzen.Variant.Flat" Size="ButtonSize.Medium"
-                        Click=@(args => CancelButtonClick(args, inventory)) @onclick:stopPropagation="true" />
-                </EditTemplate>
-                <Template Context="inventory">
-
-                    <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Variant="Radzen.Variant.Flat" Size="ButtonSize.Medium"
-                        style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
+                 style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
                         Click=@(args => EditButtonClick(args, inventory)) @onclick:stopPropagation="true" />
 
                     <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Medium"
@@ -132,11 +102,16 @@
         </Columns>
 
     </RadzenDataGrid>
+    -->
     </RadzenColumn>
 </RadzenRow>
 
 
-
 @code{
     private CultureInfo Currency = new CultureInfo("en-US");
+
+    void StartedEditingItem(Inventory item)
+    {
+        
+    }
 }

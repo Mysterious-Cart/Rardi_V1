@@ -136,13 +136,6 @@ namespace CHKS.Pages
             
         }
 
-        private async Task EditTags(){
-            if(Product is not null){
-                await DialogService.OpenAsync<NewTag>("Tags", new Dictionary<string, object>{{"product", Product}}, new DialogOptions{Height="600px",});
-                StateHasChanged();
-            }
-        }
-
         protected async Task GridDeleteButtonClick( CHKS.Models.mydb.Inventory inventory)
         {
             try

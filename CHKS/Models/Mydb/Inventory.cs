@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CHKS.Models.mydb
 {
     [Table("inventory")]
-    public partial class Inventory : ITableFormat<Inventory>
+    public partial class Inventory
     {
         
         [Required]
@@ -35,6 +35,9 @@ namespace CHKS.Models.mydb
         public int Sold_Total {get; set;} = 0;
 
         public int Optimal_Stock {get; set;} = 0;
+
+        [Required]
+        public short Status {get; set;} = 0;
 
         [Key]
         [Required]

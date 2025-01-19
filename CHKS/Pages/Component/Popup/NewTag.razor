@@ -8,41 +8,56 @@
 @inject mydbService Mydbservice;
 @using CHKS.Models.mydb;
 
+@namespace Pages.Component.Popup
 
+<MudDialog style="max-height: 400px;">
+    <TitleContent>
+        Dialog Title
+    </TitleContent>
+    <DialogContent>
+        <RadzenRow Style="margin-top:10px; ">
+            <RadzenButton Text="Confirm" ButtonStyle="ButtonStyle.Success" Click="@(() => AddTag())"/>
+            <RadzenButton Text="Create" Click="@InsertRow" Style="margin-left:auto;"/>
+        </RadzenRow>
+        <RadzenRow Style="margin-top:10px">
+            <RadzenDataGrid Style="height:100% " @ref="@TagsTable" AllowVirtualization="true" Data="TagsTableData" TItem="Tags"
+            RowCreate="@CreateTag" RowUpdate="@GridRowUpdate" AllowPaging=false SelectionMode="DataGridSelectionMode.Multiple" @bind-Value="@ChoosenTags">
+                <Columns>
+                    <RadzenDataGridColumn TItem="Tags" Property="Tag" Title="Tag">
+                        <EditTemplate Context="tag">
+                            <RadzenTextBox @bind-Value="@tag.Tag"/>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn TItem="Tags" Property="Color" Title="Color">
+                        <EditTemplate Context="tag">
+                            <RadzenTextBox @bind-Value="@tag.Color"/>
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+                    <RadzenDataGridColumn Width="100px" >
+                        <EditTemplate Context="tag">
+                            <RadzenButton Click="@(args => SaveButtonClick(args,tag))" ButtonStyle="ButtonStyle.Success" Icon="check"/>
+                            <RadzenButton Click="@(args => TagsTable.CancelEditRow(tag))"ButtonStyle="ButtonStyle.Danger" Icon="cancel"/>
+                        </EditTemplate>
+                        <Template Context="tag">
+                            <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="edit" Disabled="true"/>
+                            <RadzenButton Click="@(args => DeleteTag(tag))"ButtonStyle="ButtonStyle.Danger" Icon="delete"/>
+                        </Template>
+                    </RadzenDataGridColumn>
+                </Columns>
+            </RadzenDataGrid>
+        </RadzenRow>
 
-<RadzenRow Style="margin-top:10px; ">
-    <RadzenButton Text="Confirm" ButtonStyle="ButtonStyle.Success" Click="@(() => AddTag())"/>
-    <RadzenButton Text="Create" Click="@InsertRow" Style="margin-left:auto;"/>
-</RadzenRow>
-<RadzenRow Style="margin-top:10px">
-    <RadzenDataGrid Style="height:100% " @ref="@TagsTable" AllowVirtualization="true" Data="TagsTableData" TItem="Tags"
-    RowCreate="@CreateTag" RowUpdate="@GridRowUpdate" AllowPaging=false SelectionMode="DataGridSelectionMode.Multiple" @bind-Value="@ChoosenTags">
-        <Columns>
-            <RadzenDataGridColumn TItem="Tags" Property="Tag" Title="Tag">
-                <EditTemplate Context="tag">
-                    <RadzenTextBox @bind-Value="@tag.Tag"/>
-                </EditTemplate>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="Tags" Property="Color" Title="Color">
-                <EditTemplate Context="tag">
-                    <RadzenTextBox @bind-Value="@tag.Color"/>
-                </EditTemplate>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn Width="100px" >
-                <EditTemplate Context="tag">
-                    <RadzenButton Click="@(args => SaveButtonClick(args,tag))" ButtonStyle="ButtonStyle.Success" Icon="check"/>
-                    <RadzenButton Click="@(args => TagsTable.CancelEditRow(tag))"ButtonStyle="ButtonStyle.Danger" Icon="cancel"/>
-                </EditTemplate>
-                <Template Context="tag">
-                    <RadzenButton ButtonStyle="ButtonStyle.Info" Icon="edit" Disabled="true"/>
-                    <RadzenButton Click="@(args => DeleteTag(tag))"ButtonStyle="ButtonStyle.Danger" Icon="delete"/>
-                </Template>
-            </RadzenDataGridColumn>
-        </Columns>
-    </RadzenDataGrid>
-</RadzenRow>
+    </DialogContent>
+
+</MudDialog>
 
 @code {
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Cancel() => MudDialog.Cancel();
 
     [Parameter]
     public Inventory product {get; set;}

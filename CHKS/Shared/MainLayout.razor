@@ -1,41 +1,30 @@
 @inherits LayoutComponentBase
-<head>
-    <link href="css/Layout.css" rel="stylesheet"/>
-</head>
-<RadzenComponents />
+
 <MudThemeProvider Theme="@MyCustomTheme" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
+<RadzenComponents />
 
-<RadzenLayout style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body'; ">
-        
-    <RadzenSidebar Expanded="true" style="width:220px" >
-        <RadzenProfileMenu Visible="@Security.IsAuthenticated()" Click="@ProfileMenuClick" Style="background-color:transparent;  border-color:#28282B; margin-left:10px; width: 200px;">
-            <ChildContent >
-                <RadzenProfileMenuItem Text="Logout" Value="Logout" Icon="power_settings_new" />
-            </ChildContent>
-            <Template >
-                <RadzenGravatar Email="@Security.User?.Name" style="width: 30px; height:30px; margin-right:10px"/>
-                @Security.User?.Name
-            </Template>
-        </RadzenProfileMenu>
-
-        <RadzenPanelMenu  Style="margin-top: 20dvh; overflow:hidden" >
-            <RadzenPanelMenuItem Text="ទំព័រគិតលុយ" Path="" Icon="home" class="panelmenuitem" />
-            <RadzenPanelMenuItem Text="គ្រប់គ្រងទំនេញ" Path="inventories" Icon="inventory" class="panelmenuitem" />
-            <RadzenPanelMenuItem Text="ថ្ងៃនេះ" Path="Dailies" Icon="assignment" class="panelmenuitem"/>
-            <!--<RadzenPanelMenuItem Text="ទិន្នន័យ" Path="statistic"  Icon="bar_chart" class="panelmenuitem"/>-->
-            <RadzenPanelMenuItem Text="ប្រវ័ត្តិ" Path="histories" Icon="history" class="panelmenuitem"/>
-        </RadzenPanelMenu>
-    </RadzenSidebar>
-
-    <RadzenBody Style=" height:100dvh; overflow:hidden">
+<MudLayout >
+    <MudDrawer Fixed="true" Elevation="1" Variant="@DrawerVariant.Persistent" OpenMiniOnHover="true" Open=true>
+        <MudNavMenu style="margin-top: 100px;">
+            <MudNavLink Match="NavLinkMatch.All" Href="/" Icon="@Icons.Material.Filled.Money">Cashier</MudNavLink>
+            <MudNavGroup title="Products" Icon="@Icons.Material.Filled.Storage">
+                <MudNavLink Match="NavLinkMatch.All" Href="/Inventories" Icon="@Icons.Material.Filled.Inventory2">Inventory</MudNavLink>
+                <MudNavLink Match="NavLinkMatch.All" Href="/Orders" Icon="@Icons.Material.Filled.ReceiptLong">Orders</MudNavLink>
+            </MudNavGroup>
+            <MudNavLink Match="NavLinkMatch.All" Href="/Dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.All" Href="/Histories" Icon="@Icons.Material.Filled.Person">Customer</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+    <MudMainContent style="max-height: 100dvh; height:100dvh;overflow: hidden; position: relative; padding:20px">
         @Body
-    </RadzenBody>
-</RadzenLayout>
+    </MudMainContent>
+</MudLayout>
 
 @code {
+
     MudTheme MyCustomTheme = new MudTheme()
     {
         Typography = new Typography()
