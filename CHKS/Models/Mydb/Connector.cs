@@ -25,10 +25,14 @@ namespace CHKS.Models.mydb
 
         public string Note { get; set; } = "";
 
+        [NotMapped]
+        public decimal Export {get; set;}
+
         [Key]
         [Required]
         public Guid Id { get; } = Guid.NewGuid();
 
         public decimal? PriceOverwrite { get; set; }
+
     }
 }

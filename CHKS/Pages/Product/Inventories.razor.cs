@@ -9,6 +9,8 @@ using Radzen;
 using Radzen.Blazor;
 using CHKS.Models.mydb;
 using CHKS.Pages.Component.Popup;
+using CHKS.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CHKS.Pages
 {
@@ -34,6 +36,9 @@ namespace CHKS.Pages
 
         [Inject]
         protected mydbService mydbService { get; set; }
+
+        [Inject]
+        protected IDbProvider _dbProvider {get; set;}
 
         [Parameter]
         public string ProductIdParam {get; set;} = "";
@@ -61,7 +66,7 @@ namespace CHKS.Pages
         }
 
         private async Task GetProductFromInventory(){
-            var query_product = await mydbService.GetInventories(new Query(){Expand="HistoryConnectors, Tags"});
+            var query_product = await _dbProvider.GetData<Inventory>([nameof(Inventory.HistoryConnectors), nameof(Inventory.Tags)]);
             _inventories = query_product.OrderByDescending(i => i.Sold_Total).AsEnumerable().ToList();
             inventories = _inventories;
             

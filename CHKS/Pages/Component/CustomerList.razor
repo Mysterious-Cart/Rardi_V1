@@ -30,7 +30,7 @@
         Height="@Height" 
         Style="margin-top: 10px; box-shadow:none; max-width:100%;"  
         ReadOnly="true"
-        Loading="@_Customer.IsNullOrEmpty()" 
+        Loading="@(_Customer.IsNullOrEmpty())" 
         SelectedItem="@SelectedItem"
         RowClick="@(i => RowClick(i.Item))" >
         
@@ -65,6 +65,7 @@
 </MudContainer>
 @code{  
     [Inject] private mydbService mydbService {get; set;}
+    [Inject] private IDbProvider _dbProvider {get; set;}
     [Parameter] public string Height {get; set;} = "100%";
     [Parameter] public EventCallback<CustomerDTO> OnRowClick{get; set;}
 
@@ -85,7 +86,6 @@
         try{
             Task Fetching = FetchCustomerData();
             
-
             if(Fetching.Status != TaskStatus.Running){
                 stopwatch.Start();
                 await Fetching;
@@ -105,7 +105,7 @@
         //The content to first load
         const int DisplayChunk_ElementCount = 20;
 
-        var result = await mydbService.GetCars();
+        var result = await _dbProvider.GetData<Car>();
         //Selecting only necessary Field and format it to DTO
         var result_Selected = 
             result.OrderBy(i => i.Plate).Select(

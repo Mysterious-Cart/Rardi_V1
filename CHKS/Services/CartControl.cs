@@ -1,6 +1,7 @@
 using CHKS.Models.mydb;
 using CHKS.Models;
 using Radzen;
+using Microsoft.EntityFrameworkCore;
 
 namespace CHKS;
 
@@ -9,10 +10,13 @@ public class CartControlService
     private readonly mydbService mydbService;
     private readonly StockControlService stockControl;
 
-    public CartControlService(mydbService MydbService, StockControlService stockcontrol)
+    private readonly IDbProvider _provider;
+
+    public CartControlService(mydbService MydbService, StockControlService stockcontrol, IDbProvider provider)
     {
         this.mydbService = MydbService;
         this.stockControl = stockcontrol;
+        this._provider = provider;
     }
 
     public async Task<bool> AddItemToCart(int CartId, Inventory Item, int Qty = 1, string Note = "", decimal? priceOverride = null){
@@ -61,7 +65,8 @@ public class CartControlService
     }
 
     public async Task<IQueryable<Connector>> GetCartItemFromCart(int CartId){
-        var Items = await mydbService.GetConnectors(new Query{Expand="Inventory"});
+        var Items = await _provider.GetData<Connector>([nameof(Connector.Inventory)]);
+        
         return Items.Where(i => i.CartId == CartId);
     }
 }

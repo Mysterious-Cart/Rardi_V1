@@ -32,6 +32,11 @@ builder.Services.AddScoped<ContextMenuService>();
 builder.Services.AddScoped<CHKS.mydbService>();
 builder.Services.AddScoped<CHKS.StockControlService>();
 builder.Services.AddScoped<CHKS.CartControlService>();
+builder.Services.AddScoped<IDbProvider, DbProvider<mydbContext>>();
+builder.Services.AddLogging(config => {
+    config.AddConsole();
+    config.AddDebug();
+});
 
 
     builder.Services.AddDbContext<mydbContext>(options =>

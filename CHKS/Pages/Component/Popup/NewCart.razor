@@ -2,8 +2,8 @@
 
 @attribute [Authorize]
 @inject mydbService DbService;
+@inject IDbProvider provider;
 @inject Radzen.DialogService DialogService;
-@using Models.mydb
 
 <RadzenStack AlignItems="Radzen.AlignItems.End" Orientation="@Radzen.Orientation.Horizontal" Style="margin-bottom: 10px;" JustifyContent="JustifyContent.SpaceBetween">
     <RadzenTextBox Placeholder="Type to search" Style="width: 100%;" @oninput=@((args) => GetCarsAsync(args))/>
@@ -60,9 +60,9 @@ protected async override Task OnInitializedAsync(){
 }
 
 private async Task GetCarsAsync(ChangeEventArgs args){
-    Cars = await DbService.GetCars();
+    Cars = await provider.GetData<Car>();
     var searchText = args.Value.ToString();
-    Cars = Cars.Where(i => i.Plate.Contains(searchText) ||i.Type.Contains(searchText) || i.Phone.Contains(searchText) );
+    Cars = Cars.Where(i => i.Plate.Contains(searchText) ||i.Type.Contains(searchText) || i.Phone.Contains(searchText));
 }
 
 private async Task GridRowCreate(Car args)
@@ -84,7 +84,7 @@ private async Task CreateCar(){
 }
 
 private async Task UpdateRow(Car car){
-    await DbService.UpdateCar(car.Plate,car);
+    await provider.UpdateData<Car, String>(car, i => i.Plate);
 }
 
 Car select_Car = null;
