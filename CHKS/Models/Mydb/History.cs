@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CHKS.Models.mydb
 {
     [Table("history")]
-    public partial class History
+    public class History : IModelClass
     {
         [Required]
         public string CashoutDate { get; set;} = DateTime.Now.ToString("dd/MM/yyyy");

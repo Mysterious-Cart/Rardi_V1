@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CHKS.Models.mydb
 {
     [Table("changesrecord")]
-    public partial class Records
+    public class Records : IModelClass
     {
         [Key]
         [Required]

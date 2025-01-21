@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CHKS.Models.mydb
 {
     [Table("dailyexpense")]
-    public partial class Dailyexpense
+    public class Dailyexpense : IModelClass
     {
         [Required]
         public string Note { get; set; } = "";

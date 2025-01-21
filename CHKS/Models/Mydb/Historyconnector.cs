@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CHKS.Models.mydb
 {
     [Table("historyconnector")]
-    public partial class Historyconnector
+    public class Historyconnector : IModelClass
     {
         public decimal Qty { get; set; }
 

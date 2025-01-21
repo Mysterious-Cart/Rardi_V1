@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CHKS.Models.mydb
 {
     [Table("daily")]
-    public partial class Daily
+    public class Daily : IModelClass
     {
         [Key]
         [Required]

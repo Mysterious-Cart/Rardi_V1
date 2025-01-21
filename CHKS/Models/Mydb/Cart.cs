@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace CHKS.Models.mydb
 {
     [Table("cart")]
-    public class Cart : IContainer<Connector>
+    public class Cart : IContainer<Connector>, IModelClass
     {
         [Column("CarID")]
         [Required]
