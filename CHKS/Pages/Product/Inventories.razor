@@ -3,115 +3,111 @@
 @attribute [Authorize]
 @using System.Globalization
 @using Pages.Component;
+
 @namespace CHKS.Pages
 
 <PageTitle>Inventories</PageTitle>
-<MudToolBar Style="width:100%" Gutters=false>
-        <RadzenTextBox Placeholder="Type to search" Style="width:100%"  @oninput="@(args => Search(args))"/>
+<MudPaper>
+
+<MudToolBar Style="width:100%; margin-bottom:10px; padding:10px" Gutters=false>
+        <MudTextField 
+                Style="height:40px"
+                Adornment="Adornment.Start"
+                AdornmentIcon="@Icons.Material.Filled.Search"
+                Placeholder="Type to search" 
+                Variant="MudBlazor.Variant.Outlined"
+                InputMode="InputMode.search" InputType="InputType.Text" 
+                FullWidth AutoFocus AutoGrow 
+                ValueChanged=@(args => Search(args))/>
         <MudSpacer />
-        <RadzenTextBox Placeholder="Filter Tag" Style="width:25%"/>
 </MudToolBar>
 
-<RadzenRow style="margin-top:10px">
-    
 
-    <RadzenColumn>
+<MudDataGrid 
+    T="Inventory" 
+    Items="@inventories" 
+    Elevation="0"
+    Virtualize=true
+    Height="93dvh"
+    EditMode="@MudBlazor.DataGridEditMode.Form"
+    EditTrigger="@DataGridEditTrigger.OnRowClick"
+    Context="product"   
+    >
 
-        <MudDataGrid 
-            T="Inventory" 
-            Items="@inventories" 
-            Elevation="0"
-            Virtualize=true
-            Height="93dvh"
-            EditMode="@MudBlazor.DataGridEditMode.Form"
-            EditTrigger="@DataGridEditTrigger.OnRowClick"
-             
-            >
+    <Columns>
+        <HierarchyColumn T="@Inventory"/>
+        <PropertyColumn Property="i => i.Name" CellStyle="width:40%" />
+        <PropertyColumn Property=@(i => i.Stock.ToString("0")) CellStyle="width:10%"/>
+        <TemplateColumn title="Demand">
+            <CellTemplate>
+                <MudChip 
+                    Text="Decent" 
+                    Icon="@Icons.Material.Filled.ArrowUpward"
+                    Color="Color.Primary" 
+                    Variant="MudBlazor.Variant.Text" 
+                    Size="MudBlazor.Size.Small"/>
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property=@(i => i.Import.ToString("$0.00")) CellStyle="width: 10%;"/>
+        <PropertyColumn Property=@(i => i.Export.ToString("$0.00")) CellStyle="width: 20%;"/>
+        <TemplateColumn title="State" Context="CurrentProduct">
+            <CellTemplate>
+                @if((ProductStatus)CurrentProduct.Item.Status == ProductStatus.Active){
+                    <MudChip Text="Active" Icon="@Icons.Material.Filled.Check" 
+                        Color="Color.Success" Variant="MudBlazor.Variant.Filled" 
+                        Size="MudBlazor.Size.Small"/>
+                }
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
 
-            <Columns>
-                <PropertyColumn Property="i => i.Name" CellStyle="width:40%" />
-                <PropertyColumn Property=@(i => i.Stock.ToString("0")) CellStyle="width:10%"/>
-                <TemplateColumn title="Demand">
-                    <CellTemplate>
-                        <MudChip Text="Decend" Icon="@Icons.Material.Filled.ArrowUpward" Color="Color.Primary" Variant="MudBlazor.Variant.Text" Size="MudBlazor.Size.Small"/>
-                    </CellTemplate>
-                </TemplateColumn>
-                <PropertyColumn Property=@(i => i.Import.ToString("$0.00")) CellStyle="width: 10%;"/>
-                <PropertyColumn Property=@(i => i.Export.ToString("$0.00")) CellStyle="width: 20%;"/>
-                <TemplateColumn title="State" Context="CurrentProduct">
-                    <CellTemplate>
-                        @if((ProductStatus)CurrentProduct.Item.Status == ProductStatus.Active){
-                            <MudChip Text="Active" Icon="@Icons.Material.Filled.Check" Color="Color.Success" Variant="MudBlazor.Variant.Filled" Size="MudBlazor.Size.Small"/>
-                        }
-                    </CellTemplate>
-                </TemplateColumn>
-            </Columns>
-        </MudDataGrid>
+    <ChildRowContent>
+        <MudCard>
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText Typo="Typo.h6">@product.Item.Name</MudText>
+                    <MudText Typo="Typo.caption" Style="color:lightgray"> @product.Item.Id</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent style="display:flex; justify-content:space-evenly">
+                <MudContainer MaxWidth="MaxWidth.ExtraSmall" Style="max-width:300px">
+                    <MudChart ChartType="ChartType.Donut"
+                            LegendPosition="Position.Right"
+                            Width="150px"
+                            Height="150px"
+                            InputLabels=@(new List<string>{"Stock"}.ToArray())
+                            InputData="@(new List<double>{(double)product.Item.Stock}.ToArray())" />
+                </MudContainer>
+                <MudContainer>
+                    <MudChart ChartType="ChartType.Line" Height="150px" Width="150px"/>
+                </MudContainer>
+                <MudContainer>
 
-    <!--
-    <RadzenDataGrid @ref="grid0" AllowVirtualization="true" Style="height:94dvh;"
-        Data="@inventories" RowUpdate="@GridRowUpdate" RowCreate="@GridRowCreate" RowSelect="@(args => Select_Product(args))" TItem="CHKS.Models.mydb.Inventory">
-        <Columns>
-            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Barcode" Title="កូដ" OrderIndex=1>
-                <EditTemplate Context="inventory">
-                    <RadzenTextBox style=" width: 100%" @bind-Value="@inventory.Barcode" Name="Barcode"/>
-                </EditTemplate>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Name" Title="ឈ្មោះ" MinWidth="30%" Width="40%" Resizable="true"  OrderIndex="2">
-                <EditTemplate Context="inventory">
-                    <RadzenTextBox style="width: 100%" @bind-Value="@inventory.Name" Name="Name" />
-                    <RadzenRequiredValidator Component="Name" Text="Name is required" style="position: absolute;" />
-                </EditTemplate>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Stock" Title="ក្នុងស្តុក" FormatString="{0:0}">
-                <EditTemplate Context="inventory">
-                    <RadzenNumeric style="width: 100%" @bind-Value="@inventory.Stock" Name="Stock" Format="N2" ShowUpDown = "false"/>
-                </EditTemplate>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Import" Title="តម្លៃទិញចូល" FormatString="${0:N2}">
-                <EditTemplate Context="inventory">
-                    <RadzenNumeric style="width: 100%" @bind-Value="@inventory.Import" Name="Import" Format="N2" ShowUpDown = "false" />
-                </EditTemplate>
-                <FooterTemplate>
-                    <RadzenText TextStyle="TextStyle.DisplayH6">សរុបមុខទំនេញ:</RadzenText>
-                </FooterTemplate>
-            </RadzenDataGridColumn>
-            
-            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Property="Export" Title="តម្លៃលក់" MinWidth="10%" FormatString="${0:N2}">
-                <EditTemplate Context="inventory">
-                    <RadzenNumeric style="width: 100%" @bind-Value="@inventory.Export" Name="Export"  Format="N2"  ShowUpDown = "false"/>
-                </EditTemplate>
-                <FooterTemplate>
-                    <RadzenText TextStyle="TextStyle.DisplayH6"> @(inventories.Count() + " មុខ")</RadzenText>
-                </FooterTemplate>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="CHKS.Models.mydb.Inventory" Filterable="false" Sortable="false" Width="156px" TextAlign="TextAlign.Center">
-                <EditTemplate Context="inventory">
-                    <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Success" Variant="Radzen.Variant.Flat" Size="ButtonSize.Medium"
-                        style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
-                        Click=@(args => SaveButtonClick(args, inventory)) @onclick:stopPropagation="true" />
-                 style="margin-top: 0.25rem; margin-right: 0.25rem; margin-bottom: 0.25rem"
-                        Click=@(args => EditButtonClick(args, inventory)) @onclick:stopPropagation="true" />
-
-                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Medium"
-                        Shade="Shade.Lighter" Variant="Radzen.Variant.Flat"
-                        Click=@(args => GridDeleteButtonClick( inventory)) @onclick:stopPropagation="true" />
-                </Template>
-            </RadzenDataGridColumn>
-
-        </Columns>
-
-    </RadzenDataGrid>
-    -->
-    </RadzenColumn>
-</RadzenRow>
-
+                </MudContainer>
+            </MudCardContent>
+            <MudCardActions >
+                <MudToolBar Style="justify-content:space-evenly; display:flex; gap:10px; width: 100%;">
+                    <MudContainer>
+                        <MudButton Variant="MudBlazor.Variant.Filled" Color="Color.Primary">Order</MudButton>
+                    </MudContainer>
+                    <MudContainer Style="justify-content:flex-end; display:flex; gap:10px">
+                        <MudButton Variant="MudBlazor.Variant.Filled"
+                                    @onclick=@(()=>EditItem(product.Item))
+                            Color="Color.Primary">Modify</MudButton>
+                        <MudButton Variant="MudBlazor.Variant.Filled" 
+                            Color="Color.Secondary">Mark as Inactive</MudButton>
+                    </MudContainer>
+                </MudToolBar>
+                        
+            </MudCardActions>
+        </MudCard>
+    </ChildRowContent>
+</MudDataGrid>
+</MudPaper>
 
 @code{
-    private CultureInfo Currency = new CultureInfo("en-US");
-
-    void StartedEditingItem(Inventory item)
+    private async Task EditItem(Inventory item)
     {
-        
+        await DialogService.ShowAsync<EditProduct>("Modify", new DialogParameters<EditProduct>{{x => x.Product, item}});
     }
 }

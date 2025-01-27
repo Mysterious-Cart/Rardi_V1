@@ -1,0 +1,54 @@
+@page "/Setting"
+@using CHKS.Data;
+@using System.Data;
+@using System.Data.Common;
+@using Microsoft.EntityFrameworkCore;
+@using CHKS.Models.Enum;
+@using CHKS.Models.Interface;
+
+@namespace CHKS.Page
+
+<MudPaper style="width: 100%; height: 100%; padding:20px">
+    <MudText Typo="Typo.h5">Advance Setting</MudText>
+    <MudTabs KeepPanelsAlive=false ActivePanelIndex="0" >
+        <MudTabPanel Text="Source" Icon="@Icons.Material.Filled.DataObject">
+            <MudContainer style="padding:20px;">
+                <MudText Typo="Typo.subtitle1">Database Source</MudText>
+                <MudSpacer/>
+                <MudToggleGroup T="DataSource" SelectionMode="SelectionMode.SingleSelection" Value=@source  ValueChanged="@((args) => ChangeConnectionString(args))" CheckMark FixedContent style="width: 250px; margin-top: 10px;">
+                    <MudToggleItem Value=@(DataSource.Client) Text="Local"/>
+                    <MudToggleItem Value=@(DataSource.Server) Text="Server"/>
+                </MudToggleGroup>
+                @if(RequireReload){
+                    <MudText Typo="Typo.caption" Color="Color.Warning">Reload required to apply change</MudText>
+                }
+                
+            </MudContainer>
+            
+        </MudTabPanel>
+    </MudTabs>
+</MudPaper>
+
+@code{
+
+    [Inject]private mydbContext context {get; set;}
+    [Inject] protected IDataSourceProvider DbSourceProvider { get; set; }
+
+    private bool RequireReload = false;
+    protected async override Task OnInitializedAsync(){
+        source = DbSourceProvider.GetCurrentSource();
+    }
+
+    private DataSource source;
+    private async Task ChangeConnectionString( DataSource Dbsource){
+        await context.Database.CloseConnectionAsync();
+        DbSourceProvider.CurrentDataSource = Dbsource;
+        if(Dbsource != source){
+            RequireReload = true;
+        }else{
+            RequireReload = false;
+        }
+        await context.Database.OpenConnectionAsync();
+        StateHasChanged();
+    }
+}

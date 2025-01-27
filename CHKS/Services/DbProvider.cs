@@ -54,11 +54,11 @@ public class DbProvider<Context> : IDbProvider where Context : DbContext
         return Data;
     }
 
-    public async Task UpdateData<T, TKey>(T Object,Func<T, TKey> Key_Selector, bool ComfirmExistance = true) where T : class, IModelClass
+    public async Task UpdateData<T, TKey>(T Object,Func<T, TKey> Key_Selector, bool ConfirmExistance = true) where T : class, IModelClass
     {
         try{
             
-            if(ComfirmExistance){await Comfirmation(Key_Selector, Key_Selector(Object));}
+            if(ConfirmExistance) {await Confirmation(Key_Selector, Key_Selector(Object));}
             
             var entries = _context.Entry(Object);
             entries.CurrentValues.SetValues(Object);
@@ -72,12 +72,13 @@ public class DbProvider<Context> : IDbProvider where Context : DbContext
         
     }
 
-    public async Task DeleteData<T, TKey>(Func<T, TKey> Key_Selector, TKey key, bool ComfirmExistance = true) where T : class, IModelClass
+    public async Task DeleteData<T, TKey>(Func<T, TKey> Key_Selector, TKey key, bool ConfirmExistance = true) where T : class, IModelClass
     {  
         try{
             
-            if(ComfirmExistance){
-                var itemFound = Comfirmation(Key_Selector, key);
+            if(ConfirmExistance)
+            {
+                var itemFound = Confirmation(Key_Selector, key);
                 var entries = _context.Remove(itemFound);
             }else{
                 var item = await GetData<T>();
@@ -99,7 +100,7 @@ public class DbProvider<Context> : IDbProvider where Context : DbContext
         
     }
 
-    private async Task<T> Comfirmation<T, Tkey>(Func<T, Tkey> keyselector, Tkey key) where T: class, IModelClass{
+    private async Task<T> Confirmation<T, Tkey>(Func<T, Tkey> keyselector, Tkey key) where T: class, IModelClass{
         var data = await GetData<T>();
         var item = data.ToList().First(i => keyselector(i).Equals(key));
         if(item is null){

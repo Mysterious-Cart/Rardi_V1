@@ -17,6 +17,7 @@
             </MudNavGroup>
             <MudNavLink Match="NavLinkMatch.All" Href="/Dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
             <MudNavLink Match="NavLinkMatch.All" Href="/Histories" Icon="@Icons.Material.Filled.Person">Customer</MudNavLink>
+            <MudNavLink Match="NavLinkMatch.All" Href="/Setting" Icon="@Icons.Material.Filled.Settings">Setting</MudNavLink>
         </MudNavMenu>
     </MudDrawer>
     <MudMainContent style="max-height: 100dvh; height:100dvh;overflow: hidden; position: relative; padding:20px">
@@ -34,7 +35,11 @@
             {
                 FontFamily = new[] { "Khmer OS Battambang", "Helvetica", "Arial", "sans-serif" },
 
-            }
+            },
+            H6 = new H6
+            {
+                FontFamily = new[] { "Khmer OS Battambang", "Helvetica", "Arial", "sans-serif" },
+            },
         }
     };
 }

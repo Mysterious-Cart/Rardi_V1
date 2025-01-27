@@ -1,3 +1,4 @@
+using CHKS.Models;
 using CHKS.Models.mydb;
 using Microsoft.AspNetCore.Components;
 
@@ -8,18 +9,26 @@ public partial class StockControlService
 
     private readonly mydbService mydbService;
 
-    public StockControlService(mydbService MydbService)
+    private readonly IDbProvider provider;
+
+    public StockControlService(mydbService MydbService, IDbProvider provider)
     {
         this.mydbService = MydbService;
+        this.provider = provider;
+    }
+
+    public async Task NewOrder(Guid ProductId, int IncomingAmount)
+    {
+
     }
 
     partial void OnProductDetailChanged(Inventory product);
-
     public async Task AddItemToStock(Guid ProductId, int Add){
-        Inventory product = await mydbService.GetInventoryById(ProductId);
+        var data = await provider.GetData<Inventory>();
+        var product = data.First(i => i.Id == ProductId);
         product.Stock += Add;
         try{
-            await mydbService.UpdateInventory(product);
+            await provider.UpdateData<Inventory, Guid>(product, i => i.Id);
             OnProductDetailChanged(product);
         }catch{
             throw new Exception("Failed to Add to stock.");

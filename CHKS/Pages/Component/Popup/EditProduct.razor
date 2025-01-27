@@ -1,0 +1,37 @@
+﻿
+@namespace CHKS.Pages.Component
+
+<MudDialog Style="width:50%; min-width:300px">
+    <TitleContent>
+        <MudText Typo="Typo.h6">Modify Product</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm Spacing="5"> 
+
+            <MudInput InputId="Name" AutoFocus AutoGrow Placeholder="@Product.Name" T="string" Adornment="Adornment.Start" AdornmentText="Name:" />
+            <MudInput InputId="Import" AutoFocus AutoGrow Placeholder=@Product.Import.ToString("0.00") T="string" Adornment="Adornment.Start" AdornmentText="Import:" />
+            <MudInput InputId="Export" AutoFocus AutoGrow Placeholder=@Product.Export.ToString("0.00") T="string" Adornment="Adornment.Start" AdornmentText="Export:"/>     
+            <MudExpansionPanels Elevation="0" >
+                <MudExpansionPanel Text="Advance">
+                    <MudText Typo="Typo.body2">Stock</MudText>
+                    <MudSwitch T="bool" Size="Size.Small">Count</MudSwitch>
+                </MudExpansionPanel>
+            </MudExpansionPanels>
+        </MudForm> 
+    </DialogContent>
+    <DialogActions>
+        <MudButton >Modify</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]    
+    private MudBlazor.MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public Inventory Product { get; set; }
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Cancel() => MudDialog.Cancel();
+}

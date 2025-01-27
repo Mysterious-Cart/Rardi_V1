@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using MudBlazor.Services;
+using CHKS.Models.Interface;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,31 +34,38 @@ builder.Services.AddScoped<CHKS.mydbService>();
 builder.Services.AddScoped<CHKS.StockControlService>();
 builder.Services.AddScoped<CHKS.CartControlService>();
 builder.Services.AddScoped<IDbProvider, DbProvider<mydbContext>>();
+
+builder.Services.AddSingleton<IDataSourceProvider, DbSourceProvider>();
+
 builder.Services.AddLogging(config => {
     config.AddConsole();
     config.AddDebug();
 });
 
 
-    builder.Services.AddDbContext<mydbContext>(options =>
-    {
-        try{
-            options.UseMySql(builder.Configuration.GetConnectionString("mydbConnection"), 
-            ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("mydbConnection")));
-        }catch(Exception exc){
-            Console.WriteLine("Database connection unsuccessfull.");
-        }
-    });
+builder.Services.AddDbContext<mydbContext>((sp, options) =>
+{
+    try{
+        options.EnableSensitiveDataLogging().EnableDetailedErrors().EnableThreadSafetyChecks();
+        options.UseMySql(sp.GetRequiredService<IDataSourceProvider>().GetConnectionString(),
+        ServerVersion.AutoDetect(sp.GetRequiredService<IDataSourceProvider>().GetConnectionString()));
+    }catch(Exception exc){
+        Console.WriteLine("Database connection unsuccessful.");
+    }
+});
 
-    builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
-    {
-        try{
-            options.UseMySql(builder.Configuration.GetConnectionString("mydbConnection"), 
-            ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("mydbConnection")));
-        }catch(Exception exc){
-            Console.WriteLine("Database connection unsuccessfull.");
-        }
-    });
+
+builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
+{
+    try{
+        options.UseMySql(builder.Configuration.GetConnectionString("localConnection"), 
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("localConnection")));
+    }catch(Exception exc){
+        Console.WriteLine("Database connection unsuccessful.");
+    }
+});
+
+
 
 
 builder.Services.AddHttpClient("CHKS").ConfigurePrimaryHttpMessageHandler(

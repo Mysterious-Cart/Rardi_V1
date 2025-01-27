@@ -3,4 +3,20 @@
 @attribute [Authorize]
 @namespace CHKS.Pages
 
+<MudPaper>
+    <MudToolBar>
+        <MudTextField Style="height:40px"
+                    T="string"
+                    Adornment="Adornment.Start"
+                    AdornmentIcon="@Icons.Material.Filled.Search"
+                    Placeholder="Type to search"
+                    Variant="MudBlazor.Variant.Outlined"
+                    InputMode="InputMode.search" InputType="InputType.Text"
+                    FullWidth AutoFocus AutoGrow
+                    />
 
+    </MudToolBar>
+    <MudContainer>
+        
+    </MudContainer>
+</MudPaper>
