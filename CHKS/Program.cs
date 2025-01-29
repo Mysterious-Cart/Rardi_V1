@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using MudBlazor.Services;
+using CHKS.Models.Interface;
+using CHKS.Services;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,13 +27,13 @@ builder.Services.AddServerSideBlazor().AddHubOptions(o =>
 });
 builder.Services.AddMudServices();
 builder.Services.AddScoped<DialogService>();
-builder.Services.AddScoped<CHKS.PublicCommand>();
+builder.Services.AddScoped<PublicCommand>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();
 builder.Services.AddScoped<ContextMenuService>();
-builder.Services.AddScoped<CHKS.mydbService>();
-builder.Services.AddScoped<CHKS.StockControlService>();
-builder.Services.AddScoped<CHKS.CartControlService>();
+builder.Services.AddScoped<mydbService>();
+builder.Services.AddScoped<StockControlService>();
+builder.Services.AddScoped<CartControlService>();
 builder.Services.AddScoped<IDbProvider, DbProvider<mydbContext>>();
 builder.Services.AddLogging(config => {
     config.AddConsole();
@@ -67,7 +69,7 @@ builder.Services.AddHttpClient("CHKS").ConfigurePrimaryHttpMessageHandler(
 builder.Services.AddHeaderPropagation(o => o.Headers.Add("Cookie"));
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
-builder.Services.AddScoped<CHKS.SecurityService>();
+builder.Services.AddScoped<SecurityService>();
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>().AddEntityFrameworkStores<ApplicationIdentityDbContext>().AddDefaultTokenProviders();
 builder.Services.AddControllers().AddOData(o =>
@@ -80,7 +82,7 @@ builder.Services.AddControllers().AddOData(o =>
     oDataBuilder.EntitySet<ApplicationRole>("ApplicationRoles");
     o.AddRouteComponents("odata/Identity", oDataBuilder.GetEdmModel()).Count().Filter().OrderBy().Expand().Select().SetMaxTop(null).TimeZone = TimeZoneInfo.Utc;
 });
-builder.Services.AddScoped<AuthenticationStateProvider, CHKS.ApplicationAuthenticationStateProvider>();
+builder.Services.AddScoped<AuthenticationStateProvider, ApplicationAuthenticationStateProvider>();
 
 builder.Services.AddCors(options =>
 {

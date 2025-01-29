@@ -1,3 +1,4 @@
+using CHKS.Models.Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

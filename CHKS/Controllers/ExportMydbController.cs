@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 using CHKS.Data;
+using CHKS.Services;
 
 namespace CHKS.Controllers
 {

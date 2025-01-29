@@ -14,7 +14,7 @@ using Radzen;
 using CHKS.Models;
 using System.Globalization;
 
-namespace CHKS
+namespace CHKS.Services
 {
     public partial class PublicCommand
     {
@@ -25,83 +25,109 @@ namespace CHKS
 
         public PublicCommand(mydbService MydbService, NavigationManager navigationManager, SecurityService security)
         {
-            this.mydbService = MydbService;
+            mydbService = MydbService;
             this.navigationManager = navigationManager;
             this.security = security;
         }
 
-        static readonly char[] GENERATORKEY = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
-        public static string GenerateRandomText(int Length = 10) => string.Join("",GENERATORKEY.OrderBy(x => Guid.NewGuid()).Take(Length));
-        public static string GenerateRandomText(string Extenstion,int Length = 10) => string.Concat(string.Join("",GENERATORKEY.OrderBy(x => Guid.NewGuid()).Take(Length)),":", Extenstion);
+        static readonly char[] GENERATORKEY = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+        public static string GenerateRandomText(int Length = 10) => string.Join("", GENERATORKEY.OrderBy(x => Guid.NewGuid()).Take(Length));
+        public static string GenerateRandomText(string Extenstion, int Length = 10) => string.Concat(string.Join("", GENERATORKEY.OrderBy(x => Guid.NewGuid()).Take(Length)), ":", Extenstion);
 
-        static readonly int[] Key = {1,2,3,4,5,6,7,8,9};
-        public static int GenerateRandomNumber(int Length) => int.Parse(string.Join("",Key.OrderBy(x => Guid.NewGuid()).Take(Length)));
-        public static int GenerateRandomNumber(int Extenstion, int Length) => Extenstion + int.Parse(string.Join("",Key.OrderBy(x => Guid.NewGuid()).Take(Length)));
-        
+        static readonly int[] Key = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        public static int GenerateRandomNumber(int Length) => int.Parse(string.Join("", Key.OrderBy(x => Guid.NewGuid()).Take(Length)));
+        public static int GenerateRandomNumber(int Extenstion, int Length) => Extenstion + int.Parse(string.Join("", Key.OrderBy(x => Guid.NewGuid()).Take(Length)));
+
         //From Here are database Retrieval API, Change here whenever database format Changes
-        public async Task<IEnumerable<Models.mydb.History>> RetreiveCustomerHistory(bool GetDeleted = false){
-            try{
-                if(GetDeleted == false){
-                    return await mydbService.GetHistories(new Query{Filter=$@"i => i.IsDeleted == 0"});
-                }else{
-                    return await mydbService.GetHistories(new Query{Filter=$@"i => i.IsDeleted == 1"});
+        public async Task<IEnumerable<Models.mydb.History>> RetreiveCustomerHistory(bool GetDeleted = false)
+        {
+            try
+            {
+                if (GetDeleted == false)
+                {
+                    return await mydbService.GetHistories(new Query { Filter = $@"i => i.IsDeleted == 0" });
+                }
+                else
+                {
+                    return await mydbService.GetHistories(new Query { Filter = $@"i => i.IsDeleted == 1" });
 
                 }
-            }catch(Exception exc){
+            }
+            catch (Exception exc)
+            {
                 throw new Exception(exc.Message);
             }
         }
 
 
-        public async Task<IEnumerable<Models.mydb.Car>> RetreiveCustomer(bool GetDeleted = false){
-            try{
-                if(GetDeleted == false){
-                    return await mydbService.GetCars(new Query{Filter=$@"i => i.IsDeleted == 0"});
-                }else{
-                    return await mydbService.GetCars(new Query{Filter=$@"i => i.IsDeleted == 1"});
+        public async Task<IEnumerable<Models.mydb.Car>> RetreiveCustomer(bool GetDeleted = false)
+        {
+            try
+            {
+                if (GetDeleted == false)
+                {
+                    return await mydbService.GetCars(new Query { Filter = $@"i => i.IsDeleted == 0" });
+                }
+                else
+                {
+                    return await mydbService.GetCars(new Query { Filter = $@"i => i.IsDeleted == 1" });
 
                 }
-            }catch(Exception exc){
+            }
+            catch (Exception exc)
+            {
                 throw new Exception(exc.Message);
             }
         }
 
 
-        public async Task<IEnumerable<Models.mydb.Cart>> RetreiveCart(){
-            try{
+        public async Task<IEnumerable<Models.mydb.Cart>> RetreiveCart()
+        {
+            try
+            {
                 return await mydbService.GetCarts();
-            }catch(Exception exc){
+            }
+            catch (Exception exc)
+            {
                 throw new Exception(exc.Message);
             }
         }
 
 
-        public async Task<IEnumerable<Models.mydb.Inventory>> RetreiveProduct(bool GetDeleted = false){
-            try{
-                if(GetDeleted == false){
-                    return await mydbService.GetInventories(new Query{Filter=$@"i => i.IsDeleted == 0"});
-                }else{
-                    return await mydbService.GetInventories(new Query{Filter=$@"i => i.IsDeleted == 1"});
+        public async Task<IEnumerable<Models.mydb.Inventory>> RetreiveProduct(bool GetDeleted = false)
+        {
+            try
+            {
+                if (GetDeleted == false)
+                {
+                    return await mydbService.GetInventories(new Query { Filter = $@"i => i.IsDeleted == 0" });
                 }
-                
-            }catch(Exception exc){
+                else
+                {
+                    return await mydbService.GetInventories(new Query { Filter = $@"i => i.IsDeleted == 1" });
+                }
+
+            }
+            catch (Exception exc)
+            {
                 throw new Exception(exc.Message);
             }
         }
 
         //End Database Retrieval API
 
-        static readonly Dictionary<int, string> ModeCoordinator = new Dictionary<int, string>(){{0,"ជួសជុល"},{1,"រងចាំប្រាក់"},{2, "ជំពាក់"}};
+        static readonly Dictionary<int, string> ModeCoordinator = new Dictionary<int, string>() { { 0, "ជួសជុល" }, { 1, "រងចាំប្រាក់" }, { 2, "ជំពាក់" } };
         public static string GetCustomerStateFromKey(int Key) => ModeCoordinator[Key];
-        
-        static string InfoReportString(string User)=> "Deleted By:" + User + "("+ DateTime.Now.ToString() +")";
+
+        static string InfoReportString(string User) => "Deleted By:" + User + "(" + DateTime.Now.ToString() + ")";
 
         /// <summary>
         ///     Sum all payment type paid by customer
         /// </summary>
         /// <param name="Customer"> The Customer to simulate delete </param>
         /// <returns> The result payment summed up </returns>
-        public async Task<(string, string, string, string)> GetAllPaymentFormFromHistory(){
+        public async Task<(string, string, string, string)> GetAllPaymentFormFromHistory()
+        {
 
             string Bank;
             string Dollar;
@@ -110,13 +136,13 @@ namespace CHKS
 
             IEnumerable<Models.mydb.History> CustomerHistory = await mydbService.GetHistories();
 
-            Bank = Math.Round(CustomerHistory.Sum(i => i.Bank.GetValueOrDefault()),2).ToString();
-            Dollar = Math.Round(CustomerHistory.Sum(i => i.Dollar.GetValueOrDefault()),2).ToString();
-            Baht = Math.Round(CustomerHistory.Sum(i => i.Baht.GetValueOrDefault()),2).ToString();
-            Riel = Math.Round(CustomerHistory.Sum(i => i.Riel.GetValueOrDefault()),2).ToString();
+            Bank = Math.Round(CustomerHistory.Sum(i => i.Bank.GetValueOrDefault()), 2).ToString();
+            Dollar = Math.Round(CustomerHistory.Sum(i => i.Dollar.GetValueOrDefault()), 2).ToString();
+            Baht = Math.Round(CustomerHistory.Sum(i => i.Baht.GetValueOrDefault()), 2).ToString();
+            Riel = Math.Round(CustomerHistory.Sum(i => i.Riel.GetValueOrDefault()), 2).ToString();
 
             return (Bank, Dollar, Baht, Riel);
         }
-        
+
     }
 }

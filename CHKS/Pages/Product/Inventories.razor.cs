@@ -9,8 +9,9 @@ using Radzen;
 using Radzen.Blazor;
 using CHKS.Models.mydb;
 using CHKS.Pages.Component.Popup;
-using CHKS.Models;
 using Microsoft.EntityFrameworkCore;
+using CHKS.Models.Interface;
+using CHKS.Services;
 
 namespace CHKS.Pages
 {

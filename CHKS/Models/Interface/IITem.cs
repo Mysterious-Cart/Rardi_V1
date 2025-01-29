@@ -1,8 +1,8 @@
 using CHKS.Models.mydb;
 
-namespace CHKS.Models;
+namespace CHKS.Models.Interface;
 
 public interface IItem
 {
-    public Guid Id {get;}
+    public Guid Id { get; }
 }

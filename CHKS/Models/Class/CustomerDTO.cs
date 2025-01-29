@@ -1,7 +1,8 @@
 using CHKS.Models.mydb;
 
-namespace CHKS.Models;
-public class CustomerDTO{
+namespace CHKS.Models.Class;
+public class CustomerDTO
+{
 
     private readonly string _Plate;
 
@@ -11,7 +12,8 @@ public class CustomerDTO{
 
     public string Phone => _Phone;
 
-    public CustomerDTO(string Plate, string Phone){
+    public CustomerDTO(string Plate, string Phone)
+    {
         _Plate = Plate;
         _Phone = Phone;
     }

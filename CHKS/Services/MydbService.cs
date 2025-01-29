@@ -11,16 +11,16 @@ using Radzen;
 
 using CHKS.Data;
 
-namespace CHKS
+namespace CHKS.Services
 {
     public partial class mydbService
     {
         mydbContext Context
         {
-           get
-           {
-             return this.context;
-           }
+            get
+            {
+                return context;
+            }
         }
 
         private readonly mydbContext context;
@@ -78,9 +78,9 @@ namespace CHKS
             navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/cars/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/cars/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
-        partial void OnCarsRead(ref IQueryable<CHKS.Models.mydb.Car> items);
+        partial void OnCarsRead(ref IQueryable<Models.mydb.Car> items);
 
-        public async Task<IQueryable<CHKS.Models.mydb.Car>> GetCars(Query query = null)
+        public async Task<IQueryable<Models.mydb.Car>> GetCars(Query query = null)
         {
             var items = Context.Cars.AsQueryable();
 
@@ -90,7 +90,7 @@ namespace CHKS
                 if (!string.IsNullOrEmpty(query.Expand))
                 {
                     var propertiesToExpand = query.Expand.Split(',');
-                    foreach(var p in propertiesToExpand)
+                    foreach (var p in propertiesToExpand)
                     {
                         items = items.Include(p.Trim());
                     }
@@ -104,7 +104,8 @@ namespace CHKS
             return await Task.FromResult(items);
         }
 
-        public async Task<IQueryable<Models.mydb.Tags>> GetTags(Query query = null){
+        public async Task<IQueryable<Models.mydb.Tags>> GetTags(Query query = null)
+        {
             var items = Context.Tags.AsQueryable();
 
             if (query != null)
@@ -112,7 +113,7 @@ namespace CHKS
                 if (!string.IsNullOrEmpty(query.Expand))
                 {
                     var propertiesToExpand = query.Expand.Split(',');
-                    foreach(var p in propertiesToExpand)
+                    foreach (var p in propertiesToExpand)
                     {
                         items = items.Include(p.Trim());
                     }
@@ -124,8 +125,8 @@ namespace CHKS
             return await Task.FromResult(items);
         }
 
-        public async Task<Models.mydb.Tags> CreateTag(CHKS.Models.mydb.Tags Tags)
-        {         
+        public async Task<Models.mydb.Tags> CreateTag(Models.mydb.Tags Tags)
+        {
 
             try
             {
@@ -141,7 +142,7 @@ namespace CHKS
             return Tags;
         }
 
-         public async Task<CHKS.Models.mydb.Tags> UpdateTags(Models.mydb.Tags Tags)
+        public async Task<Models.mydb.Tags> UpdateTags(Models.mydb.Tags Tags)
         {
 
             var entryToUpdate = Context.Entry(Tags);
@@ -153,7 +154,7 @@ namespace CHKS
             return Tags;
         }
 
-        public async Task<CHKS.Models.mydb.Tags> DeleteTags(Guid Id)
+        public async Task<Models.mydb.Tags> DeleteTags(Guid Id)
         {
             var itemToDelete = Context.Tags
                               .Where(i => i.Id == Id)
@@ -161,7 +162,7 @@ namespace CHKS
 
             if (itemToDelete == null)
             {
-               throw new Exception("Item no longer available");
+                throw new Exception("Item no longer available");
             }
 
             Context.Tags.Remove(itemToDelete);
@@ -179,17 +180,17 @@ namespace CHKS
             return itemToDelete;
         }
 
-        partial void OnCarGet(CHKS.Models.mydb.Car item);
-        partial void OnGetCarByPlate(ref IQueryable<CHKS.Models.mydb.Car> items);
+        partial void OnCarGet(Models.mydb.Car item);
+        partial void OnGetCarByPlate(ref IQueryable<Models.mydb.Car> items);
 
 
-        public async Task<CHKS.Models.mydb.Car> GetCarByPlate(string plate)
+        public async Task<Models.mydb.Car> GetCarByPlate(string plate)
         {
             var items = Context.Cars
                               .AsNoTracking()
                               .Where(i => i.Plate == plate);
 
- 
+
             OnGetCarByPlate(ref items);
 
             var itemToReturn = items.FirstOrDefault();
@@ -199,10 +200,10 @@ namespace CHKS
             return await Task.FromResult(itemToReturn);
         }
 
-        partial void OnCarCreated(CHKS.Models.mydb.Car item);
-        partial void OnAfterCarCreated(CHKS.Models.mydb.Car item);
+        partial void OnCarCreated(Models.mydb.Car item);
+        partial void OnAfterCarCreated(Models.mydb.Car item);
 
-        public async Task<CHKS.Models.mydb.Car> CreateCar(CHKS.Models.mydb.Car car)
+        public async Task<Models.mydb.Car> CreateCar(Models.mydb.Car car)
         {
             OnCarCreated(car);
 
@@ -212,8 +213,8 @@ namespace CHKS
 
             if (existingItem != null)
             {
-               throw new Exception("Item already available");
-            }            
+                throw new Exception("Item already available");
+            }
 
             try
             {
@@ -231,22 +232,22 @@ namespace CHKS
             return car;
         }
 
-        public async Task<CHKS.Models.mydb.Car> CancelCarChanges(CHKS.Models.mydb.Car item)
+        public async Task<Models.mydb.Car> CancelCarChanges(Models.mydb.Car item)
         {
             var entityToCancel = Context.Entry(item);
             if (entityToCancel.State == EntityState.Modified)
             {
-              entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
-              entityToCancel.State = EntityState.Unchanged;
+                entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
+                entityToCancel.State = EntityState.Unchanged;
             }
 
             return item;
         }
 
-        partial void OnCarUpdated(CHKS.Models.mydb.Car item);
-        partial void OnAfterCarUpdated(CHKS.Models.mydb.Car item);
+        partial void OnCarUpdated(Models.mydb.Car item);
+        partial void OnAfterCarUpdated(Models.mydb.Car item);
 
-        public async Task<CHKS.Models.mydb.Car> UpdateCar(string plate, CHKS.Models.mydb.Car car)
+        public async Task<Models.mydb.Car> UpdateCar(string plate, Models.mydb.Car car)
         {
             OnCarUpdated(car);
 
@@ -256,9 +257,9 @@ namespace CHKS
 
             if (itemToUpdate == null)
             {
-               throw new Exception("Item no longer available");
+                throw new Exception("Item no longer available");
             }
-                
+
             var entryToUpdate = Context.Entry(itemToUpdate);
             entryToUpdate.CurrentValues.SetValues(car);
             entryToUpdate.State = EntityState.Modified;
@@ -270,10 +271,10 @@ namespace CHKS
             return car;
         }
 
-        partial void OnCarDeleted(CHKS.Models.mydb.Car item);
-        partial void OnAfterCarDeleted(CHKS.Models.mydb.Car item);
+        partial void OnCarDeleted(Models.mydb.Car item);
+        partial void OnAfterCarDeleted(Models.mydb.Car item);
 
-        public async Task<CHKS.Models.mydb.Car> DeleteCar(string plate)
+        public async Task<Models.mydb.Car> DeleteCar(string plate)
         {
             var itemToDelete = Context.Cars
                               .Where(i => i.Plate == plate)
@@ -281,7 +282,7 @@ namespace CHKS
 
             if (itemToDelete == null)
             {
-               throw new Exception("Item no longer available");
+                throw new Exception("Item no longer available");
             }
 
             OnCarDeleted(itemToDelete);
@@ -303,7 +304,7 @@ namespace CHKS
 
             return itemToDelete;
         }
-    
+
         public async Task ExportCarBrandsToExcel(Query query = null, string fileName = null)
         {
             navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/carbrands/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/carbrands/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
@@ -314,9 +315,9 @@ namespace CHKS
             navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/carbrands/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/carbrands/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
-        partial void OnCarBrandsRead(ref IQueryable<CHKS.Models.mydb.CarBrand> items);
+        partial void OnCarBrandsRead(ref IQueryable<Models.mydb.CarBrand> items);
 
-        public async Task<IQueryable<CHKS.Models.mydb.CarBrand>> GetCarBrands(Query query = null)
+        public async Task<IQueryable<Models.mydb.CarBrand>> GetCarBrands(Query query = null)
         {
             var items = Context.CarBrands.AsQueryable();
 
@@ -326,7 +327,7 @@ namespace CHKS
                 if (!string.IsNullOrEmpty(query.Expand))
                 {
                     var propertiesToExpand = query.Expand.Split(',');
-                    foreach(var p in propertiesToExpand)
+                    foreach (var p in propertiesToExpand)
                     {
                         items = items.Include(p.Trim());
                     }
@@ -340,17 +341,17 @@ namespace CHKS
             return await Task.FromResult(items);
         }
 
-        partial void OnCarBrandGet(CHKS.Models.mydb.CarBrand item);
-        partial void OnGetCarBrandByKey(ref IQueryable<CHKS.Models.mydb.CarBrand> items);
+        partial void OnCarBrandGet(Models.mydb.CarBrand item);
+        partial void OnGetCarBrandByKey(ref IQueryable<Models.mydb.CarBrand> items);
 
 
-        public async Task<CHKS.Models.mydb.CarBrand> GetCarBrandByKey(string key)
+        public async Task<Models.mydb.CarBrand> GetCarBrandByKey(string key)
         {
             var items = Context.CarBrands
                               .AsNoTracking()
                               .Where(i => i.Key == key);
 
- 
+
             OnGetCarBrandByKey(ref items);
 
             var itemToReturn = items.FirstOrDefault();
@@ -360,10 +361,10 @@ namespace CHKS
             return await Task.FromResult(itemToReturn);
         }
 
-        partial void OnCarBrandCreated(CHKS.Models.mydb.CarBrand item);
-        partial void OnAfterCarBrandCreated(CHKS.Models.mydb.CarBrand item);
+        partial void OnCarBrandCreated(Models.mydb.CarBrand item);
+        partial void OnAfterCarBrandCreated(Models.mydb.CarBrand item);
 
-        public async Task<CHKS.Models.mydb.CarBrand> CreateCarBrand(CHKS.Models.mydb.CarBrand carbrand)
+        public async Task<Models.mydb.CarBrand> CreateCarBrand(Models.mydb.CarBrand carbrand)
         {
             OnCarBrandCreated(carbrand);
 
@@ -373,8 +374,8 @@ namespace CHKS
 
             if (existingItem != null)
             {
-               throw new Exception("Item already available");
-            }            
+                throw new Exception("Item already available");
+            }
 
             try
             {
@@ -392,22 +393,22 @@ namespace CHKS
             return carbrand;
         }
 
-        public async Task<CHKS.Models.mydb.CarBrand> CancelCarBrandChanges(CHKS.Models.mydb.CarBrand item)
+        public async Task<Models.mydb.CarBrand> CancelCarBrandChanges(Models.mydb.CarBrand item)
         {
             var entityToCancel = Context.Entry(item);
             if (entityToCancel.State == EntityState.Modified)
             {
-              entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
-              entityToCancel.State = EntityState.Unchanged;
+                entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
+                entityToCancel.State = EntityState.Unchanged;
             }
 
             return item;
         }
 
-        partial void OnCarBrandUpdated(CHKS.Models.mydb.CarBrand item);
-        partial void OnAfterCarBrandUpdated(CHKS.Models.mydb.CarBrand item);
+        partial void OnCarBrandUpdated(Models.mydb.CarBrand item);
+        partial void OnAfterCarBrandUpdated(Models.mydb.CarBrand item);
 
-        public async Task<CHKS.Models.mydb.CarBrand> UpdateCarBrand(string key, CHKS.Models.mydb.CarBrand carbrand)
+        public async Task<Models.mydb.CarBrand> UpdateCarBrand(string key, Models.mydb.CarBrand carbrand)
         {
             OnCarBrandUpdated(carbrand);
 
@@ -417,9 +418,9 @@ namespace CHKS
 
             if (itemToUpdate == null)
             {
-               throw new Exception("Item no longer available");
+                throw new Exception("Item no longer available");
             }
-                
+
             var entryToUpdate = Context.Entry(itemToUpdate);
             entryToUpdate.CurrentValues.SetValues(carbrand);
             entryToUpdate.State = EntityState.Modified;
@@ -431,10 +432,10 @@ namespace CHKS
             return carbrand;
         }
 
-        partial void OnCarBrandDeleted(CHKS.Models.mydb.CarBrand item);
-        partial void OnAfterCarBrandDeleted(CHKS.Models.mydb.CarBrand item);
+        partial void OnCarBrandDeleted(Models.mydb.CarBrand item);
+        partial void OnAfterCarBrandDeleted(Models.mydb.CarBrand item);
 
-        public async Task<CHKS.Models.mydb.CarBrand> DeleteCarBrand(string key)
+        public async Task<Models.mydb.CarBrand> DeleteCarBrand(string key)
         {
             var itemToDelete = Context.CarBrands
                               .Where(i => i.Key == key)
@@ -442,7 +443,7 @@ namespace CHKS
 
             if (itemToDelete == null)
             {
-               throw new Exception("Item no longer available");
+                throw new Exception("Item no longer available");
             }
 
             OnCarBrandDeleted(itemToDelete);
@@ -464,7 +465,7 @@ namespace CHKS
 
             return itemToDelete;
         }
-    
+
         public async Task ExportCartsToExcel(Query query = null, string fileName = null)
         {
             navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/carts/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/carts/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
@@ -475,9 +476,9 @@ namespace CHKS
             navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/carts/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/carts/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
-        partial void OnCartsRead(ref IQueryable<CHKS.Models.mydb.Cart> items);
+        partial void OnCartsRead(ref IQueryable<Models.mydb.Cart> items);
 
-        public async Task<IQueryable<CHKS.Models.mydb.Cart>> GetCarts(Query query = null)
+        public async Task<IQueryable<Models.mydb.Cart>> GetCarts(Query query = null)
         {
             var items = Context.Carts.AsQueryable();
 
@@ -488,7 +489,7 @@ namespace CHKS
                 if (!string.IsNullOrEmpty(query.Expand))
                 {
                     var propertiesToExpand = query.Expand.Split(',');
-                    foreach(var p in propertiesToExpand)
+                    foreach (var p in propertiesToExpand)
                     {
                         items = items.Include(p.Trim());
                     }
@@ -502,18 +503,18 @@ namespace CHKS
             return await Task.FromResult(items);
         }
 
-        partial void OnCartGet(CHKS.Models.mydb.Cart item);
-        partial void OnGetCartByCartId(ref IQueryable<CHKS.Models.mydb.Cart> items);
+        partial void OnCartGet(Models.mydb.Cart item);
+        partial void OnGetCartByCartId(ref IQueryable<Models.mydb.Cart> items);
 
 
-        public async Task<CHKS.Models.mydb.Cart> GetCartByCartId(int cartid)
+        public async Task<Models.mydb.Cart> GetCartByCartId(int cartid)
         {
             var items = Context.Carts
                               .AsNoTracking()
                               .Where(i => i.CartId == cartid);
 
             items = items.Include(i => i.Car);
- 
+
             OnGetCartByCartId(ref items);
 
             var itemToReturn = items.FirstOrDefault();
@@ -523,10 +524,10 @@ namespace CHKS
             return await Task.FromResult(itemToReturn);
         }
 
-        partial void OnCartCreated(CHKS.Models.mydb.Cart item);
-        partial void OnAfterCartCreated(CHKS.Models.mydb.Cart item);
+        partial void OnCartCreated(Models.mydb.Cart item);
+        partial void OnAfterCartCreated(Models.mydb.Cart item);
 
-        public async Task<CHKS.Models.mydb.Cart> CreateCart(CHKS.Models.mydb.Cart cart)
+        public async Task<Models.mydb.Cart> CreateCart(Models.mydb.Cart cart)
         {
             OnCartCreated(cart);
 
@@ -536,8 +537,8 @@ namespace CHKS
 
             if (existingItem != null)
             {
-               throw new Exception("Item already available");
-            }            
+                throw new Exception("Item already available");
+            }
 
             try
             {
@@ -555,22 +556,22 @@ namespace CHKS
             return cart;
         }
 
-        public async Task<CHKS.Models.mydb.Cart> CancelCartChanges(CHKS.Models.mydb.Cart item)
+        public async Task<Models.mydb.Cart> CancelCartChanges(Models.mydb.Cart item)
         {
             var entityToCancel = Context.Entry(item);
             if (entityToCancel.State == EntityState.Modified)
             {
-              entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
-              entityToCancel.State = EntityState.Unchanged;
+                entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
+                entityToCancel.State = EntityState.Unchanged;
             }
 
             return item;
         }
 
-        partial void OnCartUpdated(CHKS.Models.mydb.Cart item);
-        partial void OnAfterCartUpdated(CHKS.Models.mydb.Cart item);
+        partial void OnCartUpdated(Models.mydb.Cart item);
+        partial void OnAfterCartUpdated(Models.mydb.Cart item);
 
-        public async Task<CHKS.Models.mydb.Cart> UpdateCart(int cartid, CHKS.Models.mydb.Cart cart)
+        public async Task<Models.mydb.Cart> UpdateCart(int cartid, Models.mydb.Cart cart)
         {
             OnCartUpdated(cart);
 
@@ -580,9 +581,9 @@ namespace CHKS
 
             if (itemToUpdate == null)
             {
-               throw new Exception("Item no longer available");
+                throw new Exception("Item no longer available");
             }
-                
+
             var entryToUpdate = Context.Entry(itemToUpdate);
             entryToUpdate.CurrentValues.SetValues(cart);
             entryToUpdate.State = EntityState.Modified;
@@ -594,10 +595,10 @@ namespace CHKS
             return cart;
         }
 
-        partial void OnCartDeleted(CHKS.Models.mydb.Cart item);
-        partial void OnAfterCartDeleted(CHKS.Models.mydb.Cart item);
+        partial void OnCartDeleted(Models.mydb.Cart item);
+        partial void OnAfterCartDeleted(Models.mydb.Cart item);
 
-        public async Task<CHKS.Models.mydb.Cart> DeleteCart(int cartid)
+        public async Task<Models.mydb.Cart> DeleteCart(int cartid)
         {
             var itemToDelete = Context.Carts
                               .Where(i => i.CartId == cartid)
@@ -605,7 +606,7 @@ namespace CHKS
 
             if (itemToDelete == null)
             {
-               throw new Exception("Item no longer available");
+                throw new Exception("Item no longer available");
             }
 
             OnCartDeleted(itemToDelete);
@@ -627,7 +628,7 @@ namespace CHKS
 
             return itemToDelete;
         }
-    
+
         public async Task ExportConnectorsToExcel(Query query = null, string fileName = null)
         {
             navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/connectors/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/connectors/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
@@ -638,9 +639,9 @@ namespace CHKS
             navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/connectors/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/connectors/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
-        partial void OnConnectorsRead(ref IQueryable<CHKS.Models.mydb.Connector> items);
+        partial void OnConnectorsRead(ref IQueryable<Models.mydb.Connector> items);
 
-        public async Task<IQueryable<CHKS.Models.mydb.Connector>> GetConnectors(Query query = null)
+        public async Task<IQueryable<Models.mydb.Connector>> GetConnectors(Query query = null)
         {
             var items = Context.Connectors.AsQueryable();
 
@@ -651,7 +652,7 @@ namespace CHKS
                 if (!string.IsNullOrEmpty(query.Expand))
                 {
                     var propertiesToExpand = query.Expand.Split(',');
-                    foreach(var p in propertiesToExpand)
+                    foreach (var p in propertiesToExpand)
                     {
                         items = items.Include(p.Trim());
                     }
@@ -665,18 +666,18 @@ namespace CHKS
             return await Task.FromResult(items);
         }
 
-        partial void OnConnectorGet(CHKS.Models.mydb.Connector item);
-        partial void OnGetConnectorByGeneratedKey(ref IQueryable<CHKS.Models.mydb.Connector> items);
+        partial void OnConnectorGet(Models.mydb.Connector item);
+        partial void OnGetConnectorByGeneratedKey(ref IQueryable<Models.mydb.Connector> items);
 
 
-        public async Task<CHKS.Models.mydb.Connector> GetConnectorById(Guid Id)
+        public async Task<Models.mydb.Connector> GetConnectorById(Guid Id)
         {
             var items = Context.Connectors
                               .AsNoTracking()
                               .Where(i => i.Id == Id);
 
             items = items.Include(i => i.Cart);
- 
+
             OnGetConnectorByGeneratedKey(ref items);
 
             var itemToReturn = items.FirstOrDefault();
@@ -686,10 +687,10 @@ namespace CHKS
             return await Task.FromResult(itemToReturn);
         }
 
-        partial void OnConnectorCreated(CHKS.Models.mydb.Connector item);
-        partial void OnAfterConnectorCreated(CHKS.Models.mydb.Connector item);
+        partial void OnConnectorCreated(Models.mydb.Connector item);
+        partial void OnAfterConnectorCreated(Models.mydb.Connector item);
 
-        public async Task<CHKS.Models.mydb.Connector> CreateConnector(CHKS.Models.mydb.Connector connector)
+        public async Task<Models.mydb.Connector> CreateConnector(Models.mydb.Connector connector)
         {
             OnConnectorCreated(connector);
 
@@ -699,8 +700,8 @@ namespace CHKS
 
             if (existingItem != null)
             {
-               throw new Exception("Item already available");
-            }            
+                throw new Exception("Item already available");
+            }
 
             try
             {
@@ -718,22 +719,22 @@ namespace CHKS
             return connector;
         }
 
-        public async Task<CHKS.Models.mydb.Connector> CancelConnectorChanges(CHKS.Models.mydb.Connector item)
+        public async Task<Models.mydb.Connector> CancelConnectorChanges(Models.mydb.Connector item)
         {
             var entityToCancel = Context.Entry(item);
             if (entityToCancel.State == EntityState.Modified)
             {
-              entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
-              entityToCancel.State = EntityState.Unchanged;
+                entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
+                entityToCancel.State = EntityState.Unchanged;
             }
 
             return item;
         }
 
-        partial void OnConnectorUpdated(CHKS.Models.mydb.Connector item);
-        partial void OnAfterConnectorUpdated(CHKS.Models.mydb.Connector item);
+        partial void OnConnectorUpdated(Models.mydb.Connector item);
+        partial void OnAfterConnectorUpdated(Models.mydb.Connector item);
 
-        public async Task<CHKS.Models.mydb.Connector> UpdateConnector(Guid Id, CHKS.Models.mydb.Connector connector)
+        public async Task<Models.mydb.Connector> UpdateConnector(Guid Id, Models.mydb.Connector connector)
         {
             OnConnectorUpdated(connector);
 
@@ -743,9 +744,9 @@ namespace CHKS
 
             if (itemToUpdate == null)
             {
-               throw new Exception("Item no longer available");
+                throw new Exception("Item no longer available");
             }
-                
+
             var entryToUpdate = Context.Entry(itemToUpdate);
             entryToUpdate.CurrentValues.SetValues(connector);
             entryToUpdate.State = EntityState.Modified;
@@ -757,10 +758,10 @@ namespace CHKS
             return connector;
         }
 
-        partial void OnConnectorDeleted(CHKS.Models.mydb.Connector item);
-        partial void OnAfterConnectorDeleted(CHKS.Models.mydb.Connector item);
+        partial void OnConnectorDeleted(Models.mydb.Connector item);
+        partial void OnAfterConnectorDeleted(Models.mydb.Connector item);
 
-        public async Task<CHKS.Models.mydb.Connector> DeleteConnector(Guid Id)
+        public async Task<Models.mydb.Connector> DeleteConnector(Guid Id)
         {
             var itemToDelete = Context.Connectors
                               .Where(i => i.Id == Id)
@@ -768,7 +769,7 @@ namespace CHKS
 
             if (itemToDelete == null)
             {
-               throw new Exception("Item no longer available");
+                throw new Exception("Item no longer available");
             }
 
             OnConnectorDeleted(itemToDelete);
@@ -790,7 +791,7 @@ namespace CHKS
 
             return itemToDelete;
         }
-    
+
         public async Task ExportDailyexpensesToExcel(Query query = null, string fileName = null)
         {
             navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/dailyexpenses/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/dailyexpenses/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
@@ -801,9 +802,9 @@ namespace CHKS
             navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/dailyexpenses/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/dailyexpenses/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
-        partial void OnDailyexpensesRead(ref IQueryable<CHKS.Models.mydb.Dailyexpense> items);
+        partial void OnDailyexpensesRead(ref IQueryable<Models.mydb.Dailyexpense> items);
 
-        public async Task<IQueryable<CHKS.Models.mydb.Dailyexpense>> GetDailyexpenses(Query query = null)
+        public async Task<IQueryable<Models.mydb.Dailyexpense>> GetDailyexpenses(Query query = null)
         {
             var items = Context.Dailyexpenses.AsQueryable();
 
@@ -813,7 +814,7 @@ namespace CHKS
                 if (!string.IsNullOrEmpty(query.Expand))
                 {
                     var propertiesToExpand = query.Expand.Split(',');
-                    foreach(var p in propertiesToExpand)
+                    foreach (var p in propertiesToExpand)
                     {
                         items = items.Include(p.Trim());
                     }
@@ -827,17 +828,17 @@ namespace CHKS
             return await Task.FromResult(items);
         }
 
-        partial void OnDailyexpenseGet(CHKS.Models.mydb.Dailyexpense item);
-        partial void OnGetDailyexpenseByKey(ref IQueryable<CHKS.Models.mydb.Dailyexpense> items);
+        partial void OnDailyexpenseGet(Models.mydb.Dailyexpense item);
+        partial void OnGetDailyexpenseByKey(ref IQueryable<Models.mydb.Dailyexpense> items);
 
 
-        public async Task<CHKS.Models.mydb.Dailyexpense> GetDailyexpenseByKey(Guid key)
+        public async Task<Models.mydb.Dailyexpense> GetDailyexpenseByKey(Guid key)
         {
             var items = Context.Dailyexpenses
                               .AsNoTracking()
                               .Where(i => i.Key == key);
 
- 
+
             OnGetDailyexpenseByKey(ref items);
 
             var itemToReturn = items.FirstOrDefault();
@@ -847,10 +848,10 @@ namespace CHKS
             return await Task.FromResult(itemToReturn);
         }
 
-        partial void OnDailyexpenseCreated(CHKS.Models.mydb.Dailyexpense item);
-        partial void OnAfterDailyexpenseCreated(CHKS.Models.mydb.Dailyexpense item);
+        partial void OnDailyexpenseCreated(Models.mydb.Dailyexpense item);
+        partial void OnAfterDailyexpenseCreated(Models.mydb.Dailyexpense item);
 
-        public async Task<CHKS.Models.mydb.Dailyexpense> CreateDailyexpense(CHKS.Models.mydb.Dailyexpense dailyexpense)
+        public async Task<Models.mydb.Dailyexpense> CreateDailyexpense(Models.mydb.Dailyexpense dailyexpense)
         {
             OnDailyexpenseCreated(dailyexpense);
 
@@ -860,8 +861,8 @@ namespace CHKS
 
             if (existingItem != null)
             {
-               throw new Exception("Item already available");
-            }            
+                throw new Exception("Item already available");
+            }
 
             try
             {
@@ -879,22 +880,22 @@ namespace CHKS
             return dailyexpense;
         }
 
-        public async Task<CHKS.Models.mydb.Dailyexpense> CancelDailyexpenseChanges(CHKS.Models.mydb.Dailyexpense item)
+        public async Task<Models.mydb.Dailyexpense> CancelDailyexpenseChanges(Models.mydb.Dailyexpense item)
         {
             var entityToCancel = Context.Entry(item);
             if (entityToCancel.State == EntityState.Modified)
             {
-              entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
-              entityToCancel.State = EntityState.Unchanged;
+                entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
+                entityToCancel.State = EntityState.Unchanged;
             }
 
             return item;
         }
 
-        partial void OnDailyexpenseUpdated(CHKS.Models.mydb.Dailyexpense item);
-        partial void OnAfterDailyexpenseUpdated(CHKS.Models.mydb.Dailyexpense item);
+        partial void OnDailyexpenseUpdated(Models.mydb.Dailyexpense item);
+        partial void OnAfterDailyexpenseUpdated(Models.mydb.Dailyexpense item);
 
-        public async Task<CHKS.Models.mydb.Dailyexpense> UpdateDailyexpense(Guid key, CHKS.Models.mydb.Dailyexpense dailyexpense)
+        public async Task<Models.mydb.Dailyexpense> UpdateDailyexpense(Guid key, Models.mydb.Dailyexpense dailyexpense)
         {
             OnDailyexpenseUpdated(dailyexpense);
 
@@ -904,9 +905,9 @@ namespace CHKS
 
             if (itemToUpdate == null)
             {
-               throw new Exception("Item no longer available");
+                throw new Exception("Item no longer available");
             }
-                
+
             var entryToUpdate = Context.Entry(itemToUpdate);
             entryToUpdate.CurrentValues.SetValues(dailyexpense);
             entryToUpdate.State = EntityState.Modified;
@@ -918,10 +919,10 @@ namespace CHKS
             return dailyexpense;
         }
 
-        partial void OnDailyexpenseDeleted(CHKS.Models.mydb.Dailyexpense item);
-        partial void OnAfterDailyexpenseDeleted(CHKS.Models.mydb.Dailyexpense item);
+        partial void OnDailyexpenseDeleted(Models.mydb.Dailyexpense item);
+        partial void OnAfterDailyexpenseDeleted(Models.mydb.Dailyexpense item);
 
-        public async Task<CHKS.Models.mydb.Dailyexpense> DeleteDailyexpense(Guid key)
+        public async Task<Models.mydb.Dailyexpense> DeleteDailyexpense(Guid key)
         {
             var itemToDelete = Context.Dailyexpenses
                               .Where(i => i.Key == key)
@@ -929,7 +930,7 @@ namespace CHKS
 
             if (itemToDelete == null)
             {
-               throw new Exception("Item no longer available");
+                throw new Exception("Item no longer available");
             }
 
             OnDailyexpenseDeleted(itemToDelete);
@@ -951,7 +952,7 @@ namespace CHKS
 
             return itemToDelete;
         }
-    
+
         public async Task ExportHistoriesToExcel(Query query = null, string fileName = null)
         {
             navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/histories/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/histories/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
@@ -962,9 +963,9 @@ namespace CHKS
             navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/histories/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/histories/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
-        partial void OnHistoriesRead(ref IQueryable<CHKS.Models.mydb.History> items);
+        partial void OnHistoriesRead(ref IQueryable<Models.mydb.History> items);
 
-        public async Task<IQueryable<CHKS.Models.mydb.History>> GetHistories(Query query = null)
+        public async Task<IQueryable<Models.mydb.History>> GetHistories(Query query = null)
         {
             var items = Context.Histories.AsQueryable();
 
@@ -975,7 +976,7 @@ namespace CHKS
                 if (!string.IsNullOrEmpty(query.Expand))
                 {
                     var propertiesToExpand = query.Expand.Split(',');
-                    foreach(var p in propertiesToExpand)
+                    foreach (var p in propertiesToExpand)
                     {
                         items = items.Include(p.Trim());
                     }
@@ -989,18 +990,18 @@ namespace CHKS
             return await Task.FromResult(items);
         }
 
-        partial void OnHistoryGet(CHKS.Models.mydb.History item);
-        partial void OnGetHistoryById(ref IQueryable<CHKS.Models.mydb.History> items);
+        partial void OnHistoryGet(Models.mydb.History item);
+        partial void OnGetHistoryById(ref IQueryable<Models.mydb.History> items);
 
 
-        public async Task<CHKS.Models.mydb.History> GetHistoryById(Guid id)
+        public async Task<Models.mydb.History> GetHistoryById(Guid id)
         {
             var items = Context.Histories
                               .AsNoTracking()
                               .Where(i => i.Id == id);
 
             items = items.Include(i => i.Car);
- 
+
             OnGetHistoryById(ref items);
 
             var itemToReturn = items.FirstOrDefault();
@@ -1010,10 +1011,10 @@ namespace CHKS
             return await Task.FromResult(itemToReturn);
         }
 
-        partial void OnHistoryCreated(CHKS.Models.mydb.History item);
-        partial void OnAfterHistoryCreated(CHKS.Models.mydb.History item);
+        partial void OnHistoryCreated(Models.mydb.History item);
+        partial void OnAfterHistoryCreated(Models.mydb.History item);
 
-        public async Task<CHKS.Models.mydb.History> CreateHistory(CHKS.Models.mydb.History history)
+        public async Task<Models.mydb.History> CreateHistory(Models.mydb.History history)
         {
             OnHistoryCreated(history);
 
@@ -1023,8 +1024,8 @@ namespace CHKS
 
             if (existingItem != null)
             {
-               throw new Exception("Item already available");
-            }            
+                throw new Exception("Item already available");
+            }
 
             try
             {
@@ -1042,22 +1043,22 @@ namespace CHKS
             return history;
         }
 
-        public async Task<CHKS.Models.mydb.History> CancelHistoryChanges(CHKS.Models.mydb.History item)
+        public async Task<Models.mydb.History> CancelHistoryChanges(Models.mydb.History item)
         {
             var entityToCancel = Context.Entry(item);
             if (entityToCancel.State == EntityState.Modified)
             {
-              entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
-              entityToCancel.State = EntityState.Unchanged;
+                entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
+                entityToCancel.State = EntityState.Unchanged;
             }
 
             return item;
         }
 
-        partial void OnHistoryUpdated(CHKS.Models.mydb.History item);
-        partial void OnAfterHistoryUpdated(CHKS.Models.mydb.History item);
+        partial void OnHistoryUpdated(Models.mydb.History item);
+        partial void OnAfterHistoryUpdated(Models.mydb.History item);
 
-        public async Task<CHKS.Models.mydb.History> UpdateHistory(Guid id, CHKS.Models.mydb.History history)
+        public async Task<Models.mydb.History> UpdateHistory(Guid id, Models.mydb.History history)
         {
             OnHistoryUpdated(history);
 
@@ -1067,9 +1068,9 @@ namespace CHKS
 
             if (itemToUpdate == null)
             {
-               throw new Exception("Item no longer available");
+                throw new Exception("Item no longer available");
             }
-                
+
             var entryToUpdate = Context.Entry(itemToUpdate);
             entryToUpdate.CurrentValues.SetValues(history);
             entryToUpdate.State = EntityState.Modified;
@@ -1081,10 +1082,10 @@ namespace CHKS
             return history;
         }
 
-        partial void OnHistoryDeleted(CHKS.Models.mydb.History item);
-        partial void OnAfterHistoryDeleted(CHKS.Models.mydb.History item);
+        partial void OnHistoryDeleted(Models.mydb.History item);
+        partial void OnAfterHistoryDeleted(Models.mydb.History item);
 
-        public async Task<CHKS.Models.mydb.History> DeleteHistory(Guid id)
+        public async Task<Models.mydb.History> DeleteHistory(Guid id)
         {
             var itemToDelete = Context.Histories
                               .Where(i => i.Id == id)
@@ -1092,7 +1093,7 @@ namespace CHKS
 
             if (itemToDelete == null)
             {
-               throw new Exception("Item no longer available");
+                throw new Exception("Item no longer available");
             }
 
             OnHistoryDeleted(itemToDelete);
@@ -1114,7 +1115,7 @@ namespace CHKS
 
             return itemToDelete;
         }
-    
+
         public async Task ExportHistoryconnectorsToExcel(Query query = null, string fileName = null)
         {
             navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/historyconnectors/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/historyconnectors/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
@@ -1125,9 +1126,9 @@ namespace CHKS
             navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/historyconnectors/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/historyconnectors/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
-        partial void OnHistoryconnectorsRead(ref IQueryable<CHKS.Models.mydb.Historyconnector> items);
+        partial void OnHistoryconnectorsRead(ref IQueryable<Models.mydb.Historyconnector> items);
 
-        public async Task<IQueryable<CHKS.Models.mydb.Historyconnector>> GetHistoryconnectors(Query query = null)
+        public async Task<IQueryable<Models.mydb.Historyconnector>> GetHistoryconnectors(Query query = null)
         {
             var items = Context.Historyconnectors.AsQueryable();
 
@@ -1138,7 +1139,7 @@ namespace CHKS
                 if (!string.IsNullOrEmpty(query.Expand))
                 {
                     var propertiesToExpand = query.Expand.Split(',');
-                    foreach(var p in propertiesToExpand)
+                    foreach (var p in propertiesToExpand)
                     {
                         items = items.Include(p.Trim());
                     }
@@ -1152,18 +1153,18 @@ namespace CHKS
             return await Task.FromResult(items);
         }
 
-        partial void OnHistoryconnectorGet(CHKS.Models.mydb.Historyconnector item);
-        partial void OnGetHistoryconnectorById(ref IQueryable<CHKS.Models.mydb.Historyconnector> items);
+        partial void OnHistoryconnectorGet(Models.mydb.Historyconnector item);
+        partial void OnGetHistoryconnectorById(ref IQueryable<Models.mydb.Historyconnector> items);
 
 
-        public async Task<CHKS.Models.mydb.Historyconnector> GetHistoryconnectorById(Guid id)
+        public async Task<Models.mydb.Historyconnector> GetHistoryconnectorById(Guid id)
         {
             var items = Context.Historyconnectors
                               .AsNoTracking()
                               .Where(i => i.Id == id);
 
             items = items.Include(i => i.History);
- 
+
             OnGetHistoryconnectorById(ref items);
 
             var itemToReturn = items.FirstOrDefault();
@@ -1173,10 +1174,10 @@ namespace CHKS
             return await Task.FromResult(itemToReturn);
         }
 
-        partial void OnHistoryconnectorCreated(CHKS.Models.mydb.Historyconnector item);
-        partial void OnAfterHistoryconnectorCreated(CHKS.Models.mydb.Historyconnector item);
+        partial void OnHistoryconnectorCreated(Models.mydb.Historyconnector item);
+        partial void OnAfterHistoryconnectorCreated(Models.mydb.Historyconnector item);
 
-        public async Task<CHKS.Models.mydb.Historyconnector> CreateHistoryconnector(CHKS.Models.mydb.Historyconnector historyconnector)
+        public async Task<Models.mydb.Historyconnector> CreateHistoryconnector(Models.mydb.Historyconnector historyconnector)
         {
             OnHistoryconnectorCreated(historyconnector);
 
@@ -1186,8 +1187,8 @@ namespace CHKS
 
             if (existingItem != null)
             {
-               throw new Exception("Item already available");
-            }            
+                throw new Exception("Item already available");
+            }
 
             try
             {
@@ -1205,22 +1206,22 @@ namespace CHKS
             return historyconnector;
         }
 
-        public async Task<CHKS.Models.mydb.Historyconnector> CancelHistoryconnectorChanges(CHKS.Models.mydb.Historyconnector item)
+        public async Task<Models.mydb.Historyconnector> CancelHistoryconnectorChanges(Models.mydb.Historyconnector item)
         {
             var entityToCancel = Context.Entry(item);
             if (entityToCancel.State == EntityState.Modified)
             {
-              entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
-              entityToCancel.State = EntityState.Unchanged;
+                entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
+                entityToCancel.State = EntityState.Unchanged;
             }
 
             return item;
         }
 
-        partial void OnHistoryconnectorUpdated(CHKS.Models.mydb.Historyconnector item);
-        partial void OnAfterHistoryconnectorUpdated(CHKS.Models.mydb.Historyconnector item);
+        partial void OnHistoryconnectorUpdated(Models.mydb.Historyconnector item);
+        partial void OnAfterHistoryconnectorUpdated(Models.mydb.Historyconnector item);
 
-        public async Task<CHKS.Models.mydb.Historyconnector> UpdateHistoryconnector(Guid id, CHKS.Models.mydb.Historyconnector historyconnector)
+        public async Task<Models.mydb.Historyconnector> UpdateHistoryconnector(Guid id, Models.mydb.Historyconnector historyconnector)
         {
             OnHistoryconnectorUpdated(historyconnector);
 
@@ -1230,9 +1231,9 @@ namespace CHKS
 
             if (itemToUpdate == null)
             {
-               throw new Exception("Item no longer available");
+                throw new Exception("Item no longer available");
             }
-                
+
             var entryToUpdate = Context.Entry(itemToUpdate);
             entryToUpdate.CurrentValues.SetValues(historyconnector);
             entryToUpdate.State = EntityState.Modified;
@@ -1244,10 +1245,10 @@ namespace CHKS
             return historyconnector;
         }
 
-        partial void OnHistoryconnectorDeleted(CHKS.Models.mydb.Historyconnector item);
-        partial void OnAfterHistoryconnectorDeleted(CHKS.Models.mydb.Historyconnector item);
+        partial void OnHistoryconnectorDeleted(Models.mydb.Historyconnector item);
+        partial void OnAfterHistoryconnectorDeleted(Models.mydb.Historyconnector item);
 
-        public async Task<CHKS.Models.mydb.Historyconnector> DeleteHistoryconnector(Guid id)
+        public async Task<Models.mydb.Historyconnector> DeleteHistoryconnector(Guid id)
         {
             var itemToDelete = Context.Historyconnectors
                               .Where(i => i.Id == id)
@@ -1255,7 +1256,7 @@ namespace CHKS
 
             if (itemToDelete == null)
             {
-               throw new Exception("Item no longer available");
+                throw new Exception("Item no longer available");
             }
 
             OnHistoryconnectorDeleted(itemToDelete);
@@ -1277,7 +1278,7 @@ namespace CHKS
 
             return itemToDelete;
         }
-    
+
         public async Task ExportInventoriesToExcel(Query query = null, string fileName = null)
         {
             navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/inventories/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/inventories/excel(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
@@ -1288,9 +1289,9 @@ namespace CHKS
             navigationManager.NavigateTo(query != null ? query.ToUrl($"export/mydb/inventories/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')") : $"export/mydb/inventories/csv(fileName='{(!string.IsNullOrEmpty(fileName) ? UrlEncoder.Default.Encode(fileName) : "Export")}')", true);
         }
 
-        partial void OnInventoriesRead(ref IQueryable<CHKS.Models.mydb.Inventory> items);
+        partial void OnInventoriesRead(ref IQueryable<Models.mydb.Inventory> items);
 
-        public async Task<IQueryable<CHKS.Models.mydb.Inventory>> GetInventories(Query query = null)
+        public async Task<IQueryable<Models.mydb.Inventory>> GetInventories(Query query = null)
         {
             var items = Context.Inventories.AsQueryable();
 
@@ -1300,7 +1301,7 @@ namespace CHKS
                 if (!string.IsNullOrEmpty(query.Expand))
                 {
                     var propertiesToExpand = query.Expand.Split(',');
-                    foreach(var p in propertiesToExpand)
+                    foreach (var p in propertiesToExpand)
                     {
                         items = items.Include(p.Trim());
                     }
@@ -1314,16 +1315,16 @@ namespace CHKS
             return await Task.FromResult(items);
         }
 
-        partial void OnInventoryGet(CHKS.Models.mydb.Inventory item);
-        partial void OnGetInventoryByCode(ref IQueryable<CHKS.Models.mydb.Inventory> items);
+        partial void OnInventoryGet(Models.mydb.Inventory item);
+        partial void OnGetInventoryByCode(ref IQueryable<Models.mydb.Inventory> items);
 
 
-        public async Task<CHKS.Models.mydb.Inventory> GetInventoryById(Guid Id)
+        public async Task<Models.mydb.Inventory> GetInventoryById(Guid Id)
         {
             var items = Context.Inventories
                               .AsNoTracking()
                               .Where(i => i.Id == Id);
- 
+
             OnGetInventoryByCode(ref items);
 
             var itemToReturn = items.FirstOrDefault();
@@ -1337,7 +1338,7 @@ namespace CHKS
         {
             var item = Context.Inventories
                               .Where(i => i.Id == Id).FirstOrDefault();
-            item.Tags ??= [];   
+            item.Tags ??= [];
             item.Tags.Add(Tags);
 
             Context.SaveChanges();
@@ -1356,10 +1357,10 @@ namespace CHKS
             return await Task.FromResult(item.Tags);
         }
 
-        partial void OnInventoryCreated(CHKS.Models.mydb.Inventory item);
-        partial void OnAfterInventoryCreated(CHKS.Models.mydb.Inventory item);
+        partial void OnInventoryCreated(Models.mydb.Inventory item);
+        partial void OnAfterInventoryCreated(Models.mydb.Inventory item);
 
-        public async Task<CHKS.Models.mydb.Inventory> CreateInventory(CHKS.Models.mydb.Inventory inventory)
+        public async Task<Models.mydb.Inventory> CreateInventory(Models.mydb.Inventory inventory)
         {
             OnInventoryCreated(inventory);
 
@@ -1369,8 +1370,8 @@ namespace CHKS
 
             if (existingItem != null)
             {
-               throw new Exception("Item already available");
-            }            
+                throw new Exception("Item already available");
+            }
 
             try
             {
@@ -1388,22 +1389,22 @@ namespace CHKS
             return inventory;
         }
 
-        public async Task<CHKS.Models.mydb.Inventory> CancelInventoryChanges(CHKS.Models.mydb.Inventory item)
+        public async Task<Models.mydb.Inventory> CancelInventoryChanges(Models.mydb.Inventory item)
         {
             var entityToCancel = Context.Entry(item);
             if (entityToCancel.State == EntityState.Modified)
             {
-              entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
-              entityToCancel.State = EntityState.Unchanged;
+                entityToCancel.CurrentValues.SetValues(entityToCancel.OriginalValues);
+                entityToCancel.State = EntityState.Unchanged;
             }
 
             return item;
         }
 
-        partial void OnInventoryUpdated(CHKS.Models.mydb.Inventory item);
-        partial void OnAfterInventoryUpdated(CHKS.Models.mydb.Inventory item);
+        partial void OnInventoryUpdated(Models.mydb.Inventory item);
+        partial void OnAfterInventoryUpdated(Models.mydb.Inventory item);
 
-        public async Task<CHKS.Models.mydb.Inventory> UpdateInventory(string code, CHKS.Models.mydb.Inventory inventory)
+        public async Task<Models.mydb.Inventory> UpdateInventory(string code, Models.mydb.Inventory inventory)
         {
             OnInventoryUpdated(inventory);
 
@@ -1413,9 +1414,9 @@ namespace CHKS
 
             if (itemToUpdate == null)
             {
-               throw new Exception("Item no longer available");
+                throw new Exception("Item no longer available");
             }
-                
+
             var entryToUpdate = Context.Entry(itemToUpdate);
             entryToUpdate.CurrentValues.SetValues(inventory);
             entryToUpdate.State = EntityState.Modified;
@@ -1426,7 +1427,7 @@ namespace CHKS
 
             return inventory;
         }
-        public async Task<CHKS.Models.mydb.Inventory> UpdateInventory(CHKS.Models.mydb.Inventory inventory)
+        public async Task<Models.mydb.Inventory> UpdateInventory(Models.mydb.Inventory inventory)
         {
             OnInventoryUpdated(inventory);
 
@@ -1436,9 +1437,9 @@ namespace CHKS
 
             if (itemToUpdate == null)
             {
-               throw new Exception("Item no longer available");
+                throw new Exception("Item no longer available");
             }
-                
+
             var entryToUpdate = Context.Entry(itemToUpdate);
             entryToUpdate.CurrentValues.SetValues(inventory);
             entryToUpdate.State = EntityState.Modified;
@@ -1450,10 +1451,10 @@ namespace CHKS
             return inventory;
         }
 
-        partial void OnInventoryDeleted(CHKS.Models.mydb.Inventory item);
-        partial void OnAfterInventoryDeleted(CHKS.Models.mydb.Inventory item);
+        partial void OnInventoryDeleted(Models.mydb.Inventory item);
+        partial void OnAfterInventoryDeleted(Models.mydb.Inventory item);
 
-        public async Task<CHKS.Models.mydb.Inventory> DeleteInventory(Guid Id)
+        public async Task<Models.mydb.Inventory> DeleteInventory(Guid Id)
         {
             var itemToDelete = Context.Inventories
                               .Where(i => i.Id == Id)
@@ -1461,7 +1462,7 @@ namespace CHKS
 
             if (itemToDelete == null)
             {
-               throw new Exception("Item no longer available");
+                throw new Exception("Item no longer available");
             }
 
             OnInventoryDeleted(itemToDelete);
@@ -1483,5 +1484,5 @@ namespace CHKS
 
             return itemToDelete;
         }
-        }
+    }
 }

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Radzen;
 using Radzen.Blazor;
 using System.Globalization;
+using CHKS.Services;
 
 namespace CHKS.Pages
 {

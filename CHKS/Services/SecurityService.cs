@@ -15,7 +15,7 @@ using Radzen;
 
 using CHKS.Models;
 
-namespace CHKS
+namespace CHKS.Services
 {
     public partial class SecurityService
     {
@@ -32,8 +32,8 @@ namespace CHKS
 
         public SecurityService(NavigationManager navigationManager, IHttpClientFactory factory)
         {
-            this.baseUri = new Uri($"{navigationManager.BaseUri}odata/Identity/");
-            this.httpClient = factory.CreateClient("CHKS");
+            baseUri = new Uri($"{navigationManager.BaseUri}odata/Identity/");
+            httpClient = factory.CreateClient("CHKS");
             this.navigationManager = navigationManager;
         }
 
@@ -93,7 +93,7 @@ namespace CHKS
 
         public async Task<ApplicationAuthenticationState> GetAuthenticationStateAsync()
         {
-            var uri =  new Uri($"{navigationManager.BaseUri}Account/CurrentUser");
+            var uri = new Uri($"{navigationManager.BaseUri}Account/CurrentUser");
 
             var response = await httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post, uri));
 
@@ -202,7 +202,7 @@ namespace CHKS
         }
         public async Task ChangePassword(string oldPassword, string newPassword)
         {
-            var uri =  new Uri($"{navigationManager.BaseUri}Account/ChangePassword");
+            var uri = new Uri($"{navigationManager.BaseUri}Account/ChangePassword");
 
             var content = new FormUrlEncodedContent(new Dictionary<string, string> {
                 { "oldPassword", oldPassword },

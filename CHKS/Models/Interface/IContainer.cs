@@ -1,5 +1,5 @@
-using CHKS.Models;
-using CHKS;
+using CHKS.Models.Interface;
+using CHKS.Services;
 
 public interface IContainer<ChildrenType>
     where ChildrenType : IItem

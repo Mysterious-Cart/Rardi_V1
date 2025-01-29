@@ -1,5 +1,4 @@
-
-namespace CHKS;
+namespace CHKS.Services;
 public class LanguageService
 {
 
@@ -7,10 +6,11 @@ public class LanguageService
 
     public LanguageService(mydbService MydbService)
     {
-        this.mydbService = MydbService;
+        mydbService = MydbService;
     }
 
-    public async Task GetLanguageData(){
+    public async Task GetLanguageData()
+    {
 
     }
 }

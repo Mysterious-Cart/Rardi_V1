@@ -1,6 +1,4 @@
-using CHKS;
-
-namespace CHKS.Models;
+namespace CHKS.Models.Interface;
 
 public interface IModelClass
 {

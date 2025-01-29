@@ -1,12 +1,13 @@
-namespace CHKS.Models;
+namespace CHKS.Models.Interface;
 using CHKS.Models.mydb;
 
-public interface ICartItem{
+public interface ICartItem
+{
     public int CartId { get; set; }
 
     public Guid ProductId { get; set; }
 
-    public Inventory Inventory {get;}
+    public Inventory Inventory { get; }
 
     public decimal Qty { get; set; }
 

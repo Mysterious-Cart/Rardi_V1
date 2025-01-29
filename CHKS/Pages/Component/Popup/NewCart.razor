@@ -1,5 +1,6 @@
 @page "/new-cart"
-
+@using CHKS.Models.Interface;
+@using CHKS.Services;
 @attribute [Authorize]
 @inject mydbService DbService;
 @inject IDbProvider provider;

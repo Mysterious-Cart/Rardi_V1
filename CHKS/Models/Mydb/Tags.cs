@@ -1,3 +1,4 @@
+using CHKS.Models.Interface;
 using CHKS.Models.mydb;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;

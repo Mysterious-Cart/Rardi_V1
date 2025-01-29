@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using CHKS.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using CHKS.Models.Interface;
 
 namespace CHKS.Models.mydb
 {

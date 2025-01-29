@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 using CHKS.Models;
 
-namespace CHKS
+namespace CHKS.Services
 {
     public class ApplicationAuthenticationStateProvider : AuthenticationStateProvider
     {
