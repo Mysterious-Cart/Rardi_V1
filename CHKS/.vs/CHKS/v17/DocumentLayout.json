@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepo\\RardiV1\\Rardi_V1\\CHKS\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{09D51C50-173A-4E49-A979-462497317170}|CHKS.csproj|c:\\users\\soeng\\onedrive\\documents\\gitrepo\\rardiv1\\rardi_v1\\chks\\pages\\component\\customeroverview.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{09D51C50-173A-4E49-A979-462497317170}|CHKS.csproj|solutionrelative:pages\\component\\customeroverview.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{09D51C50-173A-4E49-A979-462497317170}|CHKS.csproj|c:\\users\\soeng\\onedrive\\documents\\gitrepo\\rardiv1\\rardi_v1\\chks\\pages\\histories.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{09D51C50-173A-4E49-A979-462497317170}|CHKS.csproj|solutionrelative:pages\\histories.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{09D51C50-173A-4E49-A979-462497317170}|CHKS.csproj|c:\\users\\soeng\\onedrive\\documents\\gitrepo\\rardiv1\\rardi_v1\\chks\\pages\\inventories.razor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{09D51C50-173A-4E49-A979-462497317170}|CHKS.csproj|solutionrelative:pages\\inventories.razor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -18,11 +26,41 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Histories.razor",
+              "DocumentMoniker": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepo\\RardiV1\\Rardi_V1\\CHKS\\Pages\\Histories.razor",
+              "RelativeDocumentMoniker": "Pages\\Histories.razor",
+              "ToolTip": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepo\\RardiV1\\Rardi_V1\\CHKS\\Pages\\Histories.razor",
+              "RelativeToolTip": "Pages\\Histories.razor",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAvAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-02-01T13:56:56.977Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "CustomerOverview.razor",
+              "DocumentMoniker": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepo\\RardiV1\\Rardi_V1\\CHKS\\Pages\\Component\\CustomerOverview.razor",
+              "RelativeDocumentMoniker": "Pages\\Component\\CustomerOverview.razor",
+              "ToolTip": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepo\\RardiV1\\Rardi_V1\\CHKS\\Pages\\Component\\CustomerOverview.razor",
+              "RelativeToolTip": "Pages\\Component\\CustomerOverview.razor",
+              "ViewState": "AQIAAH4AAAAAAAAAAAAAAJAAAAAoAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-02-01T13:51:19.326Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "Inventories.razor.cs",
               "DocumentMoniker": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepo\\RardiV1\\Rardi_V1\\CHKS\\Pages\\Inventories.razor.cs",
               "RelativeDocumentMoniker": "Pages\\Inventories.razor.cs",
@@ -35,7 +73,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "Inventories.razor",
               "DocumentMoniker": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepo\\RardiV1\\Rardi_V1\\CHKS\\Pages\\Inventories.razor",
               "RelativeDocumentMoniker": "Pages\\Inventories.razor",
@@ -43,8 +81,7 @@
               "RelativeToolTip": "Pages\\Inventories.razor",
               "ViewState": "AQIAAGwAAAAAAAAAAAAAAHUAAABqAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-02-01T11:39:48.166Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-01T11:39:48.166Z"
             }
           ]
         }

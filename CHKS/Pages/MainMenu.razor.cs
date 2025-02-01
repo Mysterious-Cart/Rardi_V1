@@ -165,18 +165,6 @@ namespace CHKS.Pages
             }
         }
 
-        protected async void ResetTotal(){
-            Current_Cart.Total = CartItem.Sum(i => i.PriceOverwrite * i.Qty ).GetValueOrDefault();
-            await MydbService.UpdateCart(Current_Cart.CartId, Current_Cart);
-
-        }
-
-        private bool showRecentCashout = false;
-        protected async Task ToggleRecentCashout(){
-            showRecentCashout = !showRecentCashout;
-
-        }
-
         protected async Task DeleteCustomer(){
             if(await DialogService.Confirm("តើអ្នកច្បាស់ដែរឫទេ?","សំខាន់!", new ConfirmOptions{OkButtonText="Yes", CancelButtonText="No"}) == true)
             {
@@ -196,11 +184,6 @@ namespace CHKS.Pages
         }
 
         protected string ToastState = "";
-        
-        protected async Task ChangeQty(Models.mydb.Connector Product, int Changes){
-            
-            
-        }
 
         protected string ToastString = "";
         protected async Task Toasting(string ToastText){
@@ -260,10 +243,6 @@ namespace CHKS.Pages
                     }
                 }else{await DialogService.Alert("បញ្ចាក់អ្នកគ្មានទំនេញនៅក្នុងអត្ថជននេះទេ.","បញ្ចាក់!");}
             }
-        }
-
-        protected async Task PrintReceipt(){
-            
         }
 
         protected async Task ClearAllProduct(){

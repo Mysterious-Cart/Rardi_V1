@@ -43,18 +43,18 @@
         <MudDivider Light="true" Style="margin-top:20px; margin-bottom:20px;"/>
         <MudText Style="margin-bottom: 10px;" Typo="Typo.h6">Record</MudText>
         <MudList T="History">
-        @if(!CustomerRecord.IsNullOrEmpty()){
+        @if(CustomerRecord.Any()){
             @foreach (var Record in CustomerRecord)
             {
-                <MudListItem T="string" Text="@Record.Plate" SecondaryText="@Record.CashoutDate" Icon="@Icons.Material.Filled.Receipt" IconColor="Color.Info">
+                    <MudListItem T="string" Text="@Customer.Plate" SecondaryText="@Record.CashoutDate" Icon="@Icons.Material.Filled.Receipt" IconColor="Color.Info">
                     <NestedList>
-                    @if(!Record.Historyconnectors.IsNullOrEmpty()){
-                        foreach (var RecordItem in Record.Historyconnectors)
+                    @if(Record.Items.Any()){
+                        foreach (var RecordItem in Record.Items)
                         {
                             <MudListItem SecondaryText="@RecordItem.Note" Icon="@Icons.Material.Outlined.Inventory2" IconSize="@Size.Small">
                                 <ChildContent>
                                     <MudStack Row=true Justify="MudBlazor.Justify.SpaceBetween">
-                                        <MudText style="width:40%">@RecordItem.Inventory.Name</MudText>
+                                        <MudText style="width:40%">@RecordItem.Name</MudText>
                                         <MudText Align="Align.Center"> @RecordItem.Qty.ToString("0")</MudText>
                                         <MudText Style="width: 10%;"> @RecordItem.Export.ToString("$0.00")</MudText>
                                         <MudText > @((RecordItem.Qty * RecordItem.Export).ToString("$0.00"))</MudText>
@@ -62,7 +62,14 @@
                                 </ChildContent>
                             </MudListItem>
                         }
-                        <MudListItem Text=@("សរុប: " + Record.Total?.ToString("$0.00"))  Icon="@Icons.Material.Filled.Numbers" IconColor="@Color.Tertiary"/>
+                                <MudListItem Icon="@Icons.Material.Filled.Numbers" IconColor="@Color.Tertiary" IconSize="@Size.Small">
+                            <ChildContent>
+                                <MudStack Row=true Justify="MudBlazor.Justify.SpaceBetween" AlignItems="MudBlazor.AlignItems.Center">
+                                    <MudText>@("សរុប: " + Record.Total?.ToString("$0.00"))</MudText>
+                                    <MudButton ClickPropagation=false OnClick="@(() => ReCalculateTotal(Record))" Icon="@Icons.Material.Filled.Refresh">Reload</MudButton>
+                                </MudStack>
+                            </ChildContent>
+                        </MudListItem>
                     }else{
                         <MudListItem Text="No Item." Inset=true />
                     }
@@ -83,13 +90,64 @@
     [Inject] protected mydbService mydbService {get; set;}
     [Parameter] public CustomerDTO Customer {get; set;} = null;
 
-    private IList<History> CustomerRecord = [];
+    private record Record(
+        Guid Id,
+        string CashoutDate,
+        decimal? Total,
+        List<RecordItem> Items
+    );
 
-    protected async override Task OnAfterRenderAsync(bool firstRender)
+    private record RecordItem
+    (
+        string Name,
+        int Qty,
+        decimal Import,
+        decimal Export,
+        string Note
+    );
+
+    private string LastCustomer = "";
+    private IList<Record> CustomerRecord = [];
+
+    protected async override Task OnParametersSetAsync()
     {
-        if(Customer is not null){
+        if(Customer is not null && !Customer.Plate.Equals(LastCustomer)){
+            LastCustomer = Customer.Plate;
             var result = await mydbService.GetHistories(new Query{Expand="Historyconnectors, Historyconnectors.Inventory"});
-            CustomerRecord = result?.Where(i => i.Plate == Customer.Plate).ToList()??[];
+            CustomerRecord = 
+                result?
+                    .Where(i => i.Plate == Customer.Plate)
+                    .Select(customer => 
+                        new Record(
+                            customer.Id,
+                            customer.CashoutDate,
+                            customer.Total,
+
+                            customer.Historyconnectors
+                                .Select(item =>
+                                    new RecordItem(
+                                        item.Inventory.Name,
+                                        ((int)item.Qty),
+                                        item.Inventory.Import,
+                                        item.Export,
+                                        item.Note
+                                    )
+                            ).ToList()
+                        )
+                    ).ToList()
+                ??[];
+            StateHasChanged();
         }
+    }
+
+    private async Task ReCalculateTotal(Record Transaction){
+        var NewSum =  Transaction.Items.Sum(i => i.Qty * i.Export);
+        if(NewSum != Transaction.Total){
+            var histories = await mydbService.GetHistories();
+            var record = histories.First(i => i.Id.Equals(Transaction.Id));
+            record.Total = NewSum;
+            await mydbService.UpdateHistory(Transaction.Id, record);
+        }
+        
     }
 }
