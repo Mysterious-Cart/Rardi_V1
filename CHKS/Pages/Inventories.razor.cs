@@ -62,7 +62,7 @@ namespace CHKS.Pages
 
         private async Task GetProductFromInventory(){
             var query_product = await mydbService.GetInventories(new Query(){Expand="HistoryConnectors, Tags"});
-            _inventories = query_product.OrderByDescending(i => i.Sold_Total).AsEnumerable().ToList();
+            _inventories = query_product.OrderByDescending(i => i.Sold_Total).AsEnumerable().Where(i => i.IsDeleted == 0).ToList();
             inventories = _inventories;
             
         }
@@ -197,6 +197,7 @@ namespace CHKS.Pages
         protected async Task SaveButtonClick(MouseEventArgs args, CHKS.Models.mydb.Inventory data)
         {
             await grid0.UpdateRow(data);
+            StateHasChanged();
         }
 
         protected async Task CancelButtonClick(MouseEventArgs args, CHKS.Models.mydb.Inventory data)

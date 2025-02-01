@@ -1,12 +1,54 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepoForPos\\Pos\\CHKS\\",
-  "Documents": [],
+  "WorkspaceRootPath": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepo\\RardiV1\\Rardi_V1\\CHKS\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{09D51C50-173A-4E49-A979-462497317170}|CHKS.csproj|c:\\users\\soeng\\onedrive\\documents\\gitrepo\\rardiv1\\rardi_v1\\chks\\pages\\inventories.razor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{09D51C50-173A-4E49-A979-462497317170}|CHKS.csproj|solutionrelative:pages\\inventories.razor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{09D51C50-173A-4E49-A979-462497317170}|CHKS.csproj|c:\\users\\soeng\\onedrive\\documents\\gitrepo\\rardiv1\\rardi_v1\\chks\\pages\\inventories.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{09D51C50-173A-4E49-A979-462497317170}|CHKS.csproj|solutionrelative:pages\\inventories.razor||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": []
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Inventories.razor.cs",
+              "DocumentMoniker": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepo\\RardiV1\\Rardi_V1\\CHKS\\Pages\\Inventories.razor.cs",
+              "RelativeDocumentMoniker": "Pages\\Inventories.razor.cs",
+              "ToolTip": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepo\\RardiV1\\Rardi_V1\\CHKS\\Pages\\Inventories.razor.cs",
+              "RelativeToolTip": "Pages\\Inventories.razor.cs",
+              "ViewState": "AQIAAC8AAAAAAAAAAAAAwEAAAAB4AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-01T11:41:23.16Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Inventories.razor",
+              "DocumentMoniker": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepo\\RardiV1\\Rardi_V1\\CHKS\\Pages\\Inventories.razor",
+              "RelativeDocumentMoniker": "Pages\\Inventories.razor",
+              "ToolTip": "C:\\Users\\soeng\\OneDrive\\Documents\\GitRepo\\RardiV1\\Rardi_V1\\CHKS\\Pages\\Inventories.razor",
+              "RelativeToolTip": "Pages\\Inventories.razor",
+              "ViewState": "AQIAAGwAAAAAAAAAAAAAAHUAAABqAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-02-01T11:39:48.166Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
     }
   ]
 }
