@@ -1,0 +1,25 @@
+
+@attribute [Authorize]
+@namespace CHKS.Pages.Component.Popup
+
+<MudDialog style="max-height: 400px;">
+    <TitleContent>
+        New Customer
+    </TitleContent>
+    <DialogContent>
+        <MudForm >
+            <MudInputLabel ForId="PN">Plate Number</MudInputLabel>
+            <MudInput T="string" InputId="PN" InputType="InputType.Text" Placeholder="Plate Number"/>
+        </MudForm>
+    </DialogContent>
+</MudDialog>
+
+
+@code{
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Cancel() => MudDialog.Cancel();
+}

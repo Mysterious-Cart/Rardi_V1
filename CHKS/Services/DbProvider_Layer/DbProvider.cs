@@ -2,6 +2,7 @@ using CHKS.Data;
 using CHKS.Models.Interface;
 using DocumentFormat.OpenXml.InkML;
 using DocumentFormat.OpenXml.Office.CustomUI;
+using Microsoft.AspNetCore.Connections;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using MudBlazor.Extensions;
@@ -20,48 +21,50 @@ public class DbProvider<Context> : IDbProvider where Context : DbContext
         this.logger = logger;
     }
 
+    public async Task CreateData<T>(T Object){
+        try{
+            var entries = _context.Entry(Object);
+            entries.State = EntityState.Added;
+            await _context.SaveChangesAsync();
+        }catch{
+            
+        }
+        
+    }
+
     public async Task<IQueryable<TEntity>> GetData<TEntity>(List<string> ToExpand = null) 
-        where TEntity : class, IModelClass
+        where TEntity : class
     {
         IQueryable<TEntity> Data = null;
 
         try{
-            //To Check if have connection to db
-            if(await _context.Database.CanConnectAsync()){
                 
-                var Field = await GetPropertyOfType<Context>(typeof(DbSet<TEntity>));
-                var FieldValue = Field.GetValue(_context) as DbSet<TEntity>;
+            var Field = await GetPropertyOfType<Context>(typeof(DbSet<TEntity>));
+            var FieldValue = Field.GetValue(_context) as DbSet<TEntity>;
 
-                Data = FieldValue.AsNoTracking().AsQueryable();
-                
-                //To include the specify underlying field;
-                foreach(string i in ToExpand??[]){
-                    Data = Data.Include(i);
-                }
-                
-            }else{
-                logger.LogCritical("Not connected to any database");
+            Data = FieldValue.AsNoTracking().AsQueryable();
+            
+            //To include the specify underlying field;
+            foreach(string i in ToExpand??[]){
+                Data = Data.Include(i);
             }
+            
             
         }catch(Exception Exc){
             logger.LogError($"Failed trying to retrieve data from {typeof(TEntity).Name} DataSet.", Exc);
         }finally{
             
         }
-        
-        if(Data is not null)
-        {
-            logger.LogInformation($"Successfully retrieve from {typeof(TEntity).Name} DataSet. ");
-        }
+
         return Data;
     }
 
     public async Task UpdateData<T, TKey>(T Object,Func<T, TKey> Key_Selector, bool ConfirmExistance = true) 
-        where T : class, IModelClass
+        where T : class
     {
         try{
             
-            if(ConfirmExistance) {await Confirm(Key_Selector, Key_Selector(Object));}
+            if(ConfirmExistance) await Confirm(Key_Selector, Key_Selector(Object));
             
             var entries = _context.Entry(Object);
             entries.CurrentValues.SetValues(Object);
@@ -72,10 +75,8 @@ public class DbProvider<Context> : IDbProvider where Context : DbContext
             logger.LogCritical("Item doesn't exist");
         }
         
-        
     }
-
-    public async Task DeleteData<T, TKey>(Func<T, TKey> Key_Selector, TKey key, bool ConfirmExistance = true) where T : class, IModelClass
+    public async Task DeleteData<T, TKey>(Func<T, TKey> Key_Selector, TKey key, bool ConfirmExistance = true) where T : class
     {  
         try{
             
@@ -103,7 +104,7 @@ public class DbProvider<Context> : IDbProvider where Context : DbContext
         
     }
 
-    private async Task<T> Confirm<T, Tkey>(Func<T, Tkey> keyselector, Tkey key) where T: class, IModelClass{
+    private async Task<T> Confirm<T, Tkey>(Func<T, Tkey> keyselector, Tkey key) where T: class{
         var data = await GetData<T>();
         var item = data.ToList().First(i => keyselector(i).Equals(key));
         if(item is null){
@@ -112,26 +113,4 @@ public class DbProvider<Context> : IDbProvider where Context : DbContext
         return item;
     }
     
-}
-
-public static class providerExtension { 
-    public static async void Update<T>(this T item, IDbProvider provider) where T : class, IModelClass
-    {
-        var properties = typeof(Item).GetProperties();
-        PropertyInfo keyprop = null;
-        foreach(var i in properties)
-        {
-            if(i.GetCustomAttribute(typeof(KeyAttribute), false) is not null)
-            {
-                keyprop = i;
-                break;
-            }
-        }
-        if (keyprop is not null)
-        {
-           
-        }
-        
-    }
-
 }

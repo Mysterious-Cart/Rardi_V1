@@ -1,8 +1,3 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Radzen;
 using Microsoft.EntityFrameworkCore;
 using CHKS.Data;
@@ -27,14 +22,13 @@ builder.Services.AddServerSideBlazor().AddHubOptions(o =>
 });
 builder.Services.AddMudServices();
 builder.Services.AddScoped<DialogService>();
-builder.Services.AddScoped<PublicCommand>();
 builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<TooltipService>();
 builder.Services.AddScoped<ContextMenuService>();
 builder.Services.AddScoped<mydbService>();
-builder.Services.AddScoped<StockControlService>();
-builder.Services.AddScoped<CartControlService>();
-builder.Services.AddScoped<IDbProvider, DbProvider<mydbContext>>();
+builder.Services.AddTransient<InventoryControlService>();
+builder.Services.AddTransient<CartControlService>();
+builder.Services.AddTransient<IDbProvider, DbProvider<mydbContext>>();
 builder.Services.AddLogging(config => {
     config.AddConsole();
     config.AddDebug();
@@ -43,9 +37,9 @@ builder.Services.AddLogging(config => {
 
     builder.Services.AddDbContext<mydbContext>(options =>
     {
+
         try{
-            options.UseMySql(builder.Configuration.GetConnectionString("mydbConnection"), 
-            ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("mydbConnection")));
+            options.UseInMemoryDatabase("mydb");
         }catch(Exception exc){
             Console.WriteLine("Database connection unsuccessfull.");
         }
@@ -127,6 +121,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapDefaultControllerRoute();
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 

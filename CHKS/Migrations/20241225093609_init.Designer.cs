@@ -13,7 +13,7 @@ namespace CHKS.Migrations
 {
     [DbContext(typeof(mydbContext))]
     [Migration("20241225093609_init")]
-    partial class init
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

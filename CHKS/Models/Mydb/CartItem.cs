@@ -9,7 +9,7 @@ namespace CHKS.Models.mydb
 {
     [Table("connector")]
     [PrimaryKey("Id")]
-    public class Connector : IItem, IModelClass
+    public class Connector
     {
         [Required]
         public int CartId { get; set; }

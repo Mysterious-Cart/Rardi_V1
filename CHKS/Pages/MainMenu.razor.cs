@@ -32,7 +32,7 @@ namespace CHKS.Pages
         protected mydbService MydbService {get; set;}
 
         [Inject]
-        protected StockControlService StockControl {get; set;}
+        protected InventoryControlService StockControl {get; set;}
 
         [Inject]
         protected CartControlService CartControl {get; set;}

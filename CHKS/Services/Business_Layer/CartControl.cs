@@ -8,11 +8,11 @@ namespace CHKS.Services;
 public class CartControlService
 {
     private readonly mydbService mydbService;
-    private readonly StockControlService stockControl;
+    private readonly InventoryControlService stockControl;
 
     private readonly IDbProvider _provider;
 
-    public CartControlService(mydbService MydbService, StockControlService stockcontrol, IDbProvider provider)
+    public CartControlService(mydbService MydbService, InventoryControlService stockcontrol, IDbProvider provider)
     {
         mydbService = MydbService;
         stockControl = stockcontrol;

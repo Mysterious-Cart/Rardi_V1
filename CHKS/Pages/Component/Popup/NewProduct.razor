@@ -1,0 +1,120 @@
+
+@attribute [Authorize]
+@using CHKS.Services
+@namespace CHKS.Pages.Component.Popup
+
+<MudDialog style="max-height: 400px;">
+
+    <DialogContent>
+        <MudForm Spacing="2">
+            <MudFocusTrap>
+                <MudInput 
+                    T="string"
+                    InputId="Name"
+                    Required
+                    RequiredError="Name Required"
+                    InputType="InputType.Text" 
+                    Placeholder="Name" 
+                    @bind-Value="newProduct.name" 
+                    Label="Product Name"
+                     
+                    />
+            </MudFocusTrap>
+
+            <MudToolBar style="gap:10px; padding:0px;">
+                <MudNumericField Label="Stock" T="int"      
+                    Disabled=@(!newProduct.isTracking)
+                    ReadOnly=@(!newProduct.isTracking)
+                    InputId="Qty"     
+                    Placeholder="Qty"    
+                    @bind-Value="newProduct.stock"
+                    Min="0"
+                />
+                <MudCheckBox 
+                    T="bool" 
+                    Label="Tracking" 
+                    Color="MudBlazor.Color.Primary" 
+                    @bind-Value="@newProduct.isTracking"
+                />
+                <MudCheckBox 
+                    Disabled=@(!newProduct.isTracking) 
+                    T="bool" 
+                    Label="Warning" 
+                    Color="MudBlazor.Color.Primary" 
+                    @bind-Value="@newProduct.isAllowLowWarning"
+                />
+
+            </MudToolBar>
+            
+            <MudToolBar style="gap:10px; padding:0px;">
+
+                
+                <MudNumericField 
+                    Label="Import"  
+                    T="decimal"  InputId="Import"  
+                    Placeholder="Import" 
+                    @bind-Value="newProduct.import"
+                    Min="0"
+                />
+                <MudNumericField 
+                    Label="Export"  
+                    T="decimal"  
+                    InputId="Export"  
+                    Placeholder="Export" 
+                    @bind-Value="newProduct.export"
+                    Min="0" HelperText=""
+                />
+                
+            </MudToolBar>
+
+            <MudToolBar style="gap:10px; padding:0px; width:fit-content; margin-left:auto;">
+                <MudButton ButtonType="MudBlazor.ButtonType.Reset" Color="MudBlazor.Color.Error" OnClick="@Cancel">Cancel</MudButton>
+                <MudButton ButtonType="MudBlazor.ButtonType.Submit" Color="MudBlazor.Color.Success">Save</MudButton>
+            </MudToolBar>
+            
+        </MudForm>
+    </DialogContent>
+</MudDialog>
+
+
+@code{
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+
+    [Inject]
+    protected InventoryControlService inventoryControlService {get; set;}
+    private NewProductProperty newProduct = new();
+
+    private async Task Submit(){
+        try{
+            var Product = new Models.mydb.Inventory{
+              Name = newProduct.name,
+              Stock = newProduct.stock,
+              Import = newProduct.import,
+              Export = newProduct.export  
+            };
+
+            await inventoryControlService.CreateProduct(Product);
+        }catch{
+
+        }finally{
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        
+    }
+    private void Cancel(){
+        MudDialog.Close(DialogResult.Cancel());
+    }
+
+    
+
+    private class NewProductProperty{
+        public string name {get; set;}
+        public int stock {get; set;}
+        public decimal import{get; set;}
+        public decimal export{get; set;}
+        public bool isTracking {get; set;} = true; // Track item going in and out
+        public bool isAllowLowWarning {get; set;} = true; // Warn user when stock is low
+        
+    }
+}

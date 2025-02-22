@@ -35,9 +35,6 @@ namespace CHKS.Pages
         [Inject]
         public mydbService mydbService { get; set; }
 
-        [Inject]
-        public PublicCommand PublicCommand {get; set;}
-
         protected IEnumerable<CHKS.Models.mydb.Car> cars;
 
         protected RadzenDataGrid<CHKS.Models.mydb.Car> grid0;
@@ -61,12 +58,7 @@ namespace CHKS.Pages
         {
             cars = await mydbService.GetCars(new Query{ Filter = $@"i =>i.IsDeleted==0", FilterParameters = new object[] { "1"} });
         }
-
-        protected async Task<string> GetKey(){
-            string GenKey = PublicCommand.GenerateRandomText();
-            return GenKey;
-        } 
-
+        
         protected async Task AddButtonClick(MouseEventArgs args)
         {
             isEditing = true;

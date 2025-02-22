@@ -1,14 +1,17 @@
 @page "/new-cart"
 @using CHKS.Models.Interface;
 @using CHKS.Services;
+@using CHKS.Pages.Component.Popup;
+
 @attribute [Authorize]
 @inject mydbService DbService;
+@inject MudBlazor.IDialogService MDialogService;
 @inject IDbProvider provider;
 @inject Radzen.DialogService DialogService;
 
 <RadzenStack AlignItems="Radzen.AlignItems.End" Orientation="@Radzen.Orientation.Horizontal" Style="margin-bottom: 10px;" JustifyContent="JustifyContent.SpaceBetween">
     <RadzenTextBox Placeholder="Type to search" Style="width: 100%;" @oninput=@((args) => GetCarsAsync(args))/>
-    <RadzenButton Text="Add" Icon="add" Variant="Radzen.Variant.Outlined" Style="width:90px" Click="@CreateCar"/>
+    <RadzenButton Text="Add" Icon="add" Variant="Radzen.Variant.Outlined" Style="width:90px" Click="@(() => OpenCustomerList())"/>
 </RadzenStack>
 <RadzenRow>
     <RadzenDataGrid 
@@ -55,6 +58,10 @@ private RadzenDataGrid<Car> carGrid;
 IQueryable<Car> Cars = Enumerable.Empty<Car>().AsQueryable();
 string FilterText = "";
 
+
+private void OpenCustomerList(){
+    MDialogService.Show<NewCustomer>();
+}
 
 protected async override Task OnInitializedAsync(){
     await GetCarsAsync(new ChangeEventArgs{Value=""}).ConfigureAwait(false);

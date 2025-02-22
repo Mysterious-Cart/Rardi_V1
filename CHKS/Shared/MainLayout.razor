@@ -11,9 +11,10 @@
     <MudDrawer Fixed="true" Elevation="1" Variant="@DrawerVariant.Persistent" OpenMiniOnHover="true" Open=true>
         <MudNavMenu style="margin-top: 100px;">
             <MudNavLink Match="NavLinkMatch.All" Href="/" Icon="@Icons.Material.Filled.Money">Cashier</MudNavLink>
-            <MudNavGroup title="Products" Icon="@Icons.Material.Filled.Storage">
+            <MudNavGroup Expanded title="Products" Icon="@Icons.Material.Filled.Storage">
                 <MudNavLink Match="NavLinkMatch.All" Href="/Inventories" Icon="@Icons.Material.Filled.Inventory2">Inventory</MudNavLink>
                 <MudNavLink Match="NavLinkMatch.All" Href="/Orders" Icon="@Icons.Material.Filled.ReceiptLong">Orders</MudNavLink>
+                <MudNavLink Match="NavLinkMatch.All" Href="/product-analysis" Icon="@Icons.Material.Filled.Inventory2">Product Analysis</MudNavLink>
             </MudNavGroup>
             <MudNavLink Match="NavLinkMatch.All" Href="/Dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
             <MudNavLink Match="NavLinkMatch.All" Href="/Histories" Icon="@Icons.Material.Filled.Person">Customer</MudNavLink>

@@ -3,7 +3,6 @@ using CHKS.Models.mydb;
 namespace CHKS.Models.Class;
 public class CustomerDTO
 {
-
     private readonly string _Plate;
 
     public string Plate => _Plate;

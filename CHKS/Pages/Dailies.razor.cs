@@ -17,26 +17,22 @@ namespace CHKS.Pages
 {
     public partial class Dailies
     {
-        [Inject]
-        protected IJSRuntime JSRuntime { get; set; }
-
-        [Inject]
-        protected NavigationManager NavigationManager { get; set; }
 
         [Inject]
         protected DialogService DialogService { get; set; }
 
         [Inject]
-        protected TooltipService TooltipService { get; set; }
-
-        [Inject]
         protected ContextMenuService ContextMenuService { get; set; }
 
         [Inject]
-        protected NotificationService NotificationService { get; set; }
-
-        [Inject]
         public mydbService mydbService { get; set; }
+
+        public record StatisticData(
+            decimal Revenue, 
+            decimal TotalEarned, 
+            decimal ImportTotal,
+            decimal ExpenseTotal
+        );
 
         private IEnumerable<CHKS.Models.mydb.History> History = [];
         private IEnumerable<CHKS.Models.mydb.Historyconnector> Historyconnectors = [];
@@ -69,7 +65,8 @@ namespace CHKS.Pages
             await ToLoad();
         }
 
-        protected async Task ToLoad(){
+        //Off load Iot request to background thread.
+        private async Task ToLoad(){
             await Task.Run(async () =>{
                 History = await mydbService.GetHistories(new Query{Expand="Historyconnectors"});
             }).ContinueWith(async (i) => {
@@ -148,29 +145,6 @@ namespace CHKS.Pages
             Dailyrevenues = Dailyrevenues.OrderByDescending(i => i.Date).ToList();
         }
 
-        /*
-
-        private async Task RegenerateKey(){
-            foreach(var expense in Dailyexpenses.ToList()){
-                var key = expense.Key;
-                await mydbService.DeleteDailyexpense(key);
-                Models.mydb.Dailyexpense NewExpense = new(){
-                    Key = Guid.NewGuid(),
-                    Note = expense.Note,
-                    Date = expense.Date,
-                    Expense=  expense.Expense,
-                };
-                await mydbService.CreateDailyexpense(NewExpense);
-            }
-        }
-        
-        private async Task GenerateDate(){
-            foreach(var expense in Dailyexpenses.ToList()){
-                expense.Date = expense.Key.Split(':',2)[0];
-                await mydbService.UpdateDailyexpense(expense.Key, expense);
-            }
-        }*/
-
         protected async Task GetHistory(){
             char[] seperator = {':','('};
             List<Models.mydb.History> tempHis = [];
@@ -196,19 +170,6 @@ namespace CHKS.Pages
             TotalMinusExpense = (decimal.Round(History.Sum(i => i.Total).GetValueOrDefault(),2) - decimal.Round(Dailyexpenses.Sum(i => i.Expense),2)).ToString() +  " $";
             
         }
-
-        private string SubCardClass = "Statistic-Info-Overview-SubCard-Hide";
-        private bool showCashInfo = false;
-        private async Task ShowHideCashInfo(){
-            if(showCashInfo == true){
-                showCashInfo = false;
-                SubCardClass = "Statistic-Info-Overview-SubCard-Hide";
-            }else{
-                showCashInfo=true;
-                SubCardClass = "Statistic-Info-Overview-SubCard-Show";
-            }
-        }
-
 
         protected async Task LoadNotImport(){
             if(changeDataMode==false ){

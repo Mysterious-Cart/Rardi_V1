@@ -11,7 +11,11 @@ namespace CHKS.Models.mydb
         [Required]
         public string Brand { get; set; }
 
-        public string Car { get; set; }
+        [Required]
+        public string Make { get; set; }
+
+        [Required]
+        public string Year {get; set;}
 
         [Key]
         [Required]
