@@ -19,8 +19,8 @@
 
 :root {
     font-size: 1rem;
-    font-family: 'Khmer OS Battambang', Comfortaa, Arial;
-    --rz-text-font-family: 'Khmer OS Battambang',Comfortaa, 'Times New Roman', BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
+    font-family: 'Khmer OS Siemreap', Comfortaa, Arial;
+
 }
 
 body {
@@ -85,8 +85,4 @@ a:focus {
 
 .loading-progress-text:after {
     content: var(--blazor-load-percentage-text, "Loading");
-}
-
-.p{
-    font-family: 'Khmer OS Battambang';
 }

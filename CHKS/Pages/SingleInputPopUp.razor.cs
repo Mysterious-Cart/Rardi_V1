@@ -32,9 +32,6 @@ namespace CHKS.Pages
         [Inject]
         protected NotificationService NotificationService { get; set; }
 
-        [Inject]
-        protected mydbService mydbService {get; set;}
-
         protected int CartID;
         protected string[] Product = {"1", "0", "", "0"};
         protected DateOnly ChosenDate;
@@ -46,8 +43,8 @@ namespace CHKS.Pages
         [Inject]
         protected SecurityService Security { get; set; }
 
-        protected IEnumerable<Models.mydb.Inventory> ProductList;
-        protected Models.mydb.Inventory ChosenProduct;
+        protected IEnumerable<Models.mydb.Product_Model> ProductList;
+        protected Models.mydb.Product_Model ChosenProduct;
 
         protected async override Task OnInitializedAsync()
         {

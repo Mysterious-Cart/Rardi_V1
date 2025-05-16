@@ -1,0 +1,88 @@
+@page "/customer-list"
+@attribute [Authorize]
+@namespace CHKS.Component
+
+@using CHKS.Models;
+@using CHKS.Extras.Class.DTOs;
+@using CHKS.Models.Interface;
+@using CHKS.Pages.Component.Popup;
+@using CHKS.Entity;
+@using CHKS.Services;
+@using CHKS.Pages.Customer;
+
+@implements IAsyncDisposable;
+<MudDialog style="height: 80dvh; overflow-y: hidden">
+    <DialogContent>
+        <Histories IsDialog=true/> 
+    </DialogContent>
+</MudDialog>
+@code{
+    [Inject] protected IDbProvider _dbProvider {get; set;}
+    [Inject] protected IDialogService _DialogService { get; set; }
+    [Parameter] public string Height {get; set;} = "100%";
+    [Parameter] public EventCallback<Customer> OnRowClick{get; set;}
+
+    private IEnumerable<Customer> _Customer = [];
+    private IEnumerable<Customer> Display_Customer = [];
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await FetchData_Operation();
+
+    }
+
+    private async Task FetchData_Operation(){
+        _Customer = [];
+        Display_Customer = [];
+        try{
+            Task Fetching = FetchCustomerData();
+
+            if(Fetching.Status != TaskStatus.Running){
+                await Fetching;
+            }
+        }catch(Exception exc){
+
+        }
+    }
+
+    private async Task FetchCustomerData(){
+        
+
+    }
+
+    private string FilterText="";
+    private async Task FilterCustomerData(string Filter){
+        
+    }
+
+    private Customer SelectedItem;
+    private void RowClick(Customer SelectedCar){
+        if(SelectedCar is null){return;}
+        OnRowClick.InvokeAsync(SelectedCar);
+    }
+
+    private IDialogReference NewCustomerForm;
+    private async Task NewCustomer(){
+        NewCustomerForm = await _DialogService.ShowAsync<NewCustomer>("New Customer", new MudBlazor.DialogOptions
+        {
+            FullWidth = true,
+            MaxWidth = MaxWidth.Small,
+            
+        });
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        _Customer = null;
+        Display_Customer = null;
+        SelectedItem = null;
+        await _dbProvider.DisposeAsync();
+        NewCustomerForm?.Close();
+        NewCustomerForm = null;
+        _DialogService = null;
+        GC.SuppressFinalize(this);
+        GC.Collect();
+    }
+}
+

@@ -1,0 +1,41 @@
+@page "/packages"
+<MudText Typo="Typo.h4">
+    Packages
+</MudText>
+<MudTextField T="string" Placeholder="Type to search" Style="margin-top:20px; width:60% "/>
+<MudCard Style="margin-top:50px; width:350px; height:65%;">
+    <MudCardHeader Style="justify-content: space-between;">
+        <MudText>Oil Changes 5W30</MudText>
+        <MudIconButton Size=Size.Small Icon="@Icons.Material.Outlined.MoreHoriz"/>
+    </MudCardHeader>
+    <MudCardContent Style="overflow-y:hidden;">
+        <MudList T="string" ReadOnly Gutters=false Style="height:90%; overflow-y:scroll">
+            @for(int i = 0; i < 10; i++){
+                <MudListItem Gutters=false>
+                    <MudContainer class="package-item-container" >
+                        <MudText Inline 
+                            class="package-item" Typo="Typo.body2">Something is wrong ahahahhahah</MudText>
+                        <MudText>@i</MudText>
+                        <MudText>$80</MudText>
+                    </MudContainer>
+                </MudListItem>  
+            }
+            
+        </MudList>
+        
+    </MudCardContent>
+</MudCard>
+
+<style>
+    .package-item-container{
+        display:flex; 
+        justify-content: space-between;
+    }
+    .package-item{
+        width:70%; 
+        overflow:hidden;
+        text-overflow: ellipsis; 
+        white-space: nowrap;
+    }
+
+</style>

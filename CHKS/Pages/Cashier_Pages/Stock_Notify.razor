@@ -1,0 +1,52 @@
+@page "/Stock-Notify"
+@using CHKS.Components
+@inject MudBlazor.IDialogService DialogService;
+
+<MudStack Row>
+    <MudCard style="width: 40%; height:95dvh">
+        <MudCardHeader >
+            <MudToolBar  Style="width:100%">
+                <MudText Typo="Typo.h5" Align="Align.Center">Groups</MudText>
+                <MudSpacer/>
+                <MudIconButton Size=Size.Small Icon="@Icons.Material.Filled.Add" Color="Color.Primary" 
+                    OnClick="@(() => DialogService.ShowAsync<NewGroup>("New Group", new MudBlazor.DialogOptions() { CloseOnEscapeKey = true, FullWidth = true}))"
+                />
+            </MudToolBar>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudDivider/>
+            <MudList T="int" Padding=true Color="Color.Surface">
+                <MudListItem Text="Group1"/>
+                <MudListItem Text="Group2"/>
+            </MudList>
+        </MudCardContent>
+    </MudCard>
+    <MudCard Style="width: 60%; height:95dvh">
+
+        <MudCardHeader>
+            <MudToolBar Style="width:100%" Gutters=false>
+                <MudToggleGroup T="int" 
+                    style="width: 70%;"
+                    Delimiters=true 
+                    FixedContent=true 
+                    Size="Size.Medium" 
+                     
+                    Vertical=false>
+
+                    <MudToggleItem Value="1" Text="Person No." />
+                    <MudToggleItem Value="2" Text="Car No." />
+
+                </MudToggleGroup>
+                <MudSpacer/>
+                <MudButton Size="Size.Medium" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" />
+            </MudToolBar>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudDivider/>
+            <MudStack Spacing="10">
+                <MudTextField T=string Label="Search" style="width:80%"/>
+                <MudText>No item selected</MudText>
+            </MudStack>
+        </MudCardContent>
+    </MudCard>
+</MudStack>

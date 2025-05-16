@@ -1,0 +1,96 @@
+@page "/modify/{Cart_Id:int}"
+
+<MudToolBar>
+    
+    <MudIconButton Icon="@Icons.Material.Rounded.ArrowBack" OnClick="@(() => returnBack())"/>
+    <MudSpacer/>
+    <MudIconButton 
+        Color="Color.Error"
+        Icon="@Icons.Material.Rounded.Delete" 
+        OnClick="@(() => returnBack())"/>
+    <MudIconButton 
+        Color="Color.Primary"
+        Icon="@Icons.Material.Rounded.Edit"
+        OnClick="@(() => returnBack())"/>
+</MudToolBar>
+
+<MudStack Row style="height: 80dvh">
+    <MudContainer>
+        <MudList T=string ReadOnly>
+            <MudListItem Text="Cart Id">
+            </MudListItem>
+        </MudList>
+    </MudContainer>
+
+    <MudContainer Style="gap:10px; display: flex; flex-direction: column;">
+        <MudTextField T="string"/>
+        <!--
+        <MudToggleGroup T="int" Vertical=false 
+            Size="Size.Medium" Color="Color.Primary"
+            style="width:60%">
+            <MudToggleItem Value="1" Text="Package"  />
+            <MudToggleItem Value="2" Text="Product" />
+        </MudToggleGroup>-->
+        <MudList T=string Style="height:100%" Gutters=false Dense>
+            @foreach(var i in Products)
+            {
+                <MudListItem Gutters=false>
+                    <MudCard Outlined="true" >
+                        <MudCardHeader>
+                            <MudText>@i.Name</MudText>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudText>@i.Description</MudText>
+                            <MudText></MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudListItem>
+            }
+            <MudListItem Gutters=false>
+                <MudCard Outlined="true" Style="border-color:red">
+                    <MudCardHeader>
+                        <MudText>Product</MudText>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        
+                    </MudCardContent>
+                </MudCard>
+            </MudListItem>
+        </MudList>
+    </MudContainer>
+</MudStack>
+
+
+@code{
+    [Inject]
+    protected NavigationManager navigationManager { get; set; }
+
+    [Inject]
+    protected CartControlService cartControl { get; set; }
+    [Inject]
+    protected InventoryControlService inventoryControl { get; set; }
+    [Parameter]
+    public int Cart_Id { get; set; }
+    public Cart Cart { get; set; } = null;
+    
+    private IEnumerable<Product> Products { get; set; } = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Products = await inventoryControl.GetProductList();
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        try{
+            if (Cart_Id != 0)
+            {
+                Cart = await cartControl.GetCartContent(Cart_Id);
+            }
+        }catch{
+
+        }
+        
+    }
+    private void returnBack() => navigationManager.NavigateTo("/");
+
+}
