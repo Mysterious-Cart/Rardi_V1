@@ -35,6 +35,7 @@ namespace CHKS.Services
             }
             catch (HttpRequestException ex)
             {
+                Console.WriteLine($"Error fetching authentication state: {ex.Message}");
             }
 
             var result = new AuthenticationState(new ClaimsPrincipal(identity));

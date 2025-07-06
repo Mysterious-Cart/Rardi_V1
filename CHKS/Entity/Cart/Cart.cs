@@ -1,10 +1,10 @@
-using System.Net.Mime;
-using System.Runtime.InteropServices;
-using CHKS.Entity;
+using System.Collections.ObjectModel;
 
 namespace CHKS.Entity;
-public class Cart(int CartId, string Plate_Numbers, decimal total, IEnumerable<CartItem> contents) 
-    : CartBase<CartItem>(Plate_Numbers, total, contents)
+public class Cart(int CartId, string Plate_Numbers, decimal total, List<CartItem> CartContents)
 {
     public int CartId { get; set; } = CartId;
+    public decimal Total { get; set; } = total;
+    public string Plate_Numbers { get; set; } = Plate_Numbers;
+    public List<CartItem> CartContents { get; set; } = [];
 }

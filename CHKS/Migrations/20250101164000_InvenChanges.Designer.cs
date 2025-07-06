@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CHKS.Migrations
 {
-    [DbContext(typeof(mydbContext))]
+    [DbContext(typeof(Rardi_Context))]
     [Migration("20250101164000_InvenChanges")]
     partial class InvenChanges
     {

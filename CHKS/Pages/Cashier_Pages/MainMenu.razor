@@ -11,6 +11,7 @@
         Clearable="true" 
         Placeholder=@SearchBarPlaceholder
         ResetValueOnEmptyText="false" 
+         
         CoerceText="false"
         ValueChanged="@(async (i) => {
             if(i is not null && i.isCart is false){
@@ -25,7 +26,6 @@
         Adornment="Adornment.Start"
         AdornmentIcon="@Icons.Material.Outlined.Create"
         AdornmentColor="Color.Default"></MudAutocomplete>
-    <!--<MudButton OnClick="@AddCart">Add</MudButton>-->
 </MudToolBar>
 
 <MudStack Row StretchItems="StretchItems.StartAndEnd" Wrap="Wrap.Wrap" Spacing="3" Justify="Justify.SpaceBetween">
@@ -49,7 +49,8 @@
     /// Constants
     private const string SearchBarPlaceholder = "ស្វែងរកឬបង្កើតអតិថិជន";
     private string SearchBarToStringFunc(SuggestionItem item) => 
-        item.Plate_Numbers + " " + (item.isCart ? $"(Cart: {item.CartId})" : "(Customer)");
+        item is not null?item.Plate_Numbers + " " + (item.isCart ? $"(Cart: {item.CartId})" : "(Customer)")
+        : string.Empty;
 
     private const string CartCreationConfirmationTitle = "បង្កើតអតិថិជន?";
     private const string CartCreationConfirmationText = "តើអ្នកច្បស់ដែរឬទេ?";
@@ -62,7 +63,7 @@
     [Inject] protected CartControlService cartControl { get; set; }
     [Inject] protected NavigationManager navigationManager { get; set; }
 
-    private IEnumerable<Customer> Customers;
+    private IEnumerable<Entity.Customer> Customers;
     private IEnumerable<Cart> Cart;
     private record SuggestionItem(string Plate_Numbers, bool isCart = false, int? CartId = null);
 

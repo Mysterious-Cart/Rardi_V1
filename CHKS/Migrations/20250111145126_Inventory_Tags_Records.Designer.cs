@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CHKS.Migrations
 {
-    [DbContext(typeof(mydbContext))]
+    [DbContext(typeof(Rardi_Context))]
     [Migration("20250111145126_Inventory_Tags_Records")]
     partial class Inventory_Tags_Records
     {

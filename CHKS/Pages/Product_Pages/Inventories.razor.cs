@@ -78,10 +78,7 @@ namespace CHKS.Pages
         private IDialogReference ModifyProduct;
         private async Task StartedEditingItem(Product item)
         {
-            if (isEditing)
-            {
-                return;
-            }
+            if (isEditing) return;
             isEditing = true;
             ModifyProduct = await MudDialogService
                 .ShowAsync<NewProduct>("Modify Product",
@@ -93,7 +90,7 @@ namespace CHKS.Pages
                     new DialogOptions
                     {
                         FullWidth = true,
-                        MaxWidth = MaxWidth.Medium,
+                        MaxWidth = MaxWidth.Small,
                         BackdropClick = false,
                         CloseButton = true,
                         CloseOnEscapeKey = true,
@@ -126,9 +123,7 @@ namespace CHKS.Pages
                     });
         }
         public async ValueTask DisposeAsync()
-        {
-            await InventoryControlService.DisposeAsync();
-            
+        {            
             productdatagrid.Dispose();
 
             GC.SuppressFinalize(this);

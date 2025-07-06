@@ -16,7 +16,7 @@
 @code {
     private MudForm form = null;
     private string GroupName = "";
-
+    [Inject] public EmployeeControl ProductService { get; set; }
     [CascadingParameter] 
     public MudDialogInstance MudDialog { get; set; }
     private void Close() => MudDialog.Close(DialogResult.Ok(true));
@@ -25,6 +25,7 @@
         await form.Validate();
         if (form.IsValid)
         {
+            await ProductService.CreateGroup(GroupName);
             MudDialog.Close(DialogResult.Ok(GroupName));
         }
     }

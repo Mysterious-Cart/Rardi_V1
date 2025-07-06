@@ -1,44 +1,39 @@
 @inherits LayoutComponentBase
-
+@inject SecurityService SecurityService;
 
 <MudThemeProvider Theme="@KhmerTheme" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
-<RadzenComponents />
-<<<<<<< Updated upstream
-<MudLayout>
-    <MudDrawer style="width:200px" Fixed="true" Elevation="1" Variant="@DrawerVariant.Persistent" Open >
-        <MudNavMenu style="margin-top: 100px;" >
-            <MudNavLink Match="NavLinkMatch.All" Href="/" Icon="@Icons.Material.Outlined.MonetizationOn">Cashier</MudNavLink>
-=======
-<<<<<<< Updated upstream
 
-<MudLayout >
-    <MudDrawer Fixed="true" Elevation="1" Variant="@DrawerVariant.Persistent" OpenMiniOnHover="true" Open=true>
-        <MudNavMenu style="margin-top: 100px;">
-            <MudNavLink Match="NavLinkMatch.All" Href="/" Icon="@Icons.Material.Filled.Money">Cashier</MudNavLink>
-=======
 <MudLayout>
     <MudDrawer style="width:200px" Fixed="true" Elevation="1" Variant="@DrawerVariant.Persistent" Open >
-        <MudNavMenu style="margin-top: 100px;" >
-            <MudNavGroup Expanded title="Cashier" Icon="@Icons.Material.Filled.Storage">
+        <MudNavMenu style="margin-top: 50px;" >
+            <MudNavGroup Expanded title="Cashier" Icon="@Icons.Material.Filled.Sell">
                 <MudNavLink Match="NavLinkMatch.All" Href="/" Icon="@Icons.Material.Outlined.MonetizationOn">Register</MudNavLink>
                 <MudNavLink Match="NavLinkMatch.All" Href="/Stock-Notify" Icon="@Icons.Material.Outlined.MonetizationOn">Stock Notify</MudNavLink>
-
             </MudNavGroup>
->>>>>>> Stashed changes
->>>>>>> Stashed changes
-            <MudNavGroup Expanded title="Products" Icon="@Icons.Material.Filled.Storage">
+            <MudNavGroup Expanded title="Products" Icon="@Icons.Material.Filled.Layers">
                 <MudNavLink Match="NavLinkMatch.All" Href="/Inventories" Icon="@Icons.Material.Outlined.Inventory">Inventory</MudNavLink>
                 <MudNavLink Match="NavLinkMatch.All" Href="/packages" Icon="@Icons.Material.Outlined.Archive">Package</MudNavLink>
                 <MudNavLink Match="NavLinkMatch.All" Href="/Orders" Icon="@Icons.Material.Rounded.ReceiptLong">Orders</MudNavLink>
                 <MudNavLink Match="NavLinkMatch.All" Href="/product-analysis" Icon="@Icons.Material.Rounded.Numbers">Product Analysis</MudNavLink>
             </MudNavGroup>
+            
+            
             <MudNavLink Match="NavLinkMatch.All" Href="/Dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
             <MudNavLink Match="NavLinkMatch.All" Href="/Histories" Icon="@Icons.Material.Filled.Person">Customer</MudNavLink>
-            <MudNavLink Match="NavLinkMatch.All" Href="/vehicle" Icon="@Icons.Material.Filled.BusAlert">Vehicle</MudNavLink>
+            @if(SecurityService.User.Name == "Admin")
+            {
+                <MudNavGroup Expanded title="Settings" Icon="@Icons.Material.Filled.Settings">
+                    <MudNavLink Match="NavLinkMatch.All" Href="/Settings/Company" Icon="@Icons.Material.Filled.Business">Company</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All" Href="/Settings/Roles" Icon="@Icons.Material.Filled.Person">Users</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All" Href="/Settings/Permissions" Icon="@Icons.Material.Filled.Security">Permissions</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All" Href="/Settings/Backup" Icon="@Icons.Material.Filled.Backup">Backup</MudNavLink>
+                    <MudNavLink Match="NavLinkMatch.All" Href="/Settings/vehicle" Icon="@Icons.Material.Filled.BusAlert">Vehicle</MudNavLink>
 
+                </MudNavGroup>
+            }
         </MudNavMenu>
     </MudDrawer>
     <MudMainContent style="max-height: 100dvh; height:100dvh; overflow:hidden;
@@ -83,4 +78,5 @@
             }
         },
     };
+
 }

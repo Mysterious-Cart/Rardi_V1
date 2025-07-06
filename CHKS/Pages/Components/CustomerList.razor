@@ -2,7 +2,6 @@
 @attribute [Authorize]
 @namespace CHKS.Component
 
-@using CHKS.Models;
 @using CHKS.Extras.Class.DTOs;
 @using CHKS.Models.Interface;
 @using CHKS.Pages.Component.Popup;
@@ -20,10 +19,10 @@
     [Inject] protected IDbProvider _dbProvider {get; set;}
     [Inject] protected IDialogService _DialogService { get; set; }
     [Parameter] public string Height {get; set;} = "100%";
-    [Parameter] public EventCallback<Customer> OnRowClick{get; set;}
+    [Parameter] public EventCallback<Entity.Customer> OnRowClick{get; set;}
 
-    private IEnumerable<Customer> _Customer = [];
-    private IEnumerable<Customer> Display_Customer = [];
+    private IEnumerable<Entity.Customer> _Customer = [];
+    private IEnumerable<Entity.Customer> Display_Customer = [];
 
 
     protected async override Task OnInitializedAsync()
@@ -56,8 +55,8 @@
         
     }
 
-    private Customer SelectedItem;
-    private void RowClick(Customer SelectedCar){
+    private Entity.Customer SelectedItem;
+    private void RowClick(Entity.Customer SelectedCar){
         if(SelectedCar is null){return;}
         OnRowClick.InvokeAsync(SelectedCar);
     }

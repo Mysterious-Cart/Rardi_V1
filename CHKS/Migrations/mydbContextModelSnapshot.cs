@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CHKS.Migrations
 {
-    [DbContext(typeof(mydbContext))]
+    [DbContext(typeof(Rardi_Context))]
     partial class mydbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

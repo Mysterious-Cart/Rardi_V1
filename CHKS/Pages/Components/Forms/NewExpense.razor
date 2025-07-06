@@ -1,0 +1,17 @@
+@page "/new-expense"
+
+@attribute [Authorize]
+
+@namespace CHKS.Pages.Component
+
+
+ @code{
+
+    [Inject]
+    protected Radzen.DialogService dialogService {get;set;}
+
+    private string Info = "";
+    private decimal Cost = 0;
+    
+    private async Task Close() => dialogService.Close(new Dictionary<string, string>(){{"Info", Info}, {"Cost", Cost.ToString()}});
+ }

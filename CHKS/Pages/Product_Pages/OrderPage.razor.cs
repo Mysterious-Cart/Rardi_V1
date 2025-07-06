@@ -14,7 +14,7 @@ namespace CHKS.Pages
         [Inject] protected InventoryControlService InventoryService { get; set; }
         [Inject] protected IDialogService DialogService { get; set; }
 
-        private IEnumerable<Order> Orderlist = [];
+        private IEnumerable<Order_Model> Orderlist = [];
 
 
         private OrdersInfo ordersinfo = new();
@@ -44,7 +44,7 @@ namespace CHKS.Pages
             ordersinfo.TotalNetWorth = Orderlist.Sum(i => i.Product.Import * i.Amount);
         }
 
-        private async Task OnOrderButtonClick(bool isConfirm, Order order)
+        private async Task OnOrderButtonClick(bool isConfirm, Order_Model order)
         {
             var isSure = await DialogService.ShowMessageBox(
                 "Proceed?",

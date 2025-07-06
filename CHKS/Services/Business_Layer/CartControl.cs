@@ -2,9 +2,6 @@ using CHKS.Models.mydb;
 using Microsoft.EntityFrameworkCore;
 using CHKS.Entity;
 using CHKS.Models.Interface;
-using CHKS.Extras.Class.DTOs;
-using CHKS.Entity;
-using DocumentFormat.OpenXml.Office.CustomUI;
 
 namespace CHKS.Services;
 
@@ -91,10 +88,10 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
             Console.WriteLine(exc.Message);
         }
     }
-
+*/
     public async Task Cashout(int CartId)
     {
-        var CartList = await _provider.GetData<Cart>();
+        var CartList = await _provider.GetData<Cart_Model>();
         var Cart = await CartList.Include(i => i.CartContent).FirstAsync(i => i.CartId == CartId);
 
         History transaction = new()
@@ -114,9 +111,9 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
 
     }
 
-    */
 
-     public async Task<Cart> AddCart(Customer customer)
+
+    public async Task<Cart> AddCart(Entity.Customer customer)
     {
         var cart =
             CartBuilder.Empty()
@@ -137,6 +134,92 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
             throw new Exception("Failed to create cart.");
         }
     }
+    public async Task<bool> AddProductToCart(int CartId, Guid productId,int Qty = 1 ,decimal? price = null, string Note = "")
+    {
+        var cartItem = new CartItem_Model
+        {
+            CartId = CartId,
+            ProductId = productId,
+            Qty = Qty,
+            PriceOverwrite = price,
+            Note = Note
+        };
+
+        try
+        {
+            if(!(await GetCart()).Any(i => i.CartId == CartId))
+            {
+                return false; // Cart does not exist
+            }
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(Qty, nameof(Qty)); // Ensure Qty is positive
+            if (!await stockControl.IsStockAvailable(productId, Qty)) return false;
+
+            var cartContents = await _provider.GetData<CartItem_Model>();
+            var content = cartContents.Where(i => i.CartId == CartId);
+            if (content.Any(i => i.ProductId == productId))
+            {
+                // Product already exists in the cart, update quantity
+                var existingItem = content.First(i => i.CartId == CartId && i.ProductId == productId);
+                existingItem.Qty++;
+                await stockControl.RemoveItemFromStock(productId, Qty);
+                await _provider.UpdateData(existingItem, i => i.Id);
+                return true;
+            }
+            
+            await stockControl.RemoveItemFromStock(productId, Qty);
+            await _provider.CreateData(cartItem);
+            // Product does not exist in the cart, add it
+            return true;
+        }
+        catch (Exception exc)
+        {
+            Console.WriteLine(exc.Message);
+            return false;
+        }
+    }
+
+    public async Task<bool> RemoveProductFromCart(int CartId, Guid productId, int Qty = 1, decimal? price = null, string Note = "")
+    {
+
+
+        try
+        {
+            if(!(await GetCart()).ToList().Any(i => i.CartId == CartId))
+            {
+                return false; // Cart does not exist
+            }
+
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(Qty, nameof(Qty)); // Ensure Qty is positive
+            var cartContents = await _provider.GetData<CartItem_Model>();
+            var content = cartContents.Where(i => i.CartId == CartId).ToList();
+
+            if (cartContents.Any(i => i.ProductId == productId))
+            {
+                // Product already exists in the cart, update quantity
+                var existingItem = content.First(i => i.CartId == CartId && i.ProductId == productId);
+                if (existingItem.Qty - Qty <= 0)
+                {
+                    // Product exists in the cart, remove it
+                    await stockControl.AddItemToStock(productId, existingItem.Qty);
+                    await _provider.DeleteData<CartItem_Model, int>(CartId);
+                    return true;
+                }
+
+                existingItem.Qty--;
+                await stockControl.ChangeStock(productId, 1);
+                await _provider.UpdateData(existingItem, i => i.Id);
+                return true;
+            }
+            
+            return false;
+        }
+        catch (Exception exc)
+        {
+            Console.WriteLine(exc.Message);
+            return false;
+        }
+    }
+
 
     public async Task<IEnumerable<Cart>> GetCart()
     {
@@ -153,8 +236,8 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
 
     public async Task<Cart> GetCartContent(int CartId)
     {
-        var Items = await _provider.GetData<Cart_Model>([nameof(Cart_Model.CartContent), nameof(CartItem_Model.Inventory)]);
-
+        var Items = await _provider.GetData<Cart_Model>([nameof(Cart_Model.CartContent)]);
+        Items.Include(i => i.CartContent.Select(i => i.Inventory));
         var result =
             from i in Items
             where i.CartId == CartId
@@ -163,15 +246,16 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
                 i.Customer.Plate,
                 i.Total,
                 from j in i.CartContent
-                    select new CartItem(j.ProductId, j.Inventory.Name, j.Qty, j.PriceOverwrite ?? j.Inventory.Export, j.Total)
+                select new CartItem(j.ProductId, j.Inventory.Name, j.Qty, j.Inventory.Import,
+                j.PriceOverwrite ?? j.Inventory.Export)
             );
 
         return await result.FirstAsync();
     }
 
-    public async Task AddCustomer(Customer customer)
+    public async Task AddCustomer(Entity.Customer customer)
     {
-        var customers = await _provider.GetData<Customer_Model>();
+        var customers = await _provider.GetData<Models.mydb.Customer>();
         string plate = customer.Plate.Replace(" ", "").ToUpper();
         if (customers.Any(i => i.Plate == plate))
         {
@@ -193,13 +277,13 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
             throw new InvalidOperationException("Failed to create customer.");
         }
     }
-    public async Task<IEnumerable<Customer>> GetCustomer()
+    public async Task<IEnumerable<Entity.Customer>> GetCustomer()
     {
-        var customers = await _provider.GetData<Customer_Model>();
+        var customers = await _provider.GetData<Models.mydb.Customer>();
         customers.Include(i => i.Vehicle);
         
         return from i in customers
-               select new Customer(
+               select new Entity.Customer(
             i.Plate,
             i.Name,
             i.Phone,
@@ -209,9 +293,9 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
         );
     }
 
-    public async Task<Customer> GetCustomer(string Plate)
+    public async Task<Entity.Customer> GetCustomer(string Plate)
     {
-        var customers = await _provider.GetData<Customer_Model>();
+        var customers = await _provider.GetData<Models.mydb.Customer>();
 
         var customer = await customers.FirstOrDefaultAsync(i => i.Plate == Plate);
 

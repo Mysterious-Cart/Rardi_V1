@@ -1,6 +1,4 @@
 @page "/histories"
-@using CHKS.Models;
-@using CHKS.Entity;
 @using CHKS.Pages.Component.Popup;
 
 @if (!IsDialog)
@@ -80,10 +78,10 @@
     public bool IsDialog { get; set; } = false;
 
     [Parameter]
-    public EventCallback<Customer> OnRowClick { get; set; }
-    private Customer SelectedCar = null;
+    public EventCallback<Entity.Customer> OnRowClick { get; set; }
+    private Entity.Customer SelectedCar = null;
 
-    private IEnumerable<Customer> Customers = [];
+    private IEnumerable<Entity.Customer> Customers = [];
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();

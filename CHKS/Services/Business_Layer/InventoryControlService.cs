@@ -1,11 +1,17 @@
 using CHKS.Models.Interface;
 using CHKS.Models.mydb;
 using Microsoft.EntityFrameworkCore;
-using CHKS.Extras.Class.DTOs;
-using System.Runtime.InteropServices;
+using System.Linq.Expressions;
 using MoreLinq;
+using FluentValidation;
+using CHKS.Mappers;
 using CHKS.Models.Builder;
 using CHKS.Entity;
+using CHKS.Models;
+using System;
+using CHKS.Data;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
+
 namespace CHKS.Services;
 
 //Exception note alway contain 'Cannot' for violation
@@ -16,88 +22,102 @@ public class InventoryControlService : IAsyncDisposable
 {
     private readonly IDbProvider _provider;
     private readonly ILogger<InventoryControlService> logger;
-
-    public InventoryControlService(IDbProvider provider, ILogger<InventoryControlService> logger)
+    private readonly Rardi_Context _context;
+    private readonly SecurityService _securityService;
+    public InventoryControlService(
+        IDbProvider provider,
+        ILogger<InventoryControlService> logger,
+        IDbContextFactory<Rardi_Context> contextFactory,
+        SecurityService securityService
+    )
     {
         _provider = provider;
         this.logger = logger;
+        this._context = contextFactory.CreateDbContext();
+        _securityService = securityService;
     }
     #region Product Operations
-    public async Task<IEnumerable<Product>> GetProductListDTO()
-    {
-        var products = await _provider.GetData<Product_Model>();
-        return products.Select(product => ProductBuilder.FromModel(product).Build());
-    }
 
     /// <summary>
     /// Retrieves a list of products.
     /// </summary>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the list of products.</returns>
-    public async Task<IQueryable<Product>> GetProductList([Optional] string Name)
+    public async Task<List<Product>> GetProductList()
     {
-        var products = await _provider.GetData<Product_Model>();
-        if (Name is not null) products = products.Where(i => i.Name.Contains(Name));
-        return from i in products orderby i.Stock descending select new Product
-        (
-            i.Id,
-            i.Name,
-            i.Stock,
-            i.Import,
-            i.Export,
-            i.Status,
-            i.AllowTracking,
-            i.AllowWarning,
-            i.Description
-        );
-
+        var product_source = _context.Inventory
+            .AsNoTracking();
+        var products = product_source.Select(ProductExpressionMapper.ToProduct);
+        return await products.ToListAsync();
     }
-    public async Task<Product> GetProductDTOById(Guid Id)
-    {
-        var products = await _provider.GetData<Product_Model>();
-
-        var product = await products
-            .Select(product => ProductBuilder.FromModel(product).Build()).FirstAsync(i => i.Id == Id);
-        return product;
-    }
+                                                                                                                                                                  
 
     /// <summary>
     /// Retrieves a product by its ID.
     /// </summary>
     /// <param name="Id">The unique identifier of the product.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the product.</returns>
-    [Obsolete("Unnecessary method, use GetProductDTOById instead.")]
     public async Task<Product> GetProductById(Guid Id)
     {
-        var products = await _provider.GetData<Product>();
-        var product = await products.FirstAsync(i => i.Id == Id);
-        return product;
+        return await _context.Inventory
+            .AsNoTracking()
+            .Select(ProductExpressionMapper.ToProduct)
+            .FirstAsync(product => product.Id == Id);
+        ;
     }
 
-    public async Task UpdateProduct(Product product) => await _provider.UpdateData(ProductBuilder.ToModel(product), i => i.Id);
-    
+    public async Task<bool> IsStockAvailable(Guid Id, int Quantity)
+    {
+
+        var product = await _context.Inventory
+            .AsNoTracking()
+            .Select(product => new
+            {
+                product.Id,
+                product.Stock
+            })
+            .FirstAsync(product => product.Id == Id);
+        return product.Stock >= Quantity;
+        //Check if stock is more or equal to the requested quantity
+    }
+
     /// <summary>
     /// Creates a new product.
     /// </summary>
     /// <param name="product">The product to create.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
     /// <exception cref="ArgumentException">Thrown when a duplicate product is detected.</exception>
-    public async Task CreateProduct(Product product)
+    public async Task<Product> CreateProduct(CreateProductRequest product)
     {
-        var products = await GetProductList();
-        var productNames = products.Select(i => i.Name);
+        if (product == null)
+            throw new ArgumentNullException(nameof(product), "Product cannot be null.");
+            
+        var validator = new ProductValidator();
+        var validationResult = await validator.ValidateAsync(product);
+        if (!validationResult.IsValid)
+            throw new ValidationException(validationResult.Errors);
+        
+        var product_model = product.ToProductModel();
 
-        // Check for duplicate product (Required changes to be made)
+    try
+    {
+        _context.Add(product_model);
+        await _context.SaveChangesAsync();
+    }
+    catch (DbUpdateException ex)
+    {
+        logger.LogError(ex, "Failed to create product: {ProductName}", product.Name);
+        throw new InvalidOperationException("Failed to create product.", ex);
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Unexpected error creating product: {ProductName}", product.Name);
+        throw;
+    }
 
-        // List<string> TokenizedName = [];
-        // using (var tokenizer = new KhmerTokenizer())
-        // {
-        //     TokenizedName = tokenizer.Tokenize(product.Name);
+        return product_model.ToProduct();
+    }
 
-        // }
-
-        //if (productNames.Any(i => i == product.Name)) throw new ArgumentException("Cannot create duplicate product.", nameof(product));
-
-        await _provider.CreateData(ProductBuilder.ToModel(product));
+    public async Task AddProductProfile()
+    {
+        
     }
 
     /// <summary>
@@ -105,7 +125,6 @@ public class InventoryControlService : IAsyncDisposable
     /// </summary>
     /// <param name="ProductId">The unique identifier of the product.</param>
     /// <param name="Add">The number of items to add.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task AddItemToStock(Guid ProductId, int Add) => await ChangeStock(ProductId, Add);
 
     /// <summary>
@@ -113,28 +132,43 @@ public class InventoryControlService : IAsyncDisposable
     /// </summary>
     /// <param name="ProductId">The unique identifier of the product.</param>
     /// <param name="Deduct">The number of items to deduct.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task RemoveItemFromStock(Guid ProductId, int Deduct) => await ChangeStock(ProductId, -Deduct);
 
-    /// <exception cref="ArgumentException">Thrown when the resulting stock is less than zero.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when the stock update fails.</exception>
-    public async Task ChangeStock(Guid ProductId, int Changes)
+    /// <exception cref="ArgumentException">Unexpected parameter</exception>
+    /// <exception cref="InvalidOperationException">Operation Failed</exception>
+    private async Task ChangeStock(Guid ProductId, int Changes)
     {
-        var products = await _provider.GetData<Product_Model>();
-        var product = await products.Select(i => new { i.Id, i.Stock}).FirstAsync(i => i.Id == ProductId);
-        if (product.Stock < 0) throw new ArgumentException("Cannot exceed available stock.", nameof(Changes));
+        if (ProductId == Guid.Empty) throw new ArgumentException("Product ID cannot be empty.", nameof(ProductId));
+        if (Changes == 0) throw new ArgumentException("Changes cannot be zero.", nameof(Changes));
+
+        if (Math.Abs(Changes) > 1000)
+            throw new ArgumentException("Cannot deduct more than 1000 items at once.", nameof(Changes));
+
+        var product = await _context.Inventory
+            .AsNoTracking()
+            .Select(i => new
+            {
+                i.Id,
+                i.Name,
+                i.Stock
+            })
+            .FirstAsync(i => i.Id == ProductId);
+
+        if ((product.Stock - Changes) <= 0) throw new ArgumentException("Cannot exceed available stock.", nameof(Changes));
 
         try
         {
-            await _provider.UpdateData<Product_Model, Guid>(product =>
-                product.Stock += Changes
-            , ProductId);
+            await _context.Inventory.Where(i => i.Id == ProductId)
+                .ExecuteUpdateAsync(i => i.SetProperty(x => x.Stock, x => x.Stock + Changes));
         }
-        catch
+        catch (Exception ex)
         {
-            throw new InvalidOperationException($"Failed to update stock for product with ID: {ProductId}");
+            logger.LogError(ex, "Failed to update stock for product: {ProductName}", product.Name);
+            // Log the error and rethrow with a more specific message
+            throw new InvalidOperationException($"Failed to update stock for product: {product.Name}", ex);
         }
     }
+    /*
     public record ProductIdentity(Guid Id, string Name);
     public async Task<Dictionary<Guid, double>> ClosestMatch(string Name, CancellationToken token = default, int Top = 50,
     IEnumerable<ProductIdentity> products = null, KhmerTokenizer tokenizer = null)
@@ -215,7 +249,8 @@ public class InventoryControlService : IAsyncDisposable
 
             var top_similarity_product = product.Value.First();
 
-            if (Similarity.ContainsKey(top_similarity_product.Key) && Similarity[top_similarity_product.Key].Keys.First() == product.Key && top_similarity_product.Value > Threshold)
+            if (Similarity.ContainsKey(top_similarity_product.Key) && Similarity[top_similarity_product.Key].Keys.First() == product.Key
+                && top_similarity_product.Value > Threshold)
             {
                 total_duplicate++;
             }
@@ -238,7 +273,7 @@ public class InventoryControlService : IAsyncDisposable
 
         return new InventoryIntegrityReport(percentage_of_duplicate, percentage_of_similar, 100 - (percentage_of_duplicate + percentage_of_similar), products.Count());
     }
-
+    */
     #endregion
 
     #region Order Operations
@@ -248,26 +283,42 @@ public class InventoryControlService : IAsyncDisposable
     /// </summary>
     /// <param name="product">The product for which the order is to be created.</param>
     /// <param name="amount">The amount of the product to order. Must be greater than 0.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
     /// <exception cref="ArgumentException">
     /// Thrown when the product is not available to restock or the amount is less than 1.
     /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when the order creation fails.</exception>
 
-    public async Task CreateOrder(Product product, int amount)
+    public async Task CreateOrder(Guid productId, int amount, string Description = "", DateOnly? deliveryDate = null)
     {
-        if (!product.Setting.AllowTracking) throw new ArgumentException("This product is not available to restock.", nameof(product));
         if (amount < 1) throw new ArgumentException("Amount cannot be less then 1.", nameof(amount));
+        if(productId == Guid.Empty) throw new ArgumentException("Product ID cannot be empty.", nameof(productId));
 
-        var order = new Order
+        var Product = await _context.Inventory
+            .AsNoTracking()
+            .Select(i => new
+            {
+                i.Id,
+                i.AllowTracking
+            })
+            .FirstOrDefaultAsync(i => i.Id == productId);
+        if (!Product.AllowTracking) throw new ArgumentException("This product is not available to restock.", nameof(productId));
+
+        var order = new Order_Model
         {
-            ProductId = product.Id,
+            Id = Guid.NewGuid(),
             Amount = amount,
+            DeliveryDate = deliveryDate,
+            OrderReceivedDate = null,
+            Description = Description,
+            IsCancelled = false,
+            IsOrderReceived = false,
+            ProductId = productId,
         };
 
         try
         {
-            await _provider.CreateData(order);
+            await _context.Order.AddAsync(order);
+            await _context.SaveChangesAsync();
         }
         catch
         {
@@ -288,29 +339,54 @@ public class InventoryControlService : IAsyncDisposable
     {
         if (orderID == Guid.Empty) throw new ArgumentException("Order ID cannot be empty.", nameof(orderID));
 
-        var orders = await _provider.GetData<Order>();
-        var order = await orders.FirstAsync(i => i.Id == orderID, token) ??
-            throw new ArgumentException("Order does not exist.", nameof(orderID));
-
-        order.IsOrderReceived = true;
-        order.OrderReceivedDate = DateOnly.FromDateTime(DateTime.Now);
-
+        using var transaction = await _context.Database.BeginTransactionAsync(token);
+    
         try
         {
-
-            await _provider.Transaction(
-                async () =>
+            // Get order details first
+            var order = await _context.Order
+                .AsNoTracking()
+                .Select(i => new
                 {
-                    await AddItemToStock(order.ProductId, order.Amount);
-                    await _provider.UpdateData(order, i => i.Id);
-                }, token
-            );
+                    i.Id,
+                    i.ProductId,
+                    i.Amount,
+                    i.IsOrderReceived,
+                    i.OrderReceivedDate
+                })
+                .FirstOrDefaultAsync(i => i.Id == orderID, token);
 
+            if (order == null)
+                throw new ArgumentException("Order does not exist.", nameof(orderID));
+
+            if (order.IsOrderReceived)
+                throw new InvalidOperationException("Order is already confirmed.");
+
+            // Update the order status
+            await _context.Order
+                .Where(i => i.Id == orderID)
+                .ExecuteUpdateAsync(x => x
+                    .SetProperty(i => i.IsOrderReceived, true)
+                    .SetProperty(i => i.OrderReceivedDate, DateOnly.FromDateTime(DateTime.Now)), 
+                    token);
+
+            // Update the product stock
+            await _context.Inventory
+                .Where(i => i.Id == order.ProductId)
+                .ExecuteUpdateAsync(x => x
+                    .SetProperty(i => i.Stock, i => i.Stock + order.Amount), 
+                    token);
+
+            // Commit the transaction
+            await transaction.CommitAsync(token);
+        
+            logger.LogInformation("Order {OrderId} confirmed successfully", orderID);
         }
-        catch (Exception exc)
+        catch (Exception ex)
         {
-            logger.LogError(exc, exc.Message);
-            throw new InvalidOperationException($"Failed to confirm order with ID: {orderID}");
+            // Rollback is automatic when transaction is disposed without commit
+            logger.LogError(ex, "Failed to confirm order {OrderId}", orderID);
+            throw new InvalidOperationException($"Failed to confirm order with ID: {orderID}", ex);
         }
     }
 
@@ -323,19 +399,25 @@ public class InventoryControlService : IAsyncDisposable
     /// <exception cref="InvalidOperationException">Thrown when the order is already cancelled or has been received.</exception>
     public async Task CancelOrder(Guid orderID)
     {
-<<<<<<< Updated upstream
         if (orderID == Guid.Empty) throw new ArgumentException("Order ID cannot be empty.", nameof(orderID));
-
-        var orders = await _provider.GetData<Order>();
-        var order = await orders.FirstAsync(i => i.Id == orderID) ?? throw new ArgumentException("Order does not exist.", nameof(orderID));
-        if (order.IsCancelled) throw new InvalidOperationException("Order is already cancelled.");
-
-        if (order.IsOrderReceived) throw new InvalidOperationException("Cannot cancel order that has been received.");
-
-        order.IsCancelled = true;
         try
         {
-            await _provider.UpdateData(order, i => i.Id);
+            var order = await _context.Order
+                .AsNoTracking()
+                .Select(i => new
+                {
+                    i.Id,
+                    i.IsCancelled,
+                    i.IsOrderReceived
+                })
+                .FirstAsync(i => i.Id == orderID);
+
+            if (order.IsCancelled) throw new InvalidOperationException("Order is already cancelled.");
+
+            if (order.IsOrderReceived) throw new InvalidOperationException("Cannot cancel order that has been received.");
+            await _context.Order.Where(i => i.Id == orderID)
+                .ExecuteUpdateAsync(x => x.SetProperty(i => i.IsCancelled, true),
+                CancellationToken.None);
         }
         catch (Exception exc)
         {
@@ -350,7 +432,9 @@ public class InventoryControlService : IAsyncDisposable
     /// <returns>A task that represents the asynchronous operation. The task result contains the list of orders.</returns>
     public async Task<IQueryable<Order>> GetOrders()
     {
-        return await _provider.GetData<Order>(["Product"]);
+        return _context.Order
+            .AsNoTracking()
+            .Select(OrderExpressionMapper.ToOrder(_securityService.Principal));
     }
 
     #endregion
@@ -358,107 +442,7 @@ public class InventoryControlService : IAsyncDisposable
     #region  Tag Operations
 
     /// <summary>
-    /// Retrieves a list of tags.   
-    /// </summary>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the list of tags.</returns>
-    /// <exception cref="InvalidOperationException">Thrown when the tag retrieval fails.</exception>
-    public async Task<IEnumerable<TagsDTO>> GetTags()
-    {
-        try
-        {
-            var tags = await _provider.GetData<Tags>();
-            return tags.Select(i => TagsDTO.FromTags(i));
-        }
-        catch (Exception exc)
-        {
-            logger.LogError(exc, exc.Message);
-            throw new InvalidOperationException("Failed to retrieve tags.");
-        }
-
-    }
-
-
-=======
-<<<<<<< Updated upstream
-        var Inventory = await mydbService.GetInventories();
-        Inventory = Inventory.Where(i => Tags.Any(v => i.Tags.All(z => z.Tag == v.Tag)));
-        return Inventory;
-    }
-
-
-=======
-        if (orderID == Guid.Empty) throw new ArgumentException("Order ID cannot be empty.", nameof(orderID));
-
-        var orders = await _provider.GetData<Order>();
-        var order = await orders.FirstAsync(i => i.Id == orderID, token) ??
-            throw new ArgumentException("Order does not exist.", nameof(orderID));
-
-        order.IsOrderReceived = true;
-        order.OrderReceivedDate = DateOnly.FromDateTime(DateTime.Now);
-
-        try
-        {
-
-            await _provider.Transaction(
-                async () =>
-                {
-                    await AddItemToStock(order.ProductId, order.Amount);
-                    await _provider.UpdateData(order, i => i.Id);
-                }, token
-            );
-
-        }
-        catch (Exception exc)
-        {
-            logger.LogError(exc, exc.Message);
-            throw new InvalidOperationException($"Failed to confirm order with ID: {orderID}");
-        }
-    }
-
-    /// <summary>
-    /// Cancels the specified order.
-    /// </summary>
-    /// <param name="orderID">The unique identifier of the order to cancel.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
-    /// <exception cref="ArgumentException">Thrown when the order ID is empty or the order does not exist.</exception>
-    /// <exception cref="InvalidOperationException">Thrown when the order is already cancelled or has been received.</exception>
-    public async Task CancelOrder(Guid orderID)
-    {
-        if (orderID == Guid.Empty) throw new ArgumentException("Order ID cannot be empty.", nameof(orderID));
-
-        var orders = await _provider.GetData<Order>();
-        var order = await orders.FirstAsync(i => i.Id == orderID) ?? throw new ArgumentException("Order does not exist.", nameof(orderID));
-        if (order.IsCancelled) throw new InvalidOperationException("Order is already cancelled.");
-
-        if (order.IsOrderReceived) throw new InvalidOperationException("Cannot cancel order that has been received.");
-
-        order.IsCancelled = true;
-        try
-        {
-            await _provider.UpdateData(order, i => i.Id);
-        }
-        catch (Exception exc)
-        {
-            Console.Write(exc.Message);
-            throw new("Failed to cancel order.");
-        }
-    }
-
-    /// <summary>
-    /// Retrieves a list of orders.
-    /// </summary>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the list of orders.</returns>
-    public async Task<IQueryable<Order>> GetOrders()
-    {
-        return await _provider.GetData<Order>(["Product"]);
-    }
-
-    #endregion
-
-    #region  Tag Operations
-
-    /// <summary>
-    /// Retrieves a list of tags.   
+    ///   a list of tags.   
     /// </summary>
     /// <returns>A task that represents the asynchronous operation. The task result contains the list of tags.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the tag retrieval fails.</exception>
@@ -478,27 +462,19 @@ public class InventoryControlService : IAsyncDisposable
     }
 
 
->>>>>>> Stashed changes
     /// <summary>
     /// Creates a new tag.
     /// </summary>
     /// <param name="tag"></param>
     /// <returns></returns>
-<<<<<<< Updated upstream
-    public async Task CreateTag(TagsDTO tag, bool Validation = true)
-=======
+
     public async Task CreateTag(Tag tag, bool Validation = true)
->>>>>>> Stashed changes
     {
         if (Validation) await ValidationCheck();
 
         try
         {
-<<<<<<< Updated upstream
-            await _provider.CreateData(new Tags { Id = tag.Id, Color = "Yellow", Tag = tag.Name });
-=======
             await _provider.CreateData(new Models.mydb.Tags { Id = tag.Id, Color = "Yellow", Tag = tag.Name });
->>>>>>> Stashed changes
         }
         catch (Exception exc)
         {
@@ -536,33 +512,13 @@ public class InventoryControlService : IAsyncDisposable
     /// <exception cref="InvalidOperationException">
     /// Thrown when the tag update operation fails.
     /// </exception>
-<<<<<<< Updated upstream
-    public async Task UpdateTag(TagsDTO tag)
-=======
     public async Task UpdateTag(Tag tag)
->>>>>>> Stashed changes
     {
         if (tag.Id == Guid.Empty) throw new ArgumentException("Tag ID cannot be empty.", nameof(tag));
         var tags = await _provider.GetData<Tags>();
         if(tags.Any(i => i.Id.Equals(tag.Id))) throw new ArgumentException("Tag does not exist.", nameof(tag));
         if (tag.Name == null) throw new ArgumentException("Tag name cannot be empty.", nameof(tag));
 
-<<<<<<< Updated upstream
-        using var tokenMatchEvaluator = new KhmerTokenizer();
-
-        foreach (var tagged in tags.ToList())
-        {
-            if (await tokenMatchEvaluator.CalculateTokenSimilarity(tagged.Tag, tag.Name) > 0.6)
-            {
-                tokenMatchEvaluator.Dispose();
-                throw new ArgumentException("Cannot create duplicate tag. Similar Tag detected", nameof(tag));
-            }
-        }
-
-        tokenMatchEvaluator.Dispose();
-
-=======
->>>>>>> Stashed changes
         try
         {
             await _provider.UpdateData(new Tags { Id = tag.Id, Tag = tag.Name, Color = "Yellow" }, i => i.Id);
@@ -573,62 +529,13 @@ public class InventoryControlService : IAsyncDisposable
             throw new InvalidOperationException("Failed to update tag.");
         }
     }
-
-<<<<<<< Updated upstream
-    /// <summary>
-    /// Tags the product by name using tokenized names and a similarity acceptance threshold.
-    /// </summary>
-    /// <param name="TokenizeName">The list of tokenized names to match against tags.</param>
-    /// <param name="Acceptance">The similarity acceptance threshold. Default is 0.8.</param>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the list of matched tags.</returns>
-    public async Task<IEnumerable<TagsDTO>> TagProductByName(List<string> TokenizeName, double Acceptance = 0.6)
-    {
-        if(TokenizeName.Count == 0) throw new ArgumentException("Name cannot be empty.", nameof(TokenizeName));
-        // Future changes: required multiple word to tag matching
-        List<TagsDTO> TagMatched = [];
-        var fetchedTags = await GetTags(); // Materialize the query results
-        var NotCreatedTags = new List<TagsDTO>();
-        using var matcher = new KhmerTokenizer();
-        // Looping through all tokenize word
-        foreach (string word in TokenizeName)
-        {
-            double MaximumSimilarity = 0.0;
-            TagsDTO BestMatchingTag = null;
-            // for each word, loop through all tags, and find the most similar tag
-            foreach (TagsDTO tag in fetchedTags)
-            {
-                var tokenSimilarity = await matcher.CalculateTokenSimilarity(word, tag.Name);
-
-                if (tokenSimilarity > Acceptance && tokenSimilarity > MaximumSimilarity)
-                {
-                    BestMatchingTag = tag;
-                    MaximumSimilarity = tokenSimilarity;
-                }
-            }
-            // Add the most similar tag to the list
-            if (BestMatchingTag is not null) TagMatched.Add(BestMatchingTag);
-            
-        }
-
-        matcher.Dispose();
-        // Return the list of matched tags and remove duplicates
-        return TagMatched?.DistinctBy(i => i.Name) ?? [];
-    }
-
-=======
->>>>>>> Stashed changes
     #endregion
 
+    
     public async ValueTask DisposeAsync()
     {
-        await _provider.DisposeAsync();
         GC.SuppressFinalize(this);
         GC.Collect();
     }
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
->>>>>>> Stashed changes
-
 
 }

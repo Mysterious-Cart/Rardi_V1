@@ -4,18 +4,18 @@
     [Parameter]
     public bool IsAuthenticated { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!IsAuthenticated)
         {
             var redirectUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
             if (!string.IsNullOrEmpty(redirectUrl))
             {
-                NavigationManager.NavigateTo($"Login?redirectUrl={Uri.EscapeDataString(redirectUrl)}", true);
+                NavigationManager.NavigateTo($"login?redirectUrl={Uri.EscapeDataString(redirectUrl)}", true);
             }
             else
             {
-                NavigationManager.NavigateTo("Login", true);
+                NavigationManager.NavigateTo("login", true);
             }
         }
         else

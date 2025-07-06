@@ -1,7 +1,5 @@
 using CHKS.Models.Interface;
-using DocumentFormat.OpenXml.Office2013.PowerPoint.Roaming;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using MoreLinq;
 using System.Data.Common;
 using System.Reflection;
@@ -55,7 +53,9 @@ public class DbProvider<Context> : IDbProvider where Context : DbContext
         }
         catch (Exception Exc)
         {
-            logger.LogError("Failed trying to retrieve data from {error} DataSet.",typeof(TEntity).Name);
+            logger.LogError(
+                "Failed trying to retrieve data from {element} DataSet. Exception Message: {Message}. StackTrace: {StackTrace}",
+                typeof(TEntity).Name, Exc.Message,Exc.StackTrace);
             Console.WriteLine(Exc.Message);
         }
         
@@ -88,7 +88,7 @@ public class DbProvider<Context> : IDbProvider where Context : DbContext
         {
             var Field = await GetPropertyOfType<Context>(typeof(DbSet<TEntity>));
             var FieldValue = Field.GetValue(_context) as DbSet<TEntity>;
-            var item = await FieldValue.FindAsync(key);
+            var item = await FieldValue.AsTracking().FirstAsync(i => EF.Property<TKey>(i, "Id").Equals(key));
 
             Object(item);
 
@@ -102,19 +102,46 @@ public class DbProvider<Context> : IDbProvider where Context : DbContext
         }
     }
 
-    public async Task DeleteData<TEntity, TKey>(Func<TEntity, TKey> Key_Selector, TKey key) where TEntity : class
+    //<summary>
+    //Get the data with change tracking. Must be accompanied with SaveChangesAsync
+    //</summary>
+    //<param name="Key_Selector">The key selector</param>
+    //<returns>The data with change tracking</returns>
+    public async Task<TEntity> GetDataWithChangeTracking<TEntity,TKey >(TKey key) where TEntity : class
     {
         try
         {
-            var item = await GetData<TEntity>();
-            var entries = _context.Remove(item.First(i => Key_Selector(i).Equals(key)));
+            var Field = await GetPropertyOfType<Context>(typeof(DbSet<TEntity>));
+            var FieldValue = Field.GetValue(_context) as DbSet<TEntity>;
+            var item = await FieldValue.AsTracking().FirstAsync(i => EF.Property<TKey>(i, "Id").Equals(key));
+            
+            return item;
+        }
+        catch (Exception exc)
+        {
+            logger.LogCritical(
+                "Fail to get {Entity Name}. Exception Type: {Type}. Error Message: {Error message}",
+                typeof(TEntity).Name,exc, exc.Message);
+            return null;
+        }
+    }
 
+    public async Task SaveChangesAsync() => await _context.SaveChangesAsync();
+
+    public async Task DeleteData<TEntity, TKey>(TKey key) where TEntity : class
+    {
+        try
+        {
+            var data = await GetData<TEntity>();
+            var item = data.First(i => EF.Property<TKey>(i, "Id").Equals(key));
+            var entries = _context.Entry(item);
+            entries.State = EntityState.Deleted;
             await _context.SaveChangesAsync();
 
         }
         catch (Exception exc)
         {
-            logger.LogCritical($"Fail to update {typeof(TEntity).Name}", exc);
+            logger.LogCritical("Fail to delete {EntityName}. {excMessage}", typeof(TEntity).Name ,exc.Message);
 
         }
     }

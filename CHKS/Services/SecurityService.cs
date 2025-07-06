@@ -114,29 +114,42 @@ namespace CHKS.Services
         {
             var uri = new Uri(baseUri, $"ApplicationRoles");
 
-            uri = uri.GetODataUri();
-
             var response = await httpClient.GetAsync(uri);
 
-            var result = await response.ReadAsync<ODataServiceResult<ApplicationRole>>();
+            var result = await response.ReadAsync<List<ApplicationRole>>();
 
-            return result.Value;
+            return result;
         }
 
         public async Task<ApplicationRole> CreateRole(ApplicationRole role)
         {
             var uri = new Uri(baseUri, $"ApplicationRoles");
 
-            var content = new StringContent(ODataJsonSerializer.Serialize(role), Encoding.UTF8, "application/json");
+            // Use standard JSON serialization unless your API expects OData format
+            var content = new StringContent(JsonSerializer.Serialize(role), Encoding.UTF8, "application/json");
 
             var response = await httpClient.PostAsync(uri, content);
 
-            return await response.ReadAsync<ApplicationRole>();
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                throw new ApplicationException($"Failed to create role: {error}");
+            }
+
+            // Only try to read the response if you expect the created role to be returned
+            if (response.Content.Headers.ContentLength > 0)
+            {
+                return await response.ReadAsync<ApplicationRole>();
+            }
+            else
+            {
+                return null; // Or handle as appropriate
+            }
         }
 
         public async Task<HttpResponseMessage> DeleteRole(string id)
         {
-            var uri = new Uri(baseUri, $"ApplicationRoles('{id}')");
+            var uri = new Uri(baseUri, $"Applicatio nRoles('{id}')");
 
             return await httpClient.DeleteAsync(uri);
         }
@@ -145,14 +158,11 @@ namespace CHKS.Services
         {
             var uri = new Uri(baseUri, $"ApplicationUsers");
 
-
-            uri = uri.GetODataUri();
-
             var response = await httpClient.GetAsync(uri);
 
-            var result = await response.ReadAsync<ODataServiceResult<ApplicationUser>>();
+            var result = await response.ReadAsync<List<ApplicationUser>>();
 
-            return result.Value;
+            return result;
         }
 
         public async Task<ApplicationUser> CreateUser(ApplicationUser user)

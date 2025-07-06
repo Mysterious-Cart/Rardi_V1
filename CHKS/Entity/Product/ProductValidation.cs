@@ -4,8 +4,8 @@ using CHKS.Models.Enum;
 using System.Data;
 using CHKS.Entity;
 
-namespace CHKS.Extras.Validators;
-public class ProductValidator : AbstractValidator<Product>
+namespace CHKS.Entity;
+public class ProductValidator : AbstractValidator<CreateProductRequest>
 {
     public ProductValidator()
     {
@@ -18,7 +18,6 @@ public class ProductValidator : AbstractValidator<Product>
         RuleFor(x => x.Stock).GreaterThan(0).WithMessage("Stock must be greater than 0");
         RuleFor(x => x.Stock).LessThan(1000).WithMessage("Stock must be less than 1000");
 
-        RuleFor(x => x.Import).NotEmpty().WithMessage("Import is required");
         RuleFor(x => x.Import).GreaterThanOrEqualTo(0).WithMessage("Import cannot be negative");
 
         RuleFor(x => x.Export).NotEmpty().WithMessage("Export is required");

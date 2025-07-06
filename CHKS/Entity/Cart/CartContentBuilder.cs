@@ -7,7 +7,6 @@ public class CartItemBuilder
     private decimal _unit_price;
     private int _quantity;
     private decimal _price;
-
     /*
     public static CartItemBuilder FromModel(CartItem_Model model)
     {
@@ -35,7 +34,7 @@ public class CartItemBuilder
         _unit_price = UnitPrice;
         return this;
     }
-    public CartItemBuilder WithId(Guid id)
+    public CartItemBuilder WithProductId(Guid id)
     {
         _id = id;
         return this;
@@ -49,6 +48,6 @@ public class CartItemBuilder
 
     public CartItem Build()
     {
-        return new CartItem( _id, _name, _quantity, _unit_price, _price);
+        return new CartItem(_id, _name, _quantity, _unit_price, _price);
     }
 }
