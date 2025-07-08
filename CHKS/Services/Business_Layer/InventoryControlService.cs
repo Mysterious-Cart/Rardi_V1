@@ -317,7 +317,7 @@ public class InventoryControlService : IAsyncDisposable
 
         try
         {
-            await _context.Order.AddAsync(order);
+            await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
         }
         catch
@@ -344,7 +344,7 @@ public class InventoryControlService : IAsyncDisposable
         try
         {
             // Get order details first
-            var order = await _context.Order
+            var order = await _context.Orders
                 .AsNoTracking()
                 .Select(i => new
                 {
@@ -363,7 +363,7 @@ public class InventoryControlService : IAsyncDisposable
                 throw new InvalidOperationException("Order is already confirmed.");
 
             // Update the order status
-            await _context.Order
+            await _context.Orders
                 .Where(i => i.Id == orderID)
                 .ExecuteUpdateAsync(x => x
                     .SetProperty(i => i.IsOrderReceived, true)
@@ -402,7 +402,7 @@ public class InventoryControlService : IAsyncDisposable
         if (orderID == Guid.Empty) throw new ArgumentException("Order ID cannot be empty.", nameof(orderID));
         try
         {
-            var order = await _context.Order
+            var order = await _context.Orders
                 .AsNoTracking()
                 .Select(i => new
                 {
@@ -415,7 +415,7 @@ public class InventoryControlService : IAsyncDisposable
             if (order.IsCancelled) throw new InvalidOperationException("Order is already cancelled.");
 
             if (order.IsOrderReceived) throw new InvalidOperationException("Cannot cancel order that has been received.");
-            await _context.Order.Where(i => i.Id == orderID)
+            await _context.Orders.Where(i => i.Id == orderID)
                 .ExecuteUpdateAsync(x => x.SetProperty(i => i.IsCancelled, true),
                 CancellationToken.None);
         }
@@ -432,7 +432,7 @@ public class InventoryControlService : IAsyncDisposable
     /// <returns>A task that represents the asynchronous operation. The task result contains the list of orders.</returns>
     public async Task<IQueryable<Order>> GetOrders()
     {
-        return _context.Order
+        return _context.Orders
             .AsNoTracking()
             .Select(OrderExpressionMapper.ToOrder(_securityService.Principal));
     }

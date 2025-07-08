@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CHKS.Models
 {
-    public class Employee
+    public class EmployeeModel
     {
         [Key]
         [Required]
@@ -10,7 +10,7 @@ namespace CHKS.Models
         [Required]
         public string Name { get; set; }
 
-        public ICollection<Groups> Group { get; set; } = new List<Groups>();
+        public ICollection<GroupModel> Group { get; set; } = new List<GroupModel>();
         public ICollection<StockLogs> StockLogs { get; set; } = new List<StockLogs>();
     }
 }

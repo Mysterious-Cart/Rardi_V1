@@ -12,7 +12,7 @@ public class StockLogs
     public Guid Id { get; set; }
     [Required]
     public int EmployeeId { get; set; }
-    public Employee Employee { get; set; }
+    public EmployeeModel Employee { get; set; }
     [Required]
     public Guid ProductId { get; set; }
     public Product_Model Product { get; set; }

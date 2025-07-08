@@ -91,10 +91,10 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
 */
     public async Task Cashout(int CartId)
     {
-        var CartList = await _provider.GetData<Cart_Model>();
+        var CartList = await _provider.GetData<CartModel>();
         var Cart = await CartList.Include(i => i.CartContent).FirstAsync(i => i.CartId == CartId);
 
-        History transaction = new()
+        Models.mydb.TransactionModel transaction = new()
         {
             Plate = Cart.Car_Id,
             Total = Cart.Total,
@@ -116,11 +116,7 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
     public async Task<Cart> AddCart(Entity.Customer customer)
     {
         var cart =
-            CartBuilder.Empty()
-                    .WithId(Random.Shared.Next(1, 1000))
-                    .WithTotal(0)
-                    .WithPlateNumbers(customer.Plate)
-                    .Build();
+            
         var cart_Model = CartBuilder.ToModel(cart);
 
         try
@@ -136,7 +132,7 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
     }
     public async Task<bool> AddProductToCart(int CartId, Guid productId,int Qty = 1 ,decimal? price = null, string Note = "")
     {
-        var cartItem = new CartItem_Model
+        var cartItem = new CartItemModel
         {
             CartId = CartId,
             ProductId = productId,
@@ -154,7 +150,7 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(Qty, nameof(Qty)); // Ensure Qty is positive
             if (!await stockControl.IsStockAvailable(productId, Qty)) return false;
 
-            var cartContents = await _provider.GetData<CartItem_Model>();
+            var cartContents = await _provider.GetData<CartItemModel>();
             var content = cartContents.Where(i => i.CartId == CartId);
             if (content.Any(i => i.ProductId == productId))
             {
@@ -190,7 +186,7 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
             }
 
             ArgumentOutOfRangeException.ThrowIfNegativeOrZero(Qty, nameof(Qty)); // Ensure Qty is positive
-            var cartContents = await _provider.GetData<CartItem_Model>();
+            var cartContents = await _provider.GetData<CartItemModel>();
             var content = cartContents.Where(i => i.CartId == CartId).ToList();
 
             if (cartContents.Any(i => i.ProductId == productId))
@@ -201,7 +197,7 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
                 {
                     // Product exists in the cart, remove it
                     await stockControl.AddItemToStock(productId, existingItem.Qty);
-                    await _provider.DeleteData<CartItem_Model, int>(CartId);
+                    await _provider.DeleteData<CartItemModel, int>(CartId);
                     return true;
                 }
 
@@ -223,7 +219,7 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
 
     public async Task<IEnumerable<Cart>> GetCart()
     {
-        var cart = await _provider.GetData<Cart_Model>();
+        var cart = await _provider.GetData<CartModel>();
 
         return from i in cart
                select new Cart(
@@ -236,7 +232,7 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
 
     public async Task<Cart> GetCartContent(int CartId)
     {
-        var Items = await _provider.GetData<Cart_Model>([nameof(Cart_Model.CartContent)]);
+        var Items = await _provider.GetData<CartModel>([nameof(CartModel.CartContent)]);
         Items.Include(i => i.CartContent.Select(i => i.Inventory));
         var result =
             from i in Items
@@ -255,7 +251,7 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
 
     public async Task AddCustomer(Entity.Customer customer)
     {
-        var customers = await _provider.GetData<Models.mydb.Customer>();
+        var customers = await _provider.GetData<Models.mydb.CustomerModel>();
         string plate = customer.Plate.Replace(" ", "").ToUpper();
         if (customers.Any(i => i.Plate == plate))
         {
@@ -267,7 +263,7 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
             var model = CustomerBuilder.ToModel(customer);
             model.Last_visit = DateOnly.FromDateTime(DateTime.Now);
             model.CreatedAt = DateOnly.FromDateTime(DateTime.Now);
-            model.Total_visit = 1;
+            model.Visits = 1;
 
             await _provider.CreateData(model);
         }
@@ -279,7 +275,7 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
     }
     public async Task<IEnumerable<Entity.Customer>> GetCustomer()
     {
-        var customers = await _provider.GetData<Models.mydb.Customer>();
+        var customers = await _provider.GetData<Models.mydb.CustomerModel>();
         customers.Include(i => i.Vehicle);
         
         return from i in customers
@@ -295,7 +291,7 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
 
     public async Task<Entity.Customer> GetCustomer(string Plate)
     {
-        var customers = await _provider.GetData<Models.mydb.Customer>();
+        var customers = await _provider.GetData<Models.mydb.CustomerModel>();
 
         var customer = await customers.FirstOrDefaultAsync(i => i.Plate == Plate);
 

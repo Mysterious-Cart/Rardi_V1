@@ -22,21 +22,21 @@ namespace CHKS.Data
     {
       base.OnModelCreating(builder);
 
-      builder.Entity<Cart_Model>()
+      builder.Entity<CartModel>()
         .HasOne(i => i.Customer)
         .WithMany(i => i.Carts)
         .HasForeignKey(i => i.Car_Id)
         .HasPrincipalKey(i => i.Plate)
         .OnDelete(DeleteBehavior.ClientNoAction);
 
-      builder.Entity<CartItem_Model>()
+      builder.Entity<CartItemModel>()
         .HasOne(i => i.Cart)
         .WithMany(i => i.CartContent)
         .HasForeignKey(i => i.CartId)
         .HasPrincipalKey(i => i.CartId)
         .OnDelete(DeleteBehavior.ClientNoAction);
 
-      builder.Entity<CartItem_Model>()
+      builder.Entity<CartItemModel>()
       .HasOne(i => i.Inventory)
       .WithMany(i => i.Connectors)
       .HasForeignKey(i => i.ProductId)
@@ -47,28 +47,28 @@ namespace CHKS.Data
       .HasMany(i => i.Product)
       .WithMany(i => i.Tags);
 
-      builder.Entity<History>()
-        .HasOne(i => i.Car)
-        .WithMany(i => i.Histories)
+      builder.Entity<TransactionModel>()
+        .HasOne(i => i.Customer)
+        .WithMany(i => i.Transactions)
         .HasForeignKey(i => i.Plate)
         .HasPrincipalKey(i => i.Plate)
         .OnDelete(DeleteBehavior.ClientNoAction);
 
-      builder.Entity<Historyconnector>()
-        .HasOne(i => i.History)
-        .WithMany(i => i.Historyconnectors)
+      builder.Entity<TransactionItemModel>()
+        .HasOne(i => i.Transaction)
+        .WithMany(i => i.TransactionItems)
         .HasForeignKey(i => i.CartId)
         .HasPrincipalKey(i => i.Id)
         .OnDelete(DeleteBehavior.ClientNoAction);
 
-      builder.Entity<Historyconnector>()
+      builder.Entity<TransactionItemModel>()
         .HasOne(i => i.Inventory)
         .WithMany(i => i.HistoryConnectors)
         .HasForeignKey(i => i.ProductId)
         .HasPrincipalKey(i => i.Id)
         .OnDelete(DeleteBehavior.ClientNoAction);
 
-      builder.Entity<Employee>()
+      builder.Entity<EmployeeModel>()
         .HasMany(i => i.Group)
         .WithMany(i => i.Employee);
 
@@ -87,8 +87,10 @@ namespace CHKS.Data
                 WHERE p.[Id] = [ProductId]
             )");
 
-      builder.Entity<Order_Model>().Property(i => i.OrderDate).HasConversion<DateOnly>();
-      builder.Entity<Order_Model>().Property(i => i.OrderReceivedDate).HasConversion<DateOnly>();
+      builder.Entity<Order_Model>()
+          .Property(i => i.OrderDate).HasConversion<DateOnly>();
+      builder.Entity<Order_Model>()
+          .Property(i => i.OrderReceivedDate).HasConversion<DateOnly>();
 
       builder.Entity<StockLogs>()
           .HasOne(i => i.Employee)
@@ -101,7 +103,7 @@ namespace CHKS.Data
           .HasForeignKey(i => i.ProductId);
       builder.Entity<StockLogs>().Property(i => i.Date).IsRowVersion().HasConversion<DateTime>();
 
-      builder.Entity<Customer>()
+      builder.Entity<CustomerModel>()
           .HasOne(i => i.Vehicle)
           .WithMany(i => i.Customer)
           .HasForeignKey(i => i.Vehicle_Id)
@@ -117,25 +119,23 @@ namespace CHKS.Data
     }
 
         public DbSet<StockLogs> StockLogs { get; set; }
-        public DbSet<Customer> Customer { get; set; }
+        public DbSet<CustomerModel> Customers { get; set; }
 
-        public DbSet<Vehicle_Model> Vehicle { get; set; }
+        public DbSet<Vehicle_Model> Vehicles { get; set; }
 
-        public DbSet<Cart_Model> Carts { get; set; }
+        public DbSet<CartModel> Carts { get; set; }
 
-        public DbSet<CartItem_Model> Connectors { get; set; }
+        public DbSet<CartItemModel> CartContents { get; set; }
 
-        public DbSet<Dailyexpense> Dailyexpenses { get; set; }
+        public DbSet<TransactionModel> Transactions { get; set; }
 
-        public DbSet<History> Histories { get; set; }
-
-        public DbSet<Historyconnector> Historyconnectors { get; set; }
+        public DbSet<TransactionItemModel> TransactionItems { get; set; }
 
         public DbSet<Product_Model> Inventory { get; set; }
 
-        public DbSet<Order_Model> Order { get; set; }
-        public DbSet<Employee> Employee {get; set;}
-        public DbSet<Groups> Groups {get; set;}
+        public DbSet<Order_Model> Orders { get; set; }
+        public DbSet<EmployeeModel> Employees {get; set;}
+        public DbSet<GroupModel> Groups {get; set;}
 
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
       {

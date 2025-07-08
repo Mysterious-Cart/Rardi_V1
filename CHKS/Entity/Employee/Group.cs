@@ -8,7 +8,7 @@ namespace CHKS.Entity
 
         public ICollection<Employee> Employee { get; set; }
         
-        public static Group FromGroupModel(Models.Groups group)
+        public static Group FromGroupModel(Models.GroupModel group)
         {
             return new Group
             {

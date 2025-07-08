@@ -1,10 +1,11 @@
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CHKS.Models.mydb
+namespace CHKS.Models
 {
     [Table("customer")]
-    public class Customer
+    public class CustomerModel
     {
         [Key]
         [Required]
@@ -15,7 +16,7 @@ namespace CHKS.Models.mydb
         public string Phone { get; set; } = "";
         public string? Phone_2 { get; set; }
         public string? Description { get; set; }
-        public int Total_visit { get; set; } = 0;
+        public int Visits { get; set; } = 0;
 
         [Column(TypeName = "date")]
         public DateOnly? Last_visit { get; set; }
@@ -26,8 +27,8 @@ namespace CHKS.Models.mydb
         public int Vehicle_Id { get; set; }
         public Vehicle_Model Vehicle { get; set; }
 
-        public ICollection<Cart_Model> Carts { get; set; }
-        public ICollection<History> Histories { get; set; }
+        public ICollection<CartModel> Carts { get; set; }
+        public ICollection<TransactionModel> Transactions { get; set; }
 
     }
 }

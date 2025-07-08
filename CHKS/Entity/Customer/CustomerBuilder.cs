@@ -4,7 +4,7 @@ using CHKS.Models.mydb;
 namespace CHKS.Entity
 {
 
-    public class CustomerBuilder : IEntityBuilder<Customer, Models.mydb.Customer>
+    public class CustomerBuilder : IEntityBuilder<Customer, Models.mydb.CustomerModel>
     {
         private string _plate_number;
         private string _phone_number = "";
@@ -13,9 +13,9 @@ namespace CHKS.Entity
         private string _description = null;
         private VehicleBuilder _vehicle = VehicleBuilder.Empty();
 
-        public static Models.mydb.Customer ToModel(Customer customer)
+        public static Models.mydb.CustomerModel ToModel(Customer customer)
         {
-            return new Models.mydb.Customer
+            return new Models.mydb.CustomerModel
             {
                 Plate = customer.GetPlateNumber(),
                 Phone = customer.GetPhoneNumber(),
@@ -32,7 +32,7 @@ namespace CHKS.Entity
                     .WithName(customer.Name)
                     .WithPhoneNumbers(customer.Phone, customer.Phone2);
         }
-        public static IEntityBuilder<Customer, Models.mydb.Customer> FromModel(Models.mydb.Customer customer)
+        public static IEntityBuilder<Customer, Models.mydb.CustomerModel> FromModel(Models.mydb.CustomerModel customer)
         {
             return
                 Empty()

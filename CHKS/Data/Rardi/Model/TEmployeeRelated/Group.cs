@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace CHKS.Models
 {
     [Table("Groups")]	
-    public class Groups
+    public class GroupModel
     {
         [Key]
         [Required]
@@ -13,6 +13,6 @@ namespace CHKS.Models
         [Required]
         public string Name { get; set; }
 
-        public ICollection<Employee> Employee { get; set; } = new List<Employee>();
+        public ICollection<EmployeeModel> Employee { get; set; } = new List<EmployeeModel>();
     }
 }

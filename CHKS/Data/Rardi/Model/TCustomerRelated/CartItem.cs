@@ -5,16 +5,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 using CHKS.Models.Interface;
 using Microsoft.EntityFrameworkCore;
 
-namespace CHKS.Models.mydb
+namespace CHKS.Models
 {
     [Table("connector")]
     [PrimaryKey("Id")]
-    public class CartItem_Model
+    public class CartItemModel
     {
         [Required]
         public int CartId { get; set; }
 
-        public Cart_Model Cart { get; }
+        public CartModel Cart { get; }
 
         [Required]
         public Guid ProductId { get; set; }

@@ -1,33 +1,40 @@
 using CHKS.Models.Interface;
-using CHKS.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
-namespace CHKS.Models.mydb
+namespace CHKS.Models
 {
     [Table("cart")]
-    public class Cart_Model
+    public class CartModel
     {
-        [Column("CarID")]
-        [Required]
-        public string Car_Id { get; set; }
-
-        public Customer Customer { get; set; }
-
         [Key]
         [Column("CartID")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int CartId { get; set; } // Remove random generation
+
+        [Column("CarID")]
         [Required]
-        public int CartId { get; set; } = new Random().Next(0, 1000);
+        [MaxLength(20)]
+        public string Car_Id { get; set; }
+
+        public CustomerModel Customer { get; set; }
 
         [Required]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Total { get; set; } = 0;
 
         [Required]
         public short Status { get; set; } = 0;
 
-        public ICollection<CartItem_Model> CartContent { get; set; }
-        
+        // Use ICollection for navigation properties
+        public ICollection<CartItemModel> CartContent { get; set; } = new List<CartItemModel>();
+
+        // Computed properties
+        [NotMapped]
+        public int ItemCount => CartContent?.Count ?? 0;
+
     }
 }

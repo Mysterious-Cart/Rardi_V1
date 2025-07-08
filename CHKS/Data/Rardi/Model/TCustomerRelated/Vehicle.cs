@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CHKS.Models.mydb
+namespace CHKS.Models
 {
     [Table("vehicle")]
     public class Vehicle_Model
@@ -21,7 +21,7 @@ namespace CHKS.Models.mydb
         [Required]
         public int Key { get; set; }
 
-        public ICollection<Customer> Customer { get; set; }
+        public ICollection<CustomerModel> Customer { get; set; }
         
     }
 }

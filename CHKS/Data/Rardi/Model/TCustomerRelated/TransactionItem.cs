@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CHKS.Models.mydb
+namespace CHKS.Models
 {
     [Table("historyconnector")]
-    public class Historyconnector
+    public class TransactionItemModel
     {
         public decimal Qty { get; set; }
 
@@ -17,9 +17,9 @@ namespace CHKS.Models.mydb
         [Required]
         public Guid CartId { get; set; }
 
-        public History History { get; set; }
+        public TransactionModel Transaction { get; set; }
 
-        public string Note { get; set; } = "";
+        public string Remark { get; set; } = "";
 
         [Key]
         [Column("ID")]

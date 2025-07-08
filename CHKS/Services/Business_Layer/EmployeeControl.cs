@@ -1,5 +1,6 @@
 using CHKS.Entity;
 using CHKS.Models.Interface;
+using CHKS.Models;
 using CHKS.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,20 +23,29 @@ namespace CHKS.Services
         // Group CRUD
         public async Task<Group> CreateGroup(string name)
         {
-            var group = new Models.Groups { Id = Random.Shared.Next(), Name = name };
-            await dbProvider.CreateData(group);
-            return Entity.Group.FromGroupModel(group);
+            var group = new GroupModel { Id = Random.Shared.Next(), Name = name };
+            try
+            {
+                await _context.Groups.AddAsync(group);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error creating group");
+                return null;
+            }
+            return Group.FromGroupModel(group);
         }
 
         private async Task<Group> GetGroup(int id) => Group.FromGroupModel(
-            (await dbProvider.GetData<Models.Groups>()).First(g => g.Id == id)
+            (await dbProvider.GetData<Models.GroupModel>()).First(g => g.Id == id)
         );
-        private async Task<Models.Groups> GetGroupModel(int id) =>
-            (await dbProvider.GetData<Models.Groups>()).FirstOrDefault(g => g.Id == id);
+        private async Task<Models.GroupModel> GetGroupModel(int id) =>
+            (await dbProvider.GetData<Models.GroupModel>()).FirstOrDefault(g => g.Id == id);
 
         public async Task<IEnumerable<Group>> GetAllGroups()
         {
-            var groups = await dbProvider.GetData<Models.Groups>();
+            var groups = await dbProvider.GetData<Models.GroupModel>();
             var result = groups.Select(i => Group.FromGroupModel(i));
             return result;
         }
@@ -65,7 +75,7 @@ namespace CHKS.Services
             var group = await GetGroupModel(groupId);
             if (group == null) return false;
 
-            var employee = new Models.Employee { Id = Random.Shared.Next(), Name = name };
+            var employee = new Models.EmployeeModel { Id = Random.Shared.Next(), Name = name };
 
             try
             {
@@ -82,15 +92,15 @@ namespace CHKS.Services
         }
 
         private async Task<Employee> GetEmployee(int id) => Employee.FromEmployeeModel(
-            (await dbProvider.GetData<Models.Employee>()).FirstOrDefault(g => g.Id == id)
+            (await dbProvider.GetData<Models.EmployeeModel>()).FirstOrDefault(g => g.Id == id)
         );
 
         public async Task<IEnumerable<Employee>> GetAllEmployees(bool Expand_Group = true)
         {
             var employees =
                 Expand_Group is true ?
-                    await dbProvider.GetData<Models.Employee>([nameof(Models.Employee.Group)]) :
-                    await dbProvider.GetData<Models.Employee>();
+                    await dbProvider.GetData<Models.EmployeeModel>([nameof(Models.EmployeeModel.Group)]) :
+                    await dbProvider.GetData<Models.EmployeeModel>();
 
             var result = employees.Select(i => Employee.FromEmployeeModel(i));
             return result;
@@ -107,7 +117,7 @@ namespace CHKS.Services
 
         public async Task<bool> DeleteEmployee(int id)
         {
-            var emp = await dbProvider.GetDataWithChangeTracking<Models.Employee, int>(id);
+            var emp = await dbProvider.GetDataWithChangeTracking<Models.EmployeeModel, int>(id);
 
             if (emp == null) return false;
             // Remove from group if assigned
