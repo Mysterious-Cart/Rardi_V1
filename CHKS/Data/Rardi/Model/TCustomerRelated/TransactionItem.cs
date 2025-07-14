@@ -9,14 +9,14 @@ namespace CHKS.Models
     [Table("historyconnector")]
     public class TransactionItemModel
     {
-        public decimal Qty { get; set; }
+        public int Qty { get; set; }
 
-        public decimal Export { get; set; }
+        public decimal Price { get; set; }
 
         [Column("CartID")]
         [Required]
-        public Guid CartId { get; set; }
-
+        [ForeignKey("Transaction")]
+        public Guid TransactionId { get; set; }
         public TransactionModel Transaction { get; set; }
 
         public string Remark { get; set; } = "";
@@ -27,8 +27,8 @@ namespace CHKS.Models
 
         [Column("ProductId")]
         [Required]
+        [ForeignKey("Product")]
         public Guid ProductId { get; set; }
-
-        public Product_Model Inventory {get; set;}
+        public Product_Model Product {get; set;}
     }
 }

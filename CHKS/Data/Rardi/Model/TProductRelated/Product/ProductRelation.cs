@@ -4,10 +4,10 @@ namespace CHKS.Models
 {
     public partial class Product_Model
     {
-        public ICollection<CartItemModel> Connectors { get; set; }
-        public ICollection<TransactionItemModel> HistoryConnectors { get; set; }
+        public ICollection<CartItemModel> CartItems { get; set; }
+        public ICollection<TransactionItemModel> TransactionItems { get; set; }
         public ICollection<Tags> Tags { get; set; }
-        public ICollection<Order_Model> Orders { get; set; }
+        public ICollection<OrderModel> Orders { get; set; }
         public ICollection<StockLogs> StockLogs { get; set; }
         public ICollection<ProductProfiles> ProductProfiles { get; set; }
     }

@@ -1,16 +1,13 @@
 using CHKS.Models.Interface;
-using CHKS.Models.mydb;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using MoreLinq;
 using FluentValidation;
 using CHKS.Mappers;
-using CHKS.Models.Builder;
 using CHKS.Entity;
 using CHKS.Models;
-using System;
 using CHKS.Data;
-using DocumentFormat.OpenXml.Drawing.Diagrams;
+using System.Data.Common;
 
 namespace CHKS.Services;
 
@@ -18,9 +15,8 @@ namespace CHKS.Services;
 /// <summary>
 /// Service class for managing inventory control operations.
 /// </summary>
-public class InventoryControlService : IAsyncDisposable
+public class InventoryControlService : IAsyncDisposable, IDisposable
 {
-    private readonly IDbProvider _provider;
     private readonly ILogger<InventoryControlService> logger;
     private readonly Rardi_Context _context;
     private readonly SecurityService _securityService;
@@ -31,7 +27,6 @@ public class InventoryControlService : IAsyncDisposable
         SecurityService securityService
     )
     {
-        _provider = provider;
         this.logger = logger;
         this._context = contextFactory.CreateDbContext();
         _securityService = securityService;
@@ -48,7 +43,7 @@ public class InventoryControlService : IAsyncDisposable
         var products = product_source.Select(ProductExpressionMapper.ToProduct);
         return await products.ToListAsync();
     }
-                                                                                                                                                                  
+
 
     /// <summary>
     /// Retrieves a product by its ID.
@@ -88,36 +83,36 @@ public class InventoryControlService : IAsyncDisposable
     {
         if (product == null)
             throw new ArgumentNullException(nameof(product), "Product cannot be null.");
-            
+
         var validator = new ProductValidator();
         var validationResult = await validator.ValidateAsync(product);
         if (!validationResult.IsValid)
             throw new ValidationException(validationResult.Errors);
-        
+
         var product_model = product.ToProductModel();
 
-    try
-    {
-        _context.Add(product_model);
-        await _context.SaveChangesAsync();
-    }
-    catch (DbUpdateException ex)
-    {
-        logger.LogError(ex, "Failed to create product: {ProductName}", product.Name);
-        throw new InvalidOperationException("Failed to create product.", ex);
-    }
-    catch (Exception ex)
-    {
-        logger.LogError(ex, "Unexpected error creating product: {ProductName}", product.Name);
-        throw;
-    }
+        try
+        {
+            _context.Add(product_model);
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex)
+        {
+            logger.LogError(ex, "Failed to create product: {ProductName}", product.Name);
+            throw new InvalidOperationException("Failed to create product.", ex);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unexpected error creating product: {ProductName}", product.Name);
+            throw;
+        }
 
         return product_model.ToProduct();
     }
 
     public async Task AddProductProfile()
     {
-        
+
     }
 
     /// <summary>
@@ -291,7 +286,7 @@ public class InventoryControlService : IAsyncDisposable
     public async Task CreateOrder(Guid productId, int amount, string Description = "", DateOnly? deliveryDate = null)
     {
         if (amount < 1) throw new ArgumentException("Amount cannot be less then 1.", nameof(amount));
-        if(productId == Guid.Empty) throw new ArgumentException("Product ID cannot be empty.", nameof(productId));
+        if (productId == Guid.Empty) throw new ArgumentException("Product ID cannot be empty.", nameof(productId));
 
         var Product = await _context.Inventory
             .AsNoTracking()
@@ -303,7 +298,7 @@ public class InventoryControlService : IAsyncDisposable
             .FirstOrDefaultAsync(i => i.Id == productId);
         if (!Product.AllowTracking) throw new ArgumentException("This product is not available to restock.", nameof(productId));
 
-        var order = new Order_Model
+        var order = new OrderModel
         {
             Id = Guid.NewGuid(),
             Amount = amount,
@@ -320,14 +315,20 @@ public class InventoryControlService : IAsyncDisposable
             await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
         }
-        catch
+        catch (DbException ex)
         {
-            throw new InvalidOperationException("Failed to create order.");
+            logger.LogError(ex, "Failed to create order for product {ProductId} with amount {Amount}.", productId, amount);
+            throw new InvalidOperationException("Database error occurred while creating order.", ex);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unexpected error occurred while creating order for product {ProductId} with amount {Amount}.", productId, amount);
+            throw;
         }
 
     }
-    
-     /// <summary>
+
+    /// <summary>
     /// Confirms the order by setting the order as received and updating the stock.
     /// </summary>
     /// <param name="orderID">The unique identifier of the order to confirm.</param>
@@ -340,7 +341,7 @@ public class InventoryControlService : IAsyncDisposable
         if (orderID == Guid.Empty) throw new ArgumentException("Order ID cannot be empty.", nameof(orderID));
 
         using var transaction = await _context.Database.BeginTransactionAsync(token);
-    
+
         try
         {
             // Get order details first
@@ -354,33 +355,37 @@ public class InventoryControlService : IAsyncDisposable
                     i.IsOrderReceived,
                     i.OrderReceivedDate
                 })
-                .FirstOrDefaultAsync(i => i.Id == orderID, token);
-
-            if (order == null)
-                throw new ArgumentException("Order does not exist.", nameof(orderID));
+                .FirstAsync(i => i.Id == orderID, token);
 
             if (order.IsOrderReceived)
-                throw new InvalidOperationException("Order is already confirmed.");
+                throw new InvalidOperationException("Order has already been confirmed.");
 
             // Update the order status
             await _context.Orders
                 .Where(i => i.Id == orderID)
                 .ExecuteUpdateAsync(x => x
                     .SetProperty(i => i.IsOrderReceived, true)
-                    .SetProperty(i => i.OrderReceivedDate, DateOnly.FromDateTime(DateTime.Now)), 
+                    .SetProperty(i => i.OrderReceivedDate, DateOnly.FromDateTime(DateTime.Now)),
                     token);
 
             // Update the product stock
             await _context.Inventory
                 .Where(i => i.Id == order.ProductId)
                 .ExecuteUpdateAsync(x => x
-                    .SetProperty(i => i.Stock, i => i.Stock + order.Amount), 
+                    .SetProperty(i => i.Stock, i => i.Stock + order.Amount),
                     token);
 
             // Commit the transaction
             await transaction.CommitAsync(token);
-        
+
             logger.LogInformation("Order {OrderId} confirmed successfully", orderID);
+        }
+        catch (DbUpdateException dbEx)
+        {
+            // Rollback is automatic when transaction is disposed without commit
+
+            logger.LogError(dbEx, "Database error occurred while confirming order {OrderId}", orderID);
+            throw new InvalidOperationException($"Database error occurred while confirming order with ID: {orderID}", dbEx);
         }
         catch (Exception ex)
         {
@@ -419,6 +424,11 @@ public class InventoryControlService : IAsyncDisposable
                 .ExecuteUpdateAsync(x => x.SetProperty(i => i.IsCancelled, true),
                 CancellationToken.None);
         }
+        catch (DbUpdateException dbEx)
+        {
+            logger.LogError(dbEx, "Failed to cancel order with ID: {OrderId}", orderID);
+            throw new InvalidOperationException($"Database error occurred while cancelling order with ID: {orderID}", dbEx);
+        }
         catch (Exception exc)
         {
             Console.Write(exc.Message);
@@ -427,9 +437,8 @@ public class InventoryControlService : IAsyncDisposable
     }
 
     /// <summary>
-    /// Retrieves a list of orders.
+    /// Retrieves a list of product's orders.
     /// </summary>
-    /// <returns>A task that represents the asynchronous operation. The task result contains the list of orders.</returns>
     public async Task<IQueryable<Order>> GetOrders()
     {
         return _context.Orders
@@ -440,7 +449,7 @@ public class InventoryControlService : IAsyncDisposable
     #endregion
 
     #region  Tag Operations
-
+    /*
     /// <summary>
     ///   a list of tags.   
     /// </summary>
@@ -470,8 +479,6 @@ public class InventoryControlService : IAsyncDisposable
 
     public async Task CreateTag(Tag tag, bool Validation = true)
     {
-        if (Validation) await ValidationCheck();
-
         try
         {
             await _provider.CreateData(new Models.mydb.Tags { Id = tag.Id, Color = "Yellow", Tag = tag.Name });
@@ -482,24 +489,7 @@ public class InventoryControlService : IAsyncDisposable
             throw new InvalidOperationException("Failed to create tag.");
         }
         
-        async Task ValidationCheck()
-        {
-            if (string.IsNullOrWhiteSpace(tag.Name)) throw new ArgumentException("Tag name cannot be empty.", nameof(tag));
-            // Check for duplicate tag
-
-            var tags = await _provider.GetData<Tags>();
-            using var similarityChecker = new KhmerTokenizer();
-
-            await foreach (var tagged in tags.AsAsyncEnumerable())
-            {
-                if (await similarityChecker.CalculateTokenSimilarity(tagged.Tag, tag.Name) > 0.6)
-                {
-                    similarityChecker.Dispose();
-                    throw new ArgumentException("Cannot create duplicate tag. Similar Tag detected", nameof(tag));
-                }
-            }
-                
-        }
+        
     }
     /// <summary>
     /// Updates the tag information.
@@ -515,7 +505,7 @@ public class InventoryControlService : IAsyncDisposable
     public async Task UpdateTag(Tag tag)
     {
         if (tag.Id == Guid.Empty) throw new ArgumentException("Tag ID cannot be empty.", nameof(tag));
-        var tags = await _provider.GetData<Tags>();
+        var tags = await _context.
         if(tags.Any(i => i.Id.Equals(tag.Id))) throw new ArgumentException("Tag does not exist.", nameof(tag));
         if (tag.Name == null) throw new ArgumentException("Tag name cannot be empty.", nameof(tag));
 
@@ -529,13 +519,29 @@ public class InventoryControlService : IAsyncDisposable
             throw new InvalidOperationException("Failed to update tag.");
         }
     }
+    */
     #endregion
 
-    
     public async ValueTask DisposeAsync()
     {
         GC.SuppressFinalize(this);
-        GC.Collect();
+        // Release the DbContext if it implements IAsyncDisposable or IDisposable
+        if (_context is IAsyncDisposable asyncDisposable)
+        {
+            await asyncDisposable.DisposeAsync();
+        }
+        // No need to call GC.Collect() or GC.SuppressFinalize(this) here.
+    }
+    
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+        // Release the DbContext if it implements IDisposable
+        if (_context is IDisposable disposable)
+        {
+            disposable.Dispose();
+        }
+        // No need to call GC.Collect() or GC.SuppressFinalize(this) here.
     }
 
 }

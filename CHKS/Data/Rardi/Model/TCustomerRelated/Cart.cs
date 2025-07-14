@@ -1,3 +1,4 @@
+using CHKS.Enum;
 using CHKS.Models.Interface;
 using System;
 using System.Collections.Generic;
@@ -13,12 +14,15 @@ namespace CHKS.Models
         [Key]
         [Column("CartID")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int CartId { get; set; } // Remove random generation
+        public int CartId { get; } = Random.Shared.Next();
 
+        /// <summary>
+        /// This is the PlateNumber of the Customer.
+        /// </summary>
         [Column("CarID")]
         [Required]
         [MaxLength(20)]
-        public string Car_Id { get; set; }
+        public string CustomerId { get; set; } 
 
         public CustomerModel Customer { get; set; }
 
@@ -27,14 +31,9 @@ namespace CHKS.Models
         public decimal Total { get; set; } = 0;
 
         [Required]
-        public short Status { get; set; } = 0;
+        public CartStatus Status { get; set; } = CartStatus.Progress;
 
-        // Use ICollection for navigation properties
-        public ICollection<CartItemModel> CartContent { get; set; } = new List<CartItemModel>();
-
-        // Computed properties
-        [NotMapped]
-        public int ItemCount => CartContent?.Count ?? 0;
+        public ICollection<CartItemModel> CartContent { get; set; }
 
     }
 }

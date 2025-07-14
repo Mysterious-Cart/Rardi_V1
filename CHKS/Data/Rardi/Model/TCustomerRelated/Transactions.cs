@@ -11,27 +11,22 @@ namespace CHKS.Models
     public class TransactionModel
     {
         [Required]
-        public string CashoutDate { get; set;} = DateTime.Now.ToString("dd/MM/yyyy");
+        public readonly string CashoutDate = DateTime.Now.ToString("dd/MM/yyyy");
 
         [Required]
         public string Plate { get; set; }
 
         public CustomerModel Customer { get; set; }
-
-        public decimal? Total { get; set;} = 0;
-
-        public decimal? Bank { get; set; } = 0;
-
-        public decimal? Dollar { get; set; } = 0;
-
-        public decimal? Baht { get; set; } = 0;
-
-        public decimal? Riel { get; set; } = 0;
-        public string User { get; set; } = "";
+        
+        [Required]
+        [ForeignKey("User")]
+        public string EmployeeId { get; set; }
+        public ApplicationUser User { get; set; }
 
         [Key]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public readonly Guid Id = Guid.NewGuid();
 
         public ICollection<TransactionItemModel> TransactionItems { get; set; }
+        public ICollection<PaymentModel> Payments { get; set; }
     }
 }

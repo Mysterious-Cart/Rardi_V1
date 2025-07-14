@@ -10,7 +10,8 @@ namespace CHKS.Models
         [Required]
         public string Name { get; set; }
 
-        public ICollection<GroupModel> Group { get; set; } = new List<GroupModel>();
-        public ICollection<StockLogs> StockLogs { get; set; } = new List<StockLogs>();
+        public ICollection<GroupModel> Group { get; set; }
+        public ICollection<StockLogs> StockLogs { get; set; }
+        public ICollection<TransactionModel> Transactions { get; set; }
     }
 }

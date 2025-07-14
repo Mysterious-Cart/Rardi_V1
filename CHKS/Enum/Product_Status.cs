@@ -1,4 +1,4 @@
-namespace CHKS.Models.Enum;
+namespace CHKS.Enum;
 
 public enum ProductStatus
 {

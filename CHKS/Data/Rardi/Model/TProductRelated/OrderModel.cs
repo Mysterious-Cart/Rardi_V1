@@ -7,7 +7,7 @@ namespace CHKS.Models;
 
 [Table("Order")]
 [PrimaryKey("Id")]
-public class Order_Model
+public class OrderModel
 {
     [Required]
     public Guid Id { get; set; } = Guid.NewGuid();

@@ -1,15 +1,22 @@
-using CHKS.Models.mydb;
 using Microsoft.EntityFrameworkCore;
 using CHKS.Entity;
-using CHKS.Models.Interface;
+using CHKS.Data;
+using CHKS.Models;
+using CHKS.Mappers;
 
 namespace CHKS.Services;
 
-public class CartControlService(InventoryControlService stockcontrol, IDbProvider provider)
+public class CartControlService(
+    InventoryControlService stockcontrol,
+    IDbContextFactory<Rardi_Context> contextFactory,
+    SecurityService securityService,
+    ILogger<CartControlService> logger
+    )
 {
+    private readonly ILogger<CartControlService> _logger = logger;
     private readonly InventoryControlService stockControl = stockcontrol;
-
-    private readonly IDbProvider _provider = provider;
+    private readonly Rardi_Context _context = contextFactory.CreateDbContext();
+    private readonly SecurityService _securityService = securityService;
     /*
     public async Task UpdateCartItem(int CartId, Product product, decimal? price = null, string Note = "") => await UpdateCartItem(CartId, new CartItemDTO
     {
@@ -89,48 +96,103 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
         }
     }
 */
-    public async Task Cashout(int CartId)
-    {
-        var CartList = await _provider.GetData<CartModel>();
-        var Cart = await CartList.Include(i => i.CartContent).FirstAsync(i => i.CartId == CartId);
 
-        Models.mydb.TransactionModel transaction = new()
+    /// <summary>
+    /// Processes the checkout for a cart with the specified CartId.
+    /// This method creates a transaction record and associated transaction items based on the cart contents,
+    /// saves them to the database within a transaction scope, and commits the transaction if successful.
+    /// If any database update error occurs, the transaction is rolled back and an exception is thrown.
+    /// </summary>
+    /// <param name="CartId">The unique identifier of the cart to be checked out.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the cart checkout fails due to a database error or other failure during transaction creation.
+    /// </exception>
+    public async Task ProcessCartCheckout(int CartId)
+    {
+        var user = _securityService.User?.Id ?? throw new UnauthorizedAccessException("User not Found.");
+        var transactionEntity = await _context.Carts
+            .Where(i => i.CartId == CartId)
+            .Select(Cart => new TransactionModel
+            {
+                Plate = Cart.CustomerId,
+                EmployeeId = user,
+            }
+            ).FirstAsync();
+
+        var transaction = await _context.Database.BeginTransactionAsync();
         {
-            Plate = Cart.Car_Id,
-            Total = Cart.Total,
+            try
+            {
+                // Add and save the transaction entity first to generate its Id
+                await _context.AddAsync(transactionEntity);
+                await _context.SaveChangesAsync();
+
+                // Now fetch cart items and assign the generated Id
+                List<TransactionItemModel> transactionItems =
+                    await _context.CartContents.Where(i => i.CartId == CartId)
+                        .Select(item => new TransactionItemModel
+                        {
+                            ProductId = item.ProductId,
+                            Qty = item.Qty,
+                            Price = item.PriceOverwrite ?? item.Inventory.Export,
+                            TransactionId = transactionEntity.Id
+                        }).ToListAsync();
+
+                await _context.AddRangeAsync(transactionItems);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+            }
+            catch (DbUpdateException dbEx)
+            {
+                await transaction.RollbackAsync();
+                Console.WriteLine($"Database update error: {dbEx}");
+                throw new InvalidOperationException("Failed to process cart checkout due to database error.", dbEx);
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw new InvalidOperationException("Failed to create transaction.");
+            }
+        }
+
+    }
+    
+    /// <summary>
+    /// creates a new cart for the specified customer.
+    /// </summary>
+    /// <param name="customer">The customer for whom the cart is to be created.</param>
+    /// <returns>
+    /// A <see cref="Cart"/> object representing the newly created cart.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the cart could not be created due to a database error or other unexpected exception.
+    /// </exception>
+    public async Task<Cart> AddCart(Customer customer)
+    {
+        var cart = new CartModel
+        {
+            CustomerId = customer.Plate,
         };
 
         try
         {
-            await _provider.CreateData(transaction);
+            await _context.AddAsync(cart);
+            await _context.SaveChangesAsync();
+            return CartMapper.ToCart(cart);
         }
-        catch
+        catch (DbUpdateException dbEx)
         {
-            throw new InvalidOperationException("Failed to create transaction.");
-        }
-
-    }
-
-
-
-    public async Task<Cart> AddCart(Entity.Customer customer)
-    {
-        var cart =
-            
-        var cart_Model = CartBuilder.ToModel(cart);
-
-        try
-        {
-            await _provider.CreateData(cart_Model);
-            return cart;
+            _logger.LogError(dbEx, "Failed to create cart for customer {CustomerPlate}", customer.Plate);
+            throw new InvalidOperationException("Failed to create cart due to database error.", dbEx);
         }
         catch (Exception exc)
         {
-            Console.WriteLine(exc.Message);
-            throw new Exception("Failed to create cart.");
+            _logger.LogError(exc, "Failed to create cart for customer {CustomerPlate}", customer.Plate);
+            throw;
         }
     }
-    public async Task<bool> AddProductToCart(int CartId, Guid productId,int Qty = 1 ,decimal? price = null, string Note = "")
+    public async Task<Cart> AddProductToCart(int CartId, Guid productId, int Qty = 1, decimal? price = null, string Note = "")
     {
         var cartItem = new CartItemModel
         {
@@ -141,42 +203,41 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
             Note = Note
         };
 
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(Qty, nameof(Qty)); // Ensure Qty is positive
+        if (!await stockControl.IsStockAvailable(productId, Qty)) throw new ArgumentException("Product not available"); // Check stock availability
         try
         {
-            if(!(await GetCart()).Any(i => i.CartId == CartId))
+            var transaction = await _context.Database.BeginTransactionAsync();
+            if (await _context.CartContents.AnyAsync(i => i.ProductId == productId && i.CartId == CartId))
             {
-                return false; // Cart does not exist
-            }
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(Qty, nameof(Qty)); // Ensure Qty is positive
-            if (!await stockControl.IsStockAvailable(productId, Qty)) return false;
 
-            var cartContents = await _provider.GetData<CartItemModel>();
-            var content = cartContents.Where(i => i.CartId == CartId);
-            if (content.Any(i => i.ProductId == productId))
-            {
                 // Product already exists in the cart, update quantity
-                var existingItem = content.First(i => i.CartId == CartId && i.ProductId == productId);
-                existingItem.Qty++;
                 await stockControl.RemoveItemFromStock(productId, Qty);
-                await _provider.UpdateData(existingItem, i => i.Id);
-                return true;
+                await _context.CartContents
+                    .Where(i => i.CartId == CartId && i.ProductId == productId)
+                    .ExecuteUpdateAsync(v => v.SetProperty(i => i.Qty, i => i.Qty + Qty));
             }
-            
-            await stockControl.RemoveItemFromStock(productId, Qty);
-            await _provider.CreateData(cartItem);
-            // Product does not exist in the cart, add it
-            return true;
+            else
+            {
+                // Product does not exist in the cart, add new item
+                await stockControl.RemoveItemFromStock(productId, Qty);
+                await _context.AddAsync(cartItem);
+                await _context.SaveChangesAsync();
+            }
+
+            await transaction.CommitAsync();
+            return CartMapper.ToCart(cartItem.Cart);
         }
         catch (Exception exc)
         {
             Console.WriteLine(exc.Message);
-            return false;
         }
+        
+        return null; // Return null if an error occurs
     }
 
-    public async Task<bool> RemoveProductFromCart(int CartId, Guid productId, int Qty = 1, decimal? price = null, string Note = "")
+    public async Task<bool> RemoveProductFromCart(int CartId, Guid productId, int Qty = 1)
     {
-
 
         try
         {
@@ -219,17 +280,27 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
 
     public async Task<IEnumerable<Cart>> GetCart()
     {
-        var cart = await _provider.GetData<CartModel>();
+        var cart = _context.Carts
+            .Include(i => i.Customer)
+            .Include(i => i.CartContent)
+            .Select(CartExpressionMapper.ToCart());
 
-        return from i in cart
-               select new Cart(
-                i.CartId,
-                i.Customer.Plate,
-                i.Total,
-                null
-        );
+        return cart;
     }
 
+    public async Task<Cart> GetCart(int CartId)
+    {
+        var cart = await _context.Carts
+            .Include(i => i.Customer)
+            .Include(i => i.CartContent)
+            .Where(i => i.CartId == CartId)
+            .Select(CartExpressionMapper.ToCart())
+            .FirstAsync();
+
+        return cart;
+    }
+
+    /* 
     public async Task<Cart> GetCartContent(int CartId)
     {
         var Items = await _provider.GetData<CartModel>([nameof(CartModel.CartContent)]);
@@ -247,9 +318,9 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
             );
 
         return await result.FirstAsync();
-    }
+    }*/
 
-    public async Task AddCustomer(Entity.Customer customer)
+    public async Task AddCustomer(Customer customer)
     {
         var customers = await _provider.GetData<Models.mydb.CustomerModel>();
         string plate = customer.Plate.Replace(" ", "").ToUpper();
@@ -291,7 +362,9 @@ public class CartControlService(InventoryControlService stockcontrol, IDbProvide
 
     public async Task<Entity.Customer> GetCustomer(string Plate)
     {
-        var customers = await _provider.GetData<Models.mydb.CustomerModel>();
+        var customers = await _context.Customers
+            .Select(CustomerExpressionMapper.ToCustomer())
+            .ToListAsync();
 
         var customer = await customers.FirstOrDefaultAsync(i => i.Plate == Plate);
 

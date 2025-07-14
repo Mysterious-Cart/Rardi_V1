@@ -9,7 +9,7 @@ namespace CHKS.Models
     {
         [Key]
         [Required]
-        public string Plate { get; set; }
+        public string PlateNumber { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
@@ -22,11 +22,10 @@ namespace CHKS.Models
         public DateOnly? Last_visit { get; set; }
         
         [Column(TypeName = "date")]
-        public DateOnly? CreatedAt { get; set; }
+        public DateOnly CreatedAt => DateOnly.FromDateTime(DateTime.Now);
         [Required]
         public int Vehicle_Id { get; set; }
         public Vehicle_Model Vehicle { get; set; }
-
         public ICollection<CartModel> Carts { get; set; }
         public ICollection<TransactionModel> Transactions { get; set; }
 

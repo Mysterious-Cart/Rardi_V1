@@ -11,7 +11,7 @@ public static class OrderMapper
     /// Converts an Order_Model to an Order.
     /// </summary>
     /// <param name="orderModel"></param>
-    public static Order ToOrder(this Order_Model orderModel) =>
+    public static Order ToOrder(this OrderModel orderModel) =>
         new(
             orderModel.Id,
             orderModel.Amount,
@@ -32,7 +32,7 @@ public static class OrderExpressionMapper
     /// Converts an Order_Model to an Order.
     /// This expression can be used in LINQ queries to project Order_Model to Order.
     /// </summary>
-    public static Expression<Func<Order_Model, Order>> ToOrder(ClaimsPrincipal user) =>
+    public static Expression<Func<OrderModel, Order>> ToOrder(ClaimsPrincipal user) =>
         user.IsInRole("Admin") ?
         order => new Order(
             order.Id,

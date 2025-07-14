@@ -1,4 +1,6 @@
-enum Cart_Status
+namespace CHKS.Enum;
+
+public enum CartStatus
 {
     Progress = 0,
     Unpaid = 1,
