@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  chks-app:
+    build:
+      context: ./CHKS
+      dockerfile: Dockerfile
+      args:
+        BUILD_CONFIGURATION: Release
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__development=Server=db;Port=3306;Database=mydb;Uid=root;Pwd=Killergamerxlyy44
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      - db
+
+  db:
+    image: mysql:lts
+    container_name: rardi_db
+    restart: always
+    ports:
+      - "3309:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: Killergamerxlyy44
+      MYSQL_DATABASE: mydb
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data: 
+    - ./mysql_data:/var/lib/mysql

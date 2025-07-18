@@ -1,8 +1,8 @@
 namespace CHKS.Mappers;
 
 using System.Linq.Expressions;
-using CHKS.Models;
-using CHKS.Entity;
+using Entity;
+using Models;
 
 public static class CartExpressionMapper
 {

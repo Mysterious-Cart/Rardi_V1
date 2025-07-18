@@ -98,16 +98,16 @@ namespace CHKS.Data
       builder.Entity<OrderModel>()
           .Property(i => i.OrderReceivedDate).HasConversion<DateOnly>();
 
-      builder.Entity<StockLogs>()
+      builder.Entity<StockLogsModel>()
           .HasOne(i => i.Employee)
           .WithMany(i => i.StockLogs)
           .HasForeignKey(i => i.EmployeeId)
           .HasPrincipalKey(i => i.Id);
-      builder.Entity<StockLogs>()
+      builder.Entity<StockLogsModel>()
           .HasOne(i => i.Product)
           .WithMany(i => i.StockLogs)
           .HasForeignKey(i => i.ProductId);
-      builder.Entity<StockLogs>()
+      builder.Entity<StockLogsModel>()
           .Property(i => i.Date)
           .IsRowVersion()
           .HasConversion<DateTime>();
@@ -128,7 +128,7 @@ namespace CHKS.Data
           });
     }
 
-        public DbSet<StockLogs> StockLogs { get; set; }
+        public DbSet<StockLogsModel> StockLogs { get; set; }
         public DbSet<CustomerModel> Customers { get; set; }
 
         public DbSet<Vehicle_Model> Vehicles { get; set; }

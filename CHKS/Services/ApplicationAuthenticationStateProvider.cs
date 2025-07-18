@@ -10,15 +10,10 @@ using CHKS.Models;
 
 namespace CHKS.Services
 {
-    public class ApplicationAuthenticationStateProvider : AuthenticationStateProvider
+    public class ApplicationAuthenticationStateProvider(SecurityService securityService) : AuthenticationStateProvider
     {
-        private readonly SecurityService securityService;
+        private readonly SecurityService securityService = securityService;
         private ApplicationAuthenticationState authenticationState;
-
-        public ApplicationAuthenticationStateProvider(SecurityService securityService)
-        {
-            this.securityService = securityService;
-        }
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {

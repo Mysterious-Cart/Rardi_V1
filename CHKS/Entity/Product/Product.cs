@@ -1,4 +1,4 @@
-using CHKS.Models.Enum;
+using CHKS.Enum;
 
 
 namespace CHKS.Entity;

@@ -16,7 +16,7 @@ public class StockLogsTrackingService : IAsyncDisposable
             if ((await _provider.GetData<UserNotificationStamp>()).Any(i => i.UserId == UserId && i.LogId == LogsId))
                 return; // Already seen
 
-            if ((await _provider.GetData<StockLogs>()).All(i => i.Id != LogsId))
+            if ((await _provider.GetData<StockLogsModel>()).All(i => i.Id != LogsId))
                 throw new ArgumentException("Log does not exist.", nameof(LogsId));
 
             if ((await _provider.GetData<Aspnetuser>()).All(i => i.Id != UserId))

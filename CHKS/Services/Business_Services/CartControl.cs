@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using CHKS.Entity;
-using CHKS.Data;
-using CHKS.Models;
-using CHKS.Mappers;
 
 namespace CHKS.Services;
+
+using Entity;
+using Data;
+using Models;
+using Mappers;
+using System.Data.Common;
 
 public class CartControlService(
     InventoryControlService stockcontrol,
@@ -17,85 +19,6 @@ public class CartControlService(
     private readonly InventoryControlService stockControl = stockcontrol;
     private readonly Rardi_Context _context = contextFactory.CreateDbContext();
     private readonly SecurityService _securityService = securityService;
-    /*
-    public async Task UpdateCartItem(int CartId, Product product, decimal? price = null, string Note = "") => await UpdateCartItem(CartId, new CartItemDTO
-    {
-        Id = Guid.NewGuid(),
-        CartId = CartId,
-        ProductId = product.Id,
-        Quantity = 1,
-        Original_Price = product.Export,
-        Set_Price = price,
-        Note = Note,
-    });
-    public async Task UpdateCartItem(int CartId, CartItemDTO cartItem, CancellationToken token = default)
-    {
-        var CartItemList = await GetCartContent(CartId);
-        var CartItem_Found = await CartItemList.FirstAsync(i => i.ProductId == cartItem.Id, token);
-        var changes_amount = cartItem.Quantity - CartItem_Found.Quantity;
-
-        CartItem newCartItem = new()
-        {
-            CartId = CartId,
-            ProductId = cartItem.ProductId,
-            Qty = cartItem.Quantity,
-            PriceOverwrite = cartItem.Set_Price,
-            Note = cartItem.Note,
-        };
-
-        Task operation = CartItem_Found is null ?
-            _provider.CreateData(newCartItem) :
-            cartItem.Quantity == 0 ?
-                RemoveCartItem(cartItem, token) :
-                _provider.UpdateData(cartItem, i => i.Id);
-
-        try
-        {
-            await _provider.Transaction(async () =>
-            {
-                await stockControl.ChangeStock(cartItem.ProductId, changes_amount);
-                await operation;
-            }, token);
-
-        }
-        catch (Exception exc)
-        {
-            Console.WriteLine("Error detected: " + exc.Message);
-            //Cancel Operation and Revert Operations
-            // Finish Later.
-        }
-    }
-
-    public async Task RemoveCartItem(CartItemDTO CartItem, CancellationToken token = default)
-    {
-        try
-        {
-            await _provider.Transaction(async () =>
-            {
-                await _provider.DeleteData<CartItem, Guid>(i => i.Id, CartItem.Id);
-                await stockControl.AddItemToStock(CartItem.ProductId, CartItem.Quantity);
-            }, token);
-        }
-        catch (Exception exc)
-        {
-            Console.WriteLine(exc.Message);
-        }
-    }
-
-    public async Task RemoveCart(int CartId)
-    {
-        var CartList = await _provider.GetData<Cart>();
-        var Cart = await CartList.FirstAsync(i => i.CartId == CartId);
-        try
-        {
-            await _provider.DeleteData<Cart, int>(i => i.CartId, Cart.CartId);
-        }
-        catch (Exception exc)
-        {
-            Console.WriteLine(exc.Message);
-        }
-    }
-*/
 
     /// <summary>
     /// Processes the checkout for a cart with the specified CartId.
@@ -192,6 +115,19 @@ public class CartControlService(
             throw;
         }
     }
+
+    /// <summary>
+    /// Adds a product to the specified cart.
+    /// This method checks if the product is already in the cart and updates the quantity if it is.
+    /// If the product is not in the cart, it adds a new cart item.
+    /// </summary>
+    /// <param name="CartId"></param>
+    /// <param name="productId"></param>
+    /// <param name="Qty"></param>
+    /// <param name="price"></param>
+    /// <param name="Note"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
     public async Task<Cart> AddProductToCart(int CartId, Guid productId, int Qty = 1, decimal? price = null, string Note = "")
     {
         var cartItem = new CartItemModel
@@ -205,17 +141,16 @@ public class CartControlService(
 
         ArgumentOutOfRangeException.ThrowIfNegativeOrZero(Qty, nameof(Qty)); // Ensure Qty is positive
         if (!await stockControl.IsStockAvailable(productId, Qty)) throw new ArgumentException("Product not available"); // Check stock availability
+
         try
         {
-            var transaction = await _context.Database.BeginTransactionAsync();
-            if (await _context.CartContents.AnyAsync(i => i.ProductId == productId && i.CartId == CartId))
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            var cartcontent = _context.CartContents.Where(i => i.ProductId == productId && i.CartId == CartId);
+            if (await cartcontent.AnyAsync())
             {
-
                 // Product already exists in the cart, update quantity
                 await stockControl.RemoveItemFromStock(productId, Qty);
-                await _context.CartContents
-                    .Where(i => i.CartId == CartId && i.ProductId == productId)
-                    .ExecuteUpdateAsync(v => v.SetProperty(i => i.Qty, i => i.Qty + Qty));
+                await cartcontent.ExecuteUpdateAsync(v => v.SetProperty(i => i.Qty, i => i.Qty + Qty));
             }
             else
             {
@@ -230,60 +165,74 @@ public class CartControlService(
         }
         catch (Exception exc)
         {
+            await _context.Database.RollbackTransactionAsync();
+            _logger.LogError(exc, "Failed to add product {ProductId} to cart {CartId}", productId, CartId);
             Console.WriteLine(exc.Message);
+            throw;
         }
-        
-        return null; // Return null if an error occurs
+
     }
 
-    public async Task<bool> RemoveProductFromCart(int CartId, Guid productId, int Qty = 1)
+    /// <summary>
+    /// Removes a product from the specified cart.
+    /// If the quantity to remove is greater than or equal to the existing quantity, the item is removed entirely.
+    /// If the quantity to remove is less than the existing quantity, the quantity is reduced accordingly
+    /// </summary>
+    /// <param name="CartId"></param>
+    /// <param name="productId"></param>
+    /// <param name="Deduction"></param>
+    /// <returns></returns>
+    public async Task<Cart> RemoveProductFromCart(int CartId, Guid productId, int Deduction = 1)
     {
+
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(Deduction, nameof(Deduction)); // Ensure Qty is positive
 
         try
         {
-            if(!(await GetCart()).ToList().Any(i => i.CartId == CartId))
+            var cartcontents = _context.CartContents
+                .Where(i => i.CartId == CartId && i.ProductId == productId);
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            var cartcontent = await cartcontents.FirstAsync();
+            var AmountInCart = cartcontent.Qty;
+            if (AmountInCart <= Deduction)
             {
-                return false; // Cart does not exist
+                // If the quantity to remove is greater than or equal to the existing quantity, remove the item
+                await stockControl.AddItemToStock(productId, AmountInCart);
+                await _context.CartContents.Where(i => i.CartId == CartId && i.ProductId == productId).ExecuteDeleteAsync();
+            }
+            else
+            {
+                await stockControl.AddItemToStock(productId, Deduction);
+                await cartcontents.ExecuteUpdateAsync(v => v.SetProperty(i => i.Qty, i => i.Qty - Deduction));
             }
 
-            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(Qty, nameof(Qty)); // Ensure Qty is positive
-            var cartContents = await _provider.GetData<CartItemModel>();
-            var content = cartContents.Where(i => i.CartId == CartId).ToList();
+            await transaction.CommitAsync();
+            return await GetCart(CartId);
 
-            if (cartContents.Any(i => i.ProductId == productId))
-            {
-                // Product already exists in the cart, update quantity
-                var existingItem = content.First(i => i.CartId == CartId && i.ProductId == productId);
-                if (existingItem.Qty - Qty <= 0)
-                {
-                    // Product exists in the cart, remove it
-                    await stockControl.AddItemToStock(productId, existingItem.Qty);
-                    await _provider.DeleteData<CartItemModel, int>(CartId);
-                    return true;
-                }
-
-                existingItem.Qty--;
-                await stockControl.ChangeStock(productId, 1);
-                await _provider.UpdateData(existingItem, i => i.Id);
-                return true;
-            }
-            
-            return false;
         }
-        catch (Exception exc)
+        catch (ArgumentNullException exc)
         {
+            _logger.LogError(exc, "Failed to remove product {ProductId} from cart {CartId}. Likely due to Product doesn't exist.", productId, CartId);
             Console.WriteLine(exc.Message);
-            return false;
         }
+
+        return null;
     }
 
-
-    public async Task<IEnumerable<Cart>> GetCart()
+    /// <summary>
+    /// Retrieves all carts from the database.
+    /// This method includes related customer and cart content information.
+    /// </summary>
+    /// <returns></returns>
+    public async Task<List<Cart>> GetCart()
     {
-        var cart = _context.Carts
-            .Include(i => i.Customer)
+        var cart = await _context.Carts
             .Include(i => i.CartContent)
-            .Select(CartExpressionMapper.ToCart());
+            .ThenInclude(i => i.Inventory)
+            .Select(CartExpressionMapper.ToCart())
+            .ToListAsync();
 
         return cart;
     }
@@ -291,8 +240,8 @@ public class CartControlService(
     public async Task<Cart> GetCart(int CartId)
     {
         var cart = await _context.Carts
-            .Include(i => i.Customer)
             .Include(i => i.CartContent)
+            .ThenInclude(i => i.Inventory)
             .Where(i => i.CartId == CartId)
             .Select(CartExpressionMapper.ToCart())
             .FirstAsync();
@@ -300,99 +249,63 @@ public class CartControlService(
         return cart;
     }
 
-    /* 
-    public async Task<Cart> GetCartContent(int CartId)
+    /// <summary>
+    /// Adds a new customer to the database.
+    /// This method checks if a customer with the same plate number already exists
+    /// </summary>
+    /// <param name="customer"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="InvalidOperationException"></exception>
+    public async Task AddCustomer(CreateCustomerRequest customer)
     {
-        var Items = await _provider.GetData<CartModel>([nameof(CartModel.CartContent)]);
-        Items.Include(i => i.CartContent.Select(i => i.Inventory));
-        var result =
-            from i in Items
-            where i.CartId == CartId
-            select new Cart(
-                i.CartId,
-                i.Customer.Plate,
-                i.Total,
-                from j in i.CartContent
-                select new CartItem(j.ProductId, j.Inventory.Name, j.Qty, j.Inventory.Import,
-                j.PriceOverwrite ?? j.Inventory.Export)
-            );
-
-        return await result.FirstAsync();
-    }*/
-
-    public async Task AddCustomer(Customer customer)
-    {
-        var customers = await _provider.GetData<Models.mydb.CustomerModel>();
         string plate = customer.Plate.Replace(" ", "").ToUpper();
-        if (customers.Any(i => i.Plate == plate))
+        var existed = await _context.Customers.AnyAsync(i => i.PlateNumber == plate);
+        if (existed)
         {
             throw new ArgumentException("Customer already exists.");
         }
 
         try
         {
-            var model = CustomerBuilder.ToModel(customer);
-            model.Last_visit = DateOnly.FromDateTime(DateTime.Now);
-            model.CreatedAt = DateOnly.FromDateTime(DateTime.Now);
-            model.Visits = 1;
+            var model = new CustomerModel
+            {
+                PlateNumber = plate,
+                Name = customer.Name,
+                Phone = customer.Phone,
+                Phone_2 = customer.Phone2,
+                Description = customer.Description,
+            };
 
-            await _provider.CreateData(model);
+            await _context.Customers.AddAsync(model);
+            await _context.SaveChangesAsync();
+        }
+        catch (DbException dbEx)
+        {
+            Console.WriteLine($"Database error: {dbEx.Message}");
+            _logger.LogError(dbEx, "Failed to create customer with plate {Plate}", plate);
+            throw new InvalidOperationException("Failed to create customer due to database error.", dbEx);
         }
         catch (Exception exc)
         {
             Console.WriteLine(exc.Message);
+            _logger.LogError(exc, "Failed to create customer with plate {Plate}", plate);
             throw new InvalidOperationException("Failed to create customer.");
         }
-    }
-    public async Task<IEnumerable<Entity.Customer>> GetCustomer()
-    {
-        var customers = await _provider.GetData<Models.mydb.CustomerModel>();
-        customers.Include(i => i.Vehicle);
-        
-        return from i in customers
-               select new Entity.Customer(
-            i.Plate,
-            i.Name,
-            i.Phone,
-            new Vehicle(i.Vehicle_Id, i.Vehicle.Model, i.Vehicle.Make, i.Vehicle.Year),
-            i.Phone_2,
-            i.Description   
-        );
-    }
 
-    public async Task<Entity.Customer> GetCustomer(string Plate)
+    }
+    public async Task<List<Customer>> GetCustomer()
     {
-        var customers = await _context.Customers
+        return _context.Customers
             .Select(CustomerExpressionMapper.ToCustomer())
-            .ToListAsync();
-
-        var customer = await customers.FirstOrDefaultAsync(i => i.Plate == Plate);
-
-        if (customer is null) return null;
-
-        return CustomerBuilder.FromModel(customer).Build();
+            .ToList();
     }
-    public async Task<IEnumerable<Vehicle>> GetVehicles()
+
+    public async Task<Customer> GetCustomer(string Plate)
     {
-        var Vehicle = await _provider.GetData<Vehicle_Model>();
-
-        return from i in Vehicle orderby i.Year descending select new Vehicle(i.Key, i.Model, i.Make, i.Year) ;
+        return await _context.Customers
+            .Select(CustomerExpressionMapper.ToCustomer())
+            .FirstAsync(i => i.Plate == Plate);
     }
-    public async Task AddVehicle(Vehicle vehicle)
-    {
-        var Vehicle = await _provider.GetData<Vehicle_Model>();
-
-        if (await Vehicle.Where(i => i.Key == vehicle.GetId()).AnyAsync())
-        {
-            throw new ArgumentException("Vehicle already exists.");
-        }
-        try
-        {
-            await _provider.CreateData(VehicleBuilder.ToModel(vehicle));
-        }
-        catch (Exception exc)
-        {
-            Console.WriteLine(exc.Message);
-        }
-    }
+    
 }

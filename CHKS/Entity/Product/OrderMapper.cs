@@ -1,7 +1,7 @@
 namespace CHKS.Mappers;
 
-using CHKS.Models;
-using CHKS.Entity;
+using Models;
+using Entity;
 using System.Linq.Expressions;
 using System.Security.Claims;
 

@@ -1,5 +1,4 @@
 namespace CHKS.Entity;
-
 public record Order(
     Guid Id,
     int Amount,

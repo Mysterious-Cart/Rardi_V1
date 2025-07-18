@@ -1,4 +1,4 @@
-namespace chks.Enum;
+namespace CHKS.Enum;
 
 public enum PaymentType
 {
