@@ -1,0 +1,147 @@
+@page "/modify/{Cart_Id:int}"
+
+<MudCard style="width: 100%;" >
+    <MudToolBar Gutters=false Style="padding-right:10px; padding-left:10px;">
+        <MudText Typo="Typo.h6" Style="margin-left:10px;">
+            @Cart_Id
+        </MudText>  
+        <MudSpacer/>
+        
+        
+        <MudIconButton 
+            Color="Color.Primary"
+            Icon="@Icons.Material.Rounded.Save"
+            OnClick="@(() => returnBack())"/>
+        <MudButton Variant=Variant.Outlined StartIcon="@Icons.Material.Rounded.Receipt">
+            Payment
+        </MudButton>
+        <MudIconButton 
+            Color="Color.Error"
+            Icon="@Icons.Material.Rounded.Delete" 
+            OnClick="@(() => returnBack())"/>
+    </MudToolBar>
+</MudCard>
+
+<MudStack Row style="height: 85dvh; margin-top:10px">
+    <MudStack Style="width:70%">
+        <MudCard style="height: 70%;">
+            <MudCardHeader Style="padding: 20px 30px 0px 30px;">
+                <MudText Typo="Typo.h6">Cart</MudText>
+                <MudSpacer/>
+                <MudChip T="string" Color=Color.Primary Variant="Variant.Text" Icon="@Icons.Material.Rounded.ShoppingCart">
+                    @(Cart?.CartContents.Count() ?? 0)
+                </MudChip>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudList T=string ReadOnly Dense>
+                    @if(Cart is not null)
+                    {
+                        @foreach(var cartitem in Cart.CartContents){
+                            <MudListItem T=string Gutters=false>
+                                <MudPaper Outlined="true">
+                                    <MudToolBar Style="gap:20px">
+
+                                        <MudText>@cartitem</MudText>
+                                        <MudSpacer/>
+                                        <MudChip
+                                            T="string"
+                                            Color=Color.Tertiary Variant="Variant.Text" 
+                                            Icon="@Icons.Material.Rounded.MonetizationOn">
+                                            @cartitem.Price.ToString("0.00")
+                                        </MudChip>
+                                        
+                                        <MudStack Row Wrap="Wrap.Wrap" Spacing="1" >
+                                            <MudIconButton
+                                                onclick="@(() => AddToCart(cartitem.ProductId))"
+                                                Size="Size.Small"
+                                                Icon="@Icons.Material.Rounded.Add" 
+                                                Color="Color.Primary"/>
+                                            <MudText Align="Align.Center">@cartitem.Amount</MudText>
+                                            <MudIconButton
+                                                onclick="@(() => RemoveFromCart(cartitem.ProductId))"
+                                                Size="Size.Small"
+                                                Icon="@Icons.Material.Rounded.Remove" 
+                                                Color="Color.Primary"/>
+                                        </MudStack>
+                                    </MudToolBar>
+                                </MudPaper>
+                            </MudListItem>
+                        }
+                    }
+                    
+                </MudList>
+            </MudCardContent>
+        </MudCard>
+        <MudCard Style="height:30%">
+            Test
+        </MudCard>
+    </MudStack>
+    <MudCard Style="width:30%">
+        <MudCardContent>
+            <MudCardHeader>
+                <MudText Typo="Typo.h6">Products</MudText>
+            </MudCardHeader>
+            <MudContainer Style="gap:10px; display: flex; flex-direction: column;">
+                <MudTextField Style="margin-bottom: 10px;" T="string" Placeholder="Type to search"/>
+                
+                <MudList Padding=false  T=string Style="height:100%" Gutters=false Dense>
+                    @foreach(var i in Products)
+                    {
+                        <MudListItem 
+                                Icon=@(i.Stock.Equals(0)?Icons.Material.Rounded.Cancel:Icons.Material.Rounded.AddShoppingCart)
+                                IconColor=@(i.Stock.Equals(0)?Color.Error:Color.Primary)
+                                IconSize="Size.Small"
+                                OnClickPreventDefault=true 
+                                Style=height:50px Gutters=false 
+                                OnClick="() => AddToCart(i.Id)">
+
+                            <MudToolBar Gutters=false>
+                                <MudText>@i.Name</MudText>
+                            </MudToolBar>
+                        </MudListItem>
+                    }
+                    
+                </MudList>
+            </MudContainer>
+        </MudCardContent>
+    </MudCard>
+</MudStack>
+
+
+@code{
+    [Inject]
+    protected NavigationManager navigationManager { get; set; }
+
+    [Inject]
+    protected CartControlService cartControl { get; set; }
+    [Inject]
+    protected InventoryControlService inventoryControl { get; set; }
+    [Parameter]
+    public int Cart_Id { get; set; }
+    public Cart Cart { get; set; } = null;
+    private List<Product> Products { get; set; } = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await RetrieveData();
+    }
+    private async Task RetrieveData(){
+        if (Cart_Id != 0)
+        {
+            Cart = await cartControl.GetCart(Cart_Id);
+        }
+        Products = (await inventoryControl.GetProductList()).ToList();
+    }
+    private void returnBack() => navigationManager.NavigateTo("/");
+    private async Task RemoveFromCart(Guid productId) {
+        await cartControl.RemoveProductFromCart(Cart_Id, productId);
+        await RetrieveData();
+        await InvokeAsync(StateHasChanged);
+    }
+    private async Task AddToCart(Guid productId) { 
+        var result = await cartControl.AddProductToCart(Cart_Id, productId);
+        
+        await RetrieveData();
+        await InvokeAsync(StateHasChanged);
+    }
+}

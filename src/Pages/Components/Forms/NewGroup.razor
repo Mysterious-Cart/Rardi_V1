@@ -1,0 +1,37 @@
+@using MudBlazor
+@namespace CHKS.Pages.Components
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="form" Style="height:75px">
+            <MudTextField @bind-Value="GroupName" Label="Group Name" Required="true" For="@(() => GroupName)" />
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Submit" Color="Color.Primary" Variant="MudBlazor.Variant.Filled">Create</MudButton>
+        <MudButton OnClick="Cancel" Color="Color.Secondary" Variant="MudBlazor.Variant.Text">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private MudForm form = null;
+    private string GroupName = "";
+    [Inject] public EmployeeControl ProductService { get; set; }
+    [CascadingParameter] 
+    public MudDialogInstance MudDialog { get; set; }
+    private void Close() => MudDialog.Close(DialogResult.Ok(true));
+    private async Task Submit()
+    {
+        await form.Validate();
+        if (form.IsValid)
+        {
+            await ProductService.CreateGroup(GroupName);
+            MudDialog.Close(DialogResult.Ok(GroupName));
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}

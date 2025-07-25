@@ -26,7 +26,7 @@ This is a .NET 8 Server-Side Blazor application (CHKS) with:
 
 ### Build & Run
 ```powershell
-cd f:\Projects\Rardi_V1\CHKS
+cd f:\Projects\Rardi_V1\src
 # Build
 dotnet build CHKS.csproj -c Development
 # Run
@@ -38,8 +38,8 @@ dotnet watch --project CHKS.csproj
 ### Docker
 ```powershell
 # From workspace root
-docker build -t chks-app -f CHKS/Dockerfile .;
-docker run -p 8080:8080 -p 8081:8081 chks-app
+docker build -t Rardi -f Dockerfile .;
+docker run -p 8080:8080 -p 8081:8081 Rardi
 ```  
 
 ### Database Migrations
@@ -70,5 +70,3 @@ dotnet ef database update --project CHKS.csproj --startup-project CHKS
 - **HeaderPropagation**: Ensures cookies are forwarded to API calls in Blazor.
 
 ---
-
-*Please review and let me know if any sections need more detail, examples, or updates.*

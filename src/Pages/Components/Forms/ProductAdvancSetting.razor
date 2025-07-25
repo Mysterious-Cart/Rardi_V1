@@ -1,0 +1,41 @@
+@namespace CHKS.Pages.Component
+
+<MudDialog style="max-height: 80dvh; height: max-content; width: 400px;">
+
+    <DialogContent>
+
+        <MudForm>
+            <MudSwitch T="bool" Label="Is active" @bind-Value=@productAdvancedSetting.IsActive  Color="MudBlazor.Color.Success"/>
+            <MudSwitch T="bool" Label="Allow Auto Suggestion" @bind-Value="@productAdvancedSetting.AllowAutoSuggestion" Color="MudBlazor.Color.Success"/>
+            <MudSwitch T="bool" Label="Allow Restock Suggestion" @bind-Value="@productAdvancedSetting.AllowRestockSuggestion" Color="MudBlazor.Color.Success"/>
+
+
+            <MudButton style="margin-top: 10px;" Variant="MudBlazor.Variant.Filled" Color="Color.Primary" OnClick="SaveSettings">Save</MudButton>
+        </MudForm>
+    </DialogContent>
+</MudDialog>
+
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    private ProductAdvancedSetting productAdvancedSetting = new ProductAdvancedSetting();
+
+    private void Submit()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+    private bool isActive = true;
+
+    private void SaveSettings()
+    {
+        // Save settings logic here
+    }
+
+    public class ProductAdvancedSetting
+    {
+        public bool AllowAutoSuggestion { get; set; }
+        public bool AllowRestockSuggestion { get; set; }
+        public bool IsActive { get; set; }
+    }
+}

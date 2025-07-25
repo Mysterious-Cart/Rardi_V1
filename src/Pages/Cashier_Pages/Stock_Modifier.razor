@@ -1,0 +1,125 @@
+@page "/stock-modifier"
+@namespace CHKS.Pages
+@using Components;
+@using Microsoft.AspNetCore.SignalR.Client;
+@using Entity;
+@using Heron.BlazorQRScanner;
+
+
+@if(IsCameraOpen)
+{
+    <MudIconButton Icon="@Icons.Material.Outlined.Cancel" 
+        OnClick="@(() => OpenCamera())" 
+        Size="Size.Large" 
+        Style="position: absolute; top: 10px; right: 10px; z-index: 1000;"/>
+    <MudContainer Style="width:70%; height:70dvh; margin-left: auto; margin-right:auto; margin-top:10dvh;">
+        <Scanner CodeFound="@(async (i) => await QRFoundHandler(i))"/>
+    </MudContainer>
+}else{
+        
+    <MudCard Style="width:50%; min-width:300px;height:max-content; margin-left: auto; margin-right:auto; margin-top:20dvh;">
+        <MudCardContent>
+            <MudForm  Spacing="5">
+                <MudToolBar Gutters=false>
+                    <MudTextField Required T="string" 
+                    @bind-Value="ProductName"
+                    Label="Product" 
+                    Placeholder="PRODUCT"
+                    
+                    />
+                    <MudIconButton
+                        Size="Size.Medium"
+                        Icon="@(IsCameraOpen?
+                            Icons.Material.Outlined.Cancel :
+                            Icons.Material.Rounded.CameraEnhance)"
+                            OnClick="@(() => OpenCamera())"
+                        />
+                </MudToolBar>
+                
+                <MudAutocomplete Required T="EmployeeData" Label="WHO" Placeholder="WHO" 
+                    DebounceInterval="10" 
+                    @bind-Value="Selected_Employee"
+                    ToStringFunc="@((i) => i?.Name.ToString())"
+                    SearchFunc="@((i,token) => EmployeeSearchFunc(i, token))"/>
+                
+                <MudButton
+                    ButtonType="ButtonType.Submit"
+                    Color="Color.Primary"
+                    Variant="Variant.Filled"
+                    FullWidth=true
+                    style="margin-top: 10px;"
+                    OnClick="@SendChangesLog"
+                >Invoke</MudButton>
+            </MudForm>
+        </MudCardContent>
+    </MudCard>
+}
+
+
+@code{
+
+    [Inject]
+    public InventoryNotificationHubConnectionService InventoryHubConnection { get; set; }
+    [Inject]
+    public EmployeeControl EmployeeService { get; set; }
+    [Inject]
+    public InventoryControlService InventoryControlService { get; set; }
+
+    private EmployeeData Selected_Employee { get; set; }
+
+    private Guid ProductId { get; set; } = Guid.Empty;
+    private string ProductName { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await InventoryHubConnection.StartConnection();
+        await GetRelevanceInfo();
+    }
+
+    private bool IsCameraOpen = false;
+    private void OpenCamera()
+    {
+        IsCameraOpen = !IsCameraOpen;
+    }
+
+    private async Task QRFoundHandler(string qrCode)
+    {
+        var ProductId = Guid.Parse(qrCode);
+        if (ProductId != Guid.Empty)
+        {
+            var Selected_Product = await InventoryControlService.GetProductById(ProductId);
+            if (Selected_Product != null)
+            {
+                ProductName = Selected_Product.Name;
+                ProductId = Selected_Product.Id;
+            }
+            IsCameraOpen = false;
+            return;
+        }
+        IsCameraOpen = false;
+    }
+
+    private IEnumerable<Group> Groups { get; set; }
+    private IEnumerable<EmployeeData> Employees { get; set; }
+
+    private record EmployeeData(int Id, string Name);
+    private async Task<IEnumerable<EmployeeData>> EmployeeSearchFunc(string name, CancellationToken token){
+        return Employees.Where(i => i.Name.Contains(name));
+    }
+    private async Task GetRelevanceInfo()
+    {
+        var TempEmployees = await EmployeeService.GetAllEmployees();
+        Employees = TempEmployees.Select(i => new EmployeeData(i.Id, i.Name));
+    }
+
+    private async Task SendChangesLog(){
+        await InventoryHubConnection.SendChangesLog(new Entity.StockLogs{
+            Id = Guid.NewGuid(),
+            EmployeeId = Selected_Employee?.Id ?? 0,
+            ProductId = ProductId,
+            Date = DateTime.Now,
+            Amount = 0,
+            Type = 0,
+        });
+    }
+}

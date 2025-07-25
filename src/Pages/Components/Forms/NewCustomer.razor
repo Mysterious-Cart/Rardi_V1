@@ -1,0 +1,122 @@
+
+@attribute [Authorize]
+@namespace CHKS.Pages.Component
+@using Enum;
+
+<MudDialog style="max-height: max-content; width: 40%;">
+    <TitleContent>
+        New Customer
+    </TitleContent>
+    <DialogContent>
+        <MudForm Spacing="2" >
+
+            <MudTextField T="string" 
+                @bind-Value="@newCustomer.Plate"
+                Required=true
+                Label="Plate Number" 
+                InputType="InputType.Text" 
+                Placeholder="Plate Number"/>
+            <MudTextField T="string" 
+                @bind-Value="newCustomer.Name"
+                Label="Name" 
+                InputType="InputType.Text" 
+                Placeholder="Customer Name"/>
+            <MudToolBar Gutters=false>
+                <MudTextField T="string" 
+                    @bind-Value="newCustomer.Phone"
+                    Label="Phone Number"  
+                    InputType="InputType.Text" 
+                    Placeholder="Phone Number "/>
+                <MudTextField T="string" 
+                    @bind-Value="newCustomer.Phone_2"
+                    Label="Phone Number"  
+                    InputType="InputType.Text" 
+                    Placeholder="Phone Number "/>
+            </MudToolBar>
+            <!--
+            <MudToolBar Gutters=false>
+                <MudAutocomplete T="Vehicle" @bind-Value=@newCustomer.Vehicle 
+                    CoerceText=true Required 
+                    ToStringFunc=@(v => v is not null?v.GetModel() + " " + v.GetVersion().ToString():"")
+                    ResetValueOnEmptyText=true
+                    DebounceInterval="500"
+                    SearchFunc=@((v,b) => GetVehicle(query: v))  
+                    Label="Model"></MudAutocomplete>
+
+            </MudToolBar>-->
+
+            <MudTextField T="string" Label="Note" InputType="InputType.Text" Placeholder="Note"/>
+
+            <MudToolBar style="justify-content: right;">
+                <MudButton ButtonType="MudBlazor.ButtonType.Reset" 
+                    Color="MudBlazor.Color.Error"
+                    OnClick="@(() => Cancel())"
+                >Cancel</MudButton>
+                <MudButton
+                    OnClick="@(() => Submit())"
+                    Color="MudBlazor.Color.Primary"
+                >Create</MudButton>
+            </MudToolBar>
+
+        </MudForm>
+    </DialogContent>
+</MudDialog>
+
+
+@code{
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+    [Inject]
+    private CartControlService cartControlService { get; set; }
+    private string ErrorMessage = "";
+    private NewCustomerProperty newCustomer = new();
+    private async Task Submit() {
+        if (newCustomer.Vehicle is null) return;
+        if (string.IsNullOrEmpty(newCustomer.Plate)) return;
+        try {
+            await cartControlService.AddCustomer(
+                new CreateCustomerRequest(
+                    newCustomer.Plate,
+                    newCustomer.Name,
+                    newCustomer.Phone,
+                    newCustomer.Phone_2,
+                    newCustomer.Description
+                )
+            );
+        } catch (ArgumentException exc) {
+            ErrorMessage = exc.Message;
+            StateHasChanged();
+            return;
+        }
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+    /*private async Task<IEnumerable<Vehicle>> GetVehicle(string query = "") {
+        newCustomer.Vehicle = null;
+        var vehicle = await cartControlService.GetVehicles();
+        vehicle = vehicle.Where(i => i is not null ?
+            query.ToLower().Split(' ')
+                .Any(v => 
+                    i.GetModel().ToLower().Contains(v)
+                    || i.GetMake().Contains(v)
+                    || i.GetVersion().ToString().Contains(v)
+                )
+    :false);
+        return vehicle;
+    }*/
+    private class NewCustomerProperty
+    {
+        public string Plate { get; set; }
+        public string Name { get; set; }
+        public string Phone { get; set; }
+        public string Phone_2 { get; set; }
+        public string Description { get; set; }
+        public Vehicle Vehicle { get; set; }
+    }
+}    

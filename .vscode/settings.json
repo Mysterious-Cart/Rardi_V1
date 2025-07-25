@@ -6,5 +6,6 @@
         "mydb"
     ],
     "cSpell.caseSensitive": true,
-    "dotnet.automaticallySyncWithActiveItem": true
+    "dotnet.automaticallySyncWithActiveItem": true,
+    "csharp.maxProjectFileCountForDiagnosticAnalysis": 0
 }

@@ -1,0 +1,57 @@
+@page "/Settings/vehicle"
+
+<MudToolBar Style="justify-content: space-between;">
+    <MudText Typo="Typo.h4" Style="margin-bottom: 20px;">Vehicle Details</MudText>
+    <MudToggleGroup @bind-Value=@_vehicleBackend T="VehicleBackend" Style="width:20%">
+        <MudToggleItem Value="VehicleBackend.API"/>
+        <MudToggleItem Value="VehicleBackend.Local" Disabled/>
+    </MudToggleGroup>
+</MudToolBar>
+
+
+<MudDataGrid T="Vehicle" FixedHeader Height="70dvh" 
+ServerData=@(s => GetCarRecord(s.PageSize, s.Page))
+Search="true" Paging="true" PageSize="20" ReadOnly @ref="_grid">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Vehicle</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" 
+            DebounceInterval="500" OnDebounceIntervalElapsed="() => _grid.ReloadServerData()"
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"
+            
+            ></MudTextField>
+    </ToolBarContent>   
+    <Columns>
+        <PropertyColumn Property="x => x.GetId()" Title="Vehicle Make" />
+        <PropertyColumn Property="x => x.GetMake()" Title="Vehicle Make" />
+        <PropertyColumn Property="x => x.GetModel()" Title="Vehicle Model" />
+        <PropertyColumn Property="x => x.GetVersion()" Title="Vehicle Year" />
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="Vehicle" />
+    </PagerContent>
+</MudDataGrid>
+
+@code {
+    private enum VehicleBackend
+    {
+        API,
+        Local
+    }
+    private VehicleBackend _vehicleBackend = VehicleBackend.API;
+    [Inject] public VehicleAPI VehicleService { get; set; }
+
+    private MudDataGrid<Vehicle> _grid;
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    private string _searchString = "";
+    private async Task<GridData<Vehicle>> GetCarRecord(int PageSize, int page){
+        GridData<Vehicle> grid_data = new GridData<Vehicle>();
+        var vehicle_info = await VehicleService.GetVehicleDetails(Page: page, PageSize: PageSize, Search_Text: _searchString);
+        grid_data.Items = vehicle_info?.vehicles??[];
+        grid_data.TotalItems = vehicle_info?.Total??0;
+        return grid_data;
+    }
+}

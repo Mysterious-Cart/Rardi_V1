@@ -1,0 +1,186 @@
+@page "/Stock-Notify"
+@namespace CHKS.Pages
+@using Pages.Components;
+@inject MudBlazor.IDialogService DialogService;
+
+<MudStack Row>
+    <MudCard style="width: 40%; height:95dvh">
+        <MudCardHeader >
+            <MudToolBar  Style="width:100%">
+                <MudText Typo="Typo.h5" Align="Align.Center">Groups</MudText>
+                <MudSpacer/>
+                <MudIconButton Size=Size.Small Icon="@Icons.Material.Filled.Add" Color="Color.Primary" 
+                    OnClick="@(async () => await ShowNewGroupDialog())"
+                />
+            </MudToolBar>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudDivider/>
+            <MudList T="int" Padding=true Color="Color.Primary"  
+                SelectedValue="selectedGroupId" 
+                SelectedValueChanged="@(async (int id) => await SelectGroup(id))">
+                @foreach(var group in Groups)
+                {
+                    <MudListItem Value="@group.Id" Gutters>
+                        <MudToolBar style="height:fit-content; width:100%">
+                            <MudText Typo="Typo.body1">@group.Name</MudText>
+                            <MudSpacer/>
+                        </MudToolBar>
+                    </MudListItem>
+                }
+            </MudList>
+        </MudCardContent>
+    </MudCard>
+    <MudCard Style="width: 60%; height:95dvh">
+        <MudCardHeader>
+            <MudToolBar Style="width:100%" Gutters=false>
+                <MudToggleGroup T="ViewMode" 
+                    @bind-Value="Mode"
+                    style="width: 70%;"
+                    Delimiters=true 
+                    FixedContent=true 
+                    Size="Size.Medium" 
+                    Vertical=false>
+                   
+                    <MudToggleItem Value="ViewMode.PersonNo" Text="Person No." />
+                    <MudToggleItem Value="ViewMode.CarNo" Text="Car No." />
+
+                </MudToggleGroup>
+                <MudSpacer/>
+                <MudIconButton Size="Size.Medium" Color="Color.Primary" 
+                    Disabled="@(selectedGroupId.Equals(0))"
+                    OnClick="@(async () => await CreateNew())"
+                    Icon="@Icons.Material.Filled.Add" 
+                />
+            </MudToolBar>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudDivider/>
+            <MudStack Spacing="5">
+                <MudToolBar Gutters=false>
+                    @if(selectedEmployeeId is not 0){
+                        <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
+                            style="margin-right: 10px;" 
+                            Color="Color.Primary" 
+                            OnClick="@(() => selectedEmployeeId = 0)" 
+                            Size="Size.Small" />
+                    }
+                    <MudTextField T=string Label="Search" style="width:80%"/>
+                </MudToolBar>
+                
+                <MudStack>
+                    @if(selectedEmployeeId is 0){
+                        @foreach(var employee in Employees)
+                        {
+                            if (employee.Group.Any(i => i.Id == selectedGroupId))
+                            {
+                                <MudButton Color="Color.Primary" Variant="Variant.Outlined" 
+                                    StartIcon="@Icons.Material.Filled.Person" 
+                                    Style="justify-content:start;"
+                                    OnClick="@(() => SelectEmployee(employee))" 
+                                    >
+                                    @employee.Name
+                                </MudButton>
+                            }
+                        }
+                    }else{
+                        
+                        <MudTimeline TimelinePosition="TimelinePosition.Left">
+                            @foreach(var log in stockLogs){
+                                <MudTimelineItem>
+                                    <MudText>@log.ProductId </MudText>
+                                    <MudText Color="Color.Info" Typo="Typo.caption">@log.Date.ToString("dd/MM/yyyy HH:mm:ss")</MudText>
+                                </MudTimelineItem>
+                            }
+                            
+                        </MudTimeline>
+                        
+                    }
+                   
+                </MudStack>
+            </MudStack>
+        </MudCardContent>
+    </MudCard>
+</MudStack>
+@code{
+    [Inject]
+    public EmployeeControl EmployeeService { get; set; }
+    [Inject]
+    public InventoryNotificationHubConnectionService InvenNotiConService { get; set; }
+    private IEnumerable<Group> Groups { get; set; }
+    private IEnumerable<Entity.Employee> Employees { get; set; }
+    private IEnumerable<Entity.StockLogs> stockLogs { get; set; }
+    private int selectedGroupId = 0;
+    private int selectedEmployeeId = 0;
+    private int selectedCarId = 0;
+    private ViewMode Mode = ViewMode.PersonNo;
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await GetRelevanceInfo();
+        InvenNotiConService.OnProductChanged += OnLogsReceived;
+        await InvenNotiConService.StartConnection();
+
+    }
+
+    private void OnLogsReceived(Entity.StockLogs logs)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private async Task SelectEmployee(Entity.Employee employee){
+        selectedEmployeeId = employee.Id;
+        stockLogs = await EmployeeService.GetEmployeeLogs(employee.Id);
+    }
+
+    private async Task GetRelevanceInfo()
+    {
+        Groups = await EmployeeService.GetAllGroups();
+        Employees = await EmployeeService.GetAllEmployees();
+        if (selectedGroupId != 0)
+        {
+            stockLogs = await EmployeeService.GetEmployeeLogs(selectedGroupId);
+        }
+    }
+
+    private async Task ShowNewGroupDialog()
+    {
+
+        var dialog = await DialogService.ShowAsync<NewGroup>("New Group", new MudBlazor.DialogOptions()
+            { CloseOnEscapeKey = true, FullWidth = true });
+        var result = await dialog.Result;
+    }
+    private async Task SelectGroup(int groupId)
+    {
+        selectedGroupId = groupId;
+        selectedEmployeeId = 0;
+        selectedCarId = 0;
+        await GetRelevanceInfo();
+        StateHasChanged();
+    }
+
+    private async Task CreateNew(){
+        await ShowNewEmployeeDialog();
+    }
+
+    private async Task ShowNewEmployeeDialog()
+    {
+        var dialog = await DialogService.ShowAsync<NewEmployee>("New Employee", 
+            new DialogParameters<NewEmployee>{ { x => x.GroupId, selectedGroupId } },
+            new MudBlazor.DialogOptions()
+            { CloseOnEscapeKey = true, FullWidth = true }
+        );
+        var result = await dialog.Result;
+
+        await GetRelevanceInfo();
+    }
+
+    private enum ViewMode
+    {
+        PersonNo = 1,
+        CarNo = 2,
+        GroupNo = 3
+    }
+}
+

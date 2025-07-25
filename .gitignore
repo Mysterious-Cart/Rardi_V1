@@ -1,5 +1,6 @@
 CHKS/obj
 CHKS/bin
+.codacy
 .vscode
 .config
 .vs

@@ -1,0 +1,35 @@
+@namespace CHKS.Pages.Component
+
+<!--
+<MudAutocomplete T="Vehicle"
+        Value=@Value
+        ValueChanged="@((i) => OnValueChanged(i))"
+        CoerceText=true 
+        ToStringFunc=@((v) => v.GetModel() + " " + v.GetVersion().ToString())
+        ResetValueOnEmptyText=true
+        DebounceInterval="500"
+        SearchFunc=@((v,b) => GetVehicle(model: v))  
+        Label="Model">        
+</MudAutocomplete>
+
+code{
+    [Inject] protected CartControlService cartControlService { get; set; } 
+    [Parameter]
+    public EventCallback<Vehicle> ValueChanged { get; set; }
+    [Parameter]
+    public Vehicle Value { get; set; }
+
+    private Vehicle tempVehicle;
+    private async Task OnValueChanged(Vehicle newValue)
+    {
+        await ValueChanged.InvokeAsync(newValue);
+    }
+    
+    private async Task<IEnumerable<Vehicle>> GetVehicle(string model = ""){
+        var vehicle = await cartControlService.GetVehicles();
+        vehicle = vehicle.Where(i => i.GetModel().ToLower().Contains(model.ToLower()));
+        return vehicle;
+    } 
+}
+
+-->

@@ -1,0 +1,99 @@
+@page "/histories"
+@namespace CHKS.Pages
+@using Component;
+@using Entity;
+
+@if (!IsDialog)
+{
+    <PageTitle>Customers</PageTitle>
+    <MudText Typo="Typo.h4">Customers</MudText>
+}
+
+
+<MudToolBar Gutters=false>
+    <MudTextField T="string" style="max-width: 60%;"></MudTextField>
+    @if(!IsDialog)
+    {
+        <MudButton
+            Size="Size.Medium"
+            Variant="MudBlazor.Variant.Filled"
+            Color="MudBlazor.Color.Primary"
+            OnClick="@AddCustomer">Add</MudButton>
+    }
+    
+</MudToolBar>
+
+<MudContainer Gutters=false style="padding: 0px; max-height: 80%; overflow-y:scroll" >
+    @if(!IsDialog){
+        @foreach(var customer in Customers){
+            <MudCard Style="width: 100%; margin-bottom: 10px;" @onclick="@(() => SelectedCar = customer)">
+                <MudCardContent>
+                    <MudGrid Style="height: 150px;"  >
+                        <MudItem xs="2" sm="7" md="10">
+                            @if(string.IsNullOrEmpty(customer.Name)){
+                                <MudText Typo="Typo.h5">@customer.Plate</MudText>
+                            }else{
+                                <MudText Typo="Typo.h6">@($"{customer.Name} ({customer.Plate})")</MudText>
+                            }
+
+                            <MudText Typo="Typo.body2">@customer.Phone2</MudText>
+                            <MudText Typo="Typo.body2"></MudText>
+                        </MudItem>
+                        <MudItem xs="1" sm="1" md="1">
+
+                        </MudItem>
+                    </MudGrid>
+                </MudCardContent>
+            </MudCard>
+        }
+    }else{
+        @foreach(var customer in Customers){
+        <MudCard Style="width: 100%; margin-bottom: 10px;" @onclick="@(() => SelectedCar = customer)">
+            <MudCardContent>
+                <MudGrid Style="height: 120px;"  >
+                    <MudItem xs="2" sm="7" md="10">
+                        @if(string.IsNullOrEmpty(customer.Name)){
+                            <MudText Typo="Typo.h5">@customer.Plate</MudText>
+                        }else{
+                            <MudText Typo="Typo.h6">@($"{customer.Name} ({customer.Plate})")</MudText>
+                        }
+
+                        <MudText Typo="Typo.body2">@customer.Phone2</MudText>
+                        <MudText Typo="Typo.body2"></MudText>
+                    </MudItem>
+                    <MudItem xs="1" sm="1" md="1">
+
+                    </MudItem>
+                </MudGrid>
+            </MudCardContent>
+        </MudCard>
+    }
+    }
+    
+</MudContainer>
+
+@code{
+    
+    [Inject] public IDialogService MudDialog { get; set; }
+    [Inject] public CartControlService cartControlService { get; set; }
+    [Inject] public NavigationManager NavigationManager { get; set; }
+    [Parameter]
+    public bool IsDialog { get; set; } = false;
+
+    [Parameter]
+    public EventCallback<Entity.Customer> OnRowClick { get; set; }
+    private Entity.Customer SelectedCar = null;
+
+    private IEnumerable<Entity.Customer> Customers = [];
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        Customers = await cartControlService.GetCustomer();
+    }
+    private async Task AddCustomer()
+    {
+        await MudDialog.ShowAsync<NewCustomer>();
+        StateHasChanged();
+    }
+}

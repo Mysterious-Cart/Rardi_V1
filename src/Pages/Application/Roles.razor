@@ -1,0 +1,137 @@
+@page "/Settings/Roles";
+@inject SecurityService SecurityService;
+@inject IDialogService DialogService;
+@inject EmployeeControl employeeControl;
+
+<PageTitle>User Roles</PageTitle>
+<MudStack row>
+<MudPaper>
+    <MudPaper Class="pa-1 ">
+        <MudToolBar Dense="false" Elevation="1">
+            <MudText Typo="Typo.h5">Employees</MudText>
+            <MudSpacer />
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" 
+                OnClick="AddUser"
+                StartIcon="@Icons.Material.Filled.Add">
+                Add User
+            </MudButton>
+        </MudToolBar>
+        <MudDataGrid EditMode="@DataGridEditMode.Form"
+                    CanceledEditingItem="@((Entity.Employee i) => OnUserRowDelete(i))"
+                    EditTrigger="@DataGridEditTrigger.Manual" ReadOnly="false"
+                    @bind-Items="users" Hover="true" Dense="true">
+            <Columns>
+                <PropertyColumn Property="@(u => u.Name)" Title="User Name" Editable="true" />
+                <PropertyColumn Property="@(u => u.Group.FirstOrDefault().Name)"   Title="Email" Editable="true" />
+                <PropertyColumn Property="@(u => u.Id)" Title="Id" Editable="false" />
+                <TemplateColumn Editable=false Title="Actions" Context="user">
+                    <CellTemplate>
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+                            OnClick="@(() => OnUserRowDelete(user.Item))" />
+                    </CellTemplate>
+                </TemplateColumn>
+            </Columns>
+        </MudDataGrid>
+    </MudPaper>
+</MudPaper>
+
+<MudPaper Class="pa-1" Style="width:40%">
+    <MudToolBar Dense="false" Elevation="1">
+        <MudText Typo="Typo.h5">User Roles</MudText>
+        <MudSpacer />
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddRole" StartIcon="@Icons.Material.Filled.Add">
+            Add Role
+        </MudButton>
+    </MudToolBar>
+    <MudDataGrid T="Group"  
+            CommittedItemChanges="OnRoleEditComplete"
+            EditMode="@DataGridEditMode.Form"
+            CanceledEditingItem="OnRoleEditCancel"
+            EditTrigger="@DataGridEditTrigger.Manual" ReadOnly="false"
+            @bind-Items="roles" Hover="true" Dense="true" @ref="RoleDataGrid">
+        <Columns>
+            <PropertyColumn Property="@(i => i.Name)" Title="Role Name" Editable="true" />
+            <TemplateColumn Editable=false Title="Actions" Context="role">
+                <CellTemplate>
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error"
+                        OnClick="@(() => OnRoleRowDelete(role.Item))" />
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+        
+    </MudDataGrid>
+</MudPaper>
+</MudStack>
+
+@code {
+    private List<Entity.Group> roles = [];
+    private MudDataGrid<Entity.Group> RoleDataGrid;
+    private MudDataGrid<Entity.Employee> UserDataGrid;
+    private List<Entity.Employee> users = [];
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        roles = (await employeeControl.GetAllGroups()).ToList();
+        users = (await employeeControl.GetAllEmployees()).ToList();
+    }
+
+    private bool IsEditingUser = false;  
+    private async Task AddUser()
+    {
+        if (IsEditingUser) return;
+        var TempUser = new Employee(Random.Shared.Next(),"New User", new List<Group>());
+        users.Add(TempUser);
+        await UserDataGrid.SetEditingItemAsync(users.FirstOrDefault(u => u.Id == 0, null));
+    }
+
+    private async Task OnUserRowDelete(Entity.Employee args)
+    {
+        await employeeControl.DeleteEmployee(args.Id);
+        await InvokeAsync(StateHasChanged);
+    }
+    private async Task OnEditCancel(Entity.Employee args)
+    {
+        if (!IsEditingUser) return;
+        users.Remove(args);
+        IsEditingUser = false;
+    }
+    private async Task OnUserEditComplete(Entity.Employee args)
+    {
+        if (!IsEditingUser) return;
+        await employeeControl.CreateEmployee(args.Name, args.Group.FirstOrDefault()?.Id ?? 0);
+        IsEditingUser = false;
+    }
+
+    private bool IsEditingRole = false;
+    private async Task AddRole()
+    {
+        if (IsEditingRole) return;
+        IsEditingRole = true;
+
+        var TempRole = new Group() { Name = "New Role", Id = 0, Employee=[] };
+        roles.Add(TempRole);
+        await RoleDataGrid.SetEditingItemAsync(roles.FirstOrDefault(r => r.Id == 0, null));
+    }
+
+    private async Task OnRoleEditComplete(Group args)
+    {
+        if (IsEditingRole) return;
+        await employeeControl.CreateGroup(args.Name);
+        IsEditingRole = false;
+        roles = await employeeControl.GetAllGroups() as List<Group>;
+    }
+
+    private async Task OnRoleRowDelete(Group args)
+    {
+        var result = await employeeControl.DeleteGroup(args.Id);
+        await InvokeAsync(StateHasChanged);
+    }   
+    private void OnRoleEditCancel(Group args)
+    {
+        if (!IsEditingRole) return;
+        roles.Remove(args);
+    }
+    
+
+}

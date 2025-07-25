@@ -1,0 +1,204 @@
+@attribute [Authorize]
+@namespace CHKS.Pages.Component
+@implements IAsyncDisposable;
+@using Models.Class;
+@using Components;
+@using Validator;
+@using QRCoder;
+
+<MudDialog style="max-height: 85dvh; height: 60%;">
+
+    <DialogContent >            
+        <MudTabs Position="Position.Left" MinimumTabWidth="100" Style="width:100%; height:70%" >
+            <MudTabPanel Icon="@Icons.Material.Filled.Dataset">
+
+            <MudForm 
+                Model="@newProduct"
+                @bind-IsValid=isValid Spacing="3" 
+                style="height:fit-content; width:100%;margin-left:20px">
+                <MudFocusTrap >
+                    <MudTextField 
+                        T="string"
+                        InputId="Name"
+                        Required=true
+                        RequiredError="Name Required"
+                        InputType="InputType.Text" 
+                        For="@(() => newProduct.name)" 
+                        @bind-Value="newProduct.name"
+                        DebounceInterval="500"
+                        Label="Name"
+                        ShrinkLabel
+                        />
+                </MudFocusTrap>
+                
+                <MudNumericField Label="Stock" T="int"      
+                    Disabled=@(!newProduct.isTracking)
+                    ReadOnly=@(!newProduct.isTracking)
+                    InputId="Stock"     
+                    Placeholder="Current Stock"    
+                    InputMode="InputMode.numeric"
+                    For="@(() => newProduct.stock)"
+                    @bind-Value="newProduct.stock"
+                    Min="0"
+                />
+                <MudButtonGroup Style="height:30px">
+                    <MudCheckBox 
+                        style="margin-right: 10px;"
+                        T="bool" 
+                        Label="Tracking" 
+                        Color="MudBlazor.Color.Primary" 
+                        @bind-Value="@newProduct.isTracking"
+                        For="@(() => newProduct.isTracking)"
+                    />
+                    <MudCheckBox 
+                        Disabled=@(!newProduct.isTracking) 
+                        T="bool" 
+                        Label="Warning" 
+                        Color="MudBlazor.Color.Primary" 
+                        For="@(() => newProduct.isAllowLowWarning)"
+                        @bind-Value="@newProduct.isAllowLowWarning"
+                    />
+                </MudButtonGroup>
+
+                    <MudNumericField 
+                        Disabled=@(!securityService.User.Roles?.Any(i => i.Name == "admin" || i.Name == "owner")??false)
+                        Label="Import Price"  
+                        InputId="Import"
+                        Format="0.00"
+                        Placeholder="Import"
+                        @bind-Value="newProduct.import"
+                        For="@(() => newProduct.import)"
+                        Min="0"
+                    />
+                    <MudNumericField 
+                        Label="Export Price"  
+                        InputId="Export"  
+                        Format="0.00"
+                        Placeholder="Export"
+                        @bind-Value="newProduct.export"
+                        For="@(() => newProduct.export)"
+                        Min="0" 
+                        HelperText=""
+                    />
+
+            </MudForm>
+            </MudTabPanel>
+            <MudTabPanel Icon="@Icons.Material.Filled.QrCode2" >
+                <!--
+                @if(Mode == 1){
+                    <MudImage Style="width:50%; margin-left:auto; margin-right:auto; aspect-ratio: 1:1;" 
+                        Src="@(string.Format(" data:image /svg+xml;base64,{0}", GenerateQR(_product.Id)))"/>
+                }-->
+            </MudTabPanel>
+            <MudTabPanel Icon="@Icons.Material.Filled.Difference">
+                
+            </MudTabPanel>
+        </MudTabs>
+
+        <MudToolBar Gutters=true style="gap:10px; padding:0px; width:100%; justify-content: end; margin-top:20px">
+            <MudButton ButtonType="MudBlazor.ButtonType.Reset" 
+            Color="MudBlazor.Color.Error" 
+            Size="Size.Small"
+            Variant="MudBlazor.Variant.Outlined"
+            OnClick="@Cancel">Cancel</MudButton>
+            <MudButton
+            Size="Size.Small"
+            Variant="MudBlazor.Variant.Filled"
+            Color="MudBlazor.Color.Success" 
+            OnClick="@Submit">Save</MudButton>
+        </MudToolBar>
+    </DialogContent>
+
+</MudDialog>
+
+
+@code{
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+
+    [Inject] protected MudBlazor.IDialogService MudDialogService { get; set; }
+    [Inject] protected CartControlService cartControlService { get; set; }
+    [Inject] protected SecurityService securityService { get; set; }
+    [Inject] protected InventoryControlService inventoryControlService {get; set;}
+
+    private ProductValidator _productValidator = new();
+    private bool isLoading = false;
+    private bool isValid = false;
+    
+    private NewProductProperty newProduct = new();
+    private List<Vehicle> SelectedVehiclesList = [];
+    private void AddCapableVehicle(Vehicle vehicle){
+        if(vehicle is null) return;
+        if(SelectedVehiclesList.Any(i => i.GetId() == vehicle.GetId())) return;
+        SelectedVehiclesList.Add(vehicle);
+        Console.WriteLine($"Selected {vehicle.GetModel()}");
+    }
+    private async Task Submit() => await CreateNewProduct();
+    private async Task CreateNewProduct(){
+        if (!isValid) return;
+        var Product = new CreateProductRequest
+        (
+            newProduct.name,
+            newProduct.stock,
+            newProduct.import,
+            newProduct.export,
+            newProduct.description,
+            ProductStatus.Active,
+            new ProductSetting
+            (
+                newProduct.isTracking,
+                newProduct.isAllowLowWarning
+            )
+        );
+        try
+        {
+            await inventoryControlService.CreateProduct(Product);
+
+        }
+        catch (Exception exc) { }
+
+        MudDialog.Close(DialogResult.Ok<Product>(ProductMapper.ToProduct(Product)));
+        MudDialog.Dispose();
+    }
+
+    private string GenerateQR(Guid ProductId){
+        using var QRGenerator = new QRCodeGenerator();
+        using var QRCode = QRGenerator.CreateQrCode(ProductId.ToString(), QRCodeGenerator.ECCLevel.Q);
+        using var QRCodeImage = new Base64QRCode(QRCode);
+        return QRCodeImage.GetGraphic(20);
+    }
+
+    private void Cancel(){
+        MudDialog.Close(DialogResult.Cancel());
+        MudDialog.Dispose();
+    }
+
+    private async Task AdvanceSetting(){
+        await MudDialogService.ShowAsync<ProductAdvancSetting>("Advance Setting", 
+            new MudBlazor.DialogOptions{ 
+                FullWidth = true, 
+                CloseButton = true, 
+                CloseOnEscapeKey = true
+            }
+        );
+    }
+
+    public async ValueTask DisposeAsync(){
+        MudDialog.Dispose();
+        GC.SuppressFinalize(this);
+        GC.Collect();       
+    }
+    
+    private class NewProductProperty{
+        public string name {get; set;}
+        public int stock {get; set;}
+        public decimal import{get; set;}
+        public decimal export{get; set;}
+        public string description {get; set;}
+        public bool isTracking {get; set;} = true; 
+        // Track item going in and out
+        public bool isAllowLowWarning {get; set;} = true; 
+        // Warn user when stock is low
+        public ICollection<Vehicle> targets {get; set;}
+    }
+}   

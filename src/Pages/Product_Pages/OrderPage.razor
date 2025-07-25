@@ -1,0 +1,150 @@
+@page "/Orders"
+
+@attribute [Authorize]
+@namespace CHKS.Pages
+
+<MudToolBar style="justify-content:space-between; width: 100%; padding:0px">
+    <MudText Typo="Typo.h6">Orders</MudText>
+
+</MudToolBar>
+
+<MudToolBar style="width: 100%; justify-content:left; gap: 10px; height: 18dvh; padding:0px;" >
+    <MudCard style="width: 25%; height: 100%;" Elevation="3" Outlined>
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText>Total Orders</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudText Typo="Typo.h4">@ordersinfo.TotalOrder</MudText>
+        </MudCardContent>
+    </MudCard>
+    <MudCard style="width: 25%; height: 100%;" Elevation="3" Outlined>
+        <MudCardHeader >
+            <CardHeaderContent>
+                <MudText> Suggest Orders</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudIconButton Size=@Size.Small 
+                    style="margin-top: auto; margin-bottom: auto;"
+                    Icon="@Icons.Material.Outlined.Info" Color="Color.Primary"/>
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudText Typo="Typo.h4">0</MudText>
+        </MudCardContent>
+    </MudCard>
+    <MudCard style="width: 25%; height: 100%;" Elevation="3" Outlined>
+        <MudCardHeader >
+            <CardHeaderContent>
+                <MudText> Total Product Ordered</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudIconButton Size=@Size.Small 
+                    style="margin-top: auto; margin-bottom: auto;"
+                    Icon="@Icons.Material.Outlined.Info" Color="Color.Primary"/>
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudText Typo="Typo.h4">@ordersinfo.TotalProductOrdered</MudText>
+        </MudCardContent>
+    </MudCard>
+    <MudCard style="width: 25%; height: 100%;" Elevation="3" Outlined>
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText> Total Orders Networth</MudText>
+            </CardHeaderContent>
+            <CardHeaderActions>
+                <MudIconButton 
+                    Size=@Size.Small
+                    style="margin-top: auto; margin-bottom: auto;"
+                    Icon="@Icons.Material.Outlined.Info" Color="Color.Primary" />
+            </CardHeaderActions>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudText Typo="Typo.h4">@ordersinfo.TotalNetWorth.ToString("0.00$")</MudText>
+        </MudCardContent>
+    </MudCard>
+</MudToolBar>
+
+<MudDataGrid ShowFilterIcons ShowMenuIcon 
+    Items="@Orderlist" Style="margin-top:20px;" Groupable ReadOnly=true Height="55dvh" 
+    EditTrigger="@DataGridEditTrigger.Manual" Virtualize >
+    <ToolBarContent>
+        <MudTextField T="string" Placeholder="Type to search" Style="width:50%" @bind-Value="@search" 
+            Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
+            OnAdornmentClick="@(() => GetOngoingOrders(search))"
+            DebounceInterval="300"
+            OnDebounceIntervalElapsed="@(() => GetOngoingOrders(search))"
+        />
+        <MudStack style="width: fit-content; margin: 0px 10px 0px 0px;" Row >
+            <MudButton 
+                Color="Color.Primary" 
+                Variant="MudBlazor.Variant.Filled"
+                EndIcon="@Icons.Material.Filled.Add"
+                OnClick="@(() => NewOrder())"
+            >Add</MudButton>
+            <MudButton 
+                Color="Color.Info"
+                EndIcon="@Icons.Material.Filled.Summarize"
+                Size="Size.Small" 
+                Variant="MudBlazor.Variant.Filled"
+            >Summery</MudButton>
+
+        </MudStack>
+    </ToolBarContent>
+    <Columns> 
+        <PropertyColumn Property=@(i => i.OrderDate) CellStyle="width: 10%;" Groupable=true />
+        <TemplateColumn Title="Product Name" Context="order" CellStyle="width: max-content; max-width: 50%">
+            <CellTemplate>
+                <MudText>@(order.Item)</MudText>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Amount" Context="order" CellStyle="width: 10%; padding:0px">
+            <CellTemplate>
+                @if(!order.Item.IsOrderReceived && !order.Item.IsCancelled){
+                    <MudStack Row AlignItems="MudBlazor.AlignItems.Center" Spacing="1">
+                        <MudText>@order.Item.Amount</MudText>
+                        <MudText Typo="Typo.caption" style="color:gray">@("+" + order.Item.Amount)</MudText>
+                    </MudStack>
+                }else{
+                    <MudText>@order.Item.Amount</MudText>
+                }
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Status" Context="order" CellStyle="width: 10%; padding:0px">
+            <CellTemplate>
+                <MudChip 
+
+                    Size="Size.Small"
+                    Icon="@(order.Item.IsOrderReceived ? Icons.Material.Filled.Check : order.Item.IsCancelled? Icons.Material.Filled.Cancel : Icons.Material.Filled.HourglassTop)"
+                    Color="@(order.Item.IsOrderReceived ? Color.Primary : order.Item.IsCancelled?Color.Error : Color.Warning)">
+                    @(order.Item.IsOrderReceived ? "Received" : order.Item.IsCancelled? "Canceled" : "Pending")
+                </MudChip>
+            </CellTemplate>
+        </TemplateColumn>
+    <TemplateColumn Title="" Context="order" CellStyle="width: 10%; padding:5px" Hideable=true>
+        <CellTemplate>
+            @{
+                if(!order.Item.IsOrderReceived && !order.Item.IsCancelled){
+                     <MudToolBar Dense style="gap:10px">
+                        <MudIconButton Icon=@Icons.Material.Rounded.Check Color="Color.Success"
+                            OnClick="@(() => OnOrderButtonClick(true, order.Item))"
+                            Size=Size.Small Variant="MudBlazor.Variant.Filled" />
+                        <MudIconButton Icon=@Icons.Material.Rounded.Delete Color="Color.Error" 
+                            OnClick="@(() => OnOrderButtonClick(false , order.Item))"
+                            Size=Size.Small Variant="MudBlazor.Variant.Filled" />
+                    </MudToolBar>
+                }
+                else if(!order.Item.IsCancelled){
+                    <MudText style="font-size: .8rem;" Align="Align.Center">@(order.Item.OrderReceivedDate)</MudText>
+                }else{
+                    <MudText style="font-size: .8rem;" Align="Align.Center">@("-")</MudText>
+                }
+            }
+           
+        </CellTemplate>
+    </TemplateColumn>
+
+    </Columns>
+</MudDataGrid>

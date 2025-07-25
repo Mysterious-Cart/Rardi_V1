@@ -1,0 +1,46 @@
+@page "/login"
+@namespace CHKS.Pages
+@layout LoginLayout;
+
+<PageTitle>Login</PageTitle>
+<MudForm Spacing="2" SuppressImplicitSubmission @bind-Model="LoginModel" >
+    <MudText Typo="Typo.h5" Align="Align.Center">Login</MudText>
+    <MudTextField T="string" Placeholder="Username" AutoFocus Variant="MudBlazor.Variant.Filled"
+        For="@(() => LoginModel.Username)"
+        @bind-Value="LoginModel.Username" FullWidth Margin="Margin.Dense"
+        InputType="InputType.Email" Error="true" Required="true"
+        RequiredError="Username is required" Immediate="true" ImmediateValidation="true"
+    />
+    <MudTextField T="string" 
+        Placeholder="Password" Variant="MudBlazor.Variant.Filled"
+        For="@(() => LoginModel.Password)"
+        @bind-Value="LoginModel.Password" FullWidth Margin="Margin.Dense"
+        Type="InputType.Password" Required="true"
+        RequiredError="Password is required" Immediate="true" ImmediateValidation="true"
+    />
+    <form  method="post" data="LoginModel" action="@($"account/login?redirectUrl={redirectUrl}")">
+        <!--
+            Shit is, it won't work if you don't put the input field and bind it to the required input >:(
+            And the Request must be made through a form,or else the request is fucked CAUSE WHY?!??!?? CAUSE IT A BITCH!!!!!!!
+            JUST DON'T FIX IT NOR REFACTOR IT.
+
+            TIME WASTED: 2 Days. >:(
+        -->
+
+        <input type="hidden" name="userName" value="@LoginModel.Username" />
+        <input type="hidden" name="password" value="@LoginModel.Password" />
+
+        <MudButton ButtonType=ButtonType.Submit Variant="MudBlazor.Variant.Filled" Color="Color.Secondary"
+        FullWidth>
+            Login
+        </MudButton>
+    </form>
+</MudForm>
+
+<MudAlert Severity="MudBlazor.Severity.Error"  @bind-Visible="@errorVisible" NoIcon>
+    @error
+</MudAlert>
+<MudAlert Severity="MudBlazor.Severity.Info" @bind-Visible="@infoVisible" NoIcon>
+    @info
+</MudAlert>
+

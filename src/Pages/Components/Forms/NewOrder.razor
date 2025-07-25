@@ -1,0 +1,108 @@
+@inject IDialogService DialogService
+@implements IAsyncDisposable;
+@namespace CHKS.Pages.Component.Popup
+
+<MudDialog style="max-height: max-content; width: 40%;">
+    <TitleContent>
+        New Order
+    </TitleContent>
+    <DialogContent>
+        <MudForm Spacing="2"  >
+
+            <MudAutocomplete T="Product" 
+            Label="Product" Placeholder="Search for product" 
+            Validation="@(new Func<Product, IEnumerable<string>>(ProductValidation))"
+            SearchFunc="@Search"
+            DebounceInterval="400"
+            ToStringFunc="@((Product x) => x?.Name)"
+            RequiredError="Product is required"
+            @bind-Value="product"
+            ShowProgressIndicator="@IsLoading"
+            SelectValueOnTab
+            ResetValueOnEmptyText
+            CoerceText
+            OpenOnFocus
+            AutoFocus>
+            </MudAutocomplete>
+
+            <MudNumericField @bind-Value="amount" Label="Quantity" />
+            @if (IsError)
+            {
+                <MudDivider style="margin-top: 20px;"/>
+                <MudText Color="Color.Error" Typo="Typo.body2" >
+                    Something went wrong. Please try again later.
+                </MudText>
+            }
+            <MudToolBar style="justify-content: right;">
+                <MudButton ButtonType="MudBlazor.ButtonType.Reset" 
+                Color="MudBlazor.Color.Error"
+                OnClick="@(() => Cancel())">Cancel</MudButton>
+                <MudButton 
+                Color="MudBlazor.Color.Primary"
+                OnClick="@(() => Submit())">Create</MudButton>
+            </MudToolBar>
+
+        </MudForm>
+    </DialogContent>
+</MudDialog>
+
+@code {
+
+    [Inject] public InventoryControlService InventoryControlService { get; set; }
+    [Inject] public IDialogService MudDialogService { get; set; }
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    void Cancel() => MudDialog.Cancel();
+
+    private bool IsError = false;
+    async Task Submit() {
+        if (product == null || amount == 0 || product.Setting.IsTracking == false)
+        {
+            await MudDialogService.ShowMessageBox("Error", "Please fill in all the required fields.");
+            return;
+        }
+        try{
+            await InventoryControlService.CreateOrder(product.Id, amount);
+
+        }catch(Exception e){
+            Console.WriteLine(e.Message);
+            await MudDialogService.ShowMessageBox("Error", "Something went wrong. Please try again later.");
+            IsError = true;
+        }
+
+        MudDialog.Close(DialogResult.Ok(true));
+        await InventoryControlService.DisposeAsync();
+    }
+
+    private Product product;
+    private int amount = 0;
+    private bool IsLoading = true;
+    private async Task<IEnumerable<Product>> Search(string searchText, CancellationToken token)
+    {
+        var result = await InventoryControlService.GetProductList(searchText);
+        return result.ToList();
+    }
+
+    private IEnumerable<string> ProductValidation(Product product){
+        if(product == null){
+            yield return "Product is required";
+        }
+        if(product.Setting.IsTracking == false){
+            yield return "Cannot create order for this product. Tracking is set to false.";
+        }
+    }
+
+    private IEnumerable<string> AmountValidation(int amount){
+        if(amount == 0){
+            yield return "Amount has to be greater than 0";
+        }
+
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await InventoryControlService.DisposeAsync();
+    }
+
+
+}    

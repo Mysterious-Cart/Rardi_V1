@@ -1,0 +1,91 @@
+@page "/inventories"
+
+@attribute [Authorize]
+@namespace CHKS.Pages
+
+<PageTitle>Inventory</PageTitle>
+
+<MudDataGrid 
+    @ref=@productdatagrid
+    T="Product" 
+    ReadOnly
+    ItemSize="15"
+    Items="@inventories" 
+    Elevation="0"
+    Virtualize=true
+    Height="85dvh"
+    RowClick="@((args) => StartedEditingItem(args.Item))"
+    >
+
+    <ToolBarContent>
+        <MudContainer Gutters=false Style="display:flex; justify-content:space-between;">
+            <MudText Typo="Typo.h6">Inventories</MudText>
+            <MudSpacer/>
+            <MudTextField T="string" Placeholder="Type to search" 
+                AdornmentIcon="@Icons.Material.Rounded.Search"
+                Adornment="Adornment.Start"
+                Variant=MudBlazor.Variant.Text 
+                DebounceInterval="200"
+                ValueChanged="@((args) => Search(args))"
+            />
+
+            <MudButton 
+                ButtonType="MudBlazor.ButtonType.Submit" 
+                Color="MudBlazor.Color.Primary"
+                Variant="MudBlazor.Variant.Outlined"
+                Size="MudBlazor.Size.Small"	
+                style=" margin-left:10px"
+                OnClick="@(() => CreateNewProduct())"
+            >add</MudButton>
+        
+        </MudContainer>
+        
+    </ToolBarContent>
+
+    <Columns>
+        <TemplateColumn title="Name" Context="CurrentProduct" CellStyle="width:40%">
+            <CellTemplate>
+                <MudText>@(CurrentProduct.Item.Name)</MudText>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn title="Stock" Context="CurrentProduct">
+            <CellTemplate >
+                <MudText>@(CurrentProduct.Item.Setting.IsTracking?CurrentProduct.Item.Stock:"Non")</MudText>
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn title="Demand" >
+            <CellTemplate >
+                <MudChip Text="Decend" 
+                    Icon="@Icons.Material.Filled.ArrowUpward" 
+                    Color="Color.Primary" 
+                    Variant="MudBlazor.Variant.Text" 
+                    Size="MudBlazor.Size.Small"/>
+            </CellTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property=@(i => i.Export.ToString("$0.00")) CellStyle="width: 20%;"/>
+        <TemplateColumn title="State" Context="CurrentProduct">
+            <CellTemplate>
+                @if (CurrentProduct.Item.Status == ProductStatus.Active)
+                {
+                    <MudChip Text="Active" 
+                    Icon="@Icons.Material.Filled.Check" 
+                    Color="Color.Success" 
+                    Variant="MudBlazor.Variant.Filled" 
+                    Size="MudBlazor.Size.Small"/>
+                }
+                else if (CurrentProduct.Item.Status == ProductStatus.Inactive)
+                {
+                    <MudChip Text="Inactive" 
+                    Icon="@Icons.Material.Filled.Close" 
+                    Color="Color.Error" 
+                    Variant="MudBlazor.Variant.Filled" 
+                    Size="MudBlazor.Size.Small"/>
+                }
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+@code{
+
+}

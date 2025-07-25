@@ -1,0 +1,125 @@
+@page "/"
+@attribute [Authorize]
+
+<MudToolBar style="justify-content: space-between;" Gutters=false>
+    <MudAutocomplete T="SuggestionItem" AutoFocus=true 
+        SearchFunc="@((i, v) => AutoSuggestCustomer(i))" 
+        ToStringFunc=@SearchBarToStringFunc
+        Clearable="true" 
+        Placeholder=@SearchBarPlaceholder
+        ResetValueOnEmptyText="false" 
+         
+        CoerceText="false"
+        ValueChanged="@(async (i) => {
+            if(i is not null && i.isCart is false){
+                await AddCart(i.Plate_Numbers);
+            }else if(i is not null){
+                OpenCart(i.CartId.Value);
+            }
+        })"
+
+        ResetValueOnSelectItem="true" 
+        DebounceInterval="500"
+        Adornment="Adornment.Start"
+        AdornmentIcon="@Icons.Material.Outlined.Create"
+        AdornmentColor="Color.Default"></MudAutocomplete>
+</MudToolBar>
+
+<MudStack Row StretchItems="StretchItems.StartAndEnd" Wrap="Wrap.Wrap" Spacing="3" Justify="Justify.SpaceBetween">
+    @if(Cart.Any()){
+        foreach(var cart in Cart){
+            <MudCard style="min-width: 48%;max-width: 48%;" @onclick="@(() => OpenCart(cart.CartId))">
+                <MudCardHeader Style="gap:10px">
+                    <MudText>@cart.CartId</MudText>
+                    <MudDivider Vertical/>
+                    <MudText>@cart.Plate_Numbers</MudText>
+                </MudCardHeader>
+            </MudCard>
+        }
+    }else{
+        <MudText>There is no cart</MudText>
+    }
+</MudStack>
+
+
+@code{
+    /// Constants
+    private const string SearchBarPlaceholder = "ស្វែងរកឬបង្កើតអតិថិជន";
+    private string SearchBarToStringFunc(SuggestionItem item) => 
+        item is not null?item.Plate_Numbers + " " + (item.isCart ? $"(Cart: {item.CartId})" : "(Customer)")
+        : string.Empty;
+
+    private const string CartCreationConfirmationTitle = "បង្កើតអតិថិជន?";
+    private const string CartCreationConfirmationText = "តើអ្នកច្បស់ដែរឬទេ?";
+
+    [Inject] protected IDialogService dialogService { get; set; }
+    [Inject] protected CartControlService cartControl { get; set; }
+    [Inject] protected NavigationManager navigationManager { get; set; }
+
+    private IEnumerable<Entity.Customer> Customers;
+    private IEnumerable<Cart> Cart;
+    private record SuggestionItem(string Plate_Numbers, bool isCart = false, int? CartId = null);
+
+    private async Task GetCustomers() => await cartControl.GetCustomer();
+
+    private async Task AddCart(string customerId) { 
+        var confirmation = await dialogService.ShowMessageBox(
+            new MessageBoxOptions {
+                Title = CartCreationConfirmationTitle,
+                CancelText = "Cancel",
+                YesText = "Ok",
+                Message = CartCreationConfirmationText,
+        });
+
+        try{
+            if(confirmation == true){
+                var customer = await cartControl.GetCustomer(customerId);
+                var result = await cartControl.AddCart(customer);
+                await GetCart();
+                StateHasChanged();
+            }else{
+                Console.WriteLine("User cancel the action");
+
+            }
+        }catch(Exception ex){
+            Console.WriteLine(ex.Message);
+        }
+
+
+    }
+
+    private async Task<IEnumerable<SuggestionItem>> AutoSuggestCustomer(string searchText) {
+
+        var result = await cartControl.GetCustomer();
+
+        if (string.IsNullOrEmpty(searchText) == false) {
+            searchText = searchText.ToUpper().Replace(" ", "");
+        }
+
+        result = result.Where(x =>
+            x.Name.Contains(searchText) ||
+            x.Plate.Contains(searchText)
+        ).ToList();
+
+        var cart_result = Cart
+            .Where(v => v.Plate_Numbers.Contains(searchText) || v.CartId.ToString().Contains(searchText))
+            .Select(i => new SuggestionItem(i.Plate_Numbers, true, i.CartId));
+
+        if(result is null || result.Count() == 0 || !result.Any()){
+            return cart_result;
+        }
+
+        return cart_result.Concat(result
+                .Select(x => new SuggestionItem(x.Plate)));
+    }
+    
+    private void OpenCart(int Cart_ID) => navigationManager.NavigateTo("/modify/"+Cart_ID.ToString());
+    
+    protected override async Task OnInitializedAsync(){
+        await GetCart();
+    }
+    private async Task GetCart(){
+        var result = await cartControl.GetCart();
+        Cart = result;
+    }
+}    
