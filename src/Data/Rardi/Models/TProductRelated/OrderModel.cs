@@ -13,7 +13,7 @@ public class OrderModel
     public Guid Id { get; set; } = Guid.NewGuid();
     [Required]
     public Guid ProductId { get; set; }
-    public Product_Model Product { get; set; }
+    public ProductModel Product { get; set; }
     [Required]
     public int Amount { get; set; }
     [Required]
@@ -28,7 +28,7 @@ public class OrderModel
     [Column(TypeName = "date")]
     public DateOnly? DeliveryDate { get; set; } = null;
     public string Description { get; set; } = "";
-    
+        
     public decimal TotalPrice { get; set; } = 0.0m;
 
 }

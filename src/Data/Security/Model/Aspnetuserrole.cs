@@ -1,11 +1,12 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace CHKS.Models
 {
-    [Table("aspnetuserroles")]
+    [Table("AspNetUserRoles")]
+    [PrimaryKey(nameof(UserId), nameof(RoleId))]
     public partial class Aspnetuserrole
     {
         [Key]

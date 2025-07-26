@@ -1,12 +1,9 @@
-using CHKS.Models.Interface;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CHKS.Models
 {
-    [Table("historyconnector")]
+    [Table("TransactionsItem")]
     public class TransactionItemModel
     {
         public int Qty { get; set; }
@@ -29,6 +26,6 @@ namespace CHKS.Models
         [Required]
         [ForeignKey("Product")]
         public Guid ProductId { get; set; }
-        public Product_Model Product {get; set;}
+        public ProductModel Product {get; set;}
     }
 }

@@ -1,13 +1,9 @@
-using CHKS.Models.Interface;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CHKS.Models
 {
-    [Table("history")]
+    [Table("Transactions")]
     public class TransactionModel
     {
         [Required]

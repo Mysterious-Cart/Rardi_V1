@@ -1,10 +1,8 @@
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using CHKS.Models.mydb;
 using CHKS.Models;
 namespace CHKS.Data;
+
+
 public class Rardi_Context(DbContextOptions<Rardi_Context> options) : DbContext(options)
 {
   public DbSet<StockLogsModel> StockLogs { get; set; }
@@ -14,10 +12,11 @@ public class Rardi_Context(DbContextOptions<Rardi_Context> options) : DbContext(
   public DbSet<CartItemModel> CartContents { get; set; }
   public DbSet<TransactionModel> Transactions { get; set; }
   public DbSet<TransactionItemModel> TransactionItems { get; set; }
-  public DbSet<Product_Model> Inventory { get; set; }
+  public DbSet<ProductModel> Inventory { get; set; }
   public DbSet<OrderModel> Orders { get; set; }
   public DbSet<EmployeeModel> Employees { get; set; }
   public DbSet<GroupModel> Groups { get; set; }
+  public DbSet<UserNotificationStampModel> NotificationStampModels { get; set; }
 
 
   protected override void OnModelCreating(ModelBuilder builder)
@@ -29,14 +28,14 @@ public class Rardi_Context(DbContextOptions<Rardi_Context> options) : DbContext(
       .WithMany(i => i.Carts)
       .HasForeignKey(i => i.CustomerId)
       .HasPrincipalKey(i => i.PlateNumber)
-      .OnDelete(DeleteBehavior.ClientNoAction);
+      .OnDelete(DeleteBehavior.Cascade);
 
     builder.Entity<CartItemModel>()
       .HasOne(i => i.Cart)
       .WithMany(i => i.CartContent)
       .HasForeignKey(i => i.CartId)
       .HasPrincipalKey(i => i.CartId)
-      .OnDelete(DeleteBehavior.ClientNoAction);
+      .OnDelete(DeleteBehavior.NoAction);
 
     builder.Entity<CartItemModel>()
       .HasOne(i => i.Inventory)
@@ -55,7 +54,7 @@ public class Rardi_Context(DbContextOptions<Rardi_Context> options) : DbContext(
       .HasForeignKey(i => i.Plate)
       .HasPrincipalKey(i => i.PlateNumber)
       .OnDelete(DeleteBehavior.ClientNoAction);
-      
+
     builder.Entity<TransactionModel>()
       .OwnsMany(i => i.Payments, b =>
       {
@@ -88,15 +87,6 @@ public class Rardi_Context(DbContextOptions<Rardi_Context> options) : DbContext(
         .HasPrincipalKey(i => i.Id);
 
     builder.Entity<OrderModel>()
-        .Property(i => i.TotalPrice)
-        .HasComputedColumnSql(@"
-          [Amount] * (
-              SELECT p.[Import] 
-              FROM [Inventory] p 
-              WHERE p.[Id] = [ProductId]
-          )");
-
-    builder.Entity<OrderModel>()
         .Property(i => i.OrderDate).HasConversion<DateOnly>();
     builder.Entity<OrderModel>()
         .Property(i => i.OrderReceivedDate).HasConversion<DateOnly>();
@@ -121,7 +111,7 @@ public class Rardi_Context(DbContextOptions<Rardi_Context> options) : DbContext(
         .HasForeignKey(i => i.Vehicle_Id)
         .HasPrincipalKey(i => i.Key);
 
-    builder.Entity<Product_Model>()
+    builder.Entity<ProductModel>()
         .OwnsMany(i => i.ProductProfiles, b =>
         {
           b.WithOwner().HasForeignKey("ProductId");

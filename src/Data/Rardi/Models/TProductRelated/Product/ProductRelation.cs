@@ -2,7 +2,7 @@
 
 namespace CHKS.Models
 {
-    public partial class Product_Model
+    public partial class ProductModel
     {
         public ICollection<CartItemModel> CartItems { get; set; }
         public ICollection<TransactionItemModel> TransactionItems { get; set; }

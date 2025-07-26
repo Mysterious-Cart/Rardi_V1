@@ -1,51 +1,78 @@
-using CHKS.Models.Interface;
 using CHKS.Models;
+using CHKS.Data;
+using Microsoft.EntityFrameworkCore;
 namespace CHKS.Services;
 
-public class StockLogsTrackingService : IAsyncDisposable
+public class StockLogsTrackingService(IDbContextFactory<Rardi_Context> contextFactory, SecurityService securityService)
 {
-    private readonly IDbProvider _provider;
-    public StockLogsTrackingService(IDbProvider provider)
+    private readonly Rardi_Context _Context = contextFactory.CreateDbContext();
+    private readonly SecurityService securityService = securityService;
+    private async Task<List<UserNotificationStamp>> GetAllUserNotificationStamps()
     {
-        _provider = provider;
+        return await _Context.NotificationStampModels.Select(i => new UserNotificationStamp(
+            i.UserId,
+            i.LogId
+        )).ToListAsync();
     }
-    private async Task Create_Unseen_Stamp(string UserId, Guid LogsId, bool safe_check = true)
+    private async Task<UserNotificationStamp> GetUserNotificationStamps(string UserId, Guid LogsId)
     {
-        if (safe_check)
+        if (string.IsNullOrEmpty(UserId))
+            throw new ArgumentNullException(nameof(UserId), "UserId cannot be null or empty.");
+
+        if (LogsId == Guid.Empty)
+            throw new ArgumentNullException(nameof(LogsId), "LogsId cannot be empty.");
+
+        try
         {
-            if ((await _provider.GetData<UserNotificationStamp>()).Any(i => i.UserId == UserId && i.LogId == LogsId))
-                return; // Already seen
+            var stamps = await _Context.NotificationStampModels
+                .Where(i => i.UserId == UserId && i.LogId == LogsId)
+                .Select(i => new UserNotificationStamp(i.UserId, i.LogId))
+                .FirstAsync();
 
-            if ((await _provider.GetData<StockLogsModel>()).All(i => i.Id != LogsId))
-                throw new ArgumentException("Log does not exist.", nameof(LogsId));
-
-            if ((await _provider.GetData<Aspnetuser>()).All(i => i.Id != UserId))
-                throw new ArgumentException("User does not exist.", nameof(UserId));
+            return stamps;
         }
+        catch (InvalidOperationException)
+        {
+            // No matching record found
+            return null;
+        }
+    }
+    private async Task<UserNotificationStamp> AddUnseenStamp(string UserId, Guid LogsId)
+    {
+        var existingStamp = await GetUserNotificationStamps(UserId, LogsId);
+        if (existingStamp is not null)
+            return existingStamp; // Already seen
 
-        var Unseen_Stamp = new UserNotificationStamp
+        if (!_Context.StockLogs.Any(i => i.Id == LogsId))
+            throw new ArgumentException("Log does not exist.", nameof(LogsId));
+
+        if ((await securityService.GetUserById(UserId)) is null)
+            throw new ArgumentException("User does not exist.", nameof(UserId));
+
+        var Unseen_Stamp = new UserNotificationStampModel
         {
             UserId = UserId,
             LogId = LogsId,
         };
-
-        await _provider.CreateData(Unseen_Stamp);
-    }
-
-    public async Task Generate_Unseen_Stamp_ForAllUsers(Guid LogsId)
-    {
-
-        var users = await _provider.GetData<Aspnetuser>();
-        foreach (var user in users)
+        try
         {
-            await Create_Unseen_Stamp(user.Id, LogsId, false);
+            _Context.NotificationStampModels.Add(Unseen_Stamp);
+            await _Context.SaveChangesAsync();
+            return new UserNotificationStamp(Unseen_Stamp.UserId, Unseen_Stamp.LogId);
+        }
+        catch (DbUpdateException ex)
+        {
+            throw new Exception("Failed to add unseen stamp.", ex);
         }
     }
 
-    public async ValueTask DisposeAsync()
+    public async Task GenerateUnseenStampForAllUsers(Guid LogsId)
     {
-        await _provider.DisposeAsync();
-        GC.SuppressFinalize(this);
-        GC.Collect();
+
+        var users = await _Context.Set<Aspnetuser>().Select(i => new { i.Id }).ToListAsync();
+        foreach (var user in users)
+        {
+            await AddUnseenStamp(user.Id, LogsId);
+        }
     }
 }

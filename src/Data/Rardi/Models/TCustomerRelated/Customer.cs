@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace CHKS.Models
 {
-    [Table("customer")]
+    [Table("Customer")]
     public class CustomerModel
     {
         [Key]

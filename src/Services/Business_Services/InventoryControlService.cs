@@ -1,4 +1,3 @@
-using CHKS.Models.Interface;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using MoreLinq;

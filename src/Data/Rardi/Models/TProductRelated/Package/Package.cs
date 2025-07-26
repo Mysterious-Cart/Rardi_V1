@@ -12,6 +12,6 @@ public class Package_Model
     [Required]
     public Guid Id { get; set; }
     public string Description { get; set; } = "";
-    public IEnumerable<Product_Model> Products { get; set; }
+    public IEnumerable<ProductModel> Products { get; set; }
 
 }

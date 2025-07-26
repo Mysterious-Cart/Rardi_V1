@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CHKS.Models
 {
-    [Table("aspnetusers")]
+    [Table("AspNetUsers")]
     public partial class Aspnetuser
     {
         [Key]

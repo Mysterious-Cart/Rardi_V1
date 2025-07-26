@@ -13,6 +13,6 @@ public class TagsModel
     public string Tag {get; set;}
     public string Color {get; set;}
     public string Description { get; set; } = "";
-    public ICollection<Product_Model> Product;
+    public ICollection<ProductModel> Product;
 
 }

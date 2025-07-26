@@ -1,6 +1,4 @@
-using CHKS.Models.Interface;
-using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,15 +9,16 @@ namespace CHKS.Models.mydb
     {
         [Required]
         public string Note { get; set; } = "";
-
+        
+        [DefaultValue(0)]
         public decimal Expense { get; set; } = 0;
 
         [Key]
         [Required]
-        public Guid Key { get; set; } = Guid.NewGuid();
+        public Guid Key { get; init; } = Guid.NewGuid();
 
         [Required]
-        public string Date {get; set;} = DateTime.Now.ToString("dd/MM/yyyy");
+        public DateOnly Date {get; set;} = DateOnly.FromDateTime(DateTime.Now);
 
     }
 }

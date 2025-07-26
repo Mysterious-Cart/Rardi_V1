@@ -14,7 +14,7 @@ public class StockLogsModel
     public EmployeeModel Employee { get; set; }
     [Required]
     public Guid ProductId { get; set; }
-    public Product_Model Product { get; set; }
+    public ProductModel Product { get; set; }
 
     [Timestamp]
     [Column("Time")]

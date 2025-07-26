@@ -2,7 +2,7 @@
 
 namespace CHKS.Models
 {
-    public partial class Product_Model
+    public partial class ProductModel
     {
         [Required]
         public bool AllowTracking { get; set; } = true;

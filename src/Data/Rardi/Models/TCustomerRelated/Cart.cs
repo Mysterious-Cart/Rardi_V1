@@ -1,24 +1,17 @@
 using CHKS.Enum;
-using CHKS.Models.Interface;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
 namespace CHKS.Models
 {
-    [Table("cart")]
+    [Table("Cart")]
     public class CartModel
     {
         [Key]
         [Column("CartID")]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CartId { get; set; } = Random.Shared.Next();
 
-        /// <summary>
-        /// This is the PlateNumber of the Customer.
-        /// </summary>
         [Column("CarID")]
         [Required]
         [MaxLength(20)]

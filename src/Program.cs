@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using CHKS.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor.Services;
-using CHKS.Models.Interface;
 using CHKS.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,7 +20,6 @@ builder.Services
     .AddMudServices()
     .AddScoped<InventoryNotificationHubConnectionService>()
     .AddScoped<InventoryControlService>()
-    .AddScoped<IDbProvider, DbProvider<Rardi_Context>>()
     .AddScoped<CartControlService>()
     .AddScoped<StockLogsTrackingService>()
     .AddScoped<EmployeeControl>()

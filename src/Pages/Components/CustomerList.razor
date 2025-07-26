@@ -2,7 +2,6 @@
 @attribute [Authorize]
 @namespace CHKS.Pages.Component
 
-@using Models.Interface;
 @using Pages.Component.Popup;
 @using Entity;
 @using Services;
@@ -16,7 +15,6 @@
     </DialogContent>
 </MudDialog>
 @code{
-    [Inject] protected IDbProvider _dbProvider {get; set;}
     [Inject] protected IDialogService _DialogService { get; set; }
     [Parameter] public string Height {get; set;} = "100%";
     [Parameter] public EventCallback<Entity.Customer> OnRowClick{get; set;}
@@ -76,7 +74,6 @@
         _Customer = null;
         Display_Customer = null;
         SelectedItem = null;
-        await _dbProvider.DisposeAsync();
         NewCustomerForm?.Close();
         NewCustomerForm = null;
         _DialogService = null;

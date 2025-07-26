@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CHKS.Models
 {
-    [Table("aspnetuserclaims")]
+    [Table("AspNetUserClaims")]
     public partial class Aspnetuserclaim
     {
         [Key]

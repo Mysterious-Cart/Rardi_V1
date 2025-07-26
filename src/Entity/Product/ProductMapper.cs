@@ -20,7 +20,7 @@ public static class ProductExpressionMapper
     /// dbContext.DbSet.Select(ProductExpressionMapper.ToProduct);
     /// </code>
     /// </example>
-    public static Expression<Func<Product_Model, Product>> ToProduct =>
+    public static Expression<Func<ProductModel, Product>> ToProduct =>
         product => new Product(
             product.Id,
             product.Name,
@@ -39,8 +39,8 @@ public static class ProductExpressionMapper
     /// Converts a CreateProductRequest to a Product_Model.
     /// This expression can be used in LINQ queries to project CreateProductRequest to Product_Model
     /// </summary>
-    public static Expression<Func<CreateProductRequest, Product_Model>> ToProductModel =>
-        product => new Product_Model
+    public static Expression<Func<CreateProductRequest, ProductModel>> ToProductModel =>
+        product => new ProductModel
         {
             Id = Guid.NewGuid(),
             Name = product.Name,
@@ -74,7 +74,7 @@ public static class ProductMapper
     /// Converts a Product_Model to a Product.
     /// </summary>
     /// <param name="productModel"></param>
-    public static Product ToProduct(this Product_Model productModel) =>
+    public static Product ToProduct(this ProductModel productModel) =>
         new(
             productModel.Id,
             productModel.Name,
@@ -94,7 +94,7 @@ public static class ProductMapper
     /// Converts a CreateProductRequest to a Product_Model.
     /// </summary>
     /// <param name="request"></param>
-    public static Product_Model ToProductModel(this CreateProductRequest request) =>
+    public static ProductModel ToProductModel(this CreateProductRequest request) =>
         new()
         {
             Id = Guid.NewGuid(),

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CHKS.Models
 {
-    [Table("vehicle")]
+    [Table("Vehicle")]
     public class Vehicle_Model
     {
         [Required]

@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace CHKS.Models
 {
-    [Table("aspnetuserlogins")]
+    [Table("AspNetUserLogins")]
+    [PrimaryKey(nameof(LoginProvider), nameof(ProviderKey))]
     public partial class Aspnetuserlogin
     {
         [Key]

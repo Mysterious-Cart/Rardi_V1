@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CHKS.Models
 {
-    public partial class Product_Model
+    public partial class ProductModel
     {
         [NotMapped]
         public int Max { get; set; } = 0;

@@ -4,8 +4,8 @@ using CHKS.Enum;
 
 namespace CHKS.Models
 {
-    [Table("inventory")]
-    public partial class Product_Model
+    [Table("Inventory")]
+    public partial class ProductModel
     {
 
         [Required]

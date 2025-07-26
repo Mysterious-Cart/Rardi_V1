@@ -1,0 +1,1 @@
+public record UserNotificationStamp(string UserId, Guid LogId);

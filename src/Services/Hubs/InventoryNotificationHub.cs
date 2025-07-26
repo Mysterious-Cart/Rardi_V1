@@ -17,7 +17,7 @@ namespace CHKS.Services
         {
             // Send a message to all connected clients
             Console.WriteLine($"Sending message to all clients: {message}");
-            await _stockLogsTrackingService.Generate_Unseen_Stamp_ForAllUsers(message.Id);
+            await _stockLogsTrackingService.GenerateUnseenStampForAllUsers(message.Id);
             await Clients.All.SendAsync("ReceiveMessage", message);
         }
         public override Task OnConnectedAsync()
